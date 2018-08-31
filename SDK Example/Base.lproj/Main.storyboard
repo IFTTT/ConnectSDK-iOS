@@ -5,6 +5,7 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.9"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -46,6 +47,7 @@
                             <constraint firstItem="A5n-Bf-DKh" firstAttribute="centerX" secondItem="fIc-Bz-sSa" secondAttribute="centerX" id="plr-q1-f53"/>
                             <constraint firstItem="A5n-Bf-DKh" firstAttribute="leading" secondItem="fIc-Bz-sSa" secondAttribute="leadingMargin" id="yCQ-sU-UTi"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="m0z-4H-RRe"/>
                     </scrollView>
                     <navigationItem key="navigationItem" id="qIa-pF-ZOs"/>
                     <connections>
@@ -78,7 +80,7 @@
         <!--Do more with IFTTT-->
         <scene sceneID="Cfv-Ha-lO0">
             <objects>
-                <tableViewController id="FTU-aC-viL" customClass="AppletViewController" customModule="SDK_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="FTU-aC-viL" customClass="HomeViewController" customModule="SDK_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="ixz-9n-3sM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
