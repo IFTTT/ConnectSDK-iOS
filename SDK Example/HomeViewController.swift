@@ -22,7 +22,7 @@ class HomeViewController: UITableViewController {
     }
     
     func fetch() {
-        Applet.Session.shared.request(.applets()) { (response) in
+        Applet.Request.applets() { (response) in
             switch response.result {
             case .success(let applets):
                 self.applets = applets
@@ -36,6 +36,7 @@ class HomeViewController: UITableViewController {
                 self.refreshControl?.endRefreshing()
             }
         }
+        .start()
     }
     
     override func viewDidLoad() {

@@ -34,7 +34,7 @@ import Foundation
     @objc public let applets: [IFTTTApplet]
     @objc public let error: Error?
     
-    fileprivate init(response: Applet.Session.Response) {
+    fileprivate init(response: Applet.Request.Response) {
         urlResponse = response.urlResponse
         statusCode = response.statusCode != nil ? NSNumber(integerLiteral: response.statusCode!) : nil
         switch response.result {
@@ -67,33 +67,36 @@ import Foundation
     @objc public static func getApplets(forService serviceId: String,
                                  limit: NSNumber?, nextPage: String?, sort: String?, filter: String?,
                                  _ completion: @escaping (IFTTTAppletResponse) -> Void) {
-        var parameters = [Applet.Session.Parameter]()
+        var parameters = [Applet.Request.Parameter]()
         if let limit = limit {
             parameters.append(.limit(limit.intValue))
         }
         if let nextPage = nextPage {
             parameters.append(.nextPage(nextPage))
         }
-        if let sort = Applet.Session.Parameter.Sort(rawValue: sort ?? "") {
+        if let sort = Applet.Request.Parameter.Sort(rawValue: sort ?? "") {
             parameters.append(.sort(sort))
         }
-        if let filter = Applet.Session.Parameter.Filter(rawValue: filter ?? "") {
+        if let filter = Applet.Request.Parameter.Filter(rawValue: filter ?? "") {
             parameters.append(.filter(filter))
         }
-        Applet.Session.shared.request(.applets(for: serviceId, parameters: parameters)) { (response) in
+        Applet.Request.applets(forService: serviceId, parameters: parameters) { (response) in
             completion(IFTTTAppletResponse(response: response))
         }
+        .start()
     }
     
     @objc public static func getApplet(forService serviceId: String, appletId: String, _ completion: @escaping (IFTTTAppletResponse) -> Void) {
-        Applet.Session.shared.request(.applet(id: appletId, for: serviceId)) { (response) in
+        Applet.Request.applet(id: appletId, forService: serviceId) { (response) in
             completion(IFTTTAppletResponse(response: response))
         }
+        .start()
     }
     
-    @objc public static func getApplet(forService serviceId: String, appletId: String, isEnabled: Bool, _ completion: @escaping (IFTTTAppletResponse) -> Void) {
-        Applet.Session.shared.request(.applet(id: appletId, for: serviceId, setIsEnabled: isEnabled)) { (response) in
+    @objc public static func updateApplet(forService serviceId: String, appletId: String, isEnabled: Bool, _ completion: @escaping (IFTTTAppletResponse) -> Void) {
+        Applet.Request.applet(id: appletId, forService: serviceId, setIsEnabled: isEnabled) { (response) in
             completion(IFTTTAppletResponse(response: response))
         }
+        .start()
     }
 }

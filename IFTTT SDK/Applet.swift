@@ -41,17 +41,6 @@ public struct Applet {
 
 public extension Applet {
     public class Session {
-
-        public struct Response {
-            public let urlResponse: URLResponse?
-            public let statusCode: Int?
-            public let result: Result
-        }
-        public enum Result {
-            case success([Applet]), failure(Error?)
-        }
-        public typealias CompletionHandler = (Response) -> Void
-        
         public var serviceId: String = "ifttt"
         
         public var userToken: String? = nil
@@ -71,65 +60,51 @@ public extension Applet {
         public init(urlSession: URLSession) {
             self.urlSession = urlSession
         }
-        
-        public func request(_ request: Request, _ completion: @escaping CompletionHandler) {
-            let task = urlSession.dataTask(with: request.urlRequest) { (data, response, error) in
-                let statusCode = (response as? HTTPURLResponse)?.statusCode
-                let applets = Applet.applets(data)
-                DispatchQueue.main.async {
-                    if let applets = applets {
-                        completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applets)))
-                    } else {
-                        completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error)))
-                    }
-                }
-            }
-            task.resume()
-        }
     }
 }
 
 
 // MARK: - Requests
 
-public extension Applet.Session {
-    public enum Method: String {
-        case
-        GET = "GET",
-        POST = "POST"
-    }
-    public enum Parameter {
-        public enum Sort: String {
-            case
-            unknown = "" // FIXME: !!
-        }
-        public enum Filter: String {
-            case
-            pinned = "pinned_only",
-            enabled = "user_enabled_only"
-        }
-        
-        case
-        limit(Int),
-        nextPage(String),
-        sort(Sort),
-        filter(Filter)
-        
-        var formatted: (name: String, value: String) {
-            switch self {
-            case .limit(let limit):
-                return ("limit", "\(limit)")
-            case .nextPage(let cursor):
-                return ("next_page", cursor)
-            case .sort(let sort):
-                return ("sort", sort.rawValue)
-            case .filter(let filter):
-                return ("filter", filter.rawValue)
-            }
-        }
-    }
+public extension Applet {
     
     public struct Request {
+        
+        public enum Method: String {
+            case
+            GET = "GET",
+            POST = "POST"
+        }
+        public enum Parameter {
+            public enum Sort: String {
+                case
+                unknown = "" // FIXME: !!
+            }
+            public enum Filter: String {
+                case
+                pinned = "pinned_only",
+                enabled = "user_enabled_only"
+            }
+            
+            case
+            limit(Int),
+            nextPage(String),
+            sort(Sort),
+            filter(Filter)
+            
+            var formatted: (name: String, value: String) {
+                switch self {
+                case .limit(let limit):
+                    return ("limit", "\(limit)")
+                case .nextPage(let cursor):
+                    return ("next_page", cursor)
+                case .sort(let sort):
+                    return ("sort", sort.rawValue)
+                case .filter(let filter):
+                    return ("filter", filter.rawValue)
+                }
+            }
+        }
         
         public let api: URL
         public let path: String
@@ -138,7 +113,34 @@ public extension Applet.Session {
         
         public let urlRequest: URLRequest
         
-        private init(path: String, method: Method, paramters: [Parameter] = []) {
+        public struct Response {
+            public let urlResponse: URLResponse?
+            public let statusCode: Int?
+            public let result: Result
+        }
+        public enum Result {
+            case success([Applet]), failure(Error?)
+        }
+        public typealias CompletionHandler = (Response) -> Void
+        
+        public let completion: CompletionHandler
+        
+        public func start(with session: Session = .shared) {
+            let task = session.urlSession.dataTask(with: urlRequest) { (data, response, error) in
+                let statusCode = (response as? HTTPURLResponse)?.statusCode
+                let applets = Applet.applets(data)
+                DispatchQueue.main.async {
+                    if let applets = applets {
+                        self.completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applets)))
+                    } else {
+                        self.completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error)))
+                    }
+                }
+            }
+            task.resume()
+        }
+        
+        private init(path: String, method: Method, paramters: [Parameter] = [], completion: @escaping CompletionHandler) {
             let api = URL(string: "https://api.ifttt.com/v1")!
             
             self.api = api
@@ -168,18 +170,26 @@ public extension Applet.Session {
             }
             
             self.urlRequest = request
+            self.completion = completion
         }
         
-        public static func applets(for service: String = Applet.Session.shared.serviceId, parameters: [Parameter] = []) -> Request {
-            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets", method: .GET, paramters: parameters)
+        public static func applets(forService id: String = Applet.Session.shared.serviceId,
+                                   parameters: [Parameter] = [],
+                                   completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/services/\(id)/applets", method: .GET, paramters: parameters, completion: completion)
         }
         
-        public static func applet(id: String, for service: String = Applet.Session.shared.serviceId) -> Request {
-            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets/\(id)", method: .GET)
+        public static func applet(id: String,
+                                  forService serviceId: String = Applet.Session.shared.serviceId,
+                                  completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/services/\(serviceId)/applets/\(id)", method: .GET, completion: completion)
         }
         
-        public static func applet(id: String, for service: String = Applet.Session.shared.serviceId, setIsEnabled enabled: Bool) -> Request {
-            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST)
+        public static func applet(id: String,
+                                  forService serviceId: String = Applet.Session.shared.serviceId,
+                                  setIsEnabled enabled: Bool,
+                                  completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/services/\(serviceId)/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST, completion: completion)
         }
     }
 }
@@ -190,11 +200,11 @@ public extension Applet.Session {
 private protocol Encoding {
     associatedtype Output
     
-    static func with(paramaters: [Applet.Session.Parameter]) -> Output
+    static func with(paramaters: [Applet.Request.Parameter]) -> Output
 }
 
 private struct DataEncoding: Encoding {
-    static func with(paramaters: [Applet.Session.Parameter]) -> Data? {
+    static func with(paramaters: [Applet.Request.Parameter]) -> Data? {
         var json = [String : String]()
         paramaters.forEach {
             json[$0.formatted.name] = $0.formatted.value
@@ -204,7 +214,7 @@ private struct DataEncoding: Encoding {
 }
 
 private struct URLEncoding: Encoding {
-    static func with(paramaters: [Applet.Session.Parameter]) -> [URLQueryItem] {
+    static func with(paramaters: [Applet.Request.Parameter]) -> [URLQueryItem] {
         return paramaters.map {
             return URLQueryItem(name: $0.formatted.name, value: $0.formatted.value)
         }
