@@ -107,10 +107,11 @@ class PillButton: PillView {
     
     var onSelect: (() -> Void)?
     
-    init(image: UIImage, backgroundColor: UIColor) {
+    init(image: UIImage, tintColor: UIColor, backgroundColor: UIColor) {
         label = UILabel()
         super.init()
         
+        self.tintColor = tintColor
         self.backgroundColor = backgroundColor
         
         addSubview(imageView)
@@ -119,13 +120,14 @@ class PillButton: PillView {
         setupSelectGesture()
     }
     
-    init(text: String, backgroundColor: UIColor) {
+    init(text: String, tintColor: UIColor, backgroundColor: UIColor) {
         label = UILabel(text,
                         style: .callout,
                         alignment: .center)
         
         super.init()
         
+        self.tintColor = tintColor
         self.backgroundColor = backgroundColor
         
         layoutMargins = UIEdgeInsets(inset: 10)

@@ -50,11 +50,13 @@ struct ImageDownloader {
             return nil
         }
         let task = urlSession.dataTask(with: imageURL) { (imageData, response, _) in
-            if let imageData = imageData, let response = response, let image = UIImage(data: imageData) {
-                self.cache.store(imageData: imageData, response: response, for: imageURL)
-                completion(image)
-            } else {
-                completion(nil)
+            DispatchQueue.main.async {
+                if let imageData = imageData, let response = response, let image = UIImage(data: imageData) {
+                    self.cache.store(imageData: imageData, response: response, for: imageURL)       
+                    completion(image)
+                } else {
+                    completion(nil)
+                }
             }
         }
         task.resume()

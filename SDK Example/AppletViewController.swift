@@ -40,5 +40,11 @@ class AppletViewController: UIViewController {
             configure(with: applet)
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        connectInteractor.begin()
+    }
 }
 

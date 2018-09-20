@@ -51,7 +51,7 @@ class AboutIFTTTViewController: UIViewController {
                                                      alignment: .fill)
     
     lazy var moreButton = PillButton(text: .localized("about.more.button"),
-                                     textColor: .iftttBlack,
+                                     tintColor: .iftttBlack,
                                      backgroundColor: .white)
     
     lazy var primaryView: UIStackView = .vertical([headerView, itemsStackView, moreButton],
