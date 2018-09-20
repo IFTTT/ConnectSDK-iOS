@@ -15,6 +15,10 @@ class AppletViewController: UIViewController {
     
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    @IBOutlet weak var connectButton: ConnectButton!
+    
+    private var connectInteractor: ConnectInteractionController!
+    
     var applet: Applet? {
         didSet {
             if let applet = applet, isViewLoaded {
@@ -32,6 +36,7 @@ class AppletViewController: UIViewController {
         super.viewDidLoad()
         
         if let applet = applet {
+            connectInteractor = ConnectInteractionController(connectButton, applet: applet)
             configure(with: applet)
         }
     }

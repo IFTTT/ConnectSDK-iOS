@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FC04FE1B21501A8F008AC8A5 /* AboutIFTTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */; };
+		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
+		FC04FE2121502F09008AC8A5 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE2021502F09008AC8A5 /* Styles.swift */; };
+		FC04FE2321507DDF008AC8A5 /* StandardUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE2221507DDF008AC8A5 /* StandardUI.swift */; };
 		FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2573122139E8CC0065AAD6 /* ConnectButton.swift */; };
 		FC25731C2139ED710065AAD6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC25731B2139ED710065AAD6 /* AppDelegate.m */; };
 		FC25731F2139ED710065AAD6 /* AppletViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC25731E2139ED710065AAD6 /* AppletViewController.m */; };
@@ -17,6 +21,9 @@
 		FC257331213A004D0065AAD6 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC257330213A004D0065AAD6 /* HomeViewController.m */; };
 		FC25733A213A061E0065AAD6 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC25733B213A061E0065AAD6 /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FC4588FC215170FC0038630F /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4588FB215170FC0038630F /* ImageCache.swift */; };
+		FC4588FE215172C00038630F /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4588FD215172C00038630F /* Images.swift */; };
+		FC74F1D82152AE4D00035A66 /* ConnectInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */; };
 		FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FCBA15FB21389F7500EB1BC8 /* IFTTT_SDK.h in Headers */ = {isa = PBXBuildFile; fileRef = FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCBA16052138A4EE00EB1BC8 /* Applet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16042138A4EE00EB1BC8 /* Applet.swift */; };
@@ -62,6 +69,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutIFTTT.swift; sourceTree = "<group>"; };
+		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FC04FE2021502F09008AC8A5 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
+		FC04FE2221507DDF008AC8A5 /* StandardUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardUI.swift; sourceTree = "<group>"; };
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC2573182139ED710065AAD6 /* SDK Example ObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDK Example ObjC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC25731A2139ED710065AAD6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -76,6 +87,9 @@
 		FC25732F213A004D0065AAD6 /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		FC257330213A004D0065AAD6 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		FC257332213A05E80065AAD6 /* SDK Example ObjC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDK Example ObjC-Bridging-Header.h"; sourceTree = "<group>"; };
+		FC4588FB215170FC0038630F /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		FC4588FD215172C00038630F /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
+		FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInteractionController.swift; sourceTree = "<group>"; };
 		FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IFTTT_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IFTTT_SDK.h; sourceTree = "<group>"; };
 		FCBA15EE21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -175,8 +189,15 @@
 			children = (
 				FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */,
 				FCBA16042138A4EE00EB1BC8 /* Applet.swift */,
+				FC4588FB215170FC0038630F /* ImageCache.swift */,
+				FC4588FD215172C00038630F /* Images.swift */,
+				FC04FE2221507DDF008AC8A5 /* StandardUI.swift */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
+				FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */,
+				FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */,
+				FC04FE2021502F09008AC8A5 /* Styles.swift */,
 				FCBA16082138A66500EB1BC8 /* ObjcSupport.swift */,
+				FC04FE1C21502968008AC8A5 /* Assets.xcassets */,
 				FCBA15EE21389F7500EB1BC8 /* Info.plist */,
 			);
 			path = "IFTTT SDK";
@@ -359,6 +380,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +420,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
+				FC04FE2121502F09008AC8A5 /* Styles.swift in Sources */,
+				FC04FE2321507DDF008AC8A5 /* StandardUI.swift in Sources */,
+				FC04FE1B21501A8F008AC8A5 /* AboutIFTTT.swift in Sources */,
 				FCBA16092138A66500EB1BC8 /* ObjcSupport.swift in Sources */,
+				FC74F1D82152AE4D00035A66 /* ConnectInteractionController.swift in Sources */,
+				FC4588FE215172C00038630F /* Images.swift in Sources */,
+				FC4588FC215170FC0038630F /* ImageCache.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Applet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,7 +596,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -626,7 +654,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -741,7 +769,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.SDK-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -760,7 +788,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.SDK-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -226,31 +226,6 @@ private struct URLEncoding: Encoding {
 
 typealias JSON = [String : Any?]
 
-extension UIColor {
-    convenience init?(hex: String) {
-        var cString: String = hex.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
-        
-        if (cString.hasPrefix("#")) {
-            cString = (cString as NSString).substring(from: 1)
-        }
-        
-        if (cString.count != 6) {
-            self.init(white: 0, alpha: 1.0)
-        } else {
-            let rString: String = (cString as NSString).substring(to: 2)
-            let gString = ((cString as NSString).substring(from: 2) as NSString).substring(to: 2)
-            let bString = ((cString as NSString).substring(from: 4) as NSString).substring(to: 2)
-            
-            var r: CUnsignedInt = 0, g: CUnsignedInt = 0, b: CUnsignedInt = 0;
-            Scanner(string: rString).scanHexInt32(&r)
-            Scanner(string: gString).scanHexInt32(&g)
-            Scanner(string: bString).scanHexInt32(&b)
-            
-            self.init(red: CGFloat(r) / CGFloat(255.0), green: CGFloat(g) / CGFloat(255.0), blue: CGFloat(b) / CGFloat(255.0), alpha: 1)
-        }
-    }
-}
-
 extension Applet {
     init?(json: JSON) {
         guard
@@ -293,7 +268,7 @@ extension Applet.Service {
             let name = json["service_name"] as? String,
             let monochromeIconURLString = json["monochrome_icon_url"] as? String, let monochromeIconURL = URL(string: monochromeIconURLString),
             let colorIconURLString = json["color_icon_url"] as? String, let colorIconURL = URL(string: colorIconURLString),
-            let brandColorString = json["brand_color"] as? String, let brandColor = UIColor(hex: brandColorString),
+            let brandColorString = json["brand_color"] as? String,
             let urlString = json["url"] as? String, let url = URL(string: urlString) else {
                 return nil
         }
@@ -302,7 +277,7 @@ extension Applet.Service {
         self.isPrimary = json["is_primary"] as? Bool ?? false
         self.monochromeIconURL = monochromeIconURL
         self.colorIconURL = colorIconURL
-        self.brandColor = brandColor
+        self.brandColor = UIColor(hex: brandColorString)
         self.url = url
     }
     static func services(_ json: [JSON]) -> [Applet.Service] {
