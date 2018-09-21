@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        Applet.Session.shared.serviceId = "lifx"
+        Applet.Session.shared.serviceId = "google_calendar"
 //        Applet.Session.shared.userToken = "the_user"
         
         return true

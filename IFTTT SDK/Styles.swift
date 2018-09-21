@@ -55,6 +55,7 @@ extension UIColor {
     static var iftttBlack = UIColor(hex: 0x222222)
     static var iftttBlue = UIColor(hex: 0x0099FF)
     static var iftttLightGrey = UIColor(hex: 0xCCCCCC)
+    static var iftttGrey = UIColor(hex: 0x414141)
     
     convenience init(hex: String) {
         var charSet = CharacterSet.whitespacesAndNewlines

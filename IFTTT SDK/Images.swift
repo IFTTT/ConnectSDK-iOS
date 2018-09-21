@@ -67,7 +67,13 @@ struct ImageDownloader {
 private var tasksByImageView: [UIImageView : URLSessionDataTask] = [:]
 
 extension UIImageView {
-    func set(imageURL: URL) {
+    func set(imageURL: URL?) {
+        guard let imageURL = imageURL else {
+            cancelImageRequests()
+            image = nil
+            return
+        }
+        
         if let existingTask = tasksByImageView[self] {
             if existingTask.originalRequest?.url == imageURL {
                 return // Activate request for the same image, skip

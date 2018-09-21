@@ -32,18 +32,18 @@ extension UIView {
         func width(to otherView: UIView) {
             view.widthAnchor.constraint(equalTo: otherView.widthAnchor).isActive = true
         }
-        func edges(to otherView: UIView, edges: UIRectEdge = .all) {
+        func edges(to otherView: UIView, edges: UIRectEdge = .all, inset: UIEdgeInsets = .zero) {
             if edges.contains(.top) {
-                view.topAnchor.constraint(equalTo: otherView.topAnchor).isActive = true
+                view.topAnchor.constraint(equalTo: otherView.topAnchor, constant: inset.top).isActive = true
             }
             if edges.contains(.left) {
-                view.leftAnchor.constraint(equalTo: otherView.leftAnchor).isActive = true
+                view.leftAnchor.constraint(equalTo: otherView.leftAnchor, constant: inset.left).isActive = true
             }
             if edges.contains(.bottom) {
-                view.bottomAnchor.constraint(equalTo: otherView.bottomAnchor).isActive = true
+                view.bottomAnchor.constraint(equalTo: otherView.bottomAnchor, constant: inset.bottom).isActive = true
             }
             if edges.contains(.right) {
-                view.rightAnchor.constraint(equalTo: otherView.rightAnchor).isActive = true
+                view.rightAnchor.constraint(equalTo: otherView.rightAnchor, constant: inset.right).isActive = true
             }
         }
         func edges(to guide: UILayoutGuide, edges: UIRectEdge = .all) {
