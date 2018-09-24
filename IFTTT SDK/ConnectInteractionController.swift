@@ -18,7 +18,7 @@ public class ConnectInteractionController {
         self.button = button
         self.applet = applet
         
-        button.transition(to: .toggle(for: applet.primaryService, message: "Connect \(self.applet.primaryService.name)", isOn: false)).preformWithoutAnimation()
+        button.transition(to: .toggle(for: applet.worksWithServices.first!, message: "Connect \(self.applet.worksWithServices.first!.name)", isOn: false)).preformWithoutAnimation()
     }
     
     public func begin() {
@@ -54,24 +54,24 @@ public class ConnectInteractionController {
         }
         
         queue.asyncAfter(deadline: .now() + 6) {
-            self.button.transition(to: .step(for: self.applet.primaryService, message: "Sign in to \(self.applet.primaryService.name)", isSelectable: true)).preform()
+            self.button.transition(to: .step(for: self.applet.worksWithServices.first!, message: "Sign in to \(self.applet.worksWithServices.first!.name)", isSelectable: true)).preform()
         }
     }
     
     private func connectService() {
         let queue = DispatchQueue.main
         
-        button.transition(to: .step(for: applet.primaryService, message: "Saving settings...", isSelectable: false)).preform()
+        button.transition(to: .step(for: applet.worksWithServices.first!, message: "Saving settings...", isSelectable: false)).preform()
         
         let progressBar = button.progressTransition(timeout: 2)
         progressBar.preform()
         
         queue.asyncAfter(deadline: .now() + 2) {
-            self.button.transition(to: .stepComplete(for: self.applet.primaryService)).preform()
+            self.button.transition(to: .stepComplete(for: self.applet.worksWithServices.first!)).preform()
         }
         
         queue.asyncAfter(deadline: .now() + 4) {
-            self.button.transition(to: .toggle(for: self.applet.primaryService, message: "Connected", isOn: true)).preform()
+            self.button.transition(to: .toggle(for: self.applet.worksWithServices.first!, message: "Connected", isOn: true)).preform()
         }
     }
 }

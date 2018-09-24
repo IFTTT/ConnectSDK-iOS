@@ -71,6 +71,111 @@ extension UIEdgeInsets {
 }
 
 
+// MARK - Label
+
+/// Adds functionality to animate text changes
+class AnimatingLabel: UIView {
+    enum Effect {
+        case
+        crossfade,
+        slideInFromRight,
+        rotateDown
+    }
+    
+    func setupLabels(_ body: (UILabel) -> Void) {
+        [primaryView, transitionView].forEach(body)
+    }
+    
+    func configure(_ text: String) {
+        primaryView.text = text
+        transitionView.text = nil
+    }
+    
+    func transition(with effect: Effect, updatedText: String?, addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
+        switch effect {
+        case .crossfade:
+            // FIXME: This really isn't quite right
+            // Probably won't work as expected for toggling switch
+            // We need an animation where the text reveals / hides from left to right
+            let animator = externalAnimator ?? UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+            if let text = updatedText {
+                primaryView.text = text
+                primaryView.alpha = 0
+                animator.addAnimations {
+                    self.primaryView.alpha = 1
+                }
+            } else {
+                animator.addAnimations {
+                    self.primaryView.alpha = 0
+                }
+            }
+            
+        case .slideInFromRight:
+            primaryView.text = updatedText
+            primaryView.alpha = 0
+            primaryView.transform = CGAffineTransform(translationX: 20, y: 0)
+            
+            let animator = externalAnimator ?? UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+            animator.addAnimations {
+                self.primaryView.transform = .identity
+                self.primaryView.alpha = 1
+            }
+            animator.startAnimation()
+            
+        case .rotateDown:
+            assert(externalAnimator == nil, "Not supported for rotate transitions")
+            
+            transitionView.text = updatedText
+            
+            transitionView.alpha = 0
+            transitionView.transform = CGAffineTransform(translationX: 0, y: -20).scaledBy(x: 0.9, y: 0.9)
+            
+            let animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: nil)
+            animator.addAnimations {
+                self.primaryView.alpha = 0
+                self.primaryView.transform = CGAffineTransform(translationX: 0, y: 20).scaledBy(x: 0.9, y: 0.9)
+            }
+            animator.addCompletion { _ in
+                let nextAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut) {
+                    self.transitionView.alpha = 1
+                    self.transitionView.transform = .identity
+                }
+                nextAnimator.addCompletion { _ in
+                    self.transitionView.text = nil
+                    self.primaryView.text = updatedText
+                    self.primaryView.alpha = 1
+                    self.primaryView.transform = .identity
+                }
+                nextAnimator.startAnimation()
+            }
+            animator.startAnimation()
+        }
+    }
+    
+    /// Diplays the content of this label
+    let primaryView = UILabel()
+    
+    /// Used in text transition effects
+    let transitionView = UILabel()
+    
+    init() {
+        super.init(frame: .zero)
+        
+        layoutMargins = .zero
+        
+        [primaryView, transitionView].forEach { (label) in
+            addSubview(label)
+            label.constrain.center(in: self)
+            label.constrain.edges(to: layoutMarginsGuide, edges: [.left, .right])
+        }
+    }
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
 // MARK: - Pill view
 
 class PillView: UIView {
@@ -167,6 +272,15 @@ extension PillButton: UIGestureRecognizerDelegate {
     }
 }
 
+
+// MARK: - Passthrough view
+
+class PassthroughView: UIView {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        return view == self ? nil : view
+    }
+}
 
 
 // MARK: - SelectGestureRecognizer

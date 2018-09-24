@@ -38,6 +38,10 @@ public struct Applet {
     public var primaryService: Service! {
         return services.first(where: { $0.isPrimary })
     }
+    
+    public var worksWithServices: [Service] {
+        return services.filter({ $0.isPrimary == false })
+    }
 }
 
 
