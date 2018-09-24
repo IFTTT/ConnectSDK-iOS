@@ -34,6 +34,10 @@ public struct Applet {
     public let description: String
     public let status: Status
     public let services: [Service]
+    
+    public var primaryService: Service! {
+        return services.first(where: { $0.isPrimary })
+    }
 }
 
 
@@ -239,6 +243,10 @@ extension Applet {
         self.description = description
         self.status = Status(rawValue: json["user_status"] as? String ?? "") ?? .unknown
         self.services = Service.services(json["services"] as? [JSON] ?? [])
+        
+        guard primaryService != nil else {
+            return nil
+        }
     }
     static func applets(_ data: Data?) -> [Applet]? {
         if let data = data, let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? JSON {

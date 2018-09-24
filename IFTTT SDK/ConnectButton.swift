@@ -17,7 +17,7 @@ public class ConnectButton: UIView {
         initialization,
         toggle(for: Applet.Service, message: String, isOn: Bool),
         email,
-        step(for: Applet.Service?, message: String),
+        step(for: Applet.Service?, message: String, isSelectable: Bool),
         stepComplete(for: Applet.Service?)
         
         struct Transition {
@@ -51,6 +51,8 @@ public class ConnectButton: UIView {
     var nextToggleState: (() -> State)?
     
     var onEmailConfirmed: ((String) -> Void)?
+    
+    var onStepSelected: (() -> Void)?
     
     private(set) var currentState: State = .initialization
     
@@ -88,9 +90,12 @@ public class ConnectButton: UIView {
         }
         static let checkmarkDiameter: CGFloat = 42
         static let checkmarkLength: CGFloat = 14
+        static let serviceIconDiameter: CGFloat = 24
     }
     
-    fileprivate  let backgroundView = PillView()
+    fileprivate let backgroundView = PillView()
+    
+    fileprivate let serviceIconView = UIImageView()
     
     // MARK: Email view
     
@@ -164,36 +169,32 @@ public class ConnectButton: UIView {
     fileprivate let progressBar = ProgressBar()
     
     fileprivate class ProgressBar: UIView {
-        var isComplete: Bool = false {
+        var fractionComplete: CGFloat = 0 {
             didSet {
-                completeConstraint.isActive = isComplete
-                track.layoutIfNeeded()
+                update()
             }
         }
         
         private let bar = UIView()
-        private let track = UIView()
-        
-        private var completeConstraint: NSLayoutConstraint!
         
         func configure(with service: Applet.Service?) {
-            bar.backgroundColor = service?.brandColor ?? .iftttBlack
+            bar.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
+        }
+        
+        private func update() {
+            bar.transform = CGAffineTransform(translationX: (1 - fractionComplete) * -bounds.width, y: 0)
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            update()
         }
         
         init() {
             super.init(frame: .zero)
             
-            addSubview(track)
-            track.addSubview(bar)
-            
-            track.constrain.edges(to: self)
-            
-            bar.constrain.edges(to: track, edges: [.top, .left, .bottom])
-            let startConstraint = bar.widthAnchor.constraint(lessThanOrEqualToConstant: 0)
-            startConstraint.priority = .defaultHigh
-            
-            completeConstraint = bar.widthAnchor.constraint(equalTo: track.widthAnchor)
-            completeConstraint.isActive = false
+            addSubview(bar)
+            bar.constrain.edges(to: self)
         }
         @available(*, unavailable)
         required init?(coder aDecoder: NSCoder) {
@@ -214,14 +215,15 @@ public class ConnectButton: UIView {
                 
                 backgroundColor = .iftttBlue
                 
-                layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
                 addSubview(iconView)
-                iconView.constrain.edges(to: layoutMarginsGuide)
+                iconView.constrain.center(in: self)
+                iconView.constrain.square(length: Layout.serviceIconDiameter)
             }
         }
         
         var isOn: Bool = false {
             didSet {
+                centerKnobConstraint.isActive = false
                 offConstraint.isActive = !isOn
                 track.layoutIfNeeded()
             }
@@ -235,6 +237,16 @@ public class ConnectButton: UIView {
         let knob = Knob()
         let track = UIView()
         
+        /// Used to prime particular button animations where the know should start in the center
+        fileprivate func primeAnimation_centerKnob() {
+            UIView.performWithoutAnimation {
+                self.offConstraint.isActive = false
+                self.centerKnobConstraint.isActive = true
+                self.layoutIfNeeded()
+            }
+        }
+        
+        private var centerKnobConstraint: NSLayoutConstraint!
         private var offConstraint: NSLayoutConstraint!
         
         init() {
@@ -247,6 +259,9 @@ public class ConnectButton: UIView {
             
             knob.constrain.square(length: Layout.knobDiameter)
             knob.centerYAnchor.constraint(equalTo: track.centerYAnchor).isActive = true
+            
+            centerKnobConstraint = knob.centerXAnchor.constraint(equalTo: track.centerXAnchor)
+            centerKnobConstraint.isActive = false
             
             offConstraint = knob.leftAnchor.constraint(equalTo: track.leftAnchor, constant: Layout.knobInset)
             offConstraint.isActive = true
@@ -271,6 +286,13 @@ public class ConnectButton: UIView {
         let checkmarkShape = CAShapeLayer()
         
         var indicatorAnimationPath = UIBezierPath()
+        
+        fileprivate func reset() {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            checkmarkShape.strokeEnd = 0
+            CATransaction.commit()
+        }
         
         init() {
             super.init(frame: .zero)
@@ -347,6 +369,7 @@ public class ConnectButton: UIView {
         backgroundView.addSubview(checkmark)
         backgroundView.addSubview(switchControl)
         backgroundView.addSubview(emailConfirmButton)
+        backgroundView.addSubview(serviceIconView)
         
         backgroundView.clipsToBounds = true
         
@@ -367,7 +390,11 @@ public class ConnectButton: UIView {
         
         checkmark.constrain.center(in: self)
         
-        [label, switchControl, emailEntryField, emailConfirmButton, checkmark, progressBar].forEach {
+        serviceIconView.constrain.square(length: Layout.serviceIconDiameter)
+        serviceIconView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
+        serviceIconView.centerXAnchor.constraint(equalTo: backgroundView.leftAnchor, constant: 0.5 * Layout.height).isActive = true
+        
+        [label, switchControl, emailEntryField, emailConfirmButton, checkmark, serviceIconView].forEach {
             $0.alpha = 0
         }
         
@@ -384,6 +411,8 @@ public class ConnectButton: UIView {
             self.state = .began
         }
     }
+    
+    private lazy var selectGesture = SelectGestureRecognizer(target: self, action: #selector(handleSelect(_:)))
     
     private lazy var panGesture = ScrollGestureRecognizer(target: self, action: #selector(handlePan(_:)))
     
@@ -424,7 +453,18 @@ public class ConnectButton: UIView {
         }
     }
     
+    @objc private func handleSelect(_ gesture: UIGestureRecognizer) {
+        if gesture.state == .ended {
+            onStepSelected?()
+        }
+    }
+    
     private func setupInteraction() {
+        backgroundView.addGestureRecognizer(selectGesture)
+        selectGesture.delaysTouchesBegan = true
+        selectGesture.delegate = self
+        selectGesture.isEnabled = false
+        
         switchControl.addGestureRecognizer(panGesture)
         panGesture.delegate = self
         
@@ -472,27 +512,12 @@ extension ConnectButton: UITextFieldDelegate {
 
 // MARK: - Animation
 
-private extension ConnectButton.State {
-    var backgroundColor: UIColor {
-        switch self {
-        case .initialization, .toggle:
-            return .iftttBlack
-        case .email:
-            return .iftttLightGrey
-        case .step(let service, _):
-            return service?.brandColor ?? .iftttBlack
-        case .stepComplete(let service):
-            return service?.brandColor ?? .iftttBlack
-        }
-    }
-}
-
 private extension ConnectButton.CheckmarkView {
     func drawCheckmark(duration: TimeInterval) {
         UIView.performWithoutAnimation {
             self.indicator.alpha = 1
-            self.checkmarkShape.strokeEnd = 0
         }
+        reset()
         
         let indicatorAnimation = CAKeyframeAnimation(keyPath: "position")
         indicatorAnimation.path = indicatorAnimationPath.cgPath
@@ -524,13 +549,9 @@ private extension ConnectButton {
     var animationDuration: TimeInterval { return 0.5 }
     
     func progressAnimator(duration: TimeInterval) -> UIViewPropertyAnimator {
+        progressBar.fractionComplete = 0
         let animator = UIViewPropertyAnimator(duration: duration, curve: .linear) {
-            self.progressBar.isComplete = true
-        }
-        animator.addCompletion { (position) in
-            if position == .start { // Reset to start if neccessary
-                self.progressBar.isComplete = false
-            }
+            self.progressBar.fractionComplete = 1
         }
         return animator
     }
@@ -542,7 +563,7 @@ private extension ConnectButton {
         switch (previousState, state) {
         case (.initialization, .toggle(let service, let message, let isOn)): // Setup switch
             animator.addAnimations {
-                self.backgroundView.backgroundColor = state.backgroundColor
+                self.backgroundView.backgroundColor = .iftttBlack
                 self.switchControl.configure(with: service)
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.curvature = 1
@@ -564,7 +585,7 @@ private extension ConnectButton {
             emailConfirmButton.curvature = 1
             
             animator.addAnimations {
-                self.backgroundView.backgroundColor = state.backgroundColor
+                self.backgroundView.backgroundColor = .iftttLightGrey
                 
                 self.label.alpha = 0 // FIXME: Should mask from left to right along with switch
                 
@@ -589,46 +610,80 @@ private extension ConnectButton {
                 self.emailEntryField.becomeFirstResponder()
             }
             
-        case (.email, .step(let service, let message)): // Email to step progress
+        case (.email, .step(let service, let message, let selectIsEnabled)): // Email to step progress
+            selectGesture.isEnabled = selectIsEnabled
+            progressBar.configure(with: service)
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
+                self.emailConfirmButton.alpha = 0
                 self.emailConfirmButton.backgroundColor = .iftttGrey
                 
                 self.backgroundView.backgroundColor = .iftttGrey
-                self.progressBar.configure(with: service)
                 
                 self.label.configure(message)
                 self.label.alpha = 1
-                self.progressBar.alpha = 1
             }
             animator.addCompletion { (_) in
-                self.emailConfirmButton.alpha = 0
                 self.emailConfirmButton.backgroundColor = .iftttBlack
                 self.emailConfirmButton.transform = .identity
             }
             
-        case (.step, .step(_, let message)): // Changing the message during a step
+        case (.step, .step(_, let message, let selectIsEnabled)): // Changing the message during a step
+            selectGesture.isEnabled = selectIsEnabled
             animator.addAnimations {
                 self.label.configure(message)
             }
             
-        case (.step, .stepComplete): // Completing a step
+        case (.step, .stepComplete(let service)): // Completing a step
             label.alpha = 0 // FIXME: Animate text
             
-            backgroundView.backgroundColor = state.backgroundColor
+            backgroundView.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
             
             checkmark.alpha = 1
             checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
             animator.addAnimations {
+                self.progressBar.alpha = 0
                 self.checkmark.outline.transform = .identity
+            }
+            animator.addCompletion { (_) in
+                self.progressBar.alpha = 1
+                self.progressBar.fractionComplete = 0
             }
             checkmark.drawCheckmark(duration: 1.25)
             
-        case (.stepComplete, .step(let service, _)): // Starting next step
-            break
+        case (.stepComplete, .step(let service, let message, let selectIsEnabled)): // Starting next step
+            selectGesture.isEnabled = selectIsEnabled
+            progressBar.configure(with: service)
+            label.transform = CGAffineTransform(translationX: 20, y: 0)
+            animator.addAnimations {
+                self.label.configure(message)
+                self.label.alpha = 1
+                self.label.transform = .identity
+                
+                self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
+                
+                self.serviceIconView.set(imageURL: service?.colorIconURL)
+                self.serviceIconView.alpha = 1
+                
+                self.checkmark.alpha = 0
+            }
             
-        case (.stepComplete, .toggle(let service, _, let isOn)): // Transition back to toggle after completely a flow
-            break
+        case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true: // Transition back to toggle after completed a flow
+            switchControl.primeAnimation_centerKnob()
+            animator.addAnimations {
+                self.serviceIconView.alpha = 0
+                
+                self.backgroundView.backgroundColor = .iftttBlack
+                
+                self.label.configure(message)
+                self.label.alpha = 1
+                
+                self.switchControl.configure(with: service)
+                self.switchControl.alpha = 1
+                self.switchControl.isOn = true
+                
+                self.checkmark.alpha = 0
+            }
             
         default:
             fatalError("Connect button state transition is invalid")
