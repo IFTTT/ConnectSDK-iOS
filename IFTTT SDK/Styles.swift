@@ -132,6 +132,7 @@ extension UIFont {
         headline,
         body,
         callout,
+        footnoteHeavy,
         footnoteBold,
         footnote
     }
@@ -147,6 +148,8 @@ extension UIFont {
                 return .ifttt(weight: .medium, size: 16)
             case .callout:
                 return .ifttt(weight: .bold, size: 20)
+            case .footnoteHeavy:
+                return .ifttt(weight: .heavy, size: 14)
             case .footnoteBold:
                 return .ifttt(weight: .bold, size: 14)
             case .footnote:
@@ -163,9 +166,7 @@ extension UIFont {
                 return .scaledFont(.body, font: font)
             case .callout:
                 return .scaledFont(.callout, font: font)
-            case .footnoteBold:
-                return .scaledFont(.footnote, font: font)
-            case .footnote:
+            case .footnoteHeavy, .footnoteBold, .footnote:
                 return .scaledFont(.footnote, font: font)
             }
         } else {

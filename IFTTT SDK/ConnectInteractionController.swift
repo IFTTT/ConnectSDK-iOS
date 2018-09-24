@@ -10,6 +10,50 @@ import UIKit
 
 public class ConnectInteractionController {
     
+    enum FooterMessages {
+        case
+        poweredBy,
+        enterEmail,
+        signedIn(username: String),
+        connect(Applet.Service, to: Applet.Service),
+        manage
+        
+        private var iftttText: NSAttributedString {
+            return NSAttributedString(string: "IFTTT", attributes: [.font : UIFont.ifttt(.footnoteHeavy)])
+        }
+        
+        var value: NSAttributedString {
+            switch self {
+            case .poweredBy:
+                let text = NSMutableAttributedString(string: "POWERED BY ",
+                                                     attributes: [.font : UIFont.ifttt(.footnoteBold)])
+                text.append(iftttText)
+                return text
+            
+            case .enterEmail:
+                let text = "Sign in to IFTTT or create a new account"
+                return NSAttributedString(string: text, attributes: [.font : UIFont.ifttt(.footnote)])
+                
+            case .signedIn(let username):
+                let text = NSMutableAttributedString(string: username,
+                                                     attributes: [.font: UIFont.ifttt(.footnoteBold)])
+                text.append(NSAttributedString(string: " sign in to ",
+                                               attributes: [.font : UIFont.ifttt(.footnote)]))
+                text.append(iftttText)
+                return text
+                
+            case .connect(let fromService, let toService):
+                let text = "Sign in to connect \(fromService.name) with \(toService.name)"
+                return NSAttributedString(string: text, attributes: [.font : UIFont.ifttt(.footnote)])
+            case .manage:
+                let text = NSMutableAttributedString(string: "You're all set. Manage connection with ",
+                                                     attributes: [.font : UIFont.ifttt(.footnoteBold)])
+                text.append(iftttText)
+                return text
+            }
+        }
+    }
+    
     let button: ConnectButton
     
     let applet: Applet
@@ -18,7 +62,12 @@ public class ConnectInteractionController {
         self.button = button
         self.applet = applet
         
-        button.transition(to: .toggle(for: applet.worksWithServices.first!, message: "Connect \(self.applet.worksWithServices.first!.name)", isOn: false)).preformWithoutAnimation()
+        button.transition(to: .toggle(
+            for: applet.worksWithServices.first!,
+            message: "Connect \(self.applet.worksWithServices.first!.name)",
+            isOn: false)
+            ).preformWithoutAnimation()
+        button.configureFooter(FooterMessages.poweredBy.value, animated: false)
     }
     
     public func begin() {

@@ -81,37 +81,65 @@ class AnimatingLabel: UIView {
         slideInFromRight,
         rotateDown
     }
+    enum Value {
+        case
+        none,
+        text(String),
+        attributed(NSAttributedString)
+        
+        func update(label: UILabel) {
+            switch self {
+            case .none:
+                label.text = nil
+                label.attributedText = nil
+            case .text(let text):
+                label.text = text
+            case .attributed(let text):
+                label.attributedText = text
+            }
+        }
+        
+        var isEmpty: Bool {
+            if case .none = self {
+                return true
+            }
+            return false
+        }
+    }
     
     func setupLabels(_ body: (UILabel) -> Void) {
         [primaryView, transitionView].forEach(body)
     }
     
-    func configure(_ text: String) {
-        primaryView.text = text
+    func configure(_ value: Value) {
+        value.update(label: primaryView)
         transitionView.text = nil
     }
     
-    func transition(with effect: Effect, updatedText: String?, addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
+    func transition(with effect: Effect, updatedText: Value, addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
         switch effect {
         case .crossfade:
             // FIXME: This really isn't quite right
             // Probably won't work as expected for toggling switch
             // We need an animation where the text reveals / hides from left to right
             let animator = externalAnimator ?? UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
-            if let text = updatedText {
-                primaryView.text = text
+            if updatedText.isEmpty {
+                animator.addAnimations {
+                    self.primaryView.alpha = 0
+                }
+            } else {
+                updatedText.update(label: primaryView)
                 primaryView.alpha = 0
                 animator.addAnimations {
                     self.primaryView.alpha = 1
                 }
-            } else {
-                animator.addAnimations {
-                    self.primaryView.alpha = 0
-                }
+            }
+            if externalAnimator == nil {
+                animator.startAnimation()
             }
             
         case .slideInFromRight:
-            primaryView.text = updatedText
+            updatedText.update(label: primaryView)
             primaryView.alpha = 0
             primaryView.transform = CGAffineTransform(translationX: 20, y: 0)
             
@@ -120,12 +148,14 @@ class AnimatingLabel: UIView {
                 self.primaryView.transform = .identity
                 self.primaryView.alpha = 1
             }
-            animator.startAnimation()
+            if externalAnimator == nil {
+                animator.startAnimation()
+            }
             
         case .rotateDown:
             assert(externalAnimator == nil, "Not supported for rotate transitions")
             
-            transitionView.text = updatedText
+            updatedText.update(label: transitionView)
             
             transitionView.alpha = 0
             transitionView.transform = CGAffineTransform(translationX: 0, y: -20).scaledBy(x: 0.9, y: 0.9)
@@ -142,7 +172,7 @@ class AnimatingLabel: UIView {
                 }
                 nextAnimator.addCompletion { _ in
                     self.transitionView.text = nil
-                    self.primaryView.text = updatedText
+                    updatedText.update(label: self.primaryView)
                     self.primaryView.alpha = 1
                     self.primaryView.transform = .identity
                 }
