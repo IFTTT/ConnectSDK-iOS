@@ -47,7 +47,7 @@ public class ConnectInteractionController {
                 return NSAttributedString(string: text, attributes: [.font : UIFont.ifttt(.footnote)])
             case .manage:
                 let text = NSMutableAttributedString(string: "You're all set. Manage connection with ",
-                                                     attributes: [.font : UIFont.ifttt(.footnoteBold)])
+                                                     attributes: [.font : UIFont.ifttt(.footnote)])
                 text.append(iftttText)
                 return text
             }
@@ -71,6 +71,14 @@ public class ConnectInteractionController {
     }
     
     public func begin() {
+        button.onStateChanged = { [weak self] state in
+            switch state {
+            case .email:
+                self?.button.configureFooter(FooterMessages.enterEmail.value, animated: true)
+            default:
+                break
+            }
+        }
         button.nextToggleState = {
             return .email
         }
@@ -87,6 +95,7 @@ public class ConnectInteractionController {
         let queue = DispatchQueue.main
         
         button.transition(to: .step(for: nil, message: "Checking for IFTTT account...", isSelectable: false)).preform()
+        button.configureFooter(FooterMessages.poweredBy.value, animated: true)
         
         let progressBar = button.progressTransition(timeout: 4)
         progressBar.preform()
@@ -99,10 +108,13 @@ public class ConnectInteractionController {
         }
         
         queue.asyncAfter(deadline: .now() + 4) {
+            self.button.configureFooter(FooterMessages.signedIn(username: "jon.chmura").value, animated: true)
             self.button.transition(to: .stepComplete(for: nil)).preform()
         }
         
         queue.asyncAfter(deadline: .now() + 6) {
+            self.button.configureFooter(FooterMessages.connect(self.applet.worksWithServices.first!, to: self.applet.primaryService).value,
+                                        animated: true)
             self.button.transition(to: .step(for: self.applet.worksWithServices.first!, message: "Sign in to \(self.applet.worksWithServices.first!.name)", isSelectable: true)).preform()
         }
     }
@@ -111,6 +123,7 @@ public class ConnectInteractionController {
         let queue = DispatchQueue.main
         
         button.transition(to: .step(for: applet.worksWithServices.first!, message: "Saving settings...", isSelectable: false)).preform()
+        button.configureFooter(FooterMessages.poweredBy.value, animated: true)
         
         let progressBar = button.progressTransition(timeout: 2)
         progressBar.preform()
@@ -121,6 +134,7 @@ public class ConnectInteractionController {
         
         queue.asyncAfter(deadline: .now() + 4) {
             self.button.transition(to: .toggle(for: self.applet.worksWithServices.first!, message: "Connected", isOn: true)).preform()
+            self.button.configureFooter(FooterMessages.manage.value, animated: true)
         }
     }
 }

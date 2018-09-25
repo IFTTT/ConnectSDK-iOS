@@ -48,13 +48,19 @@ public class ConnectButton: UIView {
         }
     }
     
+    var onStateChanged: ((State) -> Void)?
+    
     var nextToggleState: (() -> State)?
     
     var onEmailConfirmed: ((String) -> Void)?
     
     var onStepSelected: (() -> Void)?
     
-    private(set) var currentState: State = .initialization
+    private(set) var currentState: State = .initialization {
+        didSet {
+            onStateChanged?(currentState)
+        }
+    }
     
     func progressTransition(timeout: TimeInterval) -> State.Transition {
         return State.Transition(animator: progressBar.animator(duration: timeout))
