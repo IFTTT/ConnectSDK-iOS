@@ -14,6 +14,4 @@ FOUNDATION_EXPORT double IFTTT_SDKVersionNumber;
 //! Project version string for IFTTT_SDK.
 FOUNDATION_EXPORT const unsigned char IFTTT_SDKVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <IFTTT_SDK/PublicHeader.h>
-
-
+// All swift so nothing to see here ✌️

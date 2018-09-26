@@ -47,11 +47,19 @@ public struct Applet {
 
 // MARK: - Session Manager
 
+public protocol UserTokenProviding {
+    func iftttUserToken(for session: Applet.Session) -> String?
+}
+
 public extension Applet {
     public class Session {
-        public var serviceId: String = "ifttt"
+        public var serviceId: String = ""
         
-        public var userToken: String? = nil
+        public var userTokenProvider: UserTokenProviding? = nil
+        
+        var userToken: String? {
+            return userTokenProvider?.iftttUserToken(for: self)
+        }
         
         public let urlSession: URLSession
         
@@ -83,41 +91,10 @@ public extension Applet {
             GET = "GET",
             POST = "POST"
         }
-        public enum Parameter {
-            public enum Sort: String {
-                case
-                unknown = "" // FIXME: !!
-            }
-            public enum Filter: String {
-                case
-                pinned = "pinned_only",
-                enabled = "user_enabled_only"
-            }
-            
-            case
-            limit(Int),
-            nextPage(String),
-            sort(Sort),
-            filter(Filter)
-            
-            var formatted: (name: String, value: String) {
-                switch self {
-                case .limit(let limit):
-                    return ("limit", "\(limit)")
-                case .nextPage(let cursor):
-                    return ("next_page", cursor)
-                case .sort(let sort):
-                    return ("sort", sort.rawValue)
-                case .filter(let filter):
-                    return ("filter", filter.rawValue)
-                }
-            }
-        }
         
         public let api: URL
         public let path: String
         public let method: Method
-        public let paramters: [Parameter]
         
         public let urlRequest: URLRequest
         
@@ -134,6 +111,8 @@ public extension Applet {
         public let completion: CompletionHandler
         
         public func start(with session: Session = .shared) {
+            assert(Applet.Session.shared.serviceId.isEmpty == false, "Service ID must be provided!")
+            
             let task = session.urlSession.dataTask(with: urlRequest) { (data, response, error) in
                 let statusCode = (response as? HTTPURLResponse)?.statusCode
                 let applets = Applet.applets(data)
@@ -148,29 +127,17 @@ public extension Applet {
             task.resume()
         }
         
-        private init(path: String, method: Method, paramters: [Parameter] = [], completion: @escaping CompletionHandler) {
+        private init(path: String, method: Method, completion: @escaping CompletionHandler) {
             let api = URL(string: "https://api.ifttt.com/v1")!
             
             self.api = api
             self.path = path
             self.method = method
-            self.paramters = paramters
             
-            let url: URL = {
-                var url = api.appendingPathComponent(path)
-                if method == .GET, var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
-                    urlComponents.queryItems = URLEncoding.with(paramaters: paramters)
-                    url = urlComponents.url ?? url
-                }
-                return url
-            }()
+            let url = api.appendingPathComponent(path)
             
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
-            
-            if method == .POST {
-                request.httpBody = DataEncoding.with(paramaters: paramters)
-            }
             
             if let userToken = Applet.Session.shared.userToken, userToken.isEmpty == false {
                 let tokenString = "Bearer \(userToken)"
@@ -181,50 +148,16 @@ public extension Applet {
             self.completion = completion
         }
         
-        public static func applets(forService id: String = Applet.Session.shared.serviceId,
-                                   parameters: [Parameter] = [],
-                                   completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/services/\(id)/applets", method: .GET, paramters: parameters, completion: completion)
+        public static func applets(_ completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets", method: .GET, completion: completion)
         }
         
-        public static func applet(id: String,
-                                  forService serviceId: String = Applet.Session.shared.serviceId,
-                                  completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/services/\(serviceId)/applets/\(id)", method: .GET, completion: completion)
+        public static func applet(id: String, _ completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets/\(id)", method: .GET, completion: completion)
         }
         
-        public static func applet(id: String,
-                                  forService serviceId: String = Applet.Session.shared.serviceId,
-                                  setIsEnabled enabled: Bool,
-                                  completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/services/\(serviceId)/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST, completion: completion)
-        }
-    }
-}
-
-
-// MARK: - Parameter encoding
-
-private protocol Encoding {
-    associatedtype Output
-    
-    static func with(paramaters: [Applet.Request.Parameter]) -> Output
-}
-
-private struct DataEncoding: Encoding {
-    static func with(paramaters: [Applet.Request.Parameter]) -> Data? {
-        var json = [String : String]()
-        paramaters.forEach {
-            json[$0.formatted.name] = $0.formatted.value
-        }
-        return try? JSONSerialization.data(withJSONObject: json)
-    }
-}
-
-private struct URLEncoding: Encoding {
-    static func with(paramaters: [Applet.Request.Parameter]) -> [URLQueryItem] {
-        return paramaters.map {
-            return URLQueryItem(name: $0.formatted.name, value: $0.formatted.value)
+        public static func applet(id: String, setIsEnabled enabled: Bool, _ completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST, completion: completion)
         }
     }
 }

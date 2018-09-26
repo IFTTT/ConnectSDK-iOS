@@ -26,7 +26,7 @@
 }
 
 - (void)refresh {
-    [IFTTTApplet getAppletsForService:@"lifx" limit:nil nextPage:nil sort:nil filter:nil :^(IFTTTAppletResponse * _Nonnull response) {
+    [IFTTTApplet getApplets:^(IFTTTAppletResponse * _Nonnull response) {
         self.applets = response.applets;
         [self.tableView reloadData];
     }];

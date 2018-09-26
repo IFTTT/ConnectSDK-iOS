@@ -17,9 +17,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         Applet.Session.shared.serviceId = "google_calendar"
-//        Applet.Session.shared.userToken = "the_user"
+        Applet.Session.shared.userTokenProvider = IFTTTAuthenication()
         
         return true
     }
 }
 
+struct IFTTTAuthenication: UserTokenProviding {
+    func iftttUserToken(for session: Applet.Session) -> String? {
+        let keychain = Keychain(service: "com.ifttt")
+        return keychain["user_token"]
+    }
+}
