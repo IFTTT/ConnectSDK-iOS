@@ -22,6 +22,9 @@
 		FC25733A213A061E0065AAD6 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC25733B213A061E0065AAD6 /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC3E306D215BF0AA002326AE /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E306C215BF0AA002326AE /* Keychain.swift */; };
+		FC3E3072215BF8ED002326AE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E3071215BF8ED002326AE /* User.swift */; };
+		FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
+		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC4588FE215172C00038630F /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4588FD215172C00038630F /* Images.swift */; };
 		FC74F1D82152AE4D00035A66 /* ConnectInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */; };
 		FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
@@ -33,12 +36,18 @@
 		FCBA16162139ACD600EB1BC8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16142139ACD600EB1BC8 /* Main.storyboard */; };
 		FCBA16182139ACD800EB1BC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16172139ACD800EB1BC8 /* Assets.xcassets */; };
 		FCBA161B2139ACD800EB1BC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */; };
-		FCBA16212139ACF500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FCBA16232139AF5E00EB1BC8 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		FC25733C213A061E0065AAD6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCBA15E121389F7500EB1BC8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FCBA15E921389F7500EB1BC8;
+			remoteInfo = "IFTTT SDK";
+		};
+		FC3E307A215C42D6002326AE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FCBA15E121389F7500EB1BC8 /* Project object */;
 			proxyType = 1;
@@ -66,6 +75,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FC3E307C215C42D6002326AE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +108,7 @@
 		FC257330213A004D0065AAD6 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		FC257332213A05E80065AAD6 /* SDK Example ObjC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDK Example ObjC-Bridging-Header.h"; sourceTree = "<group>"; };
 		FC3E306C215BF0AA002326AE /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		FC3E3071215BF8ED002326AE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FC4588FD215172C00038630F /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInteractionController.swift; sourceTree = "<group>"; };
 		FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IFTTT_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,7 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCBA16212139ACF500EB1BC8 /* IFTTT_SDK.framework in Frameworks */,
+				FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +210,7 @@
 			children = (
 				FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */,
 				FCBA16042138A4EE00EB1BC8 /* Applet.swift */,
+				FC3E3071215BF8ED002326AE /* User.swift */,
 				FC4588FD215172C00038630F /* Images.swift */,
 				FC04FE2221507DDF008AC8A5 /* StandardUI.swift */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
@@ -308,10 +330,12 @@
 				FCBA160A2139ACD600EB1BC8 /* Sources */,
 				FCBA160B2139ACD600EB1BC8 /* Frameworks */,
 				FCBA160C2139ACD600EB1BC8 /* Resources */,
+				FC3E307C215C42D6002326AE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FC3E307B215C42D6002326AE /* PBXTargetDependency */,
 			);
 			name = "SDK Example";
 			productName = "SDK Example";
@@ -424,6 +448,7 @@
 				FC04FE2321507DDF008AC8A5 /* StandardUI.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* AboutIFTTT.swift in Sources */,
 				FCBA16092138A66500EB1BC8 /* ObjcSupport.swift in Sources */,
+				FC3E3072215BF8ED002326AE /* User.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectInteractionController.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Applet.swift in Sources */,
@@ -455,6 +480,11 @@
 			isa = PBXTargetDependency;
 			target = FCBA15E921389F7500EB1BC8 /* IFTTT SDK */;
 			targetProxy = FC25733C213A061E0065AAD6 /* PBXContainerItemProxy */;
+		};
+		FC3E307B215C42D6002326AE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FCBA15E921389F7500EB1BC8 /* IFTTT SDK */;
+			targetProxy = FC3E307A215C42D6002326AE /* PBXContainerItemProxy */;
 		};
 		FCBA15F621389F7500EB1BC8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -760,6 +790,7 @@
 		FCBA161E2139ACD800EB1BC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
@@ -779,6 +810,7 @@
 		FCBA161F2139ACD800EB1BC8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;

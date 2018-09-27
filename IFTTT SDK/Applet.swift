@@ -33,6 +33,8 @@ public struct Applet {
     public let name: String
     public let description: String
     public let status: Status
+    public let url: URL
+    public let activationURL: URL
     public let services: [Service]
     
     public var primaryService: Service! {
@@ -41,6 +43,22 @@ public struct Applet {
     
     public var worksWithServices: [Service] {
         return services.filter({ $0.isPrimary == false })
+    }
+    
+    public func activationURL(forUserEmail email: String?) -> URL {
+        var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
+        var queryItems = [URLQueryItem]()
+        if let email = email {
+            queryItems.append(URLQueryItem(name: "email", value: email))
+        }
+        if let redirect = Applet.Session.shared.appletActivationRedirect {
+            queryItems.append(URLQueryItem(name: "redirect_uri", value: redirect.absoluteString))
+        }
+        if let inviteCode = Applet.Session.shared.inviteCode {
+            queryItems.append(URLQueryItem(name: "invite_code", value: inviteCode))
+        }
+        components?.queryItems = queryItems
+        return components?.url ?? activationURL
     }
 }
 
@@ -60,6 +78,10 @@ public extension Applet {
         var userToken: String? {
             return userTokenProvider?.iftttUserToken(for: self)
         }
+        
+        public var appletActivationRedirect: URL?
+        
+        public var inviteCode: String?
         
         public let urlSession: URLSession
         
@@ -143,6 +165,9 @@ public extension Applet {
                 let tokenString = "Bearer \(userToken)"
                 request.addValue(tokenString, forHTTPHeaderField: "Authorization")
             }
+            if let inviteCode = Applet.Session.shared.inviteCode, inviteCode.isEmpty == false {
+                request.addValue(inviteCode, forHTTPHeaderField: "IFTTT-Invite-Code")
+            }
             
             self.urlRequest = request
             self.completion = completion
@@ -172,7 +197,9 @@ extension Applet {
         guard
             let id = json["id"] as? String,
             let name = json["name"] as? String,
-            let description = json["description"] as? String else {
+            let description = json["description"] as? String,
+            let urlString = json["url"] as? String, let url = URL(string: urlString),
+            let actUrlString = json["embedded_url"] as? String, let actUrl = URL(string: actUrlString) else {
                 return nil
         }
         self.id = id
@@ -180,6 +207,8 @@ extension Applet {
         self.description = description
         self.status = Status(rawValue: json["user_status"] as? String ?? "") ?? .unknown
         self.services = Service.services(json["services"] as? [JSON] ?? [])
+        self.url = url
+        self.activationURL = actUrl
         
         guard primaryService != nil else {
             return nil

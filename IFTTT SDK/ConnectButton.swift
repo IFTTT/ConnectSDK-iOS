@@ -16,7 +16,7 @@ public class ConnectButton: UIView {
         case
         initialization,
         toggle(for: Applet.Service, message: String, isOn: Bool),
-        email,
+        email(suggested: String?),
         step(for: Applet.Service?, message: String, isSelectable: Bool),
         stepComplete(for: Applet.Service?)
         
@@ -37,11 +37,12 @@ public class ConnectButton: UIView {
             func set(progress: CGFloat) {
                 animator.fractionComplete = progress
             }
-            func resume(with timing: UITimingCurveProvider, durationAdjustment: TimeInterval?) {
+            func resume(with timing: UITimingCurveProvider, duration: TimeInterval?) {
                 animator.pauseAnimation()
                 var durationFactor: CGFloat = 1
-                if let newDuration = durationAdjustment {
-                    durationFactor = CGFloat(newDuration / animator.duration)
+                if let continueDuration = duration {
+                    let timeElasped = TimeInterval(1 - animator.fractionComplete) * animator.duration
+                    durationFactor = CGFloat((continueDuration + timeElasped) / animator.duration)
                 }
                 animator.continueAnimation(withTimingParameters: timing, durationFactor: durationFactor)
             }
@@ -110,6 +111,7 @@ public class ConnectButton: UIView {
     private let footerView: AnimatingLabel = {
         let view = AnimatingLabel()
         view.setupLabels { (label) in
+            label.numberOfLines = 0
             label.textAlignment = .center
             label.textColor = .iftttBlack
         }
@@ -134,6 +136,9 @@ public class ConnectButton: UIView {
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
         field.placeholder = .localized("connect_button.email.placeholder")
+        field.keyboardType = .emailAddress
+        field.autocorrectionType = .no
+        field.autocapitalizationType = .none
         return field
     }()
     
@@ -602,8 +607,10 @@ private extension ConnectButton {
                 self.switchControl.isOn = isOn
             }
             
-        case (.toggle(_, _, let isOn), .email) where isOn == false: // Connect to enter email
+        case (.toggle(_, _, let isOn), .email(let suggested)) where isOn == false: // Connect to enter email
             let scaleFactor = Layout.height / Layout.knobDiameter
+            
+            emailEntryField.text = suggested
             
             emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
             emailConfirmButton.curvature = 1
@@ -630,7 +637,9 @@ private extension ConnectButton {
                 self.switchControl.knob.transform = .identity
                 self.switchControl.knob.curvature = 1
                 
-                self.emailEntryField.becomeFirstResponder()
+                if suggested == nil {
+                    self.emailEntryField.becomeFirstResponder()
+                }
             }
             
         case (.email, .step(let service, let message, let selectIsEnabled)): // Email to step progress
