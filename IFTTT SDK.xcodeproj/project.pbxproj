@@ -33,10 +33,10 @@
 		FCBA16092138A66500EB1BC8 /* ObjcSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16082138A66500EB1BC8 /* ObjcSupport.swift */; };
 		FCBA16112139ACD600EB1BC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */; };
 		FCBA16132139ACD600EB1BC8 /* AppletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */; };
-		FCBA16162139ACD600EB1BC8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16142139ACD600EB1BC8 /* Main.storyboard */; };
 		FCBA16182139ACD800EB1BC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16172139ACD800EB1BC8 /* Assets.xcassets */; };
 		FCBA161B2139ACD800EB1BC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */; };
 		FCBA16232139AF5E00EB1BC8 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */; };
+		FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCC6DEB1215D90DD008C8405 /* Assets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,11 +121,11 @@
 		FCBA160E2139ACD600EB1BC8 /* SDK Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDK Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppletViewController.swift; sourceTree = "<group>"; };
-		FCBA16152139ACD600EB1BC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FCBA16172139ACD800EB1BC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FCBA161A2139ACD800EB1BC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FCBA161C2139ACD800EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		FCC6DEB1215D90DD008C8405 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +217,7 @@
 				FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */,
 				FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */,
 				FC04FE2021502F09008AC8A5 /* Styles.swift */,
+				FCC6DEB1215D90DD008C8405 /* Assets.swift */,
 				FCBA16082138A66500EB1BC8 /* ObjcSupport.swift */,
 				FC04FE1C21502968008AC8A5 /* Assets.xcassets */,
 				FCBA15EE21389F7500EB1BC8 /* Info.plist */,
@@ -239,7 +240,6 @@
 				FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */,
 				FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */,
 				FC3E306C215BF0AA002326AE /* Keychain.swift */,
-				FCBA16142139ACD600EB1BC8 /* Main.storyboard */,
 				FCBA16172139ACD800EB1BC8 /* Assets.xcassets */,
 				FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */,
 				FCBA161C2139ACD800EB1BC8 /* Info.plist */,
@@ -421,7 +421,6 @@
 			files = (
 				FCBA161B2139ACD800EB1BC8 /* LaunchScreen.storyboard in Resources */,
 				FCBA16182139ACD800EB1BC8 /* Assets.xcassets in Resources */,
-				FCBA16162139ACD600EB1BC8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,6 +450,7 @@
 				FC3E3072215BF8ED002326AE /* User.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectInteractionController.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
+				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Applet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -508,14 +508,6 @@
 				FC2573262139ED710065AAD6 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		FCBA16142139ACD600EB1BC8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FCBA16152139ACD600EB1BC8 /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */ = {
@@ -795,7 +787,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
 				INFOPLIST_FILE = "SDK Example/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -815,7 +807,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
 				INFOPLIST_FILE = "SDK Example/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

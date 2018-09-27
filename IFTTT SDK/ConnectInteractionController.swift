@@ -123,6 +123,11 @@ public class ConnectInteractionController {
     
     private func finishChecking(email: String, isExisting: Bool, progress: ConnectButton.State.Transition) {
         if isExisting {
+            progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.5)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.activationConfirmation(withEmail: email)
+            }
+        } else {
             button.transition(to:
                 .step(for: nil,
                       message: "Creating IFTTT account...",
@@ -130,11 +135,6 @@ public class ConnectInteractionController {
                 ).preform()
             progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 1.5)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.activationConfirmation(withEmail: email)
-            }
-        } else {
-            progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.5)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.activationConfirmation(withEmail: email)
             }
         }
@@ -197,67 +197,27 @@ public class ConnectInteractionController {
     }
     
     private func activationUnknownError() {
-        
+        // FIXME: Send error code to partner app
+        button.transition(to: .toggle(
+            for: applet.worksWithServices.first!,
+            message: "Connect \(connectingService.name)",
+            isOn: false)
+            ).preformWithoutAnimation()
+        button.configureFooter(FooterMessages.poweredBy.value, animated: false)
     }
     
     private func activationCanceled() {
-        
+        // FIXME: Send error code to partner app
+        button.transition(to: .toggle(
+            for: applet.worksWithServices.first!,
+            message: "Connect \(connectingService.name)",
+            isOn: false)
+            ).preformWithoutAnimation()
+        button.configureFooter(FooterMessages.poweredBy.value, animated: false)
     }
     
     private func activationCompleted(withCallback url: URL) {
         connectService()
-    }
-}
-
-// MOCKING
-extension ConnectInteractionController {
-    public func mock() {
-        button.onStateChanged = { [weak self] state in
-            switch state {
-            case .email:
-                self?.button.configureFooter(FooterMessages.enterEmail.value, animated: false)
-            default:
-                break
-            }
-        }
-        button.nextToggleState = {
-            return .email(suggested: User.current.suggestedUserEmail)
-        }
-        button.onEmailConfirmed = { [weak self] email in
-            print(email)
-            self?.beginLoading()
-        }
-        button.onStepSelected = { [weak self] in
-            self?.connectService()
-        }
-    }
-    
-    private func beginLoading() {
-        let queue = DispatchQueue.main
-        
-        button.transition(to: .step(for: nil, message: "Checking for IFTTT account...", isSelectable: false)).preform()
-        button.configureFooter(FooterMessages.poweredBy.value, animated: true)
-        
-        let progressBar = button.progressTransition(timeout: 4)
-        progressBar.preform()
-        
-        queue.asyncAfter(deadline: .now() + 2) {
-            self.button.transition(to: .step(for: nil, message: "Creating IFTTT account...", isSelectable: false)).preform()
-            
-            // API call to check IFTTT acconut is finished, set new duration
-            progressBar.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 2)
-        }
-        
-        queue.asyncAfter(deadline: .now() + 4) {
-            self.button.configureFooter(FooterMessages.signedIn(username: "jon.chmura").value, animated: true)
-            self.button.transition(to: .stepComplete(for: nil)).preform()
-        }
-        
-        queue.asyncAfter(deadline: .now() + 6) {
-            self.button.configureFooter(FooterMessages.connect(self.applet.worksWithServices.first!, to: self.applet.primaryService).value,
-                                        animated: true)
-            self.button.transition(to: .step(for: self.applet.worksWithServices.first!, message: "Sign in to \(self.applet.worksWithServices.first!.name)", isSelectable: true)).preform()
-        }
     }
     
     private func connectService() {

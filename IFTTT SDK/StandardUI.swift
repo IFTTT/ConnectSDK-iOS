@@ -188,6 +188,12 @@ class AnimatingLabel: UIView {
     /// Used in text transition effects
     let transitionView = UILabel()
     
+    override var intrinsicContentSize: CGSize {
+        var size = primaryView.intrinsicContentSize
+        size.height = max(size.height, transitionView.intrinsicContentSize.height)
+        return size
+    }
+    
     init() {
         super.init(frame: .zero)
         
@@ -251,6 +257,8 @@ class PillButton: PillView {
         
         addSubview(imageView)
         imageView.constrain.center(in: self)
+        
+        imageView.image = image
         
         setupSelectGesture()
     }

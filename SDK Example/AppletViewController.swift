@@ -11,34 +11,82 @@ import IFTTT_SDK
 
 class AppletViewController: UIViewController {
 
-    @IBOutlet weak var titleLabel: UILabel!
+    let applet: Applet
     
-    @IBOutlet weak var descriptionLabel: UILabel!
+    init(applet: Applet) {
+        self.applet = applet
+        
+        super.init(nibName: nil, bundle: nil)
+    }
     
-    @IBOutlet weak var connectButton: ConnectButton!
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 20, weight: .bold)
+        return label
+    }()
+    
+    lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+    
+    lazy var connectButton = ConnectButton()
     
     private var connectInteractor: ConnectInteractionController!
-    
-    var applet: Applet? {
-        didSet {
-            if let applet = applet, isViewLoaded {
-                configure(with: applet)
-            }
-        }
-    }
     
     private func configure(with applet: Applet) {
         titleLabel.text = applet.name
         descriptionLabel.text = applet.description
     }
     
+    override func loadView() {
+        super.loadView()
+        
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel, connectButton])
+        stackView.axis = .vertical
+        stackView.spacing = 30
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
+        
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.keyboardDismissMode = .onDrag
+        scrollView.addSubview(stackView)
+        
+        view.addSubview(scrollView)
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        scrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        scrollView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let applet = applet {
-            connectInteractor = ConnectInteractionController(connectButton, applet: applet)
-            configure(with: applet)
-        }
+        view.backgroundColor = .white
+        
+        connectInteractor = ConnectInteractionController(connectButton, applet: applet)
+        configure(with: applet)
     }
     
     override func viewDidAppear(_ animated: Bool) {

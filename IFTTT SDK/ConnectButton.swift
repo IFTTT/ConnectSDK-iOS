@@ -85,7 +85,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    init() {
+    public init() {
         super.init(frame: .zero)
         createLayout()
     }
@@ -129,7 +129,7 @@ public class ConnectButton: UIView {
     /// This scopes effects of layoutIfNeeded
     fileprivate let emailConfirmButtonTrack = PassthroughView()
     
-    fileprivate let emailConfirmButton = PillButton(image: UIImage(), // FIXME: Asset
+    fileprivate let emailConfirmButton = PillButton(image: Assets.Button.emailConfirm,
                                                     tintColor: .white,
                                                     backgroundColor: .iftttBlack)
     
@@ -380,7 +380,8 @@ public class ConnectButton: UIView {
     private func createLayout() {
         let stackView = UIStackView(arrangedSubviews: [backgroundView, footerView])
         stackView.axis = .vertical
-        stackView.spacing = 40
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 20
         
         addSubview(stackView)
         stackView.constrain.edges(to: self)

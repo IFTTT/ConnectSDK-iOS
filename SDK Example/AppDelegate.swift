@@ -23,6 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Applet.Session.shared.appletActivationRedirect = URL(string: "ifttt-api-example://sdk-callback")!
         Applet.Session.shared.userTokenProvider = IFTTTAuthenication()
         
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = .white
+        window.rootViewController = UINavigationController(rootViewController: HomeViewController())
+        window.makeKeyAndVisible()
+        self.window = window
+        
         return true
     }
 }

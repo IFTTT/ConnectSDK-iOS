@@ -42,6 +42,8 @@ class HomeViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        
         let refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self,
@@ -65,12 +67,9 @@ class HomeViewController: UITableViewController {
         return cell
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "applet-detail",
-            let indexPath = tableView.indexPathForSelectedRow,
-            let appletController = segue.destination as? AppletViewController {
-            
-            appletController.applet = applets[indexPath.row]
-        }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let applet = applets[indexPath.row]
+        let controller = AppletViewController(applet: applet)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
