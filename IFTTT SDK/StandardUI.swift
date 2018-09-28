@@ -63,10 +63,41 @@ extension UIView {
     }
 }
 
-
 extension UIEdgeInsets {
     init(inset: CGFloat) {
         self.init(top: inset, left: inset, bottom: inset, right: inset)
+    }
+}
+
+extension UILabel {
+    convenience init(_ attributedText: NSAttributedString, alignment: NSTextAlignment = .left) {
+        self.init()
+        
+        self.attributedText = attributedText
+        numberOfLines = 0
+        textAlignment = alignment
+    }
+    convenience init(_ text: String,
+                     style: Typestyle,
+                     color: UIColor = .iftttBlack,
+                     alignment: NSTextAlignment = .left) {
+        self.init()
+        
+        self.text = text
+        font = .ifttt(style)
+        textColor = color
+        numberOfLines = 0
+        textAlignment = alignment
+    }
+}
+
+extension UIStackView {
+    static func vertical(_ views: [UIView], spacing: CGFloat, alignment: UIStackView.Alignment) -> UIStackView {
+        let view = UIStackView(arrangedSubviews: views)
+        view.axis = .vertical
+        view.spacing = spacing
+        view.alignment = alignment
+        return view
     }
 }
 
@@ -263,9 +294,27 @@ class PillButton: PillView {
         setupSelectGesture()
     }
     
-    init(text: String, tintColor: UIColor, backgroundColor: UIColor) {
+    init(attributedText: NSAttributedString, backgroundColor: UIColor) {
+        label = UILabel(attributedText, alignment: .center)
+        
+        super.init()
+        
+        self.backgroundColor = backgroundColor
+        
+        layoutMargins = UIEdgeInsets(inset: 10)
+        addSubview(label)
+        label.constrain.edges(to: layoutMarginsGuide)
+        
+        setupSelectGesture()
+        update()
+    }
+    
+    init(text: String,
+         typestyle: Typestyle = Typestyle.h6.callout(),
+         tintColor: UIColor,
+         backgroundColor: UIColor) {
         label = UILabel(text,
-                        style: .callout,
+                        style: typestyle,
                         alignment: .center)
         
         super.init()

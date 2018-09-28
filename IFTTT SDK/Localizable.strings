@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  IFTTT SDK
+
+  Created by Jon Chmura on 9/27/18.
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.connect" = "Connect %@";
+"button.state.connect.brief" = "Connect";
+"button.state.checking_account" = "Checking for IFTTT account…";
+"button.state.creating_account" = "Creating IFTTT account…";
+"button.state.sign_in" = "Sign in to %@";
+"button.state.sign_in.brief" = "Sign in";
+"button.state.connecting" = "Connecting account…";
+"button.state.saving" = "Saving settings…";
+"button.state.connected" = "Connected";
+"button.state.off" = "Off";
+
+"button.footer.powered_by" = "POWERED BY ";
+"button.footer.email" = "Sign in to IFTTT or create a new account";
+"button.footer.signed_in" = " sign in to ";
+"button.footer.connect" = "Sign in to connect %@ with %@";
+"button.footer.manage" = "You're all set. Manage connection with ";
+
+"about.title" = "This connection is powered by IFTTT";
+"about.connect" = "Make your favorite things work together in new ways";
+"about.control" = "Control what services get your personal data";
+"about.manage" = "Manage all your servies in one place";
+"about.security" = "Stay secure everywhere with end-to-end encryption";
+"about.more.button" = "More about ";

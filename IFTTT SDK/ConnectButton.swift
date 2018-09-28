@@ -106,6 +106,7 @@ public class ConnectButton: UIView {
         static let checkmarkDiameter: CGFloat = 42
         static let checkmarkLength: CGFloat = 14
         static let serviceIconDiameter: CGFloat = 24
+        static let textInset = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
     }
     
     private let footerView: AnimatingLabel = {
@@ -135,7 +136,7 @@ public class ConnectButton: UIView {
     
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
-        field.placeholder = .localized("connect_button.email.placeholder")
+        field.placeholder = "connect_button.email.placeholder".localized
         field.keyboardType = .emailAddress
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
@@ -147,36 +148,15 @@ public class ConnectButton: UIView {
     fileprivate let label = Label()
     
     fileprivate class Label: AnimatingLabel {
-        enum Insets {
-            case
-            standard,
-            avoidSwitchKnob
-            
-            var value: UIEdgeInsets {
-                let inset: CGFloat = {
-                    switch self {
-                    case .standard: return 0.5 * Layout.height
-                    case .avoidSwitchKnob: return 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
-                    }
-                }()
-                return UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-            }
-        }
-        
-        var insets: Insets = .standard {
-            didSet {
-                layoutMargins = insets.value
-            }
-        }
-        
         override init() {
             super.init()
             setupLabels { (label) in
                 label.textAlignment = .center
                 label.textColor = .white
-                label.font = .ifttt(.callout, isDynamic: false)
+                label.font = .ifttt(Typestyle.h4.callout().nonDynamic)
                 label.adjustsFontSizeToFitWidth = true
             }
+            layoutMargins = UIEdgeInsets(top: 0, left: Layout.textInset, bottom: 0, right: Layout.textInset)
         }
     }
     
@@ -402,7 +382,9 @@ public class ConnectButton: UIView {
         
         label.constrain.edges(to: backgroundView)
         
-        emailEntryField.constrain.edges(to: backgroundView, inset: Label.Insets.standard.value)
+        emailEntryField.constrain.edges(to: backgroundView,
+                                        inset: UIEdgeInsets(top: 0, left: 0.5 * Layout.height,
+                                                            bottom: 0, right: Layout.textInset))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)

@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		FC04FE1B21501A8F008AC8A5 /* AboutIFTTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */; };
 		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
-		FC04FE2121502F09008AC8A5 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE2021502F09008AC8A5 /* Styles.swift */; };
 		FC04FE2321507DDF008AC8A5 /* StandardUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE2221507DDF008AC8A5 /* StandardUI.swift */; };
+		FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC094BA2215D9E2D008B35F6 /* Localizable.strings */; };
+		FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* Typography.swift */; };
+		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
 		FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2573122139E8CC0065AAD6 /* ConnectButton.swift */; };
 		FC25731C2139ED710065AAD6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC25731B2139ED710065AAD6 /* AppDelegate.m */; };
 		FC25731F2139ED710065AAD6 /* AppletViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC25731E2139ED710065AAD6 /* AppletViewController.m */; };
@@ -91,8 +93,10 @@
 /* Begin PBXFileReference section */
 		FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutIFTTT.swift; sourceTree = "<group>"; };
 		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FC04FE2021502F09008AC8A5 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		FC04FE2221507DDF008AC8A5 /* StandardUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardUI.swift; sourceTree = "<group>"; };
+		FC094BA2215D9E2D008B35F6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		FC094BA4215ED6F5008B35F6 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC2573182139ED710065AAD6 /* SDK Example ObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDK Example ObjC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC25731A2139ED710065AAD6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -216,9 +220,11 @@
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectInteractionController.swift */,
 				FC04FE1A21501A8F008AC8A5 /* AboutIFTTT.swift */,
-				FC04FE2021502F09008AC8A5 /* Styles.swift */,
+				FC094BA4215ED6F5008B35F6 /* Typography.swift */,
+				FC094BA6215ED72F008B35F6 /* Color.swift */,
 				FCC6DEB1215D90DD008C8405 /* Assets.swift */,
 				FCBA16082138A66500EB1BC8 /* ObjcSupport.swift */,
+				FC094BA2215D9E2D008B35F6 /* Localizable.strings */,
 				FC04FE1C21502968008AC8A5 /* Assets.xcassets */,
 				FCBA15EE21389F7500EB1BC8 /* Info.plist */,
 			);
@@ -405,6 +411,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */,
+				FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,14 +450,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
-				FC04FE2121502F09008AC8A5 /* Styles.swift in Sources */,
 				FC04FE2321507DDF008AC8A5 /* StandardUI.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* AboutIFTTT.swift in Sources */,
 				FCBA16092138A66500EB1BC8 /* ObjcSupport.swift in Sources */,
+				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC3E3072215BF8ED002326AE /* User.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectInteractionController.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
+				FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Applet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

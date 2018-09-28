@@ -13,15 +13,15 @@ class AboutIFTTTViewController: UIViewController {
     lazy var iconView = UIImageView(image: nil)
     
     lazy var wordmarkView = UILabel("IFTTT",
-                                    style: .wordmark(size: 30),
+                                    style: Typestyle.h1.adjusting(weight: .heavy),
                                     color: .white)
     
     lazy var iftttView: UIStackView = .vertical([iconView, wordmarkView],
                                                 spacing: 5,
                                                 alignment: .center)
     
-    lazy var titleLabel = UILabel(.localized("about.title"),
-                                  style: .headline,
+    lazy var titleLabel = UILabel("about.title".localized,
+                                  style: .h3,
                                   color: .white)
     
     lazy var headerView: UIStackView = .vertical([iftttView, titleLabel],
@@ -40,19 +40,26 @@ class AboutIFTTTViewController: UIViewController {
     }
     
     lazy var itemViews: [ItemView] = [
-        ItemView(icon: UIImage(), text: .localized("about.control_information")),
-        ItemView(icon: UIImage(), text: .localized("about.toggle_access")),
-        ItemView(icon: UIImage(), text: .localized("about.security")),
-        ItemView(icon: UIImage(), text: .localized("about.unlock_products"))
+        ItemView(icon: Assets.About.connect, text: "about.connect".localized),
+        ItemView(icon: Assets.About.control, text: "about.control".localized),
+        ItemView(icon: Assets.About.manage, text: "about.manage".localized),
+        ItemView(icon: Assets.About.security, text: "about.security".localized)
     ]
     
     lazy var itemsStackView: UIStackView = .vertical(itemViews,
                                                      spacing: 10,
                                                      alignment: .fill)
     
-    lazy var moreButton = PillButton(text: .localized("about.more.button"),
-                                     tintColor: .iftttBlack,
-                                     backgroundColor: .white)
+    lazy var moreButton: PillButton = {
+        let ifttt = NSAttributedString(string: "IFTTT",
+                                       attributes: [.font : Typestyle.h5.adjusting(weight: .heavy).callout(),
+                                                    .foregroundColor: UIColor.iftttBlack])
+        let text = NSMutableAttributedString(string: "about.more.button".localized,
+                                             attributes: [.font: Typestyle.h5.callout(),
+                                                          .foregroundColor: UIColor.iftttBlack])
+        text.append(ifttt)
+        return PillButton(attributedText: text, backgroundColor: .white)
+    }()
     
     lazy var primaryView: UIStackView = .vertical([headerView, itemsStackView, moreButton],
                                                   spacing: 30,
@@ -67,7 +74,6 @@ class AboutIFTTTViewController: UIViewController {
         scrollView.addSubview(primaryView)
         
         primaryView.constrain.edges(to: scrollView.readableContentGuide)
-        primaryView.constrain.width(to: scrollView)
         
         view.addSubview(scrollView)
         scrollView.constrain.edges(to: view)

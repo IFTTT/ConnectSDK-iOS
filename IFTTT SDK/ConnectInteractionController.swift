@@ -21,35 +21,37 @@ public class ConnectInteractionController {
         manage
         
         private var iftttText: NSAttributedString {
-            return NSAttributedString(string: "IFTTT", attributes: [.font : UIFont.ifttt(.footnoteHeavy)])
+            return NSAttributedString(string: "IFTTT",
+                                      attributes: [.font : Typestyle.caption.adjusting(weight: .heavy).font])
         }
         
         var value: NSAttributedString {
             switch self {
             case .poweredBy:
-                let text = NSMutableAttributedString(string: "POWERED BY ",
-                                                     attributes: [.font : UIFont.ifttt(.footnoteBold)])
+                let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
+                                                     attributes: [.font : Typestyle.caption.adjusting(weight: .bold).font])
                 text.append(iftttText)
                 return text
             
             case .enterEmail:
-                let text = "Sign in to IFTTT or create a new account"
-                return NSAttributedString(string: text, attributes: [.font : UIFont.ifttt(.footnote)])
+                let text = "button.footer.email".localized
+                return NSAttributedString(string: text, attributes: [.font : Typestyle.caption.font])
                 
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
-                                                     attributes: [.font: UIFont.ifttt(.footnoteBold)])
-                text.append(NSAttributedString(string: " sign in to ",
-                                               attributes: [.font : UIFont.ifttt(.footnote)]))
+                                                     attributes: [.font: Typestyle.caption.adjusting(weight: .bold).font])
+                text.append(NSAttributedString(string: "button.footer.signed_in".localized,
+                                               attributes: [.font : Typestyle.caption.font]))
                 text.append(iftttText)
                 return text
                 
             case .connect(let fromService, let toService):
-                let text = "Sign in to connect \(fromService.name) with \(toService.name)"
-                return NSAttributedString(string: text, attributes: [.font : UIFont.ifttt(.footnote)])
+                let text = String(format: "button.footer.connect".localized, fromService.name, toService.name)
+                return NSAttributedString(string: text, attributes: [.font : Typestyle.caption.font])
+                
             case .manage:
-                let text = NSMutableAttributedString(string: "You're all set. Manage connection with ",
-                                                     attributes: [.font : UIFont.ifttt(.footnote)])
+                let text = NSMutableAttributedString(string: "button.footer.manage".localized,
+                                                     attributes: [.font : Typestyle.caption.font])
                 text.append(iftttText)
                 return text
             }
@@ -75,7 +77,7 @@ public class ConnectInteractionController {
         case .initial, .unknown:
             button.transition(to: .toggle(
                 for: applet.worksWithServices.first!,
-                message: "Connect \(connectingService.name)",
+                message: "button.state.connect".localized(arguments: connectingService.name),
                 isOn: false)
                 ).preformWithoutAnimation()
             button.configureFooter(FooterMessages.poweredBy.value, animated: false)
@@ -105,7 +107,7 @@ public class ConnectInteractionController {
         
         button.transition(to:
             .step(for: nil,
-                  message: "Checking for IFTTT account...",
+                  message: "button.state.checking_account".localized,
                   isSelectable: false)
             ).preform()
         
@@ -130,7 +132,7 @@ public class ConnectInteractionController {
         } else {
             button.transition(to:
                 .step(for: nil,
-                      message: "Creating IFTTT account...",
+                      message: "button.state.creating_account".localized,
                       isSelectable: false)
                 ).preform()
             progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 1.5)
@@ -145,7 +147,7 @@ public class ConnectInteractionController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.button.transition(to:
                 .step(for: self.connectingService,
-                      message: "Sign in to \(self.connectingService.name)",
+                      message: "button.state.sign_in".localized(arguments: self.connectingService.name),
                     isSelectable: true)
             ).preform()
         }
@@ -200,7 +202,7 @@ public class ConnectInteractionController {
         // FIXME: Send error code to partner app
         button.transition(to: .toggle(
             for: applet.worksWithServices.first!,
-            message: "Connect \(connectingService.name)",
+            message: "button.state.connect".localized(arguments: connectingService.name),
             isOn: false)
             ).preformWithoutAnimation()
         button.configureFooter(FooterMessages.poweredBy.value, animated: false)
@@ -210,7 +212,7 @@ public class ConnectInteractionController {
         // FIXME: Send error code to partner app
         button.transition(to: .toggle(
             for: applet.worksWithServices.first!,
-            message: "Connect \(connectingService.name)",
+            message: "button.state.connect".localized(arguments: connectingService.name),
             isOn: false)
             ).preformWithoutAnimation()
         button.configureFooter(FooterMessages.poweredBy.value, animated: false)
@@ -223,7 +225,7 @@ public class ConnectInteractionController {
     private func connectService() {
         let queue = DispatchQueue.main
         
-        button.transition(to: .step(for: applet.worksWithServices.first!, message: "Saving settings...", isSelectable: false)).preform()
+        button.transition(to: .step(for: applet.worksWithServices.first!, message: "button.state.saving".localized, isSelectable: false)).preform()
         button.configureFooter(FooterMessages.poweredBy.value, animated: true)
         
         let progressBar = button.progressTransition(timeout: 2)
@@ -234,7 +236,11 @@ public class ConnectInteractionController {
         }
         
         queue.asyncAfter(deadline: .now() + 4) {
-            self.button.transition(to: .toggle(for: self.applet.worksWithServices.first!, message: "Connected", isOn: true)).preform()
+            self.button.transition(to:
+                .toggle(for: self.applet.worksWithServices.first!,
+                        message: "button.state.connected".localized,
+                        isOn: true)
+                ).preform()
             self.button.configureFooter(FooterMessages.manage.value, animated: true)
         }
     }
