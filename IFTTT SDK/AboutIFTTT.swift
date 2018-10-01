@@ -16,17 +16,19 @@ class AboutIFTTTViewController: UIViewController {
                                     style: Typestyle.h1.adjusting(weight: .heavy),
                                     color: .white)
     
-    lazy var iftttView: UIStackView = .vertical([iconView, wordmarkView],
-                                                spacing: 5,
-                                                alignment: .center)
+    lazy var iftttView = UIStackView([iconView, wordmarkView],
+                                     spacing: 5,
+                                     axis: .vertical,
+                                     alignment: .center)
     
     lazy var titleLabel = UILabel("about.title".localized,
                                   style: .h3,
                                   color: .white)
     
-    lazy var headerView: UIStackView = .vertical([iftttView, titleLabel],
-                                                 spacing: 20,
-                                                 alignment: .center)
+    lazy var headerView = UIStackView([iftttView, titleLabel],
+                                      spacing: 20,
+                                      axis: .vertical,
+                                      alignment: .center)
     
     class ItemView: UIView {
         init(icon: UIImage, text: String) {
@@ -46,9 +48,10 @@ class AboutIFTTTViewController: UIViewController {
         ItemView(icon: Assets.About.security, text: "about.security".localized)
     ]
     
-    lazy var itemsStackView: UIStackView = .vertical(itemViews,
-                                                     spacing: 10,
-                                                     alignment: .fill)
+    lazy var itemsStackView = UIStackView(itemViews,
+                                          spacing: 10,
+                                          axis: .vertical,
+                                          alignment: .fill)
     
     lazy var moreButton: PillButton = {
         let ifttt = NSAttributedString(string: "IFTTT",
@@ -61,9 +64,10 @@ class AboutIFTTTViewController: UIViewController {
         return PillButton(attributedText: text, backgroundColor: .white)
     }()
     
-    lazy var primaryView: UIStackView = .vertical([headerView, itemsStackView, moreButton],
-                                                  spacing: 30,
-                                                  alignment: .fill)
+    lazy var primaryView = UIStackView([headerView, itemsStackView, moreButton],
+                                       spacing: 30,
+                                       axis: .vertical,
+                                       alignment: .fill)
     
     override func loadView() {
         super.loadView()

@@ -92,12 +92,11 @@ extension UILabel {
 }
 
 extension UIStackView {
-    static func vertical(_ views: [UIView], spacing: CGFloat, alignment: UIStackView.Alignment) -> UIStackView {
-        let view = UIStackView(arrangedSubviews: views)
-        view.axis = .vertical
-        view.spacing = spacing
-        view.alignment = alignment
-        return view
+    convenience init(_ views: [UIView], spacing: CGFloat, axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment) {
+        self.init(arrangedSubviews: views)
+        self.axis = axis
+        self.spacing = spacing
+        self.alignment = alignment
     }
 }
 
@@ -137,32 +136,46 @@ class AnimatingLabel: UIView {
             return false
         }
     }
-    
-    func setupLabels(_ body: (UILabel) -> Void) {
-        [primaryView, transitionView].forEach(body)
+    struct Insets {
+        let left: CGFloat
+        let right: CGFloat
+        
+        static let zero = Insets(left: 0, right: 0)
+        
+        fileprivate func apply(_ view: AnimatingLabel) {
+            view.layoutMargins.left = left
+            view.layoutMargins.right = right
+        }
     }
     
-    func configure(_ value: Value) {
-        value.update(label: primaryView)
-        transitionView.text = nil
+    func configure(_ value: Value, insets: Insets? = nil) {
+        value.update(label: primaryLabel)
+        insets?.apply(self)
     }
     
-    func transition(with effect: Effect, updatedText: Value, addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
+    func transition(with effect: Effect,
+                    updatedText: Value,
+                    insets: Insets? = nil,
+                    addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
+        
+        let defaultAnimator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+        
         switch effect {
         case .crossfade:
             // FIXME: This really isn't quite right
             // Probably won't work as expected for toggling switch
             // We need an animation where the text reveals / hides from left to right
-            let animator = externalAnimator ?? UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+            let animator = externalAnimator ?? defaultAnimator
             if updatedText.isEmpty {
                 animator.addAnimations {
-                    self.primaryView.alpha = 0
+                    self.primaryLabel.alpha = 0
                 }
             } else {
-                updatedText.update(label: primaryView)
-                primaryView.alpha = 0
+                updatedText.update(label: primaryLabel)
+                primaryLabel.alpha = 0
+                insets?.apply(self)
                 animator.addAnimations {
-                    self.primaryView.alpha = 1
+                    self.primaryLabel.alpha = 1
                 }
             }
             if externalAnimator == nil {
@@ -170,14 +183,15 @@ class AnimatingLabel: UIView {
             }
             
         case .slideInFromRight:
-            updatedText.update(label: primaryView)
-            primaryView.alpha = 0
-            primaryView.transform = CGAffineTransform(translationX: 20, y: 0)
+            updatedText.update(label: primaryLabel)
+            insets?.apply(self)
+            primaryLabel.alpha = 0
+            primaryLabel.transform = CGAffineTransform(translationX: 20, y: 0)
             
-            let animator = externalAnimator ?? UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+            let animator = externalAnimator ?? defaultAnimator
             animator.addAnimations {
-                self.primaryView.transform = .identity
-                self.primaryView.alpha = 1
+                self.primaryLabel.transform = .identity
+                self.primaryLabel.alpha = 1
             }
             if externalAnimator == nil {
                 animator.startAnimation()
@@ -186,26 +200,19 @@ class AnimatingLabel: UIView {
         case .rotateDown:
             assert(externalAnimator == nil, "Not supported for rotate transitions")
             
-            updatedText.update(label: transitionView)
-            
-            transitionView.alpha = 0
-            transitionView.transform = CGAffineTransform(translationX: 0, y: -20).scaledBy(x: 0.9, y: 0.9)
-            
             let animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: nil)
             animator.addAnimations {
-                self.primaryView.alpha = 0
-                self.primaryView.transform = CGAffineTransform(translationX: 0, y: 20).scaledBy(x: 0.9, y: 0.9)
+                self.primaryLabel.alpha = 0
+                self.primaryLabel.transform = CGAffineTransform(translationX: 0, y: 20).scaledBy(x: 0.9, y: 0.9)
             }
             animator.addCompletion { _ in
+                updatedText.update(label: self.primaryLabel)
+                insets?.apply(self)
+                self.primaryLabel.transform = CGAffineTransform(translationX: 0, y: -20).scaledBy(x: 0.9, y: 0.9)
+                
                 let nextAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut) {
-                    self.transitionView.alpha = 1
-                    self.transitionView.transform = .identity
-                }
-                nextAnimator.addCompletion { _ in
-                    self.transitionView.text = nil
-                    updatedText.update(label: self.primaryView)
-                    self.primaryView.alpha = 1
-                    self.primaryView.transform = .identity
+                    self.primaryLabel.alpha = 1
+                    self.primaryLabel.transform = .identity
                 }
                 nextAnimator.startAnimation()
             }
@@ -214,27 +221,17 @@ class AnimatingLabel: UIView {
     }
     
     /// Diplays the content of this label
-    let primaryView = UILabel()
+    private let primaryLabel = UILabel()
     
-    /// Used in text transition effects
-    let transitionView = UILabel()
-    
-    override var intrinsicContentSize: CGSize {
-        var size = primaryView.intrinsicContentSize
-        size.height = max(size.height, transitionView.intrinsicContentSize.height)
-        return size
-    }
-    
-    init() {
+    init(configure: ((UILabel) -> Void)? = nil) {
         super.init(frame: .zero)
-        
+  
         layoutMargins = .zero
         
-        [primaryView, transitionView].forEach { (label) in
-            addSubview(label)
-            label.constrain.center(in: self)
-            label.constrain.edges(to: layoutMarginsGuide, edges: [.left, .right])
-        }
+        addSubview(primaryLabel)
+        primaryLabel.constrain.edges(to: layoutMarginsGuide)
+        
+        configure?(primaryLabel)
     }
     @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {

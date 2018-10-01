@@ -9,6 +9,39 @@
 import UIKit
 import UIKit.UIGestureRecognizerSubclass
 
+// Layout constants
+
+fileprivate struct Layout {
+    static let height: CGFloat = 64
+    static let knobInset: CGFloat = 8
+    static var knobDiameter: CGFloat {
+        return height - 2 * knobInset
+    }
+    static let checkmarkDiameter: CGFloat = 42
+    static let checkmarkLength: CGFloat = 14
+    static let serviceIconDiameter: CGFloat = 24
+}
+
+private extension AnimatingLabel.Insets {
+    static let standard = AnimatingLabel.Insets(left: 0.5 * Layout.height,
+                                                right: 0.5 * Layout.height)
+    
+    static let avoidServiceIcon = AnimatingLabel.Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
+                                                        right: standard.right)
+    
+    static func avoidSwitchKnob(isOn: Bool) -> AnimatingLabel.Insets {
+        let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
+        if isOn {
+            return AnimatingLabel.Insets(left: standard.left, right: avoidSwitch)
+        } else {
+            return AnimatingLabel.Insets(left: avoidSwitch, right: standard.right)
+        }
+    }
+}
+
+
+// MARK: - Connect Button
+
 //@IBDesignable
 public class ConnectButton: UIView {
     
@@ -97,27 +130,11 @@ public class ConnectButton: UIView {
     
     // MARK: - UI
     
-    fileprivate struct Layout {
-        static let height: CGFloat = 64
-        static let knobInset: CGFloat = 8
-        static var knobDiameter: CGFloat {
-            return height - 2 * knobInset
-        }
-        static let checkmarkDiameter: CGFloat = 42
-        static let checkmarkLength: CGFloat = 14
-        static let serviceIconDiameter: CGFloat = 24
-        static let textInset = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
+    private let footerView = AnimatingLabel { (label) in
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = .iftttBlack
     }
-    
-    private let footerView: AnimatingLabel = {
-        let view = AnimatingLabel()
-        view.setupLabels { (label) in
-            label.numberOfLines = 0
-            label.textAlignment = .center
-            label.textColor = .iftttBlack
-        }
-        return view
-    }()
     
     fileprivate let backgroundView = PillView()
     
@@ -145,19 +162,11 @@ public class ConnectButton: UIView {
     
     // MARK: Label view
     
-    fileprivate let label = Label()
-    
-    fileprivate class Label: AnimatingLabel {
-        override init() {
-            super.init()
-            setupLabels { (label) in
-                label.textAlignment = .center
-                label.textColor = .white
-                label.font = .ifttt(Typestyle.h4.callout().nonDynamic)
-                label.adjustsFontSizeToFitWidth = true
-            }
-            layoutMargins = UIEdgeInsets(top: 0, left: Layout.textInset, bottom: 0, right: Layout.textInset)
-        }
+    fileprivate let label = AnimatingLabel { (label) in
+        label.textAlignment = .center
+        label.textColor = .white
+        label.font = .ifttt(Typestyle.h4.callout().nonDynamic)
+        label.adjustsFontSizeToFitWidth = true
     }
     
     // MARK: Progress bar
@@ -360,7 +369,6 @@ public class ConnectButton: UIView {
     private func createLayout() {
         let stackView = UIStackView(arrangedSubviews: [backgroundView, footerView])
         stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
         stackView.spacing = 20
         
         addSubview(stackView)
@@ -383,8 +391,8 @@ public class ConnectButton: UIView {
         label.constrain.edges(to: backgroundView)
         
         emailEntryField.constrain.edges(to: backgroundView,
-                                        inset: UIEdgeInsets(top: 0, left: 0.5 * Layout.height,
-                                                            bottom: 0, right: Layout.textInset))
+                                        inset: UIEdgeInsets(top: 0, left: AnimatingLabel.Insets.standard.left,
+                                                            bottom: 0, right: AnimatingLabel.Insets.avoidSwitchKnob(isOn: true).right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
@@ -399,7 +407,7 @@ public class ConnectButton: UIView {
         serviceIconView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
         serviceIconView.centerXAnchor.constraint(equalTo: backgroundView.leftAnchor, constant: 0.5 * Layout.height).isActive = true
         
-        [label, switchControl, emailEntryField, emailConfirmButton, checkmark, serviceIconView].forEach {
+        [switchControl, emailEntryField, emailConfirmButton, checkmark, serviceIconView].forEach {
             $0.alpha = 0
         }
         
@@ -443,12 +451,9 @@ public class ConnectButton: UIView {
             break
         case .began:
             break
-//            transition.preform()
-//            transition.pause()
         case .changed:
-            break
-//            let location = gesture.location(in: switchControl).x
-//            let progress = location / switchControl.bounds.width
+            let location = gesture.location(in: switchControl).x
+            let progress = location / switchControl.bounds.width
 //            transition.set(progress: progress)
 //            debugPrint("PROGRESS: \(progress)")
         case .ended:
@@ -574,18 +579,20 @@ private extension ConnectButton {
                                                                                          initialVelocity: .zero))
         switch (previousState, state) {
         case (.initialization, .toggle(let service, let message, let isOn)): // Setup switch
-            self.label.configure(.text(message))
+            self.label.configure(.text(message), insets: .avoidSwitchKnob(isOn: isOn))
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .iftttBlack
                 self.switchControl.configure(with: service)
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.curvature = 1
                 self.switchControl.alpha = 1
-                self.label.alpha = 1
             }
             
         case (.toggle, .toggle(_, let message, let isOn)): // Toggle On <==> Off
-            label.transition(with: .crossfade, updatedText: .text(message), addingTo: animator)
+            label.transition(with: .crossfade,
+                             updatedText: .text(message),
+                             insets: .avoidSwitchKnob(isOn: isOn),
+                             addingTo: animator)
             animator.addAnimations {
                 self.switchControl.isOn = isOn
             }
@@ -598,7 +605,9 @@ private extension ConnectButton {
             emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
             emailConfirmButton.curvature = 1
             
-            label.transition(with: .crossfade, updatedText: .none, addingTo: animator)
+            label.transition(with: .crossfade,
+                             updatedText: .none,
+                             addingTo: animator)
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .iftttLightGrey
                 
@@ -629,7 +638,10 @@ private extension ConnectButton {
             selectGesture.isEnabled = selectIsEnabled
             progressBar.configure(with: service)
             
-            label.transition(with: .crossfade, updatedText: .text(message), addingTo: animator)
+            label.transition(with: .crossfade,
+                             updatedText: .text(message),
+                             insets: service == nil ? .standard : .avoidServiceIcon,
+                             addingTo: animator)
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
                 self.emailConfirmButton.alpha = 0
@@ -642,7 +654,7 @@ private extension ConnectButton {
                 self.emailConfirmButton.transform = .identity
             }
             
-        case (.step, .step(_, let message, let selectIsEnabled)): // Changing the message during a step
+        case (.step, .step(let service, let message, let selectIsEnabled)): // Changing the message during a step
             selectGesture.isEnabled = selectIsEnabled
             label.transition(with: .rotateDown, updatedText: .text(message))
             
@@ -667,7 +679,11 @@ private extension ConnectButton {
             selectGesture.isEnabled = selectIsEnabled
             progressBar.configure(with: service)
             
-            label.transition(with: .slideInFromRight, updatedText: .text(message), addingTo: animator)
+            label.transition(with: .slideInFromRight,
+                             updatedText: .text(message),
+                             insets: service == nil ? .standard : .avoidServiceIcon,
+                             addingTo: animator)
+            
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
                 
@@ -679,13 +695,14 @@ private extension ConnectButton {
             
         case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true: // Transition back to toggle after completed a flow
             switchControl.primeAnimation_centerKnob()
-            label.transition(with: .crossfade, updatedText: .text(message), addingTo: animator)
+            label.transition(with: .crossfade,
+                             updatedText: .text(message),
+                             insets: .avoidSwitchKnob(isOn: isOn),
+                             addingTo: animator)
             animator.addAnimations {
                 self.serviceIconView.alpha = 0
                 
                 self.backgroundView.backgroundColor = .iftttBlack
-                
-                self.label.alpha = 1 // FIXME: Reveal from left
                 
                 self.switchControl.configure(with: service)
                 self.switchControl.alpha = 1
