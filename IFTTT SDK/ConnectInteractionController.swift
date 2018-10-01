@@ -20,38 +20,40 @@ public class ConnectInteractionController {
         connect(Applet.Service, to: Applet.Service),
         manage
         
+        private var typestyle: Typestyle { return .footnote }
+        
         private var iftttText: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : Typestyle.caption.adjusting(weight: .heavy).font])
+                                      attributes: [.font : typestyle.adjusting(weight: .heavy).font])
         }
         
         var value: NSAttributedString {
             switch self {
             case .poweredBy:
                 let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
-                                                     attributes: [.font : Typestyle.caption.adjusting(weight: .bold).font])
+                                                     attributes: [.font : typestyle.adjusting(weight: .bold).font])
                 text.append(iftttText)
                 return text
             
             case .enterEmail:
                 let text = "button.footer.email".localized
-                return NSAttributedString(string: text, attributes: [.font : Typestyle.caption.font])
+                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
                 
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
-                                                     attributes: [.font: Typestyle.caption.adjusting(weight: .bold).font])
+                                                     attributes: [.font: typestyle.adjusting(weight: .bold).font])
                 text.append(NSAttributedString(string: "button.footer.signed_in".localized,
-                                               attributes: [.font : Typestyle.caption.font]))
+                                               attributes: [.font : typestyle.font]))
                 text.append(iftttText)
                 return text
                 
             case .connect(let fromService, let toService):
                 let text = String(format: "button.footer.connect".localized, fromService.name, toService.name)
-                return NSAttributedString(string: text, attributes: [.font : Typestyle.caption.font])
+                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
                 
             case .manage:
                 let text = NSMutableAttributedString(string: "button.footer.manage".localized,
-                                                     attributes: [.font : Typestyle.caption.font])
+                                                     attributes: [.font : typestyle.font])
                 text.append(iftttText)
                 return text
             }

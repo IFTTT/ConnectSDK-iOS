@@ -17,6 +17,8 @@
 "button.state.connected" = "Connected";
 "button.state.off" = "Off";
 
+"button.email.placeholder" = "Your email";
+
 "button.footer.powered_by" = "POWERED BY ";
 "button.footer.email" = "Sign in to IFTTT or create a new account";
 "button.footer.signed_in" = " sign in to ";

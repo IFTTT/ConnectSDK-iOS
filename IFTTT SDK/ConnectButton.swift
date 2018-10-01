@@ -22,23 +22,6 @@ fileprivate struct Layout {
     static let serviceIconDiameter: CGFloat = 24
 }
 
-private extension AnimatingLabel.Insets {
-    static let standard = AnimatingLabel.Insets(left: 0.5 * Layout.height,
-                                                right: 0.5 * Layout.height)
-    
-    static let avoidServiceIcon = AnimatingLabel.Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
-                                                        right: standard.right)
-    
-    static func avoidSwitchKnob(isOn: Bool) -> AnimatingLabel.Insets {
-        let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
-        if isOn {
-            return AnimatingLabel.Insets(left: standard.left, right: avoidSwitch)
-        } else {
-            return AnimatingLabel.Insets(left: avoidSwitch, right: standard.right)
-        }
-    }
-}
-
 
 // MARK: - Connect Button
 
@@ -112,9 +95,9 @@ public class ConnectButton: UIView {
     
     func configureFooter(_ attributedString: NSAttributedString, animated: Bool) {
         if animated {
-            footerView.transition(with: .rotateDown, updatedText: .attributed(attributedString))
+            footerLabel.transition(with: .rotateDown, updatedText: .attributed(attributedString))
         } else {
-            footerView.configure(.attributed(attributedString))
+            footerLabel.configure(.attributed(attributedString))
         }
     }
     
@@ -129,12 +112,6 @@ public class ConnectButton: UIView {
     
     
     // MARK: - UI
-    
-    private let footerView = AnimatingLabel { (label) in
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.textColor = .iftttBlack
-    }
     
     fileprivate let backgroundView = PillView()
     
@@ -153,20 +130,176 @@ public class ConnectButton: UIView {
     
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
-        field.placeholder = "connect_button.email.placeholder".localized
+        field.placeholder = "button.email.placeholder".localized
         field.keyboardType = .emailAddress
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
         return field
     }()
     
-    // MARK: Label view
+    // MARK: Text
     
     fileprivate let label = AnimatingLabel { (label) in
         label.textAlignment = .center
         label.textColor = .white
         label.font = .ifttt(Typestyle.h4.callout().nonDynamic)
         label.adjustsFontSizeToFitWidth = true
+    }
+    
+    private let footerLabel = AnimatingLabel { (label) in
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = .iftttBlack
+    }
+    
+    /// Adds functionality to animate text changes
+    fileprivate class AnimatingLabel: UIView {
+        enum Effect {
+            case
+            crossfade,
+            slideInFromRight,
+            rotateDown
+        }
+        enum Value {
+            case
+            none,
+            text(String),
+            attributed(NSAttributedString)
+            
+            func update(label: UILabel) {
+                switch self {
+                case .none:
+                    label.text = nil
+                    label.attributedText = nil
+                case .text(let text):
+                    label.text = text
+                case .attributed(let text):
+                    label.attributedText = text
+                }
+            }
+            
+            var isEmpty: Bool {
+                if case .none = self {
+                    return true
+                }
+                return false
+            }
+        }
+        struct Insets {
+            let left: CGFloat
+            let right: CGFloat
+            
+            static let zero = Insets(left: 0, right: 0)
+            static let standard = AnimatingLabel.Insets(left: 0.5 * Layout.height,
+                                                        right: 0.5 * Layout.height)
+            
+            static let avoidServiceIcon = AnimatingLabel.Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
+                                                                right: standard.right)
+            
+            static func avoidSwitchKnob(isOn: Bool) -> AnimatingLabel.Insets {
+                let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
+                if isOn {
+                    return AnimatingLabel.Insets(left: standard.left, right: avoidSwitch)
+                } else {
+                    return AnimatingLabel.Insets(left: avoidSwitch, right: standard.right)
+                }
+            }
+            
+            fileprivate func apply(_ view: AnimatingLabel) {
+                view.layoutMargins.left = left
+                view.layoutMargins.right = right
+            }
+        }
+        
+        func configure(_ value: Value, insets: Insets? = nil) {
+            value.update(label: label)
+            insets?.apply(self)
+        }
+        
+        func transition(with effect: Effect,
+                        updatedText: Value,
+                        insets: Insets? = nil,
+                        addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
+            
+            let defaultAnimator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+            
+            switch effect {
+            case .crossfade:
+                // FIXME: This really isn't quite right
+                // Probably won't work as expected for toggling switch
+                // We need an animation where the text reveals / hides from left to right
+                let animator = externalAnimator ?? defaultAnimator
+                if updatedText.isEmpty {
+                    animator.addAnimations {
+                        self.label.alpha = 0
+                    }
+                } else {
+                    updatedText.update(label: label)
+                    label.alpha = 0
+                    insets?.apply(self)
+                    animator.addAnimations {
+                        self.label.alpha = 1
+                    }
+                }
+                if externalAnimator == nil {
+                    animator.startAnimation()
+                }
+                
+            case .slideInFromRight:
+                updatedText.update(label: label)
+                insets?.apply(self)
+                label.alpha = 0
+                label.transform = CGAffineTransform(translationX: 20, y: 0)
+                
+                let animator = externalAnimator ?? defaultAnimator
+                animator.addAnimations {
+                    self.label.transform = .identity
+                    self.label.alpha = 1
+                }
+                if externalAnimator == nil {
+                    animator.startAnimation()
+                }
+                
+            case .rotateDown:
+                assert(externalAnimator == nil, "Not supported for rotate transitions")
+                
+                let animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: nil)
+                animator.addAnimations {
+                    self.label.alpha = 0
+                    self.label.transform = CGAffineTransform(translationX: 0, y: 20).scaledBy(x: 0.9, y: 0.9)
+                }
+                animator.addCompletion { _ in
+                    updatedText.update(label: self.label)
+                    insets?.apply(self)
+                    self.label.transform = CGAffineTransform(translationX: 0, y: -20).scaledBy(x: 0.9, y: 0.9)
+                    
+                    let nextAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut) {
+                        self.label.alpha = 1
+                        self.label.transform = .identity
+                    }
+                    nextAnimator.startAnimation()
+                }
+                animator.startAnimation()
+            }
+        }
+        
+        /// Diplays the content of this label
+        private let label = UILabel()
+        
+        init(configure: ((UILabel) -> Void)? = nil) {
+            super.init(frame: .zero)
+            
+            layoutMargins = .zero
+            
+            addSubview(label)
+            label.constrain.edges(to: layoutMarginsGuide)
+            
+            configure?(label)
+        }
+        @available(*, unavailable)
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     }
     
     // MARK: Progress bar
@@ -367,7 +500,7 @@ public class ConnectButton: UIView {
     // MARK: Layout
     
     private func createLayout() {
-        let stackView = UIStackView(arrangedSubviews: [backgroundView, footerView])
+        let stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabel])
         stackView.axis = .vertical
         stackView.spacing = 20
         
