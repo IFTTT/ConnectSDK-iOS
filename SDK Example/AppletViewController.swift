@@ -87,6 +87,11 @@ class AppletViewController: UIViewController {
         
         connectInteractor = ConnectInteractionController(connectButton, applet: applet)
         configure(with: applet)
+        
+        connectInteractor.onAboutSelected = { [weak self] viewController in
+            viewController.modalPresentationStyle = .formSheet
+            self?.present(viewController, animated: true, completion: nil)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

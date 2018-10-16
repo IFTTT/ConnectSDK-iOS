@@ -11,6 +11,7 @@ import UIKit
 extension UIColor {
     static var iftttBlack = UIColor(hex: 0x222222)
     static var iftttBlue = UIColor(hex: 0x0099FF)
+    static var iftttOrange = UIColor(hex: 0xEE4433)
     static var iftttLightGrey = UIColor(hex: 0xCCCCCC)
     static var iftttGrey = UIColor(hex: 0x414141)
     

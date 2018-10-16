@@ -146,14 +146,14 @@ public class ConnectButton: UIView {
         label.adjustsFontSizeToFitWidth = true
     }
     
-    private let footerLabel = AnimatingLabel { (label) in
+    let footerLabel = AnimatingLabel { (label) in
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .iftttBlack
     }
     
     /// Adds functionality to animate text changes
-    fileprivate class AnimatingLabel: UIView {
+    class AnimatingLabel: UIView {
         enum Effect {
             case
             crossfade,

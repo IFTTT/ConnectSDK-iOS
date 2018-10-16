@@ -66,15 +66,27 @@ public class ConnectInteractionController {
     
     let connectingService: Applet.Service
     
+    private var footerSelect: Selectable!
+    
+    public var onAboutSelected: ((UIViewController) -> Void)?
+    
     public init(_ button: ConnectButton, applet: Applet) {
         self.button = button
         self.applet = applet
         self.connectingService = applet.worksWithServices.first ?? applet.primaryService
         
+        footerSelect = Selectable(button.footerLabel) { [weak self] in
+            if let primary = self?.applet.primaryService {
+                self?.onAboutSelected?(AboutViewController(primaryService: primary, secondaryService: self?.applet.worksWithServices.first))
+            }
+        }
+        
         start()
     }
     
     private func start() {
+        footerSelect.isEnabled = true
+        
         switch applet.status {
         case .initial, .unknown:
             button.transition(to: .toggle(
@@ -105,6 +117,8 @@ public class ConnectInteractionController {
     }
     
     private func check(email: String) {
+        footerSelect.isEnabled = false
+        
         let timeout: TimeInterval = 4 // How many seconds we'll wait before giving up and opening the applet activation URL
         
         button.transition(to:
@@ -244,6 +258,7 @@ public class ConnectInteractionController {
                         isOn: true)
                 ).preform()
             self.button.configureFooter(FooterMessages.manage.value, animated: true)
+            self.footerSelect.isEnabled = true
         }
     }
 }

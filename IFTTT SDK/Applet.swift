@@ -37,9 +37,7 @@ public struct Applet {
     public let activationURL: URL
     public let services: [Service]
     
-    public var primaryService: Service! {
-        return services.first(where: { $0.isPrimary })
-    }
+    public let primaryService: Service
     
     public var worksWithServices: [Service] {
         return services.filter({ $0.isPrimary == false })
@@ -209,10 +207,10 @@ extension Applet {
         self.services = Service.services(json["services"] as? [JSON] ?? [])
         self.url = url
         self.activationURL = actUrl
-        
-        guard primaryService != nil else {
+        guard let primaryService = services.first(where: { $0.isPrimary }) else {
             return nil
         }
+        self.primaryService = primaryService
     }
     static func applets(_ data: Data?) -> [Applet]? {
         if let data = data, let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? JSON {

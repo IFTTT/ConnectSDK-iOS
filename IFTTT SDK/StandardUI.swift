@@ -164,37 +164,11 @@ class PillButton: PillView {
         label.constrain.edges(to: layoutMarginsGuide)
         
         setupSelectGesture()
-        update()
-    }
-    
-    init(text: String,
-         typestyle: Typestyle = Typestyle.h6.callout(),
-         tintColor: UIColor,
-         backgroundColor: UIColor) {
-        label = UILabel(text,
-                        style: typestyle,
-                        alignment: .center)
-        
-        super.init()
-        
-        self.tintColor = tintColor
-        self.backgroundColor = backgroundColor
-        
-        layoutMargins = UIEdgeInsets(inset: 10)
-        addSubview(label)
-        label.constrain.edges(to: layoutMarginsGuide)
-        
-        setupSelectGesture()
-        update()
     }
     
     private let label: UILabel
     
     private let imageView = UIImageView()
-    
-    private func update() {
-        label.textColor = tintColor
-    }
     
     private lazy var selectGesture = SelectGestureRecognizer(target: self, action: #selector(handleSelect(_:)))
     
@@ -229,6 +203,38 @@ class PassthroughView: UIView {
 
 
 // MARK: - SelectGestureRecognizer
+
+class Selectable: NSObject, UIGestureRecognizerDelegate {
+    var isEnabled: Bool {
+        get { return gesture.isEnabled }
+        set { gesture.isEnabled = newValue }
+    }
+    
+    private let gesture = SelectGestureRecognizer()
+    private var onSelect: () -> Void
+    
+    init(_ view: UIView, onSelect: @escaping () -> Void) {
+        self.onSelect = onSelect
+        
+        super.init()
+        
+        gesture.addTarget(self, action: #selector(handleSelect(_:)))
+        gesture.delaysTouchesBegan = true
+        gesture.delegate = self
+        
+        view.addGestureRecognizer(gesture)
+    }
+    
+    @objc private func handleSelect(_ gesture: UIGestureRecognizer) {
+        if gesture.state == .ended {
+            onSelect()
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+}
 
 class SelectGestureRecognizer: UIGestureRecognizer {
     
@@ -330,4 +336,3 @@ class SelectGestureRecognizer: UIGestureRecognizer {
         state = .cancelled
     }
 }
-
