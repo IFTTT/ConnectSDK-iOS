@@ -124,9 +124,10 @@ public class ConnectButton: UIView {
     /// This scopes effects of layoutIfNeeded
     fileprivate let emailConfirmButtonTrack = PassthroughView()
     
-    fileprivate let emailConfirmButton = PillButton(image: Assets.Button.emailConfirm,
-                                                    tintColor: .white,
-                                                    backgroundColor: .iftttBlack)
+    fileprivate let emailConfirmButton = PillButton(Assets.Button.emailConfirm) {
+        $0.imageView.tintColor = .white
+        $0.backgroundColor = .black
+    }
     
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
@@ -611,7 +612,7 @@ public class ConnectButton: UIView {
         switchControl.addGestureRecognizer(panGesture)
         panGesture.delegate = self
         
-        emailConfirmButton.onSelect = { [weak self] in
+        emailConfirmButton.onSelect { [weak self] in
             self?.confirmEmail()
         }
         emailEntryField.delegate = self

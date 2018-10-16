@@ -18,6 +18,9 @@ class AboutViewController: UIViewController {
         self.secondaryService = secondaryService
         
         super.init(nibName: nil, bundle: nil)
+        
+        modalTransitionStyle = .coverVertical
+        modalPresentationStyle = .formSheet
     }
     
     @available(*, unavailable)
@@ -38,38 +41,55 @@ class AboutViewController: UIViewController {
         return LogoView(primary: primaryService.brandColor, secondary: secondary)
     }()
     
-    lazy var wordmarkView = UILabel("IFTTT",
-                                    style: Typestyle.h1.adjusting(weight: .heavy),
-                                    color: .white)
+    lazy var wordmarkView = UILabel("IFTTT") {
+        $0.font = .ifttt(Typestyle.h1.adjusting(weight: .heavy))
+        $0.textColor = .white
+    }
     
-    lazy var iftttView = UIStackView([logoView, wordmarkView],
-                                     spacing: 5,
-                                     axis: .vertical,
-                                     alignment: .center)
+    lazy var iftttView = UIStackView([logoView, wordmarkView]) {
+        $0.spacing = 24
+        $0.axis = .vertical
+        $0.alignment = .center
+    }
     
-    lazy var titleLabel = UILabel("about.title".localized,
-                                  style: .h3,
-                                  color: .white,
-                                  alignment: .center)
+    lazy var titleLabel = UILabel("about.title".localized) {
+        $0.font = .ifttt(.h3)
+        $0.textColor = .white
+        $0.textAlignment = .center
+        $0.numberOfLines = 0
+    }
     
-    lazy var headerView = UIStackView([iftttView, titleLabel],
-                                      spacing: 20,
-                                      axis: .vertical,
-                                      alignment: .center)
+    lazy var headerView = UIStackView([iftttView, titleLabel]) {
+        $0.spacing = 40
+        $0.axis = .vertical
+        $0.alignment = .center
+    }
+    
+    lazy var closeButton = PillButton(Assets.About.close) {
+        $0.imageView.tintColor = .white
+        $0.onSelect { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
+        $0.backgroundColor = .clear
+    }
     
     class ItemView: UIView {
         init(icon: UIImage, text: String) {
             super.init(frame: .zero)
             
             let iconView = UIImageView(image: icon)
-            let label = UILabel(text, style: .body,
-                                color: .white,
-                                alignment: .left)
+            let label = UILabel(text) {
+                $0.font = .ifttt(.body)
+                $0.textColor = .white
+                $0.textAlignment = .left
+                $0.numberOfLines = 0
+            }
             
-            let stackView = UIStackView([iconView, label],
-                                        spacing: 24,
-                                        axis: .horizontal,
-                                        alignment: .center)
+            let stackView = UIStackView([iconView, label]) {
+                $0.spacing = 24
+                $0.axis = .horizontal
+                $0.alignment = .center
+            }
             
             addSubview(stackView)
             stackView.constrain.edges(to: self)
@@ -90,10 +110,11 @@ class AboutViewController: UIViewController {
         ItemView(icon: Assets.About.security, text: "about.security".localized)
     ]
     
-    lazy var itemsStackView = UIStackView(itemViews,
-                                          spacing: 10,
-                                          axis: .vertical,
-                                          alignment: .fill)
+    lazy var itemsStackView = UIStackView(itemViews) {
+        $0.spacing = 10
+        $0.axis = .vertical
+        $0.alignment = .fill
+    }
     
     lazy var moreButton: PillButton = {
         let ifttt = NSAttributedString(string: "IFTTT",
@@ -103,13 +124,23 @@ class AboutViewController: UIViewController {
                                              attributes: [.font: Typestyle.h5.callout().font,
                                                           .foregroundColor: UIColor.black])
         text.append(ifttt)
-        return PillButton(attributedText: text, backgroundColor: .white)
+        let button = PillButton(text) {
+            $0.backgroundColor = .white
+            $0.label.numberOfLines = 0
+        }
+        button.onSelect { [weak self] in
+            // FIXME: Link to IFTTT About page
+        }
+        return button
     }()
     
-    lazy var primaryView = UIStackView([headerView, itemsStackView, moreButton],
-                                       spacing: 30,
-                                       axis: .vertical,
-                                       alignment: .fill)
+    lazy var primaryView = UIStackView([headerView, itemsStackView, moreButton]) {
+        $0.spacing = 32
+        $0.axis = .vertical
+        $0.alignment = .fill
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.layoutMargins = UIEdgeInsets(top: 40, left: 30, bottom: 40, right: 30)
+    }
     
     override func loadView() {
         super.loadView()
@@ -126,5 +157,13 @@ class AboutViewController: UIViewController {
         scrollView.constrain.edges(to: view)
         
         logoView.constrain.square(length: 42)
+        
+        scrollView.addSubview(closeButton)
+        closeButton.centerYAnchor.constraint(equalTo: logoView.topAnchor).isActive = true
+        closeButton.constrain.edges(to: scrollView, edges: [.right], inset: UIEdgeInsets(inset: 24))
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 }

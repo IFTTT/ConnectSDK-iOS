@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - Autolayout
+
 extension UIView {
     var constrain: Constraints {
         return Constraints(view: self)
@@ -40,10 +42,10 @@ extension UIView {
                 view.leftAnchor.constraint(equalTo: otherView.leftAnchor, constant: inset.left).isActive = true
             }
             if edges.contains(.bottom) {
-                view.bottomAnchor.constraint(equalTo: otherView.bottomAnchor, constant: inset.bottom).isActive = true
+                view.bottomAnchor.constraint(equalTo: otherView.bottomAnchor, constant: -inset.bottom).isActive = true
             }
             if edges.contains(.right) {
-                view.rightAnchor.constraint(equalTo: otherView.rightAnchor, constant: inset.right).isActive = true
+                view.rightAnchor.constraint(equalTo: otherView.rightAnchor, constant: -inset.right).isActive = true
             }
         }
         func edges(to guide: UILayoutGuide, edges: UIRectEdge = .all) {
@@ -63,6 +65,9 @@ extension UIView {
     }
 }
 
+
+// MARK: - Convenience
+
 extension UIEdgeInsets {
     init(inset: CGFloat) {
         self.init(top: inset, left: inset, bottom: inset, right: inset)
@@ -70,33 +75,22 @@ extension UIEdgeInsets {
 }
 
 extension UILabel {
-    convenience init(_ attributedText: NSAttributedString, alignment: NSTextAlignment = .left) {
+    convenience init(_ text: String, _ configure: ((UILabel) -> Void)?) {
         self.init()
-        
-        self.attributedText = attributedText
-        numberOfLines = 0
-        textAlignment = alignment
-    }
-    convenience init(_ text: String,
-                     style: Typestyle,
-                     color: UIColor = .iftttBlack,
-                     alignment: NSTextAlignment = .left) {
-        self.init()
-        
         self.text = text
-        font = .ifttt(style)
-        textColor = color
-        numberOfLines = 0
-        textAlignment = alignment
+        configure?(self)
+    }
+    convenience init(_ attributedText: NSAttributedString, _ configure: ((UILabel) -> Void)?) {
+        self.init()
+        self.attributedText = attributedText
+        configure?(self)
     }
 }
 
 extension UIStackView {
-    convenience init(_ views: [UIView], spacing: CGFloat, axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment) {
+    convenience init(_ views: [UIView], _ configure: ((UIStackView) -> Void)?) {
         self.init(arrangedSubviews: views)
-        self.axis = axis
-        self.spacing = spacing
-        self.alignment = alignment
+        configure?(self)
     }
 }
 
@@ -135,59 +129,50 @@ class PillView: UIView {
 
 class PillButton: PillView {
     
-    var onSelect: (() -> Void)?
+    let label = UILabel()
     
-    init(image: UIImage, tintColor: UIColor, backgroundColor: UIColor) {
-        label = UILabel()
+    let imageView = UIImageView()
+    
+    func onSelect(_ body: @escaping (() -> Void)) {
+        assert(selectable == nil, "PillButton may have a single select handler")
+        selectable = Selectable(self, onSelect: body)
+    }
+    
+    private var selectable: Selectable?
+    
+    override var intrinsicContentSize: CGSize {
+        if imageView.image != nil {
+            var size = imageView.intrinsicContentSize
+            size.height += 20
+            size.width += 20
+            return size
+        } else {
+            return super.intrinsicContentSize
+        }
+    }
+    
+    init(_ image: UIImage, _ configure: ((PillButton) -> Void)?) {
         super.init()
-        
-        self.tintColor = tintColor
-        self.backgroundColor = backgroundColor
         
         addSubview(imageView)
         imageView.constrain.center(in: self)
         
         imageView.image = image
         
-        setupSelectGesture()
+        configure?(self)
     }
     
-    init(attributedText: NSAttributedString, backgroundColor: UIColor) {
-        label = UILabel(attributedText, alignment: .center)
-        
+    init(_ attributedText: NSAttributedString, _ configure: ((PillButton) -> Void)?) {
         super.init()
         
-        self.backgroundColor = backgroundColor
+        label.attributedText = attributedText
+        label.textAlignment = .center
         
         layoutMargins = UIEdgeInsets(inset: 10)
         addSubview(label)
         label.constrain.edges(to: layoutMarginsGuide)
         
-        setupSelectGesture()
-    }
-    
-    private let label: UILabel
-    
-    private let imageView = UIImageView()
-    
-    private lazy var selectGesture = SelectGestureRecognizer(target: self, action: #selector(handleSelect(_:)))
-    
-    private func setupSelectGesture() {
-        addGestureRecognizer(selectGesture)
-        selectGesture.delaysTouchesBegan = true
-        selectGesture.delegate = self
-    }
-    
-    @objc private func handleSelect(_ gesture: UIGestureRecognizer) {
-        if gesture.state == .ended {
-            onSelect?()
-        }
-    }
-}
-
-extension PillButton: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        configure?(self)
     }
 }
 
