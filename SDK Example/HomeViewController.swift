@@ -11,47 +11,18 @@ import IFTTT_SDK
 
 class HomeViewController: UITableViewController {
     
-    var applets: [Applet] = [] {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    typealias Item = (appletId: String, name: String)
     
-    @objc func handleRefresh(_ sender: UIRefreshControl) {
-        fetch()
-    }
-    
-    func fetch() {
-        Applet.Request.applets() { (response) in
-            switch response.result {
-            case .success(let applets):
-                self.applets = applets
-            case .failure(let error):
-                let alert = UIAlertController(title: "Problem getting applets", message: error?.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
-            
-            if self.refreshControl?.isRefreshing == true {
-                self.refreshControl?.endRefreshing()
-            }
-        }
-        .start()
+    var applets: [Item] {
+        return [
+            ("PMEHLDAV", "Turn on your LIFX lights")
+        ]
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        
-        let refreshControl = UIRefreshControl()
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refreshControl.addTarget(self,
-                                 action: #selector(handleRefresh(_:)),
-                                 for: .valueChanged)
-        self.refreshControl = refreshControl
-        
-        fetch()
     }
     
     let cellId = "applet-cell"
@@ -69,7 +40,7 @@ class HomeViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let applet = applets[indexPath.row]
-        let controller = AppletViewController(applet: applet)
+        let controller = AppletViewController(appletId: applet.appletId)
         navigationController?.pushViewController(controller, animated: true)
     }
 }

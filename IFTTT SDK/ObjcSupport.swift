@@ -20,11 +20,6 @@ import Foundation
             Applet.Session.shared.userTokenProvider = userTokenProvider != nil ? self : nil
         }
     }
-    
-    @objc public var serviceID: String {
-        get { return Applet.Session.shared.serviceId }
-        set { Applet.Session.shared.serviceId = newValue }
-    }
 }
 
 extension IFTTTAppletSession: UserTokenProviding {
@@ -56,18 +51,18 @@ extension IFTTTAppletSession: UserTokenProviding {
 @objc public class IFTTTAppletResponse: NSObject {
     @objc public let urlResponse: URLResponse?
     @objc public let statusCode: NSNumber?
-    @objc public let applets: [IFTTTApplet]
+    @objc public let applet: IFTTTApplet?
     @objc public let error: Error?
     
     fileprivate init(response: Applet.Request.Response) {
         urlResponse = response.urlResponse
         statusCode = response.statusCode != nil ? NSNumber(integerLiteral: response.statusCode!) : nil
         switch response.result {
-        case .success(let applets):
-            self.applets = applets.map { IFTTTApplet(applet: $0) }
+        case .success(let applet):
+            self.applet = IFTTTApplet(applet: applet)
             self.error = nil
         case .failure(let error):
-            self.applets = []
+            self.applet = nil
             self.error = error
         }
     }
@@ -87,13 +82,6 @@ extension IFTTTAppletSession: UserTokenProviding {
         appletDescription = applet.description
         status = applet.status.rawValue
         services = applet.services.map { IFTTTService(service: $0) }
-    }
-    
-    @objc public static func getApplets(_ completion: @escaping (IFTTTAppletResponse) -> Void) {
-        Applet.Request.applets { (response) in
-            completion(IFTTTAppletResponse(response: response))
-        }
-        .start()
     }
     
     @objc public static func getApplet(withId id: String, _ completion: @escaping (IFTTTAppletResponse) -> Void) {

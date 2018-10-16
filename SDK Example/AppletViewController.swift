@@ -11,11 +11,10 @@ import IFTTT_SDK
 
 class AppletViewController: UIViewController {
 
-    let applet: Applet
+    let appletId: String
     
-    init(applet: Applet) {
-        self.applet = applet
-        
+    init(appletId: String) {
+        self.appletId = appletId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -44,15 +43,35 @@ class AppletViewController: UIViewController {
     
     lazy var connectButton = ConnectButton()
     
-    private var connectInteractor: ConnectInteractionController!
+    private var connectInteractor: ConnectInteractionController?
     
     private func configure(with applet: Applet) {
         titleLabel.text = applet.name
         descriptionLabel.text = applet.description
+        
+        connectInteractor = ConnectInteractionController(connectButton, applet: applet)
+        connectInteractor?.onAboutSelected = { [weak self] viewController in
+            viewController.modalPresentationStyle = .formSheet
+            self?.present(viewController, animated: true, completion: nil)
+        }
+    }
+    
+    private func fetch() {
+        Applet.Request.applet(id: appletId) { (response) in
+            switch response.result {
+            case .success(let applet):
+                self.configure(with: applet)
+            case .failure:
+                break
+            }
+        }
+        .start()
     }
     
     override func loadView() {
         super.loadView()
+        
+        view.backgroundColor = .white
         
         let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel, connectButton])
         stackView.axis = .vertical
@@ -83,15 +102,7 @@ class AppletViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
-        
-        connectInteractor = ConnectInteractionController(connectButton, applet: applet)
-        configure(with: applet)
-        
-        connectInteractor.onAboutSelected = { [weak self] viewController in
-            viewController.modalPresentationStyle = .formSheet
-            self?.present(viewController, animated: true, completion: nil)
-        }
+        fetch()
     }
     
     override func viewDidAppear(_ animated: Bool) {

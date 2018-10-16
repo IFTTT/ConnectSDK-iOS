@@ -69,8 +69,6 @@ public protocol UserTokenProviding {
 
 public extension Applet {
     public class Session {
-        public var serviceId: String = ""
-        
         public var userTokenProvider: UserTokenProviding? = nil
         
         var userToken: String? {
@@ -124,21 +122,19 @@ public extension Applet {
             public let result: Result
         }
         public enum Result {
-            case success([Applet]), failure(Error?)
+            case success(Applet), failure(Error?)
         }
         public typealias CompletionHandler = (Response) -> Void
         
         public let completion: CompletionHandler
         
         public func start(with session: Session = .shared) {
-            assert(Applet.Session.shared.serviceId.isEmpty == false, "Service ID must be provided!")
-            
             let task = session.urlSession.dataTask(with: urlRequest) { (data, response, error) in
                 let statusCode = (response as? HTTPURLResponse)?.statusCode
-                let applets = Applet.applets(data)
+                let applet = Applet.applets(data)?.first
                 DispatchQueue.main.async {
-                    if let applets = applets {
-                        self.completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applets)))
+                    if let applet = applet {
+                        self.completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
                     } else {
                         self.completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error)))
                     }
@@ -148,7 +144,7 @@ public extension Applet {
         }
         
         private init(path: String, method: Method, completion: @escaping CompletionHandler) {
-            let api = URL(string: "https://api.ifttt.com/v1")!
+            let api = URL(string: "https://api.ifttt.com/v2")!
             
             self.api = api
             self.path = path
@@ -171,16 +167,12 @@ public extension Applet {
             self.completion = completion
         }
         
-        public static func applets(_ completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets", method: .GET, completion: completion)
-        }
-        
         public static func applet(id: String, _ completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets/\(id)", method: .GET, completion: completion)
+            return Request(path: "/applets/\(id)", method: .GET, completion: completion)
         }
         
         public static func applet(id: String, setIsEnabled enabled: Bool, _ completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/services/\(Applet.Session.shared.serviceId)/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST, completion: completion)
+            return Request(path: "/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST, completion: completion)
         }
     }
 }
