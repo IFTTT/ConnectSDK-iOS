@@ -30,6 +30,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if Applet.Session.shared.handleApplicationRedirect(url: url, options: options) {
+            // This is an IFTTT SDK redirect, it will take over from here
+            return true
+        } else {
+            // This is unrelated to the IFTTT SDK
+            return false
+        }
+    }
 }
 
 struct IFTTTAuthenication: UserTokenProviding {

@@ -9,6 +9,10 @@
 import Foundation
 
 public struct User {
+    enum ID {
+        case id(String), email(String)
+    }
+    
     public static var current = User()
     
     public var suggestedUserEmail: String?

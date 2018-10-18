@@ -28,7 +28,7 @@ fileprivate struct Layout {
 //@IBDesignable
 public class ConnectButton: UIView {
     
-    enum State {
+    enum State: CustomStringConvertible {
         case
         initialization,
         toggle(for: Applet.Service, message: String, isOn: Bool),
@@ -62,12 +62,31 @@ public class ConnectButton: UIView {
                 }
                 animator.continueAnimation(withTimingParameters: timing, durationFactor: durationFactor)
             }
+            func onComplete(_ body: @escaping (() -> Void)) {
+                animator.addCompletion { (_) in
+                    body()
+                }
+            }
+        }
+        
+        var description: String {
+            switch self {
+            case .initialization: return "initialization"
+            case .toggle: return "toggle"
+            case .email: return "email"
+            case .step: return "step"
+            case .stepComplete: return "stepComplete"
+            }
         }
     }
     
     var onStateChanged: ((State) -> Void)?
     
     var nextToggleState: (() -> State)?
+    
+    /// Callback when switch is toggled
+    /// Send true if switch has been toggled to the on position
+    var onToggle: ((Bool) -> Void)?
     
     var onEmailConfirmed: ((String) -> Void)?
     
@@ -76,6 +95,12 @@ public class ConnectButton: UIView {
     private(set) var currentState: State = .initialization {
         didSet {
             onStateChanged?(currentState)
+            switch oldValue {
+            case .toggle(_, _, let wasOn):
+                onToggle?(!wasOn)
+            default:
+                break
+            }
         }
     }
     
@@ -776,12 +801,16 @@ private extension ConnectButton {
                              updatedText: .text(message),
                              insets: service == nil ? .standard : .avoidServiceIcon,
                              addingTo: animator)
+            
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
                 self.emailConfirmButton.alpha = 0
                 self.emailConfirmButton.backgroundColor = .iftttGrey
                 
-                self.backgroundView.backgroundColor = .iftttGrey
+                self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
+                
+                self.serviceIconView.set(imageURL: service?.colorIconURL)
+                self.serviceIconView.alpha = 1
             }
             animator.addCompletion { (_) in
                 self.emailConfirmButton.backgroundColor = .iftttBlack
@@ -846,7 +875,7 @@ private extension ConnectButton {
             }
             
         default:
-            fatalError("Connect button state transition is invalid")
+            fatalError("Connect button state transition from \(previousState) to \(state) is invalid")
         }
         return animator
     }

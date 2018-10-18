@@ -49,11 +49,7 @@ class AppletViewController: UIViewController {
         titleLabel.text = applet.name
         descriptionLabel.text = applet.description
         
-        connectInteractor = ConnectInteractionController(connectButton, applet: applet)
-        connectInteractor?.onAboutSelected = { [weak self] viewController in
-            viewController.modalPresentationStyle = .formSheet
-            self?.present(viewController, animated: true, completion: nil)
-        }
+        connectInteractor = ConnectInteractionController(connectButton, applet: applet, delegate: self)
     }
     
     private func fetch() {
@@ -112,3 +108,14 @@ class AppletViewController: UIViewController {
     }
 }
 
+extension AppletViewController: ConnectInteractionControllerDelegate {
+    func connectInteraction(_ controller: ConnectInteractionController, show viewController: UIViewController) {
+        present(viewController, animated: true, completion: nil)
+    }
+    func connectInteraction(_ controller: ConnectInteractionController, appletActivationFailedWithError error: Error) {
+        
+    }
+    func connectInteractionUserCanceledAppletActivation(_ controller: ConnectInteractionController) {
+        
+    }
+}

@@ -34,7 +34,6 @@ public struct Applet {
     public let description: String
     public let status: Status
     public let url: URL
-    public let activationURL: URL
     public let services: [Service]
     
     public let primaryService: Service
@@ -43,17 +42,42 @@ public struct Applet {
         return services.filter({ $0.isPrimary == false })
     }
     
-    public func activationURL(forUserEmail email: String?) -> URL {
+    fileprivate let activationURL: URL
+    
+    enum ActivationStep {
+        case
+        login(User.ID),
+        serviceConnection(newUserEmail: String?)
+    }
+    
+    func activationURL(_ step: ActivationStep) -> URL {
+        let activationURL = URL(string: "https://ifttt.com/access/api/\(id)")!
+        
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
         var queryItems = [URLQueryItem]()
-        if let email = email {
-            queryItems.append(URLQueryItem(name: "email", value: email))
-        }
         if let redirect = Applet.Session.shared.appletActivationRedirect {
-            queryItems.append(URLQueryItem(name: "redirect_uri", value: redirect.absoluteString))
+            queryItems.append(URLQueryItem(name: "sdk_return_to", value: redirect.absoluteString))
         }
         if let inviteCode = Applet.Session.shared.inviteCode {
             queryItems.append(URLQueryItem(name: "invite_code", value: inviteCode))
+        }
+        queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
+        
+        switch step {
+        case .login(let userId):
+            switch userId {
+            case .id(let id):
+                // FIXME: Verify this param name when we have it
+                queryItems.append(URLQueryItem(name: "user_id", value: id))
+            case .email(let email):
+                queryItems.append(URLQueryItem(name: "email", value: email))
+            }
+            
+        case .serviceConnection(let newUserEmail):
+            if let email = newUserEmail {
+                queryItems.append(URLQueryItem(name: "email", value: email))
+                queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
+            }
         }
         components?.queryItems = queryItems
         return components?.url ?? activationURL
@@ -80,6 +104,20 @@ public extension Applet {
         public var inviteCode: String?
         
         public let urlSession: URLSession
+        
+        /// Handles redirects during applet activation
+        ///
+        /// - Parameters:
+        ///   - url: The open url
+        ///   - options: The open url options
+        /// - Returns: True if this is an IFTTT SDK redirect
+        public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
+            if url.scheme == appletActivationRedirect?.scheme && String(describing: options[.sourceApplication]) == "com.apple.SafariViewService" {
+                NotificationCenter.default.post(name: .iftttAppletActivationRedirect, object: url)
+                return true
+            }
+            return false
+        }
         
         public static let shared: Session = {
             let configuration = URLSessionConfiguration.ephemeral
