@@ -51,8 +51,6 @@ public struct Applet {
     }
     
     func activationURL(_ step: ActivationStep) -> URL {
-        let activationURL = URL(string: "https://ifttt.com/access/api/\(id)")!
-        
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
         var queryItems = [URLQueryItem]()
         if let redirect = Applet.Session.shared.appletActivationRedirect {
