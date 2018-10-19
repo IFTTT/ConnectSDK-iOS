@@ -137,9 +137,12 @@ public class ConnectInteractionController {
     private var redirectObserving: RedirectObserving?
     
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
-        if currentSafariViewController != nil {
-            currentSafariViewController?.dismiss(animated: true, completion: nil)
-            currentSafariViewController = nil
+        guard currentSafariViewController == nil else {
+            currentSafariViewController?.dismiss(animated: true, completion: {
+                self.currentSafariViewController = nil
+                self.handleRedirect(outcome)
+            })
+            return
         }
         
         let nextStep: ActivationStep = {
@@ -375,18 +378,16 @@ extension ConnectInteractionController {
         
         override init() {
             super.init()
-            
-            NotificationCenter.default.addObserver(self,
-                                                   selector: #selector(handleRedirect(_:)),
-                                                   name: .iftttAppletActivationRedirect,
-                                                   object: nil)
+            NotificationCenter.default.addObserver(forName: .iftttAppletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
+                self?.handleRedirect(notification)
+            }
         }
         
         deinit {
             NotificationCenter.default.removeObserver(self)
         }
         
-        @objc private func handleRedirect(_ notification: Notification) {
+        private func handleRedirect(_ notification: Notification) {
             guard
                 let url = notification.object as? URL,
                 let components = URLComponents(url: url, resolvingAgainstBaseURL: false),

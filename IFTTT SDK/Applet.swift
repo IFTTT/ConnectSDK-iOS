@@ -61,7 +61,6 @@ public struct Applet {
         if let inviteCode = Applet.Session.shared.inviteCode {
             queryItems.append(URLQueryItem(name: "invite_code", value: inviteCode))
         }
-        queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
         
         switch step {
         case .login(let userId):
@@ -78,6 +77,7 @@ public struct Applet {
                 queryItems.append(URLQueryItem(name: "email", value: email))
                 queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
             }
+            queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
         }
         components?.queryItems = queryItems
         return components?.url ?? activationURL
@@ -112,7 +112,8 @@ public extension Applet {
         ///   - options: The open url options
         /// - Returns: True if this is an IFTTT SDK redirect
         public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-            if url.scheme == appletActivationRedirect?.scheme && String(describing: options[.sourceApplication]) == "com.apple.SafariViewService" {
+            // Check if the source is safari view controller and the scheme matches the SDK redirect
+            if let source = options[.sourceApplication] as? String, url.scheme == appletActivationRedirect?.scheme && source == "com.apple.SafariViewService" {
                 NotificationCenter.default.post(name: .iftttAppletActivationRedirect, object: url)
                 return true
             }
