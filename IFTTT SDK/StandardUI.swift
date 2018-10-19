@@ -68,12 +68,6 @@ extension UIView {
 
 // MARK: - Convenience
 
-extension UIEdgeInsets {
-    init(inset: CGFloat) {
-        self.init(top: inset, left: inset, bottom: inset, right: inset)
-    }
-}
-
 extension UILabel {
     convenience init(_ text: String, _ configure: ((UILabel) -> Void)?) {
         self.init()
@@ -162,13 +156,13 @@ class PillButton: PillView {
         configure?(self)
     }
     
-    init(_ attributedText: NSAttributedString, _ configure: ((PillButton) -> Void)?) {
+    init(_ text: String, _ configure: ((PillButton) -> Void)?) {
         super.init()
         
-        label.attributedText = attributedText
+        label.text = text
         label.textAlignment = .center
         
-        layoutMargins = UIEdgeInsets(inset: 10)
+        layoutMargins = UIEdgeInsets(top: 12, left: 32, bottom: 12, right: 32)
         addSubview(label)
         label.constrain.edges(to: layoutMarginsGuide)
         

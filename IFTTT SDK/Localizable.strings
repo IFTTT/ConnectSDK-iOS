@@ -26,9 +26,9 @@
 "button.footer.connect" = "Sign in to connect %@ with %@";
 "button.footer.manage" = "You're all set. Manage connection with ";
 
-"about.title" = "This connection is powered by IFTTT";
+"about.title" = "This connection is powered by ";
 "about.connect" = "Make your favorite things work together in new ways";
 "about.control" = "Control what services get your personal data";
 "about.manage" = "Manage all your servies in one place";
 "about.security" = "Stay secure everywhere with end-to-end encryption";
-"about.more.button" = "More about ";
+"about.more.button" = "Learn more";
