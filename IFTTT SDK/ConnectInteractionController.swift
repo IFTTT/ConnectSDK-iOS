@@ -9,19 +9,41 @@
 import UIKit
 import SafariServices
 
-public extension Notification.Name {
-    static var iftttAppletActivationRedirect: Notification.Name {
-        return Notification.Name("ifttt.applet.activation.redirect")
-    }
+public enum ConnectInteractionOutcome {
+    case
+    activated(Applet),
+    disabled(Applet),
+    canceled,
+    failed(Error)
 }
 
 public protocol ConnectInteractionControllerDelegate: class {
     func connectInteraction(_ controller: ConnectInteractionController, show viewController: UIViewController)
-    func connectInteractionUserCanceledAppletActivation(_ controller: ConnectInteractionController)
-    func connectInteraction(_ controller: ConnectInteractionController, appletActivationFailedWithError error: Error)
+    func connectInteraction(_ controller: ConnectInteractionController, appletActivationFinished outcome: ConnectInteractionOutcome)
 }
 
 public class ConnectInteractionController {
+    
+    /// The connect button in this interaction
+    public let button: ConnectButton
+    
+    /// The Applet in this interaction
+    /// The controller may change the connection status of the Applet
+    public private(set) var applet: Applet
+    
+    private func appletChangedStatus(isOn: Bool) {
+        applet.updating(status: isOn ? .enabled : .disabled)
+        if isOn {
+            delegate?.connectInteraction(self, appletActivationFinished: .activated(applet))
+        } else {
+            delegate?.connectInteraction(self, appletActivationFinished: .disabled(applet))
+        }
+    }
+    
+    /// The service that is being connected to the primary (owner) service
+    /// This defines the service icon & brand color of the button in its initial and final (activated) states
+    /// It is always the first service connected
+    public let connectingService: Applet.Service
     
     public weak var delegate: ConnectInteractionControllerDelegate?
     
@@ -44,9 +66,23 @@ public class ConnectInteractionController {
         }
     }
     
+    private var initialButtonState: ConnectButton.State {
+        return .toggle(
+            for: connectingService,
+            message: "button.state.connect".localized(arguments: connectingService.name),
+            isOn: false)
+    }
+    
+    private var activatedButtonState: ConnectButton.State {
+        return .toggle(for: connectingService,
+                       message: "button.state.connected".localized,
+                       isOn: true)
+    }
+    
     
     // MARK: - Footer
     
+    /// When the connect button is in the "toggle" state, the user may select it to open the about page
     private var footerSelect: Selectable!
     
     private func showAboutPage() {
@@ -103,12 +139,6 @@ public class ConnectInteractionController {
         }
     }
     
-    let button: ConnectButton
-    
-    let applet: Applet
-    
-    let connectingService: Applet.Service
-    
     
     // MARK: - New applet activation
     
@@ -137,27 +167,47 @@ public class ConnectInteractionController {
     private var redirectObserving: RedirectObserving?
     
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
+        // Before we continue and handle this redirect, we must dismiss the active Safari VC
         guard currentSafariViewController == nil else {
-            currentSafariViewController?.dismiss(animated: true, completion: {
-                self.currentSafariViewController = nil
-                self.handleRedirect(outcome)
-            })
+            // In this case the user dismissed Safari on their own by tapping the dismiss button
+            // This is a user cancel, but we have to wait for the VC to finish dismissing
+            // We can do this by monitoring the VC transition coordinator
+            if let transitionCoordinator = currentSafariViewController?.transitionCoordinator, currentSafariViewController?.isBeingDismissed == true {
+                transitionCoordinator.animate(alongsideTransition: { _ in }) { (_) in
+                    // Transition coordinator completion
+                    self.currentSafariViewController = nil
+                    self.handleRedirect(outcome)
+                }
+            } else {
+                // We must have gotten here from a redirect which doesn't automatically dismiss Safari VC
+                // Do that first
+                currentSafariViewController?.dismiss(animated: true, completion: {
+                    self.currentSafariViewController = nil
+                    self.handleRedirect(outcome)
+                })
+            }
             return
         }
         
+        // Determine the next step based on the redirect result
         let nextStep: ActivationStep = {
             switch outcome {
             case .canceled:
                 return .canceled
+                
             case .failed:
                 // FIXME: Build a error message
                 return .failed(NSError())
+                
             case .serviceConnection(let id):
                 if let service = applet.services.first(where: { $0.id == id }) {
-                    // At this point in the flow, we must have already logged in the user or created their account
+                    // If service connection comes after a redirect we must have already completed user log in or account creation
+                    // Therefore newUserEmail is always nil here
                     return .serviceConnection(service, newUserEmail: nil)
                 } else {
-                    // FIXME: This should never happen but maybe there's a bug in the web flow. Set an appropriate error message.
+                    // For some reason, the service ID we received from web doesn't match the applet
+                    // If this ever happens, it is due to a bug on web
+                    // FIXME: Set an appropriate error message.
                     return .failed(NSError())
                 }
             case .complete:
@@ -168,11 +218,15 @@ public class ConnectInteractionController {
         switch nextStep {
         case .canceled, .failed:
             transition(to: nextStep)
+            
         default:
             switch currentActivationStep {
             case .logInExistingUser?:
+                // Show the animation for log in complete before moving on to the next step
                 transition(to: .logInComplete(nextStep: nextStep))
+                
             case .serviceConnection(let previousService, _)?:
+                // Show the animation for service connection before moving on to the next step
                 transition(to: .serviceConnectionComplete(previousService,
                                                           nextStep: nextStep))
             default:
@@ -190,10 +244,13 @@ public class ConnectInteractionController {
         button.onStepSelected = nil
         button.onStateChanged = nil
         
-        switch (currentActivationStep, step) {
+        let previous = currentActivationStep
+        self.currentActivationStep = step
+        
+        switch (previous, step) {
             
         // MARK: - Initial connect button state
-        case (.none, .start):
+        case (.none, .start), (.canceled?, .start), (.failed?, .start):
             redirectObserving = RedirectObserving()
             redirectObserving?.onRedirect = { [weak self] outcome in
                 self?.handleRedirect(outcome)
@@ -201,13 +258,15 @@ public class ConnectInteractionController {
             
             footerSelect.isEnabled = true
             
-            // FIXME: What service shows here?
-            button.transition(to: .toggle(
-                for: connectingService,
-                message: "button.state.connect".localized(arguments: connectingService.name),
-                isOn: false)
-                ).preformWithoutAnimation()
-            button.configureFooter(FooterMessages.poweredBy.value, animated: false)
+            let animated = previous != nil
+            
+            let transition = button.transition(to: initialButtonState)
+            if animated {
+                transition.preform()
+            } else {
+                transition.preformWithoutAnimation()
+            }
+            button.configureFooter(FooterMessages.poweredBy.value, animated: animated)
             
             button.nextToggleState = {
                 if let _ = Applet.Session.shared.userToken {
@@ -228,7 +287,6 @@ public class ConnectInteractionController {
             button.onEmailConfirmed = { [weak self] email in
                 self?.transition(to: .checkEmailIsExistingUser(email))
             }
-            
             
         // MARK: - Get user ID from user token
         case (.start?, .getUserId):
@@ -335,28 +393,24 @@ public class ConnectInteractionController {
             }
             
         case (_, .complete):
-            // FIXME: What service shows here?
-            button.transition(to:
-                .toggle(for: connectingService,
-                        message: "button.state.connected".localized,
-                        isOn: true)
-                ).preform()
+            button.transition(to: activatedButtonState).preform()
             button.configureFooter(FooterMessages.manage.value, animated: true)
             footerSelect.isEnabled = true
             
+            // Updates our local copy of this Applet to indicate that it has been updated and inform the delegate
+            appletChangedStatus(isOn: true)
+            
         case (_, .canceled):
-            // FIXME: Reset the button
-            delegate?.connectInteractionUserCanceledAppletActivation(self)
+            delegate?.connectInteraction(self, appletActivationFinished: .canceled)
+            transition(to: .start)
             
         case (_, .failed(let error)):
-            // FIXME: Reset the button and build an informative error
-            delegate?.connectInteraction(self, appletActivationFailedWithError: error)
+            delegate?.connectInteraction(self, appletActivationFinished: .failed(error))
+            transition(to: .start)
             
         default:
             fatalError("Invalid state transition")
         }
-        
-        self.currentActivationStep = step
     }
 }
 

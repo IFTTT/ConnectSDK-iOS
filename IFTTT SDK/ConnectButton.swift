@@ -342,6 +342,7 @@ public class ConnectButton: UIView {
         private let bar = PassthroughView()
         
         func configure(with service: Applet.Service?) {
+            fractionComplete = 0
             bar.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
         }
         
@@ -740,7 +741,7 @@ private extension ConnectButton {
         case (.initialization, .toggle(let service, let message, let isOn)): // Setup switch
             self.label.configure(.text(message), insets: .avoidSwitchKnob(isOn: isOn))
             animator.addAnimations {
-                self.backgroundView.backgroundColor = .iftttBlack
+                self.backgroundView.backgroundColor = .black
                 self.switchControl.configure(with: service)
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.curvature = 1
@@ -767,6 +768,9 @@ private extension ConnectButton {
             label.transition(with: .crossfade,
                              updatedText: .none,
                              addingTo: animator)
+            
+            progressBar.configure(with: nil)
+            
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .iftttLightGrey
                 
@@ -813,11 +817,11 @@ private extension ConnectButton {
                 self.serviceIconView.alpha = 1
             }
             animator.addCompletion { (_) in
-                self.emailConfirmButton.backgroundColor = .iftttBlack
+                self.emailConfirmButton.backgroundColor = .black
                 self.emailConfirmButton.transform = .identity
             }
             
-        case (.step, .step(let service, let message, let selectIsEnabled)): // Changing the message during a step
+        case (.step, .step(_, let message, let selectIsEnabled)): // Changing the message during a step
             selectGesture.isEnabled = selectIsEnabled
             label.transition(with: .rotateDown, updatedText: .text(message))
             
@@ -862,16 +866,32 @@ private extension ConnectButton {
                              updatedText: .text(message),
                              insets: .avoidSwitchKnob(isOn: isOn),
                              addingTo: animator)
+            progressBar.configure(with: service)
+            
             animator.addAnimations {
                 self.serviceIconView.alpha = 0
                 
-                self.backgroundView.backgroundColor = .iftttBlack
+                self.backgroundView.backgroundColor = .black
                 
                 self.switchControl.configure(with: service)
                 self.switchControl.alpha = 1
                 self.switchControl.isOn = true
                 
                 self.checkmark.alpha = 0
+            }
+            
+        case (.step, .toggle(let service, let message, let isOn)):
+            label.transition(with: .rotateDown, updatedText: .text(message), insets: .avoidSwitchKnob(isOn: isOn))
+            progressBar.configure(with: service)
+            
+            animator.addAnimations {
+                self.backgroundView.backgroundColor = .black
+                self.switchControl.configure(with: service)
+                self.switchControl.isOn = isOn
+                self.switchControl.knob.curvature = 1
+                self.switchControl.alpha = 1
+                
+                self.serviceIconView.alpha = 0
             }
             
         default:

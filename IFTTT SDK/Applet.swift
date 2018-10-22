@@ -32,7 +32,7 @@ public struct Applet {
     public let id: String
     public let name: String
     public let description: String
-    public let status: Status
+    public private(set) var status: Status
     public let url: URL
     public let services: [Service]
     
@@ -80,6 +80,10 @@ public struct Applet {
         components?.queryItems = queryItems
         return components?.url ?? activationURL
     }
+    
+    mutating func updating(status: Status) {
+        self.status = status
+    }
 }
 
 
@@ -87,6 +91,12 @@ public struct Applet {
 
 public protocol UserTokenProviding {
     func iftttUserToken(for session: Applet.Session) -> String?
+}
+
+extension Notification.Name {
+    static var iftttAppletActivationRedirect: Notification.Name {
+        return Notification.Name("ifttt.applet.activation.redirect")
+    }
 }
 
 public extension Applet {
