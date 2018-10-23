@@ -28,30 +28,43 @@ fileprivate struct Layout {
 //@IBDesignable
 public class ConnectButton: UIView {
     
+    public init() {
+        super.init(frame: .zero)
+        createLayout()
+    }
+    
+    required convenience init?(coder aDecoder: NSCoder) {
+        self.init()
+    }
+    
+    
+    // MARK: - Button state
+    
     enum State: CustomStringConvertible {
         case
         initialization,
         toggle(for: Applet.Service, message: String, isOn: Bool),
         email(suggested: String?),
-        step(for: Applet.Service?, message: String, isSelectable: Bool),
+        step(for: Applet.Service?, message: String),
         stepComplete(for: Applet.Service?)
         
         struct Transition {
             fileprivate let animator: UIViewPropertyAnimator
             
-            func preform() {
-                animator.startAnimation()
-            }
-            func preformWithoutAnimation() {
-                animator.startAnimation()
-                animator.stopAnimation(false)
-                animator.finishAnimation(at: .end)
+            func preform(animated: Bool = true) {
+                if animated {
+                    animator.startAnimation()
+                } else {
+                    animator.startAnimation()
+                    animator.stopAnimation(false)
+                    animator.finishAnimation(at: .end)
+                }
             }
             func pause() {
                 animator.pauseAnimation()
             }
             func set(progress: CGFloat) {
-                animator.fractionComplete = progress
+                animator.fractionComplete = max(0.001, min(0.999, progress))
             }
             func resume(with timing: UITimingCurveProvider, duration: TimeInterval?) {
                 animator.pauseAnimation()
@@ -80,24 +93,11 @@ public class ConnectButton: UIView {
         }
     }
     
-    var onStateChanged: ((State) -> Void)?
-    
-    var nextToggleState: (() -> State)?
-    
-    /// Callback when switch is toggled
-    /// Send true if switch has been toggled to the on position
-    var onToggle: ((Bool) -> Void)?
-    
-    var onEmailConfirmed: ((String) -> Void)?
-    
-    var onStepSelected: (() -> Void)?
-    
     private(set) var currentState: State = .initialization {
         didSet {
-            onStateChanged?(currentState)
             switch oldValue {
             case .toggle(_, _, let wasOn):
-                onToggle?(!wasOn)
+                toggleInteraction.onToggle?(!wasOn)
             default:
                 break
             }
@@ -126,13 +126,118 @@ public class ConnectButton: UIView {
         }
     }
     
-    public init() {
-        super.init(frame: .zero)
-        createLayout()
+    
+    
+    // MARK: - Interaction
+    
+    struct ToggleInteraction {
+        /// Can the switch be tapped
+        var isTapEnabled: Bool = false
+        
+        /// Can the switch be dragged
+        var isDragEnabled: Bool = false
+        
+        /// What is the next state of the toggle
+        var nextToggleState: (() -> State)?
+        
+        /// Callback when switch is toggled
+        /// Sends true if switch has been toggled to the on position
+        var onToggle: ((Bool) -> Void)?
     }
     
-    required convenience init?(coder aDecoder: NSCoder) {
-        self.init()
+    struct EmailInteraction {
+        /// Callback when the email address is confirmed
+        var onConfirm: ((String) -> Void)?
+    }
+    
+    struct StepInteraction {
+        var isTapEnabled: Bool = false
+        
+        var onSelect: (() -> Void)?
+    }
+    
+    var toggleInteraction = ToggleInteraction()
+    
+    var emailInteraction = EmailInteraction()
+    
+    var stepInteraction = StepInteraction() {
+        didSet {
+            updateInteraction()
+        }
+    }
+    
+    private class ScrollGestureRecognizer: UIPanGestureRecognizer {
+        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+            if (self.state == .began) { return }
+            super.touchesBegan(touches, with: event)
+            self.state = .began
+        }
+    }
+    
+    private lazy var stepSelection = Selectable(backgroundView) { [weak self] in
+        self?.stepInteraction.onSelect?()
+    }
+    
+    private lazy var toggleGesture = ScrollGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+    
+    private var currentToggleTransition: State.Transition?
+    
+    private func getToggleTransition() -> State.Transition? {
+        if currentToggleTransition != nil {
+            return currentToggleTransition
+        }
+        guard
+            case .toggle = currentState,
+            let nextState = toggleInteraction.nextToggleState?()
+        else {
+            return nil
+        }
+        return transition(to: nextState)
+    }
+    
+    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+        guard let transition = getToggleTransition() else {
+            return
+        }
+        switch gesture.state {
+        case .possible:
+            break
+        case .began:
+            break
+        case .changed:
+            let location = gesture.location(in: switchControl).x
+            var progress = location / switchControl.bounds.width
+//            transition.set(progress: progress)
+//            debugPrint("PROGRESS: \(progress)")
+        case .ended:
+            transition.preform()
+            currentToggleTransition = nil
+        case .cancelled, .failed:
+            currentToggleTransition = nil
+        }
+    }
+    
+    private func setupInteraction() {
+        switchControl.addGestureRecognizer(toggleGesture)
+        toggleGesture.delegate = self
+        
+        emailConfirmButton.onSelect { [weak self] in
+            self?.confirmEmail()
+        }
+        emailEntryField.delegate = self
+    }
+    
+    private func updateInteraction() {
+        stepSelection.isEnabled = stepInteraction.isTapEnabled
+    }
+    
+    fileprivate func confirmEmail() {
+        let _ = emailEntryField.resignFirstResponder()
+        guard let email = emailEntryField.text, email.isValidEmail else {
+            // FIXME: Maybe shake the button to indicate the input is invalid
+            return
+        }
+        emailInteraction.onConfirm?(email)
     }
     
     
@@ -246,7 +351,6 @@ public class ConnectButton: UIView {
                         updatedText: Value,
                         insets: Insets? = nil,
                         addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
-            
             let defaultAnimator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
             
             switch effect {
@@ -377,8 +481,6 @@ public class ConnectButton: UIView {
             
             override init() {
                 super.init()
-                
-                backgroundColor = .iftttBlue
                 
                 addSubview(iconView)
                 iconView.constrain.center(in: self)
@@ -573,89 +675,13 @@ public class ConnectButton: UIView {
         
         setupInteraction()
     }
-    
-    
-    // MARK: - Interaction
-    
-    private class ScrollGestureRecognizer: UIPanGestureRecognizer {
-        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-            if (self.state == .began) { return }
-            super.touchesBegan(touches, with: event)
-            self.state = .began
-        }
-    }
-    
-    private lazy var selectGesture = SelectGestureRecognizer(target: self, action: #selector(handleSelect(_:)))
-    
-    private lazy var panGesture = ScrollGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-    
-    private var currentToggleTransition: State.Transition?
-    
-    private func getToggleTransition() -> State.Transition? {
-        if currentToggleTransition != nil {
-            return currentToggleTransition
-        }
-        guard case .toggle(let service, let message, let isOn) = currentState else {
-            return nil
-        }
-        let nextState = nextToggleState?() ?? .toggle(for: service, message: message, isOn: !isOn)
-        return transition(to: nextState)
-    }
-    
-    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
-        guard let transition = getToggleTransition() else {
-            return
-        }
-        switch gesture.state {
-        case .possible:
-            break
-        case .began:
-            break
-        case .changed:
-            let location = gesture.location(in: switchControl).x
-            let progress = location / switchControl.bounds.width
-//            transition.set(progress: progress)
-//            debugPrint("PROGRESS: \(progress)")
-        case .ended:
-            transition.preform() 
-        case .cancelled, .failed:
-            break
-        }
-    }
-    
-    @objc private func handleSelect(_ gesture: UIGestureRecognizer) {
-        if gesture.state == .ended {
-            onStepSelected?()
-        }
-    }
-    
-    private func setupInteraction() {
-        backgroundView.addGestureRecognizer(selectGesture)
-        selectGesture.delaysTouchesBegan = true
-        selectGesture.delegate = self
-        selectGesture.isEnabled = false
-        
-        switchControl.addGestureRecognizer(panGesture)
-        panGesture.delegate = self
-        
-        emailConfirmButton.onSelect { [weak self] in
-            self?.confirmEmail()
-        }
-        emailEntryField.delegate = self
-    }
-    
-    fileprivate func confirmEmail() {
-        let _ = emailEntryField.resignFirstResponder()
-        guard let email = emailEntryField.text, email.isValidEmail else {
-            // FIXME: Maybe shake the button to indicate the input is invalid
-            return
-        }
-        onEmailConfirmed?(email)
-    }
 }
+
+// MARK: Gesture recognizer delegate (Toggle interaction)
 
 extension ConnectButton: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Prevents the toggle gesture from interfering with scrolling when it is placed in a scroll view
         return true
     }
 }
@@ -664,6 +690,7 @@ extension ConnectButton: UIGestureRecognizerDelegate {
 
 private extension String {
     var isValidEmail: Bool {
+        // FIXME: Use a better REGEX and move this elsewhere.
         if isEmpty == false, let atIndex = lastIndex(of: "@"), let dotIndex = lastIndex(of: "."), atIndex < dotIndex {
             return true
         }
@@ -738,7 +765,9 @@ private extension ConnectButton {
                                               timingParameters: UISpringTimingParameters(dampingRatio: 1,
                                                                                          initialVelocity: .zero))
         switch (previousState, state) {
-        case (.initialization, .toggle(let service, let message, let isOn)): // Setup switch
+            
+        // Setup switch
+        case (.initialization, .toggle(let service, let message, let isOn)):
             self.label.configure(.text(message), insets: .avoidSwitchKnob(isOn: isOn))
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
@@ -748,16 +777,35 @@ private extension ConnectButton {
                 self.switchControl.alpha = 1
             }
             
-        case (.toggle, .toggle(_, let message, let isOn)): // Toggle On <==> Off
+            
+        // Change toggle text
+        case (.toggle(_, let lastMessage, let wasOn), .toggle(_, let message, let isOn)) where wasOn == isOn:
+            if lastMessage != message {
+                label.transition(with: .rotateDown,
+                                 updatedText: .text(message),
+                                 insets: .avoidSwitchKnob(isOn: isOn))
+            }
+            animator.addAnimations { }
+            
+            
+        // Toggle
+        case (.toggle, .toggle(_, let message, let isOn)):
             label.transition(with: .crossfade,
                              updatedText: .text(message),
                              insets: .avoidSwitchKnob(isOn: isOn),
                              addingTo: animator)
+            
+            progressBar.configure(with: nil)
+            progressBar.alpha = 1
+            
             animator.addAnimations {
+                self.backgroundView.backgroundColor = isOn ? .black : .iftttGrey
                 self.switchControl.isOn = isOn
             }
             
-        case (.toggle(_, _, let isOn), .email(let suggested)) where isOn == false: // Connect to enter email
+            
+        // Connect to enter email
+        case (.toggle(_, _, let isOn), .email(let suggested)) where isOn == false:
             let scaleFactor = Layout.height / Layout.knobDiameter
             
             emailEntryField.text = suggested
@@ -796,9 +844,10 @@ private extension ConnectButton {
                     self.emailEntryField.becomeFirstResponder()
                 }
             }
+        
             
-        case (.email, .step(let service, let message, let selectIsEnabled)): // Email to step progress
-            selectGesture.isEnabled = selectIsEnabled
+        // Email to step progress
+        case (.email, .step(let service, let message)):
             progressBar.configure(with: service)
             
             label.transition(with: .crossfade,
@@ -821,11 +870,15 @@ private extension ConnectButton {
                 self.emailConfirmButton.transform = .identity
             }
             
-        case (.step, .step(_, let message, let selectIsEnabled)): // Changing the message during a step
-            selectGesture.isEnabled = selectIsEnabled
-            label.transition(with: .rotateDown, updatedText: .text(message))
             
-        case (.step, .stepComplete(let service)): // Completing a step
+        // Changing the message during a step
+        case (.step, .step(_, let message)):
+            label.transition(with: .rotateDown, updatedText: .text(message))
+            animator.addAnimations { }
+            
+            
+        // Completing a step
+        case (.step, .stepComplete(let service)):
             label.transition(with: .rotateDown, updatedText: .none)
             
             backgroundView.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
@@ -842,8 +895,9 @@ private extension ConnectButton {
             }
             checkmark.drawCheckmark(duration: 1.25)
             
-        case (.stepComplete, .step(let service, let message, let selectIsEnabled)): // Starting next step
-            selectGesture.isEnabled = selectIsEnabled
+        
+        // Starting next step
+        case (.stepComplete, .step(let service, let message)):
             progressBar.configure(with: service)
             
             label.transition(with: .slideInFromRight,
@@ -860,7 +914,9 @@ private extension ConnectButton {
                 self.checkmark.alpha = 0
             }
             
-        case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true: // Transition back to toggle after completed a flow
+            
+        // Transition back to toggle after completed a flow
+        case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true:
             switchControl.primeAnimation_centerKnob()
             label.transition(with: .crossfade,
                              updatedText: .text(message),
@@ -880,7 +936,9 @@ private extension ConnectButton {
                 self.checkmark.alpha = 0
             }
             
-        case (.step, .toggle(let service, let message, let isOn)):
+            
+        // Abort a flow
+        case (.step, .toggle(let service, let message, let isOn)) where isOn == false:
             label.transition(with: .rotateDown, updatedText: .text(message), insets: .avoidSwitchKnob(isOn: isOn))
             progressBar.configure(with: service)
             

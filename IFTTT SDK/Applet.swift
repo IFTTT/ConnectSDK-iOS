@@ -161,7 +161,7 @@ public extension Applet {
         public let path: String
         public let method: Method
         
-        public let urlRequest: URLRequest
+        public var urlRequest: URLRequest
         
         public struct Response {
             public let urlResponse: URLResponse?
@@ -218,8 +218,8 @@ public extension Applet {
             return Request(path: "/applets/\(id)", method: .GET, completion: completion)
         }
         
-        public static func applet(id: String, setIsEnabled enabled: Bool, _ completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/applets/\(id)/\(enabled ? "enable" : "disable")", method: .POST, completion: completion)
+        public static func deactivateApplet(id: String, _ completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/applets/\(id)/disable)", method: .POST, completion: completion)
         }
     }
 }

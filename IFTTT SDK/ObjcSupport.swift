@@ -91,8 +91,8 @@ extension IFTTTAppletSession: UserTokenProviding {
         .start()
     }
     
-    @objc public static func updateApplet(withId id: String, isEnabled: Bool, _ completion: @escaping (IFTTTAppletResponse) -> Void) {
-        Applet.Request.applet(id: id, setIsEnabled: isEnabled) { (response) in
+    @objc public static func deactivateApplet(withId id: String, _ completion: @escaping (IFTTTAppletResponse) -> Void) {
+        Applet.Request.deactivateApplet(id: id) { (response) in
             completion(IFTTTAppletResponse(response: response))
         }
         .start()

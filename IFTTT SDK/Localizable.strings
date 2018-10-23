@@ -16,7 +16,8 @@
 "button.state.connecting" = "Connecting account…";
 "button.state.saving" = "Saving settings…";
 "button.state.connected" = "Connected";
-"button.state.off" = "Off";
+"button.state.disconnecting" = "Disconnecting…";
+"button.state.disconnected" = "Disconnected";
 
 "button.email.placeholder" = "Your email";
 
@@ -25,6 +26,7 @@
 "button.footer.signed_in" = " sign in to ";
 "button.footer.connect" = "Sign in to connect %@ with %@";
 "button.footer.manage" = "You're all set. Manage connection with ";
+"button.footer.disconnect" = "Slide to disconnect";
 
 "about.title" = "This connection is powered by ";
 "about.connect" = "Make your favorite things work together in new ways";

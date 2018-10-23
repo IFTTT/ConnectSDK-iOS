@@ -11,17 +11,58 @@ import SafariServices
 
 public enum ConnectInteractionOutcome {
     case
-    activated(Applet),
-    disabled(Applet),
+    succeeded(Applet),
     canceled,
     failed(Error)
 }
 
+/// Defines the communication between ConnectInteractionController and your app. It is required to implement this protocol.
 public protocol ConnectInteractionControllerDelegate: class {
-    func connectInteraction(_ controller: ConnectInteractionController, show viewController: UIViewController)
-    func connectInteraction(_ controller: ConnectInteractionController, appletActivationFinished outcome: ConnectInteractionOutcome)
+    
+    /// The connect interaction needs to present a view controller
+    /// This includes the About IFTTT page and Safari VC during Applet activation
+    /// Implementation is required
+    ///
+    /// - Parameters:
+    ///   - controller: The connect interaction controller
+    ///   - viewController: The view controller to present
+    func connectInteraction(_ interation: ConnectInteractionController, show viewController: UIViewController)
+    
+    /// Applet activation is finished
+    ///
+    /// On succeeded, the connect interaction transitions the button to its connected state.
+    /// On canceled, the connect interaction resets the button to its initial state.
+    ///
+    /// For these two scenarios it's not neccessary for you to show additional confirmation, however, you may
+    /// want to update your app's UI in some way or ask they user why they canceled.
+    ///
+    /// On failed, the connect interaction resets the button to its initial state but does not present any error message.
+    /// It is up to you to decided how to present an error message to your user. You may use our message or one you provide.
+    ///
+    /// - Parameters:
+    ///   - interation: The connect interaction controller
+    ///   - outcome: The outcome of Applet activation
+    func connectInteraction(_ interation: ConnectInteractionController, appletActivationFinished outcome: ConnectInteractionOutcome)
+    
+    /// The user deactivated the Applet
+    ///
+    /// - Parameters:
+    ///   - interation: The connect interaction controller
+    ///   - appletDeactivated: The Applet which was deactivated
+    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivated applet: Applet)
+    
+    /// The user attempted to deactivate the Applet but something unexpected went wrong, likely a network failure.
+    /// The connect interaction will reset the Applet to the connected state but will not show any messaging.
+    /// It is up to you to do this. This should be rare but should be handled.
+    ///
+    /// - Parameters:
+    ///   - interation: The connect interaction controller
+    ///   - error: The error
+    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivationFailedWithError error: Error)
 }
 
+
+/// Controller for the ConnectButton. It is mandatory that you interact with the ConnectButton only through this controller.
 public class ConnectInteractionController {
     
     /// The connect button in this interaction
@@ -34,9 +75,9 @@ public class ConnectInteractionController {
     private func appletChangedStatus(isOn: Bool) {
         applet.updating(status: isOn ? .enabled : .disabled)
         if isOn {
-            delegate?.connectInteraction(self, appletActivationFinished: .activated(applet))
+            delegate?.connectInteraction(self, appletActivationFinished: .succeeded(applet))
         } else {
-            delegate?.connectInteraction(self, appletActivationFinished: .disabled(applet))
+            delegate?.connectInteraction(self, appletDeactivated: applet)
         }
     }
     
@@ -45,7 +86,7 @@ public class ConnectInteractionController {
     /// It is always the first service connected
     public let connectingService: Applet.Service
     
-    public weak var delegate: ConnectInteractionControllerDelegate?
+    public private(set) weak var delegate: ConnectInteractionControllerDelegate?
     
     public init(_ button: ConnectButton, applet: Applet, delegate: ConnectInteractionControllerDelegate) {
         self.button = button
@@ -56,13 +97,13 @@ public class ConnectInteractionController {
         footerSelect = Selectable(button.footerLabel) { [weak self] in
             self?.showAboutPage()
         }
-        
+
         switch applet.status {
         case .initial, .unknown:
-            transition(to: .start)
-            
+            transition(to: .initial)
+
         case .enabled, .disabled:
-            break // FIXME: Build toggle interaction !!
+            transition(to: .connected)
         }
     }
     
@@ -73,7 +114,7 @@ public class ConnectInteractionController {
             isOn: false)
     }
     
-    private var activatedButtonState: ConnectButton.State {
+    private var connectedButtonState: ConnectButton.State {
         return .toggle(for: connectingService,
                        message: "button.state.connected".localized,
                        isOn: true)
@@ -97,7 +138,8 @@ public class ConnectInteractionController {
         enterEmail,
         signedIn(username: String),
         connect(Applet.Service, to: Applet.Service),
-        manage
+        manage,
+        disconnect
         
         private var typestyle: Typestyle { return .footnote }
         
@@ -135,32 +177,68 @@ public class ConnectInteractionController {
                                                      attributes: [.font : typestyle.font])
                 text.append(iftttText)
                 return text
+                
+            case .disconnect:
+                return NSAttributedString(string: "button.footer.disconnect".localized,
+                                          attributes: [.font : typestyle.font])
             }
         }
     }
     
     
-    // MARK: - New applet activation
+    // MARK: - Safari VC and redirect handling
     
-    indirect enum ActivationStep {
-        enum UserId {
-            case id(String), email(String)
+    class RedirectObserving: NSObject, SFSafariViewControllerDelegate {
+        
+        enum Outcome {
+            case
+            serviceConnection(id: String),
+            complete,
+            canceled,
+            failed
         }
         
-        case
-        start,
-        getUserId,
-        checkEmailIsExistingUser(String),
-        logInExistingUser(User.ID),
-        logInComplete(nextStep: ActivationStep),
-        serviceConnection(Applet.Service, newUserEmail: String?),
-        serviceConnectionComplete(Applet.Service, nextStep: ActivationStep),
-        failed(Error),
-        canceled,
-        complete
+        var onRedirect: ((Outcome) -> Void)?
+        
+        override init() {
+            super.init()
+            NotificationCenter.default.addObserver(forName: .iftttAppletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
+                self?.handleRedirect(notification)
+            }
+        }
+        
+        deinit {
+            NotificationCenter.default.removeObserver(self)
+        }
+        
+        private func handleRedirect(_ notification: Notification) {
+            guard
+                let url = notification.object as? URL,
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                let queryItems = components.queryItems,
+                let nextStep = queryItems.first(where: { $0.name == "next_step" })?.value
+                else {
+                    onRedirect?(.failed)
+                    return
+            }
+            switch nextStep {
+            case "service_connection":
+                if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
+                    onRedirect?(.serviceConnection(id: serviceId))
+                } else {
+                    onRedirect?(.failed)
+                }
+            case "complete":
+                onRedirect?(.complete)
+            default:
+                onRedirect?(.failed)
+            }
+        }
+        
+        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+            onRedirect?(.canceled)
+        }
     }
-    
-    private var currentActivationStep: ActivationStep?
     
     private var currentSafariViewController: SFSafariViewController?
     
@@ -211,7 +289,7 @@ public class ConnectInteractionController {
                     return .failed(NSError())
                 }
             case .complete:
-                return .complete
+                return .connected
             }
         }()
         
@@ -235,14 +313,46 @@ public class ConnectInteractionController {
         }
     }
     
+    
+    // MARK: - Applet activation & deactivation
+    
+    indirect enum ActivationStep {
+        enum UserId {
+            case id(String), email(String)
+        }
+        
+        case
+        initial,
+        
+        getUserId,
+        checkEmailIsExistingUser(String),
+        
+        logInExistingUser(User.ID),
+        logInComplete(nextStep: ActivationStep),
+        
+        serviceConnection(Applet.Service, newUserEmail: String?),
+        serviceConnectionComplete(Applet.Service, nextStep: ActivationStep),
+        
+        failed(Error),
+        canceled,
+        
+        connected,
+        
+        confirmDisconnect,
+        processDisconnect,
+        disconnected
+    }
+    
+    /// State machine state
+    private var currentActivationStep: ActivationStep?
+    
+    /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
         
         // Cleanup
-        button.nextToggleState = nil
-        button.onToggle = nil
-        button.onEmailConfirmed = nil
-        button.onStepSelected = nil
-        button.onStateChanged = nil
+        button.toggleInteraction = .init()
+        button.emailInteraction = .init()
+        button.stepInteraction = .init()
         
         let previous = currentActivationStep
         self.currentActivationStep = step
@@ -250,7 +360,7 @@ public class ConnectInteractionController {
         switch (previous, step) {
             
         // MARK: - Initial connect button state
-        case (.none, .start), (.canceled?, .start), (.failed?, .start):
+        case (.none, .initial), (.canceled?, .initial), (.failed?, .initial), (.disconnected?, .initial):
             redirectObserving = RedirectObserving()
             redirectObserving?.onRedirect = { [weak self] outcome in
                 self?.handleRedirect(outcome)
@@ -260,50 +370,71 @@ public class ConnectInteractionController {
             
             let animated = previous != nil
             
-            let transition = button.transition(to: initialButtonState)
-            if animated {
-                transition.preform()
-            } else {
-                transition.preformWithoutAnimation()
-            }
+            button.transition(to: initialButtonState).preform(animated: animated)
             button.configureFooter(FooterMessages.poweredBy.value, animated: animated)
             
-            button.nextToggleState = {
+            button.toggleInteraction.nextToggleState = {
                 if let _ = Applet.Session.shared.userToken {
                     // User is already logged in to IFTTT
                     // Retrieve their user ID and skip email step
-                    return .step(for: nil, message: "button.state.accessing_existing_account", isSelectable: false)
+                    return .step(for: nil, message: "button.state.accessing_existing_account".localized)
                 } else {
                     return .email(suggested: User.current.suggestedUserEmail)
                 }
             }
-            button.onToggle = { [weak self] isOn in
+            button.toggleInteraction.onToggle = { [weak self] isOn in
                 if let _ = Applet.Session.shared.userToken {
                     self?.transition(to: .getUserId)
                 } else {
                     self?.button.configureFooter(FooterMessages.enterEmail.value, animated: false)
                 }
             }
-            button.onEmailConfirmed = { [weak self] email in
+            button.emailInteraction.onConfirm = { [weak self] email in
                 self?.transition(to: .checkEmailIsExistingUser(email))
             }
             
+            
+        // MARK: - Connected button state
+        case (_, .connected):
+            let animated = previous != nil
+            
+            button.transition(to: connectedButtonState).preform(animated: animated)
+            button.configureFooter(FooterMessages.manage.value, animated: animated)
+            
+            footerSelect.isEnabled = true
+            
+            // Applet was changed to this state, not initialized with it, so let the delegate know
+            if previous != nil {
+                appletChangedStatus(isOn: true)
+            }
+            
+            button.toggleInteraction.isTapEnabled = true
+            button.toggleInteraction.isDragEnabled = true
+            
+            let nextState = connectedButtonState
+            button.toggleInteraction.nextToggleState = {
+                return nextState
+            }
+            button.toggleInteraction.onToggle = { [weak self] _ in
+                self?.transition(to: .confirmDisconnect)
+            }
+            
+            
         // MARK: - Get user ID from user token
-        case (.start?, .getUserId):
+        case (.initial?, .getUserId):
             // FIXME: Make a request to /me to get user id
             break
             
             
         // MARK: - Check if email is an existing user
-        case (.start?, .checkEmailIsExistingUser(let email)):
+        case (.initial?, .checkEmailIsExistingUser(let email)):
             footerSelect.isEnabled = false
             
             let timeout: TimeInterval = 4 // How many seconds we'll wait before giving up and opening the applet activation URL
             
             button.transition(to:
                 .step(for: nil,
-                      message: "button.state.checking_account".localized,
-                      isSelectable: false)
+                      message: "button.state.checking_account".localized)
                 ).preform()
             
             let progress = button.progressTransition(timeout: timeout)
@@ -327,8 +458,7 @@ public class ConnectInteractionController {
                     // Then move to the first step of the service connection flow
                     self.button.transition(to:
                         .step(for: nil,
-                              message: "button.state.creating_account".localized,
-                              isSelectable: false)
+                              message: "button.state.creating_account".localized)
                         ).preform()
                     
                     progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 1.5)
@@ -345,6 +475,8 @@ public class ConnectInteractionController {
                 }
             }
             
+            
+        // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
             let url = applet.activationURL(.login(userId))
             let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
@@ -361,16 +493,17 @@ public class ConnectInteractionController {
             }
             transition.preform()
             
+            
+        // MARK: - Service connection
         case (_, .serviceConnection(let service, let newUserEmail)):
             button.transition(to:
                 .step(for: service,
-                      message: "button.state.sign_in".localized(arguments: service.name),
-                      isSelectable: true)
+                      message: "button.state.sign_in".localized(arguments: service.name))
                 ).preform()
             
             let url = applet.activationURL(.serviceConnection(newUserEmail: newUserEmail))
-            button.onStepSelected = { [weak self] in
-                self?.button.onStepSelected = nil
+            button.stepInteraction.isTapEnabled = true
+            button.stepInteraction.onSelect = { [weak self] in
                 let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
                 controller.delegate = self?.redirectObserving
                 self?.currentSafariViewController = controller
@@ -380,7 +513,7 @@ public class ConnectInteractionController {
             }
             
         case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep)):
-            button.transition(to: .step(for: service, message: "button.state.saving".localized, isSelectable: false)).preform()
+            button.transition(to: .step(for: service, message: "button.state.saving".localized)).preform()
             button.configureFooter(FooterMessages.poweredBy.value, animated: true)
             
             let progressBar = button.progressTransition(timeout: 2)
@@ -392,81 +525,98 @@ public class ConnectInteractionController {
                 }
             }
             
-        case (_, .complete):
-            button.transition(to: activatedButtonState).preform()
-            button.configureFooter(FooterMessages.manage.value, animated: true)
-            footerSelect.isEnabled = true
             
-            // Updates our local copy of this Applet to indicate that it has been updated and inform the delegate
-            appletChangedStatus(isOn: true)
-            
+        // MARK: - Cancel & failure states
         case (_, .canceled):
             delegate?.connectInteraction(self, appletActivationFinished: .canceled)
-            transition(to: .start)
+            transition(to: .initial)
             
         case (_, .failed(let error)):
             delegate?.connectInteraction(self, appletActivationFinished: .failed(error))
-            transition(to: .start)
+            transition(to: .initial)
+            
+            
+        // MARK: - Deactivate
+        case (.connected?, .confirmDisconnect):
+            // The user must slide to deactivate the Applet
+            button.toggleInteraction.isTapEnabled = false
+            button.toggleInteraction.isDragEnabled = true
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                if case .confirmDisconnect? = self.currentActivationStep {
+                    // Revert state if user doesn't follow through
+                    self.transition(to: .connected)
+                }
+            }
+            
+            let nextState: ConnectButton.State = .toggle(for: connectingService,
+                                                         message: "button.state.disconnecting".localized,
+                                                         isOn: false)
+            button.toggleInteraction.nextToggleState = {
+                return nextState
+            }
+            button.toggleInteraction.onToggle = { [weak self] _ in
+                self?.transition(to: .processDisconnect)
+            }
+            
+            button.configureFooter(FooterMessages.disconnect.value, animated: true)
+            
+        case (.confirmDisconnect?, .processDisconnect):
+            
+            let timeout: TimeInterval = 3
+            
+            let progress = button.progressTransition(timeout: timeout)
+            progress.preform()
+            
+            let handleResponse = { (response: Applet.Request.Response) -> Void in
+                progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.25)
+                progress.onComplete {
+                    switch response.result {
+                    case .success:
+                        self.transition(to: .disconnected)
+                    case .failure(let error):
+                        // FIXME: Create error message
+                        self.delegate?.connectInteraction(self, appletDeactivationFailedWithError: error ?? NSError())
+                        self.transition(to: .connected)
+                    }
+                }
+            }
+            
+            var response: Applet.Request.Response?
+            
+            let minimumTime: TimeInterval = 1
+            var minimumTimeReached = false
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + minimumTime) {
+                minimumTimeReached = true
+                if let response = response {
+                    handleResponse(response)
+                }
+            }
+            
+            var request = Applet.Request.deactivateApplet(id: applet.id) { (_response) in
+                if minimumTimeReached {
+                    handleResponse(_response)
+                } else {
+                    response = _response
+                }
+            }
+            request.urlRequest.timeoutInterval = timeout
+            request.start()
+            
+        case (.processDisconnect?, .disconnected):
+            appletChangedStatus(isOn: false)
+            
+            button.transition(to: .toggle(for: connectingService,
+                                          message: "button.state.disconnected".localized,
+                                          isOn: false)).preform()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.transition(to: .initial)
+            }
             
         default:
             fatalError("Invalid state transition")
-        }
-    }
-}
-
-
-// MARK: - Safari redirect observing
-
-extension ConnectInteractionController {
-    class RedirectObserving: NSObject, SFSafariViewControllerDelegate {
-        
-        enum Outcome {
-            case
-            serviceConnection(id: String),
-            complete,
-            canceled,
-            failed
-        }
-        
-        var onRedirect: ((Outcome) -> Void)?
-        
-        override init() {
-            super.init()
-            NotificationCenter.default.addObserver(forName: .iftttAppletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
-                self?.handleRedirect(notification)
-            }
-        }
-        
-        deinit {
-            NotificationCenter.default.removeObserver(self)
-        }
-        
-        private func handleRedirect(_ notification: Notification) {
-            guard
-                let url = notification.object as? URL,
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                let queryItems = components.queryItems,
-                let nextStep = queryItems.first(where: { $0.name == "next_step" })?.value
-                else {
-                    onRedirect?(.failed)
-                    return
-            }
-            switch nextStep {
-            case "service_connection":
-                if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
-                    onRedirect?(.serviceConnection(id: serviceId))
-                } else {
-                    onRedirect?(.failed)
-                }
-            case "complete":
-                onRedirect?(.complete)
-            default:
-                onRedirect?(.failed)
-            }
-        }
-        
-        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            onRedirect?(.canceled)
         }
     }
 }
