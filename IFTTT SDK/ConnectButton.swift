@@ -93,16 +93,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: State = .initialization {
-        didSet {
-            switch oldValue {
-            case .toggle(_, _, let wasOn):
-                toggleInteraction.onToggle?(!wasOn)
-            default:
-                break
-            }
-        }
-    }
+    private(set) var currentState: State = .initialization
     
     func progressTransition(timeout: TimeInterval) -> State.Transition {
         return State.Transition(animator: progressBar.animator(duration: timeout))
@@ -168,6 +159,7 @@ public class ConnectButton: UIView {
     
     private class ScrollGestureRecognizer: UIPanGestureRecognizer {
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+            // FIXME: Forgot comment here. Don't remember what this does :/
             if (self.state == .began) { return }
             super.touchesBegan(touches, with: event)
             self.state = .began
@@ -211,6 +203,11 @@ public class ConnectButton: UIView {
 //            debugPrint("PROGRESS: \(progress)")
         case .ended:
             transition.preform()
+            transition.onComplete {
+                if case .toggle(_, _, let isOn) = self.currentState {
+                    self.toggleInteraction.onToggle?(isOn)
+                }
+            }
             currentToggleTransition = nil
         case .cancelled, .failed:
             currentToggleTransition = nil
