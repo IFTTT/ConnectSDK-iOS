@@ -966,7 +966,7 @@ private extension ConnectButton {
                                             updatedText: .none,
                                             addingTo: animator)
             
-            backgroundView.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
+            backgroundView.backgroundColor = service?.brandColor ?? .black
             
             checkmark.alpha = 1
             checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)

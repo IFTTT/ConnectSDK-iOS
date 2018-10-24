@@ -516,17 +516,17 @@ public class ConnectInteractionController {
             }
             
         case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep)):
-            button.transition(to: .step(for: service, message: "button.state.saving".localized)).preform()
-            button.configureFooter(FooterMessages.poweredBy.value, animated: true)
-            
-            let progressBar = button.progressTransition(timeout: 2)
-            progressBar.preform()
-            progressBar.onComplete {
-                self.button.transition(to: .stepComplete(for: service)).preform()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self.transition(to: nextStep)
-                }
+//            button.transition(to: .step(for: service, message: "button.state.saving".localized)).preform()
+//            button.configureFooter(FooterMessages.poweredBy.value, animated: true)
+//
+//            let progressBar = button.progressTransition(timeout: 2)
+//            progressBar.preform()
+//            progressBar.onComplete {
+            self.button.transition(to: .stepComplete(for: service)).preform()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.transition(to: nextStep)
             }
+//            }
             
             
         // MARK: - Cancel & failure states
