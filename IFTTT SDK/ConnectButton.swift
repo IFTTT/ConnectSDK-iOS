@@ -872,6 +872,7 @@ private extension ConnectButton {
             
             progressBar.configure(with: nil)
             
+            emailEntryField.alpha = 0
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .iftttLightGrey
                 
@@ -885,8 +886,6 @@ private extension ConnectButton {
                 self.emailConfirmButton.transform = .identity
                 self.emailConfirmButton.curvature = 0
                 self.emailConfirmButton.alpha = 1
-                
-                self.emailEntryField.alpha = 1
             }
             animator.addCompletion { position in
                 // Keep the knob is a "clean" state since we don't animate backwards from this step
@@ -897,9 +896,16 @@ private extension ConnectButton {
                 case .start:
                     self.switchControl.isOn = false
                 case .end:
-                    if suggested == nil {
-                        self.emailEntryField.becomeFirstResponder()
+                    // Fade in the email once the first animation completes
+                    let a = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
+                        self.emailEntryField.alpha = 1
                     }
+                    a.addCompletion { _ in
+                        if suggested == nil {
+                            self.emailEntryField.becomeFirstResponder()
+                        }
+                    }
+                    a.startAnimation()
                 default:
                     break
                 }
