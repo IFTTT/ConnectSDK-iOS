@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        User.current.suggestedUserEmail = "jon@ifttt.com"
+        User.current.suggestedUserEmail = "jon+sdk@ifttt.com"
         
         Applet.Session.shared.inviteCode = "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
         Applet.Session.shared.appletActivationRedirect = URL(string: "ifttt-api-example://sdk-callback")!

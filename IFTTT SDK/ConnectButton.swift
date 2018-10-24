@@ -109,9 +109,13 @@ public class ConnectButton: UIView {
     
     func configureFooter(_ attributedString: NSAttributedString, animated: Bool) {
         if animated {
-            footerLabel.transition(with: .rotateDown, updatedText: .attributed(attributedString))
+            let animator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UICubicTimingParameters(animationCurve: .easeOut))
+            footerLabelAnimator.transition(with: .rotateDown,
+                                           updatedText: .attributed(attributedString),
+                                           addingTo: animator)
+            animator.startAnimation()
         } else {
-            footerLabel.configure(.attributed(attributedString))
+            footerLabelAnimator.configure(.attributed(attributedString))
         }
     }
     
@@ -319,21 +323,39 @@ public class ConnectButton: UIView {
     
     // MARK: Text
     
-    fileprivate let label = AnimatingLabel { (label) in
-        label.textAlignment = .center
-        label.textColor = .white
-        label.font = .ifttt(Typestyle.h4.callout().nonDynamic)
-        label.adjustsFontSizeToFitWidth = true
+    fileprivate var primaryLabelAnimator = LabelAnimator {
+        $0.textAlignment = .center
+        $0.textColor = .white
+        $0.font = .ifttt(Typestyle.h4.callout().nonDynamic)
+        $0.adjustsFontSizeToFitWidth = true
     }
     
-    let footerLabel = AnimatingLabel { (label) in
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.textColor = .iftttBlack
+    let footerLabelAnimator = LabelAnimator {
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.textColor = .iftttBlack
     }
     
-    /// Adds functionality to animate text changes
-    class AnimatingLabel: UIView {
+    class LabelAnimator {
+        
+        typealias View = (label: UILabel, view: UIStackView)
+        
+        let primary: View
+        let transition: View
+        
+        init(_ configuration: @escaping (UILabel) -> Void) {
+            primary = LabelAnimator.views(configuration)
+            transition = LabelAnimator.views(configuration)
+        }
+        
+        static func views(_ configuration: @escaping (UILabel) -> Void) -> View {
+            let label = UILabel("", configuration)
+            return (label, UIStackView([label]) {
+                $0.isLayoutMarginsRelativeArrangement = true
+                $0.layoutMargins = .zero
+            })
+        }
+        
         enum Effect {
             case
             crossfade,
@@ -370,116 +392,99 @@ public class ConnectButton: UIView {
             let right: CGFloat
             
             static let zero = Insets(left: 0, right: 0)
-            static let standard = AnimatingLabel.Insets(left: 0.5 * Layout.height,
+            static let standard = Insets(left: 0.5 * Layout.height,
                                                         right: 0.5 * Layout.height)
             
-            static let avoidServiceIcon = AnimatingLabel.Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
+            static let avoidServiceIcon = Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
                                                                 right: standard.right)
             
-            static func avoidSwitchKnob(isOn: Bool) -> AnimatingLabel.Insets {
+            static func avoidSwitchKnob(isOn: Bool) -> Insets {
                 let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
                 if isOn {
-                    return AnimatingLabel.Insets(left: standard.left, right: avoidSwitch)
+                    return Insets(left: standard.left, right: avoidSwitch)
                 } else {
-                    return AnimatingLabel.Insets(left: avoidSwitch, right: standard.right)
+                    return Insets(left: avoidSwitch, right: standard.right)
                 }
             }
             
-            fileprivate func apply(_ view: AnimatingLabel) {
+            fileprivate func apply(_ view: UIStackView) {
                 view.layoutMargins.left = left
                 view.layoutMargins.right = right
             }
         }
         
         func configure(_ value: Value, insets: Insets? = nil) {
-            value.update(label: label)
-            insets?.apply(self)
+            value.update(label: primary.label)
+            insets?.apply(primary.view)
         }
         
         func transition(with effect: Effect,
                         updatedText: Value,
                         insets: Insets? = nil,
-                        addingTo externalAnimator: UIViewPropertyAnimator? = nil) {
-            let defaultAnimator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut, animations: nil)
+                        addingTo animator: UIViewPropertyAnimator) {
+            
+            // Update the transition to view
+            transition.view.isHidden = false
+            insets?.apply(transition.view)
+            updatedText.update(label: transition.label)
+            
+            // Set final state at the end of the animation
+            animator.addCompletion { position in
+                self.transition.view.isHidden = true
+                self.transition.label.transform = .identity
+                
+                self.primary.label.alpha = 1
+                self.primary.label.transform = .identity
+                
+                if position == .end {
+                    insets?.apply(self.primary.view)
+                    updatedText.update(label: self.primary.label)
+                }
+            }
             
             switch effect {
             case .crossfade:
-                // FIXME: This really isn't quite right
-                // Probably won't work as expected for toggling switch
-                // We need an animation where the text reveals / hides from left to right
-                let animator = externalAnimator ?? defaultAnimator
-                if updatedText.isEmpty {
-                    animator.addAnimations {
-                        self.label.alpha = 0
-                    }
-                } else {
-                    updatedText.update(label: label)
-                    label.alpha = 0
-                    insets?.apply(self)
-                    animator.addAnimations {
-                        self.label.alpha = 1
-                    }
-                }
-                if externalAnimator == nil {
-                    animator.startAnimation()
+                transition.label.alpha = 0
+                animator.addAnimations {
+                    self.primary.label.alpha = 0
+                    self.transition.label.alpha = 1
                 }
                 
             case .slideInFromRight:
-                updatedText.update(label: label)
-                insets?.apply(self)
-                label.alpha = 0
-                label.transform = CGAffineTransform(translationX: 20, y: 0)
-                
-                let animator = externalAnimator ?? defaultAnimator
+                transition.label.alpha = 0
+                transition.label.transform = CGAffineTransform(translationX: 20, y: 0)
                 animator.addAnimations {
-                    self.label.transform = .identity
-                    self.label.alpha = 1
-                }
-                if externalAnimator == nil {
-                    animator.startAnimation()
+                    // In this animation we don't expect there to be any text in the previous state
+                    // But just for prosterity, let's fade out the old value
+                    self.primary.label.alpha = 0
+                    
+                    self.transition.label.transform = .identity
+                    self.transition.label.alpha = 1
                 }
                 
             case .rotateDown:
-                assert(externalAnimator == nil, "Not supported for rotate transitions")
+                let scale: CGFloat = 0.9
+                let translate: CGFloat = 20
                 
-                let animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: nil)
+                // Starting position for the new text
+                // It will rotate down into place
+                transition.label.alpha = 0
+                self.transition.label.transform = CGAffineTransform(translationX: 0, y: -translate).scaledBy(x: scale, y: scale)
+                
                 animator.addAnimations {
-                    self.label.alpha = 0
-                    self.label.transform = CGAffineTransform(translationX: 0, y: 20).scaledBy(x: 0.9, y: 0.9)
+                    // Fade out the current text and rotate it down
+                    self.primary.label.alpha = 0
+                    self.primary.label.transform = CGAffineTransform(translationX: 0, y: translate).scaledBy(x: scale, y: scale)
                 }
-                animator.addCompletion { _ in
-                    updatedText.update(label: self.label)
-                    insets?.apply(self)
-                    self.label.transform = CGAffineTransform(translationX: 0, y: -20).scaledBy(x: 0.9, y: 0.9)
-                    
-                    let nextAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut) {
-                        self.label.alpha = 1
-                        self.label.transform = .identity
-                    }
-                    nextAnimator.startAnimation()
-                }
-                animator.startAnimation()
+                animator.addAnimations({
+                    // Fade in the new text and rotate down from the top
+                    self.transition.label.alpha = 1
+                    self.transition.label.transform = .identity
+                }, delayFactor: 0.5)
             }
         }
-        
-        /// Diplays the content of this label
-        private let label = UILabel()
-        
-        init(configure: ((UILabel) -> Void)? = nil) {
-            super.init(frame: .zero)
-            
-            layoutMargins = .zero
-            
-            addSubview(label)
-            label.constrain.edges(to: layoutMarginsGuide)
-            
-            configure?(label)
-        }
-        @available(*, unavailable)
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
     }
+    
     
     // MARK: Progress bar
     
@@ -496,7 +501,7 @@ public class ConnectButton: UIView {
         
         func configure(with service: Applet.Service?) {
             fractionComplete = 0
-            bar.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
+            bar.backgroundColor = service?.brandColor.contrasting() ?? .black
         }
         
         private func update() {
@@ -678,15 +683,19 @@ public class ConnectButton: UIView {
     // MARK: Layout
     
     private func createLayout() {
-        let stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabel])
+        let stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
         stackView.axis = .vertical
         stackView.spacing = 20
         
         addSubview(stackView)
         stackView.constrain.edges(to: self)
         
+        addSubview(footerLabelAnimator.transition.view)
+        footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
+        
         backgroundView.addSubview(progressBar)
-        backgroundView.addSubview(label)
+        backgroundView.addSubview(primaryLabelAnimator.primary.view)
+        backgroundView.addSubview(primaryLabelAnimator.transition.view)
         backgroundView.addSubview(emailEntryField)
         backgroundView.addSubview(checkmark)
         backgroundView.addSubview(switchControl)
@@ -699,11 +708,12 @@ public class ConnectButton: UIView {
         
         progressBar.constrain.edges(to: backgroundView)
         
-        label.constrain.edges(to: backgroundView)
+        primaryLabelAnimator.primary.view.constrain.edges(to: backgroundView)
+        primaryLabelAnimator.transition.view.constrain.edges(to: backgroundView)
         
         emailEntryField.constrain.edges(to: backgroundView,
-                                        inset: UIEdgeInsets(top: 0, left: AnimatingLabel.Insets.standard.left,
-                                                            bottom: 0, right: AnimatingLabel.Insets.avoidSwitchKnob(isOn: true).right))
+                                        inset: UIEdgeInsets(top: 0, left: LabelAnimator.Insets.standard.left,
+                                                            bottom: 0, right: LabelAnimator.Insets.avoidSwitchKnob(isOn: true).right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
@@ -816,7 +826,10 @@ private extension ConnectButton {
             
         // Setup switch
         case (.initialization, .toggle(let service, let message, let isOn)):
-            self.label.configure(.text(message), insets: .avoidSwitchKnob(isOn: isOn))
+            primaryLabelAnimator.transition(with: .crossfade,
+                                            updatedText: .text(message),
+                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            addingTo: animator)
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
                 self.switchControl.configure(with: service)
@@ -829,16 +842,17 @@ private extension ConnectButton {
         // Change toggle text
         case (.toggle(_, let lastMessage, let wasOn), .toggle(_, let message, let isOn)) where wasOn == isOn:
             if lastMessage != message {
-                label.transition(with: .rotateDown,
-                                 updatedText: .text(message),
-                                 insets: .avoidSwitchKnob(isOn: isOn))
+                primaryLabelAnimator.transition(with: .rotateDown,
+                                                updatedText: .text(message),
+                                                insets: .avoidSwitchKnob(isOn: isOn),
+                                                addingTo: animator)
             }
             animator.addAnimations { }
             
             
         // Toggle
         case (.toggle, .toggle(_, let message, let isOn)):
-            label.transition(with: .crossfade,
+            primaryLabelAnimator.transition(with: .crossfade,
                              updatedText: .text(message),
                              insets: .avoidSwitchKnob(isOn: isOn),
                              addingTo: animator)
@@ -866,9 +880,9 @@ private extension ConnectButton {
             emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
             emailConfirmButton.curvature = 1
             
-            label.transition(with: .crossfade,
-                             updatedText: .none,
-                             addingTo: animator)
+            primaryLabelAnimator.transition(with: .crossfade,
+                                            updatedText: .none,
+                                            addingTo: animator)
             
             progressBar.configure(with: nil)
             
@@ -916,10 +930,10 @@ private extension ConnectButton {
         case (.email, .step(let service, let message)):
             progressBar.configure(with: service)
             
-            label.transition(with: .crossfade,
-                             updatedText: .text(message),
-                             insets: service == nil ? .standard : .avoidServiceIcon,
-                             addingTo: animator)
+            primaryLabelAnimator.transition(with: .crossfade,
+                                            updatedText: .text(message),
+                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            addingTo: animator)
             
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
@@ -939,13 +953,17 @@ private extension ConnectButton {
             
         // Changing the message during a step
         case (.step, .step(_, let message)):
-            label.transition(with: .rotateDown, updatedText: .text(message))
+            primaryLabelAnimator.transition(with: .rotateDown,
+                                            updatedText: .text(message),
+                                            addingTo: animator)
             animator.addAnimations { }
             
             
         // Completing a step
         case (.step, .stepComplete(let service)):
-            label.transition(with: .rotateDown, updatedText: .none)
+            primaryLabelAnimator.transition(with: .rotateDown,
+                                            updatedText: .none,
+                                            addingTo: animator)
             
             backgroundView.backgroundColor = service?.brandColor.contrasting() ?? .iftttBlack
             
@@ -966,10 +984,10 @@ private extension ConnectButton {
         case (.stepComplete, .step(let service, let message)):
             progressBar.configure(with: service)
             
-            label.transition(with: .slideInFromRight,
-                             updatedText: .text(message),
-                             insets: service == nil ? .standard : .avoidServiceIcon,
-                             addingTo: animator)
+            primaryLabelAnimator.transition(with: .slideInFromRight,
+                                            updatedText: .text(message),
+                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            addingTo: animator)
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
@@ -984,10 +1002,10 @@ private extension ConnectButton {
         // Transition back to toggle after completed a flow
         case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true:
             switchControl.primeAnimation_centerKnob()
-            label.transition(with: .crossfade,
-                             updatedText: .text(message),
-                             insets: .avoidSwitchKnob(isOn: isOn),
-                             addingTo: animator)
+            primaryLabelAnimator.transition(with: .crossfade,
+                                            updatedText: .text(message),
+                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            addingTo: animator)
             progressBar.configure(with: service)
             
             animator.addAnimations {
@@ -1005,7 +1023,11 @@ private extension ConnectButton {
             
         // Abort a flow
         case (.step, .toggle(let service, let message, let isOn)) where isOn == false:
-            label.transition(with: .rotateDown, updatedText: .text(message), insets: .avoidSwitchKnob(isOn: isOn))
+            primaryLabelAnimator.transition(with: .rotateDown,
+                                            updatedText: .text(message),
+                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            addingTo: animator)
+            
             progressBar.configure(with: service)
             
             animator.addAnimations {

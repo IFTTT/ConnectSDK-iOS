@@ -93,8 +93,9 @@ public class ConnectInteractionController {
         self.applet = applet
         self.delegate = delegate
         self.connectingService = applet.worksWithServices.first ?? applet.primaryService
-        
-        footerSelect = Selectable(button.footerLabel) { [weak self] in
+
+        // FIXME: Footer selection
+        footerSelect = Selectable(button.footerLabelAnimator.primary.label) { [weak self] in
             self?.showAboutPage()
         }
 
