@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import UIKit.UIGestureRecognizerSubclass
 
 // Layout constants
 
@@ -66,8 +65,7 @@ public class ConnectButton: UIView {
             func set(progress: CGFloat) {
                 animator.fractionComplete = max(0.001, min(0.999, progress))
             }
-            func resume(with timing: UITimingCurveProvider, duration: TimeInterval?) {
-                animator.pauseAnimation()
+            func resume(with timing: UITimingCurveProvider, duration: TimeInterval? = nil) {
                 var durationFactor: CGFloat = 1
                 if let continueDuration = duration {
                     let timeElasped = TimeInterval(1 - animator.fractionComplete) * animator.duration
@@ -122,11 +120,35 @@ public class ConnectButton: UIView {
     // MARK: - Interaction
     
     struct ToggleInteraction {
+        // How easy is it to throw the switch into the next position
+        enum Resistance {
+            case light, heavy
+            
+            fileprivate func shouldReverse(switchOn: Bool, velocity: CGFloat, progress: CGFloat) -> Bool {
+                // Negative velocity is oriented towards switch off
+                switch (self, switchOn) {
+                case (.light, true):
+                    return velocity < -0.1 || (abs(velocity) < 0.05 && progress < 0.4)
+                    
+                case (.light, false):
+                    return velocity > 0.1 || (abs(velocity) < 0.05 && progress > 0.6)
+                    
+                case (.heavy, true):
+                    return progress < 0.5 && velocity > -0.1
+                    
+                case (.heavy, false):
+                    return progress < 0.5 && velocity < 0.1
+                }
+            }
+        }
+        
         /// Can the switch be tapped
         var isTapEnabled: Bool = false
         
         /// Can the switch be dragged
         var isDragEnabled: Bool = false
+        
+        var resistance: Resistance = .light
         
         /// What is the next state of the toggle
         var nextToggleState: (() -> State)?
@@ -147,7 +169,11 @@ public class ConnectButton: UIView {
         var onSelect: (() -> Void)?
     }
     
-    var toggleInteraction = ToggleInteraction()
+    var toggleInteraction = ToggleInteraction() {
+        didSet {
+            updateInteraction()
+        }
+    }
     
     var emailInteraction = EmailInteraction()
     
@@ -157,20 +183,13 @@ public class ConnectButton: UIView {
         }
     }
     
-    private class ScrollGestureRecognizer: UIPanGestureRecognizer {
-        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-            // FIXME: Forgot comment here. Don't remember what this does :/
-            if (self.state == .began) { return }
-            super.touchesBegan(touches, with: event)
-            self.state = .began
-        }
-    }
-    
     private lazy var stepSelection = Selectable(backgroundView) { [weak self] in
         self?.stepInteraction.onSelect?()
     }
     
-    private lazy var toggleGesture = ScrollGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+    private lazy var toggleTapGesture = SelectGestureRecognizer(target: self, action: #selector(handleSwitchTap(_:)))
+    
+    private lazy var toggleDragGesture = UIPanGestureRecognizer(target: self, action: #selector(handleSwitchDrag(_:)))
     
     private var currentToggleTransition: State.Transition?
     
@@ -184,39 +203,70 @@ public class ConnectButton: UIView {
         else {
             return nil
         }
-        return transition(to: nextState)
+        let t = transition(to: nextState)
+        t.onComplete {
+            if case .toggle(_, _, let isOn) = self.currentState {
+                self.toggleInteraction.onToggle?(isOn)
+            }
+        }
+        return t
     }
     
-    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+    @objc private func handleSwitchTap(_ gesture: SelectGestureRecognizer) {
+        if gesture.state == .ended {
+            if let transition = getToggleTransition() {
+                transition.preform()
+                currentToggleTransition = nil
+            }
+        }
+    }
+    
+    @objc private func handleSwitchDrag(_ gesture: UIPanGestureRecognizer) {
         guard let transition = getToggleTransition() else {
             return
         }
+        currentToggleTransition = transition
+        
+        let location = gesture.location(in: switchControl).x
+        var progress = location / switchControl.bounds.width
+        if switchControl.isOn == false {
+            progress = 1 - progress
+        }
+        let v = gesture.velocity(in: switchControl).x / switchControl.bounds.width
+        
         switch gesture.state {
         case .possible:
             break
         case .began:
-            break
-        case .changed:
-            let location = gesture.location(in: switchControl).x
-            var progress = location / switchControl.bounds.width
-//            transition.set(progress: progress)
-//            debugPrint("PROGRESS: \(progress)")
-        case .ended:
             transition.preform()
-            transition.onComplete {
-                if case .toggle(_, _, let isOn) = self.currentState {
-                    self.toggleInteraction.onToggle?(isOn)
-                }
+            transition.pause()
+        
+        case .changed:
+            transition.set(progress: progress)
+            
+        case .ended:
+            // Decide if we should reverse the transition
+            // switchControl.isOn gives us the value that we are animating towards
+            if toggleInteraction.resistance.shouldReverse(switchOn: switchControl.isOn, velocity: v, progress: progress) {
+                transition.animator.isReversed = true
             }
+            transition.resume(with: UISpringTimingParameters(dampingRatio: 1,
+                                                             initialVelocity: CGVector(dx: v, dy: 0)))
             currentToggleTransition = nil
+            
         case .cancelled, .failed:
             currentToggleTransition = nil
         }
     }
     
     private func setupInteraction() {
-        switchControl.addGestureRecognizer(toggleGesture)
-        toggleGesture.delegate = self
+        switchControl.addGestureRecognizer(toggleTapGesture)
+        toggleTapGesture.delaysTouchesBegan = true
+        toggleTapGesture.delegate = self
+        toggleTapGesture.performHighlight = nil
+        
+        switchControl.addGestureRecognizer(toggleDragGesture)
+        toggleDragGesture.delegate = self
         
         emailConfirmButton.onSelect { [weak self] in
             self?.confirmEmail()
@@ -225,6 +275,8 @@ public class ConnectButton: UIView {
     }
     
     private func updateInteraction() {
+        toggleTapGesture.isEnabled = toggleInteraction.isTapEnabled
+        toggleDragGesture.isEnabled = toggleInteraction.isDragEnabled
         stepSelection.isEnabled = stepInteraction.isTapEnabled
     }
     
@@ -759,8 +811,7 @@ private extension ConnectButton {
     
     func animator(forTransitionTo state: State, from previousState: State) -> UIViewPropertyAnimator {
         let animator = UIViewPropertyAnimator(duration: animationDuration,
-                                              timingParameters: UISpringTimingParameters(dampingRatio: 1,
-                                                                                         initialVelocity: .zero))
+                                              timingParameters: UISpringTimingParameters(dampingRatio: 1))
         switch (previousState, state) {
             
         // Setup switch
@@ -799,6 +850,11 @@ private extension ConnectButton {
                 self.backgroundView.backgroundColor = isOn ? .black : .iftttGrey
                 self.switchControl.isOn = isOn
             }
+            animator.addCompletion { position in
+                if position == .start {
+                    self.switchControl.isOn = !isOn
+                }
+            }
             
             
         // Connect to enter email
@@ -832,13 +888,20 @@ private extension ConnectButton {
                 
                 self.emailEntryField.alpha = 1
             }
-            animator.addCompletion { (_) in
+            animator.addCompletion { position in
                 // Keep the knob is a "clean" state since we don't animate backwards from this step
                 self.switchControl.knob.transform = .identity
                 self.switchControl.knob.curvature = 1
                 
-                if suggested == nil {
-                    self.emailEntryField.becomeFirstResponder()
+                switch position {
+                case .start:
+                    self.switchControl.isOn = false
+                case .end:
+                    if suggested == nil {
+                        self.emailEntryField.becomeFirstResponder()
+                    }
+                default:
+                    break
                 }
             }
         

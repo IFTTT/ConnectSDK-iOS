@@ -373,6 +373,9 @@ public class ConnectInteractionController {
             button.transition(to: initialButtonState).preform(animated: animated)
             button.configureFooter(FooterMessages.poweredBy.value, animated: animated)
             
+            button.toggleInteraction.isTapEnabled = true
+            button.toggleInteraction.isDragEnabled = true
+            
             button.toggleInteraction.nextToggleState = {
                 if let _ = Applet.Session.shared.userToken {
                     // User is already logged in to IFTTT
@@ -409,7 +412,6 @@ public class ConnectInteractionController {
             }
             
             button.toggleInteraction.isTapEnabled = true
-            button.toggleInteraction.isDragEnabled = true
             
             let nextState = connectedButtonState
             button.toggleInteraction.nextToggleState = {
@@ -444,11 +446,11 @@ public class ConnectInteractionController {
             User.check(email: email, timeout: timeout) { (_isExisting) in
                 isExisting = _isExisting
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 if isExisting {
                     // There exists an IFTTT account for this user
                     // Finish the progress bar animation and open web to login
-                    progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.5)
+                    progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.25)
                     progress.onComplete {
                         self.transition(to: .logInExistingUser(.email(email)))
                     }
@@ -541,6 +543,7 @@ public class ConnectInteractionController {
             // The user must slide to deactivate the Applet
             button.toggleInteraction.isTapEnabled = false
             button.toggleInteraction.isDragEnabled = true
+            button.toggleInteraction.resistance = .heavy
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 if case .confirmDisconnect? = self.currentActivationStep {
@@ -555,8 +558,12 @@ public class ConnectInteractionController {
             button.toggleInteraction.nextToggleState = {
                 return nextState
             }
-            button.toggleInteraction.onToggle = { [weak self] _ in
-                self?.transition(to: .processDisconnect)
+            button.toggleInteraction.onToggle = { [weak self] isOn in
+                if isOn {
+                    self?.transition(to: .connected)
+                } else {
+                    self?.transition(to: .processDisconnect)
+                }
             }
             
             button.configureFooter(FooterMessages.disconnect.value, animated: true)
