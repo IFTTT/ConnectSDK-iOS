@@ -94,8 +94,7 @@ public class ConnectInteractionController {
         self.delegate = delegate
         self.connectingService = applet.worksWithServices.first ?? applet.primaryService
 
-        // FIXME: Footer selection
-        footerSelect = Selectable(button.footerLabelAnimator.primary.label) { [weak self] in
+        button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
 
@@ -123,9 +122,6 @@ public class ConnectInteractionController {
     
     
     // MARK: - Footer
-    
-    /// When the connect button is in the "toggle" state, the user may select it to open the about page
-    private var footerSelect: Selectable!
     
     private func showAboutPage() {
         delegate?.connectInteraction(self,
@@ -354,6 +350,7 @@ public class ConnectInteractionController {
         button.toggleInteraction = .init()
         button.emailInteraction = .init()
         button.stepInteraction = .init()
+        button.footerInteraction.isTapEnabled = false // Don't clear the select block
         
         let previous = currentActivationStep
         self.currentActivationStep = step
@@ -367,7 +364,7 @@ public class ConnectInteractionController {
                 self?.handleRedirect(outcome)
             }
             
-            footerSelect.isEnabled = true
+            button.footerInteraction.isTapEnabled = true
             
             let animated = previous != nil
             
@@ -405,7 +402,7 @@ public class ConnectInteractionController {
             button.transition(to: connectedButtonState).preform(animated: animated)
             button.configureFooter(FooterMessages.manage.value, animated: animated)
             
-            footerSelect.isEnabled = true
+            button.footerInteraction.isTapEnabled = true
             
             // Applet was changed to this state, not initialized with it, so let the delegate know
             if previous != nil {
@@ -431,8 +428,6 @@ public class ConnectInteractionController {
             
         // MARK: - Check if email is an existing user
         case (.initial?, .checkEmailIsExistingUser(let email)):
-            footerSelect.isEnabled = false
-            
             let timeout: TimeInterval = 4 // How many seconds we'll wait before giving up and opening the applet activation URL
             
             button.transition(to:

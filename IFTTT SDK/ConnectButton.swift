@@ -167,7 +167,7 @@ public class ConnectButton: UIView {
         var onConfirm: ((String) -> Void)?
     }
     
-    struct StepInteraction {
+    struct SelectInteraction {
         var isTapEnabled: Bool = false
         
         var onSelect: (() -> Void)?
@@ -181,19 +181,29 @@ public class ConnectButton: UIView {
     
     var emailInteraction = EmailInteraction()
     
-    var stepInteraction = StepInteraction() {
+    var stepInteraction = SelectInteraction() {
         didSet {
             updateInteraction()
         }
     }
     
-    private lazy var stepSelection = Selectable(backgroundView) { [weak self] in
-        self?.stepInteraction.onSelect?()
+    var footerInteraction = SelectInteraction() {
+        didSet {
+            updateInteraction()
+        }
     }
     
     private lazy var toggleTapGesture = SelectGestureRecognizer(target: self, action: #selector(handleSwitchTap(_:)))
     
     private lazy var toggleDragGesture = UIPanGestureRecognizer(target: self, action: #selector(handleSwitchDrag(_:)))
+    
+    private lazy var stepSelection = Selectable(backgroundView) { [weak self] in
+        self?.stepInteraction.onSelect?()
+    }
+    
+    private lazy var footerSelection = Selectable(footerLabelAnimator.primary.view) { [weak self] in
+        self?.footerInteraction.onSelect?()
+    }
     
     private var currentToggleTransition: State.Transition?
     
@@ -282,6 +292,7 @@ public class ConnectButton: UIView {
         toggleTapGesture.isEnabled = toggleInteraction.isTapEnabled
         toggleDragGesture.isEnabled = toggleInteraction.isDragEnabled
         stepSelection.isEnabled = stepInteraction.isTapEnabled
+        footerSelection.isEnabled = footerInteraction.isTapEnabled
     }
     
     fileprivate func confirmEmail() {
