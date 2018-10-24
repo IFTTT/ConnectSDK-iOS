@@ -431,6 +431,7 @@ public class ConnectButton: UIView {
             // Set final state at the end of the animation
             animator.addCompletion { position in
                 self.transition.view.isHidden = true
+                self.transition.label.alpha = 0
                 self.transition.label.transform = .identity
                 
                 self.primary.label.alpha = 1
@@ -469,7 +470,7 @@ public class ConnectButton: UIView {
                 // Starting position for the new text
                 // It will rotate down into place
                 transition.label.alpha = 0
-                self.transition.label.transform = CGAffineTransform(translationX: 0, y: -translate).scaledBy(x: scale, y: scale)
+                transition.label.transform = CGAffineTransform(translationX: 0, y: -translate).scaledBy(x: scale, y: scale)
                 
                 animator.addAnimations {
                     // Fade out the current text and rotate it down
@@ -1018,6 +1019,13 @@ private extension ConnectButton {
                 self.switchControl.isOn = true
                 
                 self.checkmark.alpha = 0
+                
+                // Animate the checkmark along with the knob from the center position to the knob's final position
+                let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
+                self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
+            }
+            animator.addCompletion { _ in
+                self.checkmark.transform = .identity
             }
             
             
