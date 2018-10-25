@@ -12,7 +12,7 @@ import UIKit
 
 fileprivate struct Layout {
     static let height: CGFloat = 64
-    static let knobInset: CGFloat = 8
+    static let knobInset: CGFloat = 6
     static var knobDiameter: CGFloat {
         return height - 2 * knobInset
     }
