@@ -12,19 +12,29 @@ import IFTTT_SDK
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    static var shared: AppDelegate?
+    
     var window: UIWindow?
-
+    
+    func login() {
+        window?.rootViewController = UINavigationController(rootViewController: HomeViewController())
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        AppDelegate.shared = self
+        
+        IFTTTAuthenication.shared.setUserToken(nil)
         
         User.current.suggestedUserEmail = "jon@ifttt.com"
         
         Applet.Session.shared.inviteCode = "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
         Applet.Session.shared.appletActivationRedirect = URL(string: "ifttt-api-example://sdk-callback")!
-        Applet.Session.shared.userTokenProvider = IFTTTAuthenication()
+        Applet.Session.shared.userTokenProvider = IFTTTAuthenication.shared
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.backgroundColor = .white
-        window.rootViewController = UINavigationController(rootViewController: HomeViewController())
+        window.rootViewController = LoginViewController()
         window.makeKeyAndVisible()
         self.window = window
         
@@ -43,8 +53,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 struct IFTTTAuthenication: UserTokenProviding {
+    static let shared = IFTTTAuthenication()
+    
+    let keychain = Keychain(service: "com.ifttt")
+    
+    func setUserToken(_ token: String?) {
+        keychain["user_token"] = token
+    }
     func iftttUserToken(for session: Applet.Session) -> String? {
-        let keychain = Keychain(service: "com.ifttt")
         return keychain["user_token"]
     }
 }
