@@ -269,6 +269,9 @@ public class ConnectButton: UIView {
             currentToggleTransition = nil
             
         case .cancelled, .failed:
+            transition.animator.isReversed = true
+            transition.resume(with: UISpringTimingParameters(dampingRatio: 1,
+                                                             initialVelocity: CGVector(dx: v, dy: 0)))
             currentToggleTransition = nil
         }
     }
@@ -458,9 +461,14 @@ public class ConnectButton: UIView {
             case .crossfade:
                 transition.label.alpha = 0
                 animator.addAnimations {
-                    self.primary.label.alpha = 0
-                    self.transition.label.alpha = 1
+                    // This will fade out the label more quickly than the length of the full animation
+                    // Doing this we can create a two step animation without nesting animation blocks
+                    self.primary.label.alpha = -0.6
                 }
+                // Fade in the new label as the second part of the animation
+                animator.addAnimations({
+                    self.transition.label.alpha = 1
+                }, delayFactor: 0.5)
                 
             case .slideInFromRight:
                 transition.label.alpha = 0
