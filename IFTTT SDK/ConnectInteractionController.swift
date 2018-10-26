@@ -239,6 +239,13 @@ public class ConnectInteractionController {
     
     private var currentSafariViewController: SFSafariViewController?
     
+    private func openActivationURL(_ url: URL) {
+        let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+        controller.delegate = redirectObserving
+        currentSafariViewController = controller
+        delegate?.connectInteraction(self, show: controller)
+    }
+    
     private var redirectObserving: RedirectObserving?
     
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
@@ -477,11 +484,7 @@ public class ConnectInteractionController {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            let url = applet.activationURL(.login(userId))
-            let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
-            controller.delegate = redirectObserving
-            currentSafariViewController = controller
-            delegate?.connectInteraction(self, show: controller)
+            openActivationURL(applet.activationURL(.login(userId)))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let transition = button.transition(to: .stepComplete(for: nil))
@@ -510,20 +513,23 @@ public class ConnectInteractionController {
             let url = applet.activationURL(.serviceConnection(newUserEmail: newUserEmail, token: token))
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
-                let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
-                controller.delegate = self?.redirectObserving
-                self?.currentSafariViewController = controller
-                if let strongSelf = self {
-                    strongSelf.delegate?.connectInteraction(strongSelf, show: controller)
-                }
+                self?.openActivationURL(url)
             }
             
         case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep)):
-            self.button.transition(to: .stepComplete(for: service)).preform()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.transition(to: nextStep)
+            //FIXME: The web needs to tell us whether to say connecting or saving here
+            button.transition(to: .step(for: service, message: "button.state.connecting".localized)).preform()
+            button.configureFooter(FooterMessages.poweredBy.value, animated: true)
+
+            let progressBar = button.progressTransition(timeout: 2)
+            progressBar.preform()
+            progressBar.onComplete {
+                self.button.transition(to: .stepComplete(for: service)).preform()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.transition(to: nextStep)
+                }
             }
-            
+        
             
         // MARK: - Cancel & failure states
         case (_, .canceled):
