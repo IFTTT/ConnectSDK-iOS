@@ -15,7 +15,8 @@ class HomeViewController: UITableViewController {
     
     var applets: [Item] {
         return [
-            ("PMEHLDAV", "Turn on your LIFX lights")
+            ("PMEHLDAV", "Turn on your LIFX lights"),
+            ("mZRHhST7", "Copy a saved track to a playlist")
         ]
     }
     

@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AppDelegate.shared = self
         
-        IFTTTAuthenication.shared.setUserToken(nil)
+        IFTTTAuthenication.shared.setIftttUserToken(nil)
         
         User.current.suggestedUserEmail = "jon@ifttt.com"
         
@@ -55,12 +55,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 struct IFTTTAuthenication: UserTokenProviding {
     static let shared = IFTTTAuthenication()
     
-    let keychain = Keychain(service: "com.ifttt")
+    let keychain = Keychain(service: "com.my-app")
     
-    func setUserToken(_ token: String?) {
-        keychain["user_token"] = token
+    func apiExampleOauthToken(_ token: String) {
+        keychain["my_user_token"] = token
+    }
+    func partnerOauthTokenForServiceConnection(_ session: Applet.Session) -> String {
+        return keychain["my_user_token"] ?? ""
+    }
+    
+    func setIftttUserToken(_ token: String?) {
+        keychain["ifttt_user_token"] = token
     }
     func iftttUserToken(for session: Applet.Session) -> String? {
-        return keychain["user_token"]
+        return keychain["ifttt_user_token"]
     }
 }

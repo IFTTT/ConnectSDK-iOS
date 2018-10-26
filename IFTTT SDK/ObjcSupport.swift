@@ -9,6 +9,7 @@
 import Foundation
 
 @objc public protocol IFTTTUserTokenProviding: NSObjectProtocol {
+    @objc func partnerOauthTokenForServiceConnection() -> String
     @objc func iftttUserToken() -> String?
 }
 
@@ -23,6 +24,10 @@ import Foundation
 }
 
 extension IFTTTAppletSession: UserTokenProviding {
+    public func partnerOauthTokenForServiceConnection(_ session: Applet.Session) -> String {
+        // FIXME: !!
+        return userTokenProvider!.partnerOauthTokenForServiceConnection()
+    }
     public func iftttUserToken(for session: Applet.Session) -> String? {
         return userTokenProvider?.iftttUserToken()
     }
@@ -92,7 +97,7 @@ extension IFTTTAppletSession: UserTokenProviding {
     }
     
     @objc public static func deactivateApplet(withId id: String, _ completion: @escaping (IFTTTAppletResponse) -> Void) {
-        Applet.Request.deactivateApplet(id: id) { (response) in
+        Applet.Request.disconnectApplet(id: id) { (response) in
             completion(IFTTTAppletResponse(response: response))
         }
         .start()

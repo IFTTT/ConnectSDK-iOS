@@ -47,7 +47,7 @@ public struct Applet {
     enum ActivationStep {
         case
         login(User.ID),
-        serviceConnection(newUserEmail: String?)
+        serviceConnection(newUserEmail: String?, token: String?)
     }
     
     func activationURL(_ step: ActivationStep) -> URL {
@@ -70,10 +70,13 @@ public struct Applet {
                 queryItems.append(URLQueryItem(name: "email", value: email))
             }
             
-        case .serviceConnection(let newUserEmail):
+        case .serviceConnection(let newUserEmail, let token):
             if let email = newUserEmail {
                 queryItems.append(URLQueryItem(name: "email", value: email))
                 queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
+            }
+            if let token = token {
+                queryItems.append(URLQueryItem(name: "token", value: token))
             }
             queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
         }
@@ -90,6 +93,7 @@ public struct Applet {
 // MARK: - Session Manager
 
 public protocol UserTokenProviding {
+    func partnerOauthTokenForServiceConnection(_ session: Applet.Session) -> String
     func iftttUserToken(for session: Applet.Session) -> String?
 }
 
@@ -105,6 +109,11 @@ public extension Applet {
         
         var userToken: String? {
             return userTokenProvider?.iftttUserToken(for: self)
+        }
+        
+        var partnerToken: String {
+            // FIXME: !!
+            return userTokenProvider!.partnerOauthTokenForServiceConnection(self)
         }
         
         public var appletActivationRedirect: URL?
@@ -190,6 +199,14 @@ public extension Applet {
             task.resume()
         }
         
+        public static func applet(id: String, _ completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/applets/\(id)", method: .GET, completion: completion)
+        }
+        
+        public static func disconnectApplet(id: String, _ completion: @escaping CompletionHandler) -> Request {
+            return Request(path: "/applets/\(id)/disable)", method: .POST, completion: completion)
+        }
+        
         private init(path: String, method: Method, completion: @escaping CompletionHandler) {
             let api = URL(string: "https://api.ifttt.com/v2")!
             
@@ -213,13 +230,101 @@ public extension Applet {
             self.urlRequest = request
             self.completion = completion
         }
+    }
+}
+
+
+// MARK: - Connect configuration
+
+extension Applet.Session {
+    
+    struct ConnectConfiguration {
+        let isExistingUser: Bool
+        let partnerOpaqueToken: String?
+    }
+    
+    func getConnectConfiguration(userEmail: String,
+                                 waitUntil: TimeInterval,
+                                 timeout: TimeInterval,
+                                 _ completion: @escaping (ConnectConfiguration) -> Void) {
         
-        public static func applet(id: String, _ completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/applets/\(id)", method: .GET, completion: completion)
+        let urlSession = Applet.Session.shared.urlSession
+        var isExistingUser: Bool = false
+        var partnerOpaqueToken: String?
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        let partnerHandshake = {
+            if self.partnerToken.isEmpty == false,
+                let body = try? JSONSerialization.data(withJSONObject: ["token" : self.partnerToken]) {
+                
+                var request = URLRequest(url: URL(string: "https://ifttt.com/access/api/handshake")!)
+                request.httpMethod = "POST"
+                request.httpBody = body
+                request.timeoutInterval = timeout
+                
+                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _) in
+                    partnerOpaqueToken = parser["token"].string
+                    semaphore.signal()
+                }.resume()
+            } else {
+                semaphore.signal()
+            }
+        }
+        let checkEmail = {
+            let url = URL(string: "https://api.ifttt.com/v2/account/find?email=\(userEmail)")!
+            var request = URLRequest(url: url)
+            request.timeoutInterval = timeout
+            
+            urlSession.jsonTask(with: request, waitUntil: waitUntil) { (_, response, _) in
+                isExistingUser = response?.statusCode == 204
+                semaphore.signal()
+            }.resume()
         }
         
-        public static func deactivateApplet(id: String, _ completion: @escaping CompletionHandler) -> Request {
-            return Request(path: "/applets/\(id)/disable)", method: .POST, completion: completion)
+        partnerHandshake()
+        checkEmail()
+        
+        DispatchQueue(label: "com.ifttt.get-connect-configuration").async {
+            [partnerHandshake, checkEmail].forEach { _ in semaphore.wait() }
+            DispatchQueue.main.async {
+                completion(ConnectConfiguration(isExistingUser: isExistingUser, partnerOpaqueToken: partnerOpaqueToken))
+            }
+        }
+    }
+}
+
+
+// MARK: - URLSession
+
+extension URLSession {
+    func jsonTask(with urlRequest: URLRequest, _ completion: @escaping (Parser, HTTPURLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        return dataTask(with: urlRequest) { (data, response, error) in
+            DispatchQueue.main.async {
+                completion(Parser(content: data), response as? HTTPURLResponse, error)
+            }
+        }
+    }
+    func jsonTask(with urlRequest: URLRequest,
+                  waitUntil minimumDuration: TimeInterval,
+                  _ completion: @escaping (Parser, HTTPURLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        
+        var result: (Parser, HTTPURLResponse?, Error?)?
+        var minimumTimeElapsed = false
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + minimumDuration) {
+            minimumTimeElapsed = true
+            if let result = result {
+                completion(result.0, result.1, result.2)
+            }
+        }
+        
+        return jsonTask(with: urlRequest) { (parser, response, error) in
+            if minimumTimeElapsed {
+                completion(parser, response, error)
+            } else {
+                result = (parser, response, error)
+            }
         }
     }
 }
@@ -228,6 +333,148 @@ public extension Applet {
 // MARK: - Parsing
 
 typealias JSON = [String : Any?]
+
+enum Parser {
+    
+    case none, dictionary(JSON), array([Parser]), value(Any)
+    
+    init(content: Any?) {
+        if let data = content as? Data {
+            let json = try? JSONSerialization.jsonObject(with: data)
+            self = Parser(content: json)
+        } else if let array = content as? [Any] {
+            self = .array(array.map({ Parser(content: $0) }))
+        } else if let dict = content as? JSON {
+            self = .dictionary(dict)
+        } else if let content = content {
+            self = .value(content)
+        } else {
+            self = .none
+        }
+    }
+    
+    subscript(key: String) -> Parser {
+        if case .dictionary(let json) = self, let content = json[key] {
+            return Parser(content: content)
+        } else {
+            return .none
+        }
+    }
+    
+    /// Returns all keys at this level
+    /// Returns an empty array if it is not a dictionary
+    var keys: [String] {
+        switch self {
+        case .dictionary(let json):
+            return Array(json.keys)
+        default:
+            return []
+        }
+    }
+    
+    var currentValue: Any? {
+        if case .value(let currentValue) = self {
+            return currentValue
+        } else {
+            return nil
+        }
+    }
+    
+    var string: String? {
+        return currentValue as? String
+    }
+    var stringValue: String {
+        return string ?? ""
+    }
+    
+    var stringArray: [String]? {
+        if case .array(let array) = self {
+            return array.compactMap({ $0.string })
+        } else {
+            return nil
+        }
+    }
+    var stringArrayValue: [String] {
+        return stringArray ?? []
+    }
+    
+    var bool: Bool? {
+        return (currentValue as? Bool) ?? Bool(string ?? "not_a_bool")
+    }
+    var boolValue: Bool {
+        return bool ?? false
+    }
+    
+    var int: Int? {
+        return (currentValue as? Int) ?? Int(string ?? "not_an_int")
+    }
+    var intValue: Int {
+        return int ?? 0
+    }
+    
+    var double: Double? {
+        return (currentValue as? Double) ?? Double(string ?? "not_a_double")
+    }
+    var doubleValue: Double {
+        return double ?? 0
+    }
+    
+    var url: URL? {
+        if let string = string {
+            return URL(string: string)
+        } else {
+            return nil
+        }
+    }
+    
+    /// If self is a dictionary, append another blob with a key
+    /// This is a no-op if self isn't a dictionary or parser is none
+    func adding(_ parser: Parser, forKey key: String) -> Parser {
+        switch self {
+        case .dictionary(var json):
+            switch parser {
+            case .array(let array):
+                json[key] = array
+            case .dictionary(let dict):
+                json[key] = dict
+            case .value(let value):
+                json[key] = value
+            default:
+                break
+            }
+            return .dictionary(json)
+        default:
+            return self
+        }
+    }
+}
+
+extension Parser: Collection {
+    subscript(index: Int) -> Parser {
+        if case .array(let jsonArray) = self, jsonArray.count > index {
+            return jsonArray[index]
+        } else {
+            return .none
+        }
+    }
+    var startIndex: Int {
+        return 0
+    }
+    func index(after i: Int) -> Int {
+        if case .array(let objects) = self {
+            return objects.index(after: i)
+        } else {
+            return 0
+        }
+    }
+    var endIndex: Int {
+        if case .array(let objects) = self {
+            return objects.count
+        } else {
+            return 0
+        }
+    }
+}
 
 extension Applet {
     init?(json: JSON) {

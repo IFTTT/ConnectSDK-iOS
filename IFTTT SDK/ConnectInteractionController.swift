@@ -343,6 +343,8 @@ public class ConnectInteractionController {
     /// State machine state
     private var currentActivationStep: ActivationStep?
     
+    private var currentConfiguration: Applet.Session.ConnectConfiguration?
+    
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
         
@@ -375,13 +377,13 @@ public class ConnectInteractionController {
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.nextToggleState = {
-                if let _ = Applet.Session.shared.userToken {
-                    // User is already logged in to IFTTT
-                    // Retrieve their user ID and skip email step
-                    return .step(for: nil, message: "button.state.accessing_existing_account".localized)
-                } else {
+//                if let _ = Applet.Session.shared.userToken {
+//                    // User is already logged in to IFTTT
+//                    // Retrieve their user ID and skip email step
+//                    return .step(for: nil, message: "button.state.accessing_existing_account".localized)
+//                } else {
                     return .email(suggested: User.current.suggestedUserEmail)
-                }
+//                }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
                 if let _ = Applet.Session.shared.userToken {
@@ -438,15 +440,14 @@ public class ConnectInteractionController {
             let progress = button.progressTransition(timeout: timeout)
             progress.preform()
             
-            var isExisting = true
-            User.check(email: email, timeout: timeout) { (_isExisting) in
-                isExisting = _isExisting
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                if isExisting {
-                    // There exists an IFTTT account for this user
-                    // Finish the progress bar animation and open web to login
-                    progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.25)
+            Applet.Session.shared.getConnectConfiguration(userEmail: email,
+                                                          waitUntil: 1,
+                                                          timeout: timeout)
+            { (configuration) in
+                self.currentConfiguration = configuration
+                
+                if configuration.isExistingUser {
+                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                     progress.onComplete {
                         self.transition(to: .logInExistingUser(.email(email)))
                     }
@@ -459,7 +460,7 @@ public class ConnectInteractionController {
                               message: "button.state.creating_account".localized)
                         ).preform()
                     
-                    progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 1.5)
+                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete {
                         // Show "fake" success
                         self.button.transition(to: .stepComplete(for: nil)).preform()
@@ -472,7 +473,7 @@ public class ConnectInteractionController {
                     }
                 }
             }
-            
+
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
@@ -499,7 +500,14 @@ public class ConnectInteractionController {
                       message: "button.state.sign_in".localized(arguments: service.name))
                 ).preform()
             
-            let url = applet.activationURL(.serviceConnection(newUserEmail: newUserEmail))
+            let token: String? = {
+                if service.id == applet.primaryService.id {
+                    return currentConfiguration?.partnerOpaqueToken
+                }
+                return nil
+            }()
+            
+            let url = applet.activationURL(.serviceConnection(newUserEmail: newUserEmail, token: token))
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
@@ -527,7 +535,7 @@ public class ConnectInteractionController {
             transition(to: .initial)
             
             
-        // MARK: - Deactivate
+        // MARK: - Disconnect
         case (.connected?, .confirmDisconnect):
             // The user must slide to deactivate the Applet
             button.toggleInteraction.isTapEnabled = false
@@ -590,7 +598,7 @@ public class ConnectInteractionController {
                 }
             }
             
-            var request = Applet.Request.deactivateApplet(id: applet.id) { (_response) in
+            var request = Applet.Request.disconnectApplet(id: applet.id) { (_response) in
                 if minimumTimeReached {
                     handleResponse(_response)
                 } else {

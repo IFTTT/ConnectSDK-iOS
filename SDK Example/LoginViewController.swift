@@ -75,6 +75,7 @@ class LoginViewController: UIViewController {
             DispatchQueue.main.async {
                 let statusCode = (response as? HTTPURLResponse)?.statusCode
                 if let token = self.extractToken(from: data) {
+                    IFTTTAuthenication.shared.apiExampleOauthToken(token)
                     self.loginIftttUser(token)
                 } else {
                     self.loginFailed(statusCode!)
@@ -90,7 +91,7 @@ class LoginViewController: UIViewController {
         request.httpMethod = "POST"
         URLSession.shared.dataTask(with: request) { (data, response, _) in
             DispatchQueue.main.async {
-                IFTTTAuthenication.shared.setUserToken(self.extractToken(from: data))
+                IFTTTAuthenication.shared.setIftttUserToken(self.extractToken(from: data))
                 AppDelegate.shared?.login()
             }
         }.resume()   
