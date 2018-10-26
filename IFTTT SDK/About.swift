@@ -83,8 +83,11 @@ class AboutViewController: UIViewController {
             super.init(frame: .zero)
             
             let iconView = UIImageView(image: icon)
+            iconView.contentMode = .scaleAspectFit
+            iconView.constrain.square(length: 24)
+            
             let label = UILabel(text) {
-                $0.font = .ifttt(.body)
+                $0.font = .ifttt(Typestyle.body.adjusting(weight: .demiBold))
                 $0.textColor = .white
                 $0.textAlignment = .left
                 $0.numberOfLines = 0
@@ -111,12 +114,11 @@ class AboutViewController: UIViewController {
     private lazy var itemViews: [ItemView] = [
         ItemView(icon: Assets.About.connect, text: "about.connect".localized),
         ItemView(icon: Assets.About.control, text: "about.control".localized),
-        ItemView(icon: Assets.About.manage, text: "about.manage".localized),
         ItemView(icon: Assets.About.security, text: "about.security".localized)
     ]
     
     private lazy var itemsStackView = UIStackView(itemViews) {
-        $0.spacing = 10
+        $0.spacing = 24
         $0.axis = .vertical
         $0.alignment = .fill
     }

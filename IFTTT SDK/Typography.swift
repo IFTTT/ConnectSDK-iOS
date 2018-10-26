@@ -26,6 +26,7 @@ public struct Typestyle {
         case
         heavy = "Heavy",
         bold = "Bold",
+        demiBold = "DemiBold",
         medium = "Medium"
     }
     
