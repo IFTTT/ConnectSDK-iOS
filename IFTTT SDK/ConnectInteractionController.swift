@@ -437,7 +437,7 @@ public class ConnectInteractionController {
             
         // MARK: - Check if email is an existing user
         case (.initial?, .checkEmailIsExistingUser(let email)):
-            let timeout: TimeInterval = 4 // How many seconds we'll wait before giving up and opening the applet activation URL
+            let timeout: TimeInterval = 3 // Network request timeout
             
             button.transition(to:
                 .step(for: nil,
@@ -525,7 +525,7 @@ public class ConnectInteractionController {
             progressBar.preform()
             progressBar.onComplete {
                 self.button.transition(to: .stepComplete(for: service)).preform()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.transition(to: nextStep)
                 }
             }
@@ -572,14 +572,13 @@ public class ConnectInteractionController {
             button.configureFooter(FooterMessages.disconnect.value, animated: true)
             
         case (.confirmDisconnect?, .processDisconnect):
-            
-            let timeout: TimeInterval = 3
+            let timeout: TimeInterval = 3 // Network request timeout
             
             let progress = button.progressTransition(timeout: timeout)
             progress.preform()
             
-            let handleResponse = { (response: Applet.Request.Response) -> Void in
-                progress.resume(with: UICubicTimingParameters(animationCurve: .easeIn), duration: 0.25)
+            Applet.Request.disconnectApplet(id: applet.id) { (response) in
+                progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {
                     switch response.result {
                     case .success:
@@ -590,29 +589,7 @@ public class ConnectInteractionController {
                         self.transition(to: .connected)
                     }
                 }
-            }
-            
-            var response: Applet.Request.Response?
-            
-            let minimumTime: TimeInterval = 1
-            var minimumTimeReached = false
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + minimumTime) {
-                minimumTimeReached = true
-                if let response = response {
-                    handleResponse(response)
-                }
-            }
-            
-            var request = Applet.Request.disconnectApplet(id: applet.id) { (_response) in
-                if minimumTimeReached {
-                    handleResponse(_response)
-                } else {
-                    response = _response
-                }
-            }
-            request.urlRequest.timeoutInterval = timeout
-            request.start()
+            }.start(waitUntil: 1, timeout: timeout)
             
         case (.processDisconnect?, .disconnected):
             appletChangedStatus(isOn: false)

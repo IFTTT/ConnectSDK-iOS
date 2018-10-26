@@ -185,18 +185,7 @@ public extension Applet {
         public let completion: CompletionHandler
         
         public func start(with session: Session = .shared) {
-            let task = session.urlSession.dataTask(with: urlRequest) { (data, response, error) in
-                let statusCode = (response as? HTTPURLResponse)?.statusCode
-                let applet = Applet.applets(data)?.first
-                DispatchQueue.main.async {
-                    if let applet = applet {
-                        self.completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
-                    } else {
-                        self.completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error)))
-                    }
-                }
-            }
-            task.resume()
+            task(with: session.urlSession, urlRequest: urlRequest, minimumDuration: nil).resume()
         }
         
         public static func applet(id: String, _ completion: @escaping CompletionHandler) -> Request {
@@ -205,6 +194,28 @@ public extension Applet {
         
         public static func disconnectApplet(id: String, _ completion: @escaping CompletionHandler) -> Request {
             return Request(path: "/applets/\(id)/disable)", method: .POST, completion: completion)
+        }
+        
+        func start(with session: Session = .shared, waitUntil minimumDuration: TimeInterval, timeout: TimeInterval) {
+            var urlRequest = self.urlRequest
+            urlRequest.timeoutInterval = timeout
+            task(with: session.urlSession, urlRequest: urlRequest, minimumDuration: minimumDuration).resume()
+        }
+        
+        private func task(with urlSession: URLSession, urlRequest: URLRequest, minimumDuration: TimeInterval?) -> URLSessionDataTask {
+            let handler = { (parser: Parser, response: HTTPURLResponse?, error: Error?) in
+                let statusCode = response?.statusCode
+                if let applet = Applet.parseAppletsResponse(parser)?.first {
+                    self.completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
+                } else {
+                    self.completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error)))
+                }
+            }
+            if let minimumDuration = minimumDuration {
+                return urlSession.jsonTask(with: urlRequest, waitUntil: minimumDuration, handler)
+            } else {
+                return urlSession.jsonTask(with: urlRequest, handler)
+            }
         }
         
         private init(path: String, method: Method, completion: @escaping CompletionHandler) {
@@ -427,6 +438,14 @@ enum Parser {
         }
     }
     
+    var color: UIColor? {
+        if let string = string {
+            return UIColor(hex: string)
+        } else {
+            return nil
+        }
+    }
+    
     /// If self is a dictionary, append another blob with a key
     /// This is a no-op if self isn't a dictionary or parser is none
     func adding(_ parser: Parser, forKey key: String) -> Parser {
@@ -477,42 +496,38 @@ extension Parser: Collection {
 }
 
 extension Applet {
-    init?(json: JSON) {
+    init?(parser: Parser) {
         guard
-            let id = json["id"] as? String,
-            let name = json["name"] as? String,
-            let description = json["description"] as? String,
-            let urlString = json["url"] as? String, let url = URL(string: urlString),
-            let actUrlString = json["embedded_url"] as? String, let actUrl = URL(string: actUrlString) else {
+            let id = parser["id"].string,
+            let name = parser["name"].string,
+            let description = parser["description"].string,
+            let url = parser["url"].url,
+            let activationUrl = parser["embedded_url"].url else {
                 return nil
         }
         self.id = id
         self.name = name
         self.description = description
-        self.status = Status(rawValue: json["user_status"] as? String ?? "") ?? .unknown
-        self.services = Service.services(json["services"] as? [JSON] ?? [])
+        self.status = Status(rawValue: parser["user_status"].string ?? "") ?? .unknown
+        self.services = parser["services"].compactMap { Service(parser: $0) }
         self.url = url
-        self.activationURL = actUrl
+        self.activationURL = activationUrl
         guard let primaryService = services.first(where: { $0.isPrimary }) else {
             return nil
         }
         self.primaryService = primaryService
     }
-    static func applets(_ data: Data?) -> [Applet]? {
-        if let data = data, let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? JSON {
-            if let type = json["type"] as? String {
-                switch type {
-                case "applet":
-                    if let applet = Applet(json: json) {
-                        return [applet]
-                    }
-                case "list":
-                    if let appletsJson = json["data"] as? [JSON] {
-                        return appletsJson.compactMap { Applet(json: $0) }
-                    }
-                default:
-                    break
+    static func parseAppletsResponse(_ parser: Parser) -> [Applet]? {
+        if let type = parser["type"].string {
+            switch type {
+            case "applet":
+                if let applet = Applet(parser: parser) {
+                    return [applet]
                 }
+            case "list":
+                return parser["data"].compactMap { Applet(parser: $0) }
+            default:
+                break
             }
         }
         return nil
@@ -520,25 +535,22 @@ extension Applet {
 }
 
 extension Applet.Service {
-    init?(json: JSON) {
+    init?(parser: Parser) {
         guard
-            let id = json["service_id"] as? String,
-            let name = json["service_name"] as? String,
-            let monochromeIconURLString = json["monochrome_icon_url"] as? String, let monochromeIconURL = URL(string: monochromeIconURLString),
-            let colorIconURLString = json["color_icon_url"] as? String, let colorIconURL = URL(string: colorIconURLString),
-            let brandColorString = json["brand_color"] as? String,
-            let urlString = json["url"] as? String, let url = URL(string: urlString) else {
+            let id = parser["service_id"].string,
+            let name = parser["service_name"].string,
+            let monochromeIconURL = parser["monochrome_icon_url"].url,
+            let colorIconURL = parser["color_icon_url"].url,
+            let brandColor = parser["brand_color"].color,
+            let url = parser["url"].url else {
                 return nil
         }
         self.id = id
         self.name = name
-        self.isPrimary = json["is_primary"] as? Bool ?? false
+        self.isPrimary = parser["is_primary"].bool ?? false
         self.monochromeIconURL = monochromeIconURL
         self.colorIconURL = colorIconURL
-        self.brandColor = UIColor(hex: brandColorString)
+        self.brandColor = brandColor
         self.url = url
-    }
-    static func services(_ json: [JSON]) -> [Applet.Service] {
-        return json.compactMap { Applet.Service(json: $0) }
     }
 }
