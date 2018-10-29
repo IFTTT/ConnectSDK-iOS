@@ -9,11 +9,30 @@
 import UIKit
 import SafariServices
 
-public enum ConnectInteractionOutcome {
-    case
-    succeeded(Applet),
-    canceled,
-    failed(Error)
+/// An error occurred, preventing Applet connection
+///
+/// - invalidEmail: Must provide a valid email.
+/// - iftttAccountCreationFailed: For some reason we could not create an IFTTT account for a new user.
+/// - networkError: Some generic networking error occurred.
+/// - unknownRedirect: Redirect params did not match what we expected. This should never happen. Verify you are using the latest SDK.
+/// - unknownResponse: Response params did not match what we expected. This should never happen. Verify you are using the latest SDK.
+public enum AppletConnectionError: Error {
+    case invalidEmail
+    case iftttAccountCreationFailed
+    case networkError(Error?)
+    case unknownRedirect
+    case unknownResponse
+}
+
+/// The result of an attempt to turn on an Applet
+///
+/// - succeeded: The Applet was successfully connected
+/// - canceled: The user canceled connection attempt
+/// - failed: Some error prevented the user from connecting the Applet
+public enum AppletConnectionOutcome {
+    case succeeded(Applet)
+    case canceled
+    case failed(AppletConnectionError)
 }
 
 /// Defines the communication between ConnectInteractionController and your app. It is required to implement this protocol.
@@ -42,7 +61,7 @@ public protocol ConnectInteractionControllerDelegate: class {
     /// - Parameters:
     ///   - interation: The connect interaction controller
     ///   - outcome: The outcome of Applet activation
-    func connectInteraction(_ interation: ConnectInteractionController, appletActivationFinished outcome: ConnectInteractionOutcome)
+    func connectInteraction(_ interation: ConnectInteractionController, appletActivationFinished outcome: AppletConnectionOutcome)
     
     /// The user deactivated the Applet
     ///
@@ -58,7 +77,7 @@ public protocol ConnectInteractionControllerDelegate: class {
     /// - Parameters:
     ///   - interation: The connect interaction controller
     ///   - error: The error
-    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivationFailedWithError error: Error)
+    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivationFailedWithError error: AppletConnectionError)
 }
 
 
@@ -192,7 +211,7 @@ public class ConnectInteractionController {
             serviceConnection(id: String),
             complete,
             canceled,
-            failed
+            failed(AppletConnectionError)
         }
         
         var onRedirect: ((Outcome) -> Void)?
@@ -215,7 +234,7 @@ public class ConnectInteractionController {
                 let queryItems = components.queryItems,
                 let nextStep = queryItems.first(where: { $0.name == "next_step" })?.value
                 else {
-                    onRedirect?(.failed)
+                    onRedirect?(.failed(.unknownRedirect))
                     return
             }
             switch nextStep {
@@ -223,12 +242,20 @@ public class ConnectInteractionController {
                 if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
                     onRedirect?(.serviceConnection(id: serviceId))
                 } else {
-                    onRedirect?(.failed)
+                    onRedirect?(.failed(.unknownRedirect))
                 }
             case "complete":
                 onRedirect?(.complete)
+                
+            case "error":
+                if let reason = queryItems.first(where: { $0.name == "error_type" })?.value, reason == "account_creation" {
+                    onRedirect?(.failed(.iftttAccountCreationFailed))
+                } else {
+                    onRedirect?(.failed(.unknownRedirect))
+                }
+                
             default:
-                onRedirect?(.failed)
+                onRedirect?(.failed(.unknownRedirect))
             }
         }
         
@@ -277,9 +304,8 @@ public class ConnectInteractionController {
             case .canceled:
                 return .canceled
                 
-            case .failed:
-                // FIXME: Build a error message
-                return .failed(NSError())
+            case .failed(let error):
+                return .failed(error)
                 
             case .serviceConnection(let id):
                 if let service = applet.services.first(where: { $0.id == id }) {
@@ -289,8 +315,7 @@ public class ConnectInteractionController {
                 } else {
                     // For some reason, the service ID we received from web doesn't match the applet
                     // If this ever happens, it is due to a bug on web
-                    // FIXME: Set an appropriate error message.
-                    return .failed(NSError())
+                    return .failed(.unknownRedirect)
                 }
             case .complete:
                 return .connected
@@ -337,7 +362,7 @@ public class ConnectInteractionController {
         serviceConnection(Applet.Service, newUserEmail: String?),
         serviceConnectionComplete(Applet.Service, nextStep: ActivationStep),
         
-        failed(Error),
+        failed(AppletConnectionError),
         canceled,
         
         connected,
@@ -584,8 +609,7 @@ public class ConnectInteractionController {
                     case .success:
                         self.transition(to: .disconnected)
                     case .failure(let error):
-                        // FIXME: Create error message
-                        self.delegate?.connectInteraction(self, appletDeactivationFailedWithError: error ?? NSError())
+                        self.delegate?.connectInteraction(self, appletDeactivationFailedWithError: .networkError(error))
                         self.transition(to: .connected)
                     }
                 }
