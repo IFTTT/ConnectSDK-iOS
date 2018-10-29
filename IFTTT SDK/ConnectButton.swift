@@ -27,6 +27,8 @@ fileprivate struct Layout {
 //@IBDesignable
 public class ConnectButton: UIView {
     
+    /// Create an Applet connect button. This is primarily an internal type. This is the only public method.
+    /// Use with ConnectInteraction
     public init() {
         super.init(frame: .zero)
         createLayout()
@@ -301,11 +303,7 @@ public class ConnectButton: UIView {
     
     fileprivate func confirmEmail() {
         let _ = emailEntryField.resignFirstResponder()
-        guard let email = emailEntryField.text, email.isValidEmail else {
-            // FIXME: Maybe shake the button to indicate the input is invalid
-            return
-        }
-        emailInteraction.onConfirm?(email)
+        emailInteraction.onConfirm?(emailEntryField.text ?? "")
     }
     
     
@@ -767,16 +765,6 @@ extension ConnectButton: UIGestureRecognizerDelegate {
 }
 
 // MARK: Text field delegate (email)
-
-private extension String {
-    var isValidEmail: Bool {
-        // FIXME: Use a better REGEX and move this elsewhere.
-        if isEmpty == false, let atIndex = lastIndex(of: "@"), let dotIndex = lastIndex(of: "."), atIndex < dotIndex {
-            return true
-        }
-        return false
-    }
-}
 
 extension ConnectButton: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {

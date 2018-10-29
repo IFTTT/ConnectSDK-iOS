@@ -30,10 +30,19 @@ public struct Applet {
     }
     
     public let id: String
+    
     public let name: String
+    
     public let description: String
-    public private(set) var status: Status
+    
+    public internal(set) var status: Status
+    
+    mutating func updating(status: Status) {
+        self.status = status
+    }
+    
     public let url: URL
+    
     public let services: [Service]
     
     public let primaryService: Service
@@ -42,57 +51,13 @@ public struct Applet {
         return services.filter({ $0.isPrimary == false })
     }
     
-    fileprivate let activationURL: URL
-    
-    enum ActivationStep {
-        case
-        login(User.ID),
-        serviceConnection(newUserEmail: String?, token: String?)
-    }
-    
-    func activationURL(_ step: ActivationStep) -> URL {
-        var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
-        var queryItems = [URLQueryItem]()
-        if let redirect = Applet.Session.shared.appletActivationRedirect {
-            queryItems.append(URLQueryItem(name: "sdk_return_to", value: redirect.absoluteString))
-        }
-        if let inviteCode = Applet.Session.shared.inviteCode {
-            queryItems.append(URLQueryItem(name: "invite_code", value: inviteCode))
-        }
-        
-        switch step {
-        case .login(let userId):
-            switch userId {
-            case .id(let id):
-                // FIXME: Verify this param name when we have it
-                queryItems.append(URLQueryItem(name: "user_id", value: id))
-            case .email(let email):
-                queryItems.append(URLQueryItem(name: "email", value: email))
-            }
-            
-        case .serviceConnection(let newUserEmail, let token):
-            if let email = newUserEmail {
-                queryItems.append(URLQueryItem(name: "email", value: email))
-                queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
-            }
-            if let token = token {
-                queryItems.append(URLQueryItem(name: "token", value: token))
-            }
-            queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
-        }
-        components?.queryItems = queryItems
-        return components?.url ?? activationURL
-    }
-    
-    mutating func updating(status: Status) {
-        self.status = status
-    }
+    let activationURL: URL
 }
 
 
 // MARK: - Session Manager
 
-public protocol UserTokenProviding {
+public protocol TokenProviding {
     func partnerOauthTokenForServiceConnection(_ session: Applet.Session) -> String
     func iftttUserToken(for session: Applet.Session) -> String?
 }
@@ -105,20 +70,42 @@ extension Notification.Name {
 
 public extension Applet {
     public class Session {
-        public var userTokenProvider: UserTokenProviding? = nil
         
-        var userToken: String? {
-            return userTokenProvider?.iftttUserToken(for: self)
+        public static var shared: Session {
+            if let session = _shared {
+                return session
+            } else {
+                fatalError("IFTTT SDK has not been configured. This is a programming error. It must be configured before it can be used.")
+            }
         }
         
-        var partnerToken: String {
-            // FIXME: !!
-            return userTokenProvider!.partnerOauthTokenForServiceConnection(self)
+        private static var _shared: Session?
+        
+        @discardableResult
+        static public func begin(tokenProvider: TokenProviding, suggestedUserEmail: String, appletActivationRedirect: URL, inviteCode: String?) -> Session {
+            assert(suggestedUserEmail.isValidEmail, "You must provide a valid email address for the user")
+            
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.httpAdditionalHeaders = [
+                "Accept" : "application/json"
+            ]
+            let urlSession = URLSession(configuration: configuration)
+            
+            _shared = Session(urlSession: urlSession,
+                              tokenProvider: tokenProvider,
+                              suggestedUserEmail: suggestedUserEmail,
+                              appletActivationRedirect: appletActivationRedirect,
+                              inviteCode: inviteCode)
+            return shared
         }
         
-        public var appletActivationRedirect: URL?
+        public let tokenProvider: TokenProviding
         
-        public var inviteCode: String?
+        public let suggestedUserEmail: String
+        
+        public let appletActivationRedirect: URL
+        
+        public let inviteCode: String?
         
         public let urlSession: URLSession
         
@@ -130,25 +117,31 @@ public extension Applet {
         /// - Returns: True if this is an IFTTT SDK redirect
         public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
             // Check if the source is safari view controller and the scheme matches the SDK redirect
-            if let source = options[.sourceApplication] as? String, url.scheme == appletActivationRedirect?.scheme && source == "com.apple.SafariViewService" {
+            if let source = options[.sourceApplication] as? String, url.scheme == appletActivationRedirect.scheme && source == "com.apple.SafariViewService" {
                 NotificationCenter.default.post(name: .iftttAppletActivationRedirect, object: url)
                 return true
             }
             return false
         }
         
-        public static let shared: Session = {
-            let configuration = URLSessionConfiguration.ephemeral
-            configuration.httpAdditionalHeaders = [
-                "Accept" : "application/json"
-            ]
-            let urlSession = URLSession(configuration: configuration)
-            
-            return Session(urlSession: urlSession)
-        }()
+        var userToken: String? {
+            return tokenProvider.iftttUserToken(for: self)
+        }
         
-        public init(urlSession: URLSession) {
+        var partnerToken: String {
+            return tokenProvider.partnerOauthTokenForServiceConnection(self)
+        }
+        
+        private init(urlSession: URLSession,
+                     tokenProvider: TokenProviding,
+                     suggestedUserEmail: String,
+                     appletActivationRedirect: URL,
+                     inviteCode: String?) {
             self.urlSession = urlSession
+            self.tokenProvider = tokenProvider
+            self.suggestedUserEmail = suggestedUserEmail
+            self.appletActivationRedirect = appletActivationRedirect
+            self.inviteCode = inviteCode
         }
     }
 }
@@ -170,7 +163,7 @@ public extension Applet {
         public let path: String
         public let method: Method
         
-        public var urlRequest: URLRequest
+        public let urlRequest: URLRequest
         
         public struct Response {
             public let urlResponse: URLResponse?
@@ -245,14 +238,60 @@ public extension Applet {
 }
 
 
-// MARK: - Connect configuration
+// MARK: - Applet connection url generation (Internal)
+
+extension Applet {
+    enum ActivationStep {
+        case
+        login(User.Id),
+        serviceConnection(newUserEmail: String?, token: String?)
+    }
+    
+    func activationURL(_ step: ActivationStep) -> URL {
+        let session = Applet.Session.shared
+        
+        var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
+        var queryItems = [URLQueryItem]()
+        queryItems.append(URLQueryItem(name: "sdk_return_to", value: session.appletActivationRedirect.absoluteString))
+        
+        if let inviteCode = session.inviteCode {
+            queryItems.append(URLQueryItem(name: "invite_code", value: inviteCode))
+        }
+        
+        switch step {
+        case .login(let id):
+            switch id {
+            case .username(let username):
+                // FIXME: Verify this param name when we have it
+                queryItems.append(URLQueryItem(name: "user_id", value: username))
+            case .email(let email):
+                queryItems.append(URLQueryItem(name: "email", value: email))
+            }
+            
+        case .serviceConnection(let newUserEmail, let token):
+            if let email = newUserEmail {
+                queryItems.append(URLQueryItem(name: "email", value: email))
+                queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
+            }
+            if let token = token {
+                queryItems.append(URLQueryItem(name: "token", value: token))
+            }
+            queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
+        }
+        components?.queryItems = queryItems
+        return components?.url ?? activationURL
+    }
+}
+
+
+// MARK: - Connect configuration (Internal)
+
+struct ConnectConfiguration {
+    let isExistingUser: Bool
+    let partnerOpaqueToken: String?
+}
 
 extension Applet.Session {
-    
-    struct ConnectConfiguration {
-        let isExistingUser: Bool
-        let partnerOpaqueToken: String?
-    }
     
     func getConnectConfiguration(userEmail: String,
                                  waitUntil: TimeInterval,
@@ -277,7 +316,7 @@ extension Applet.Session {
                 urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _) in
                     partnerOpaqueToken = parser["token"].string
                     semaphore.signal()
-                }.resume()
+                    }.resume()
             } else {
                 semaphore.signal()
             }
@@ -290,7 +329,7 @@ extension Applet.Session {
             urlSession.jsonTask(with: request, waitUntil: waitUntil) { (_, response, _) in
                 isExistingUser = response?.statusCode == 204
                 semaphore.signal()
-            }.resume()
+                }.resume()
         }
         
         partnerHandshake()
@@ -306,7 +345,7 @@ extension Applet.Session {
 }
 
 
-// MARK: - URLSession
+// MARK: - URLSession (Internal)
 
 extension URLSession {
     func jsonTask(with urlRequest: URLRequest, _ completion: @escaping (Parser, HTTPURLResponse?, Error?) -> Void) -> URLSessionDataTask {
@@ -337,220 +376,5 @@ extension URLSession {
                 result = (parser, response, error)
             }
         }
-    }
-}
-
-
-// MARK: - Parsing
-
-typealias JSON = [String : Any?]
-
-enum Parser {
-    
-    case none, dictionary(JSON), array([Parser]), value(Any)
-    
-    init(content: Any?) {
-        if let data = content as? Data {
-            let json = try? JSONSerialization.jsonObject(with: data)
-            self = Parser(content: json)
-        } else if let array = content as? [Any] {
-            self = .array(array.map({ Parser(content: $0) }))
-        } else if let dict = content as? JSON {
-            self = .dictionary(dict)
-        } else if let content = content {
-            self = .value(content)
-        } else {
-            self = .none
-        }
-    }
-    
-    subscript(key: String) -> Parser {
-        if case .dictionary(let json) = self, let content = json[key] {
-            return Parser(content: content)
-        } else {
-            return .none
-        }
-    }
-    
-    /// Returns all keys at this level
-    /// Returns an empty array if it is not a dictionary
-    var keys: [String] {
-        switch self {
-        case .dictionary(let json):
-            return Array(json.keys)
-        default:
-            return []
-        }
-    }
-    
-    var currentValue: Any? {
-        if case .value(let currentValue) = self {
-            return currentValue
-        } else {
-            return nil
-        }
-    }
-    
-    var string: String? {
-        return currentValue as? String
-    }
-    var stringValue: String {
-        return string ?? ""
-    }
-    
-    var stringArray: [String]? {
-        if case .array(let array) = self {
-            return array.compactMap({ $0.string })
-        } else {
-            return nil
-        }
-    }
-    var stringArrayValue: [String] {
-        return stringArray ?? []
-    }
-    
-    var bool: Bool? {
-        return (currentValue as? Bool) ?? Bool(string ?? "not_a_bool")
-    }
-    var boolValue: Bool {
-        return bool ?? false
-    }
-    
-    var int: Int? {
-        return (currentValue as? Int) ?? Int(string ?? "not_an_int")
-    }
-    var intValue: Int {
-        return int ?? 0
-    }
-    
-    var double: Double? {
-        return (currentValue as? Double) ?? Double(string ?? "not_a_double")
-    }
-    var doubleValue: Double {
-        return double ?? 0
-    }
-    
-    var url: URL? {
-        if let string = string {
-            return URL(string: string)
-        } else {
-            return nil
-        }
-    }
-    
-    var color: UIColor? {
-        if let string = string {
-            return UIColor(hex: string)
-        } else {
-            return nil
-        }
-    }
-    
-    /// If self is a dictionary, append another blob with a key
-    /// This is a no-op if self isn't a dictionary or parser is none
-    func adding(_ parser: Parser, forKey key: String) -> Parser {
-        switch self {
-        case .dictionary(var json):
-            switch parser {
-            case .array(let array):
-                json[key] = array
-            case .dictionary(let dict):
-                json[key] = dict
-            case .value(let value):
-                json[key] = value
-            default:
-                break
-            }
-            return .dictionary(json)
-        default:
-            return self
-        }
-    }
-}
-
-extension Parser: Collection {
-    subscript(index: Int) -> Parser {
-        if case .array(let jsonArray) = self, jsonArray.count > index {
-            return jsonArray[index]
-        } else {
-            return .none
-        }
-    }
-    var startIndex: Int {
-        return 0
-    }
-    func index(after i: Int) -> Int {
-        if case .array(let objects) = self {
-            return objects.index(after: i)
-        } else {
-            return 0
-        }
-    }
-    var endIndex: Int {
-        if case .array(let objects) = self {
-            return objects.count
-        } else {
-            return 0
-        }
-    }
-}
-
-extension Applet {
-    init?(parser: Parser) {
-        guard
-            let id = parser["id"].string,
-            let name = parser["name"].string,
-            let description = parser["description"].string,
-            let url = parser["url"].url,
-            let activationUrl = parser["embedded_url"].url else {
-                return nil
-        }
-        self.id = id
-        self.name = name
-        self.description = description
-        self.status = Status(rawValue: parser["user_status"].string ?? "") ?? .unknown
-        self.services = parser["services"].compactMap { Service(parser: $0) }
-        self.url = url
-        self.activationURL = activationUrl
-        guard let primaryService = services.first(where: { $0.isPrimary }) else {
-            return nil
-        }
-        self.primaryService = primaryService
-    }
-    static func parseAppletsResponse(_ parser: Parser) -> [Applet]? {
-        if let type = parser["type"].string {
-            switch type {
-            case "applet":
-                if let applet = Applet(parser: parser) {
-                    return [applet]
-                }
-            case "list":
-                return parser["data"].compactMap { Applet(parser: $0) }
-            default:
-                break
-            }
-        }
-        return nil
-    }
-}
-
-extension Applet.Service {
-    init?(parser: Parser) {
-        guard
-            let id = parser["service_id"].string,
-            let name = parser["service_name"].string,
-            let monochromeIconURL = parser["monochrome_icon_url"].url,
-            let colorIconURL = parser["color_icon_url"].url,
-            let brandColor = parser["brand_color"].color,
-            let url = parser["url"].url else {
-                return nil
-        }
-        self.id = id
-        self.name = name
-        self.isPrimary = parser["is_primary"].bool ?? false
-        self.monochromeIconURL = monochromeIconURL
-        self.colorIconURL = colorIconURL
-        self.brandColor = brandColor
-        self.url = url
     }
 }

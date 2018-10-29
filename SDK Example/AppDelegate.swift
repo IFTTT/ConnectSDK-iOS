@@ -26,11 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         IFTTTAuthenication.shared.setIftttUserToken(nil)
         
-        User.current.suggestedUserEmail = "jon@ifttt.com"
-        
-        Applet.Session.shared.inviteCode = "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
-        Applet.Session.shared.appletActivationRedirect = URL(string: "ifttt-api-example://sdk-callback")!
-        Applet.Session.shared.userTokenProvider = IFTTTAuthenication.shared
+        Applet.Session.begin(tokenProvider: IFTTTAuthenication.shared,
+                             suggestedUserEmail: "jon@ifttt.com",
+                             appletActivationRedirect: URL(string: "ifttt-api-example://sdk-callback")!,
+                             inviteCode: "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c")
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.backgroundColor = .white
@@ -68,7 +67,7 @@ class KeychainMock {
     }
 }
 
-struct IFTTTAuthenication: UserTokenProviding {
+struct IFTTTAuthenication: TokenProviding {
     static let shared = IFTTTAuthenication()
     
     let keychain = KeychainMock.shared

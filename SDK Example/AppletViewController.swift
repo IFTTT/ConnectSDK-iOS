@@ -43,13 +43,13 @@ class AppletViewController: UIViewController {
     
     lazy var connectButton = ConnectButton()
     
-    private var connectInteractor: ConnectInteractionController?
+    private var connectInteractor: ConnectInteraction?
     
     private func configure(with applet: Applet) {
         titleLabel.text = applet.name
         descriptionLabel.text = applet.description
         
-        connectInteractor = ConnectInteractionController(connectButton, applet: applet, delegate: self)
+        connectInteractor = ConnectInteraction(connectButton, applet: applet, delegate: self)
     }
     
     private func fetch() {
@@ -108,17 +108,17 @@ class AppletViewController: UIViewController {
     }
 }
 
-extension AppletViewController: ConnectInteractionControllerDelegate {
-    func connectInteraction(_ controller: ConnectInteractionController, show viewController: UIViewController) {
+extension AppletViewController: ConnectInteractionDelegate {
+    func connectInteraction(_ controller: ConnectInteraction, show viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
     }
-    func connectInteraction(_ controller: ConnectInteractionController, appletActivationFinished outcome: AppletConnectionOutcome) {
+    func connectInteraction(_ controller: ConnectInteraction, appletActivationFinished outcome: AppletConnectionOutcome) {
         
     }
-    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivated applet: Applet) {
+    func connectInteraction(_ interation: ConnectInteraction, appletDeactivated applet: Applet) {
         
     }
-    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivationFailedWithError error: AppletConnectionError) {
+    func connectInteraction(_ interation: ConnectInteraction, appletDeactivationFailedWithError error: AppletConnectionError) {
         
     }
 }

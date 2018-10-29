@@ -36,7 +36,7 @@ public enum AppletConnectionOutcome {
 }
 
 /// Defines the communication between ConnectInteractionController and your app. It is required to implement this protocol.
-public protocol ConnectInteractionControllerDelegate: class {
+public protocol ConnectInteractionDelegate: class {
     
     /// The connect interaction needs to present a view controller
     /// This includes the About IFTTT page and Safari VC during Applet activation
@@ -45,7 +45,7 @@ public protocol ConnectInteractionControllerDelegate: class {
     /// - Parameters:
     ///   - controller: The connect interaction controller
     ///   - viewController: The view controller to present
-    func connectInteraction(_ interation: ConnectInteractionController, show viewController: UIViewController)
+    func connectInteraction(_ interation: ConnectInteraction, show viewController: UIViewController)
     
     /// Applet activation is finished
     ///
@@ -61,14 +61,14 @@ public protocol ConnectInteractionControllerDelegate: class {
     /// - Parameters:
     ///   - interation: The connect interaction controller
     ///   - outcome: The outcome of Applet activation
-    func connectInteraction(_ interation: ConnectInteractionController, appletActivationFinished outcome: AppletConnectionOutcome)
+    func connectInteraction(_ interation: ConnectInteraction, appletActivationFinished outcome: AppletConnectionOutcome)
     
     /// The user deactivated the Applet
     ///
     /// - Parameters:
     ///   - interation: The connect interaction controller
     ///   - appletDeactivated: The Applet which was deactivated
-    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivated applet: Applet)
+    func connectInteraction(_ interation: ConnectInteraction, appletDeactivated applet: Applet)
     
     /// The user attempted to deactivate the Applet but something unexpected went wrong, likely a network failure.
     /// The connect interaction will reset the Applet to the connected state but will not show any messaging.
@@ -77,12 +77,12 @@ public protocol ConnectInteractionControllerDelegate: class {
     /// - Parameters:
     ///   - interation: The connect interaction controller
     ///   - error: The error
-    func connectInteraction(_ interation: ConnectInteractionController, appletDeactivationFailedWithError error: AppletConnectionError)
+    func connectInteraction(_ interation: ConnectInteraction, appletDeactivationFailedWithError error: AppletConnectionError)
 }
 
 
 /// Controller for the ConnectButton. It is mandatory that you interact with the ConnectButton only through this controller.
-public class ConnectInteractionController {
+public class ConnectInteraction {
     
     /// The connect button in this interaction
     public let button: ConnectButton
@@ -105,9 +105,9 @@ public class ConnectInteractionController {
     /// It is always the first service connected
     public let connectingService: Applet.Service
     
-    public private(set) weak var delegate: ConnectInteractionControllerDelegate?
+    public private(set) weak var delegate: ConnectInteractionDelegate?
     
-    public init(_ button: ConnectButton, applet: Applet, delegate: ConnectInteractionControllerDelegate) {
+    public init(_ button: ConnectButton, applet: Applet, delegate: ConnectInteractionDelegate) {
         self.button = button
         self.applet = applet
         self.delegate = delegate
@@ -346,17 +346,13 @@ public class ConnectInteractionController {
     // MARK: - Applet activation & deactivation
     
     indirect enum ActivationStep {
-        enum UserId {
-            case id(String), email(String)
-        }
-        
         case
         initial,
         
         getUserId,
         checkEmailIsExistingUser(String),
         
-        logInExistingUser(User.ID),
+        logInExistingUser(User.Id),
         logInComplete(nextStep: ActivationStep),
         
         serviceConnection(Applet.Service, newUserEmail: String?),
@@ -375,7 +371,7 @@ public class ConnectInteractionController {
     /// State machine state
     private var currentActivationStep: ActivationStep?
     
-    private var currentConfiguration: Applet.Session.ConnectConfiguration?
+    private var currentConfiguration: ConnectConfiguration?
     
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
@@ -414,7 +410,7 @@ public class ConnectInteractionController {
 //                    // Retrieve their user ID and skip email step
 //                    return .step(for: nil, message: "button.state.accessing_existing_account".localized)
 //                } else {
-                    return .email(suggested: User.current.suggestedUserEmail)
+                    return .email(suggested: Applet.Session.shared.suggestedUserEmail)
 //                }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in

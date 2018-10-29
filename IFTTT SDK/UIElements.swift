@@ -1,5 +1,5 @@
 //
-//  StandardUI.swift
+//  UIElements.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 9/17/18.
