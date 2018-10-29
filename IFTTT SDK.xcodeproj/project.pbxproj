@@ -15,15 +15,11 @@
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
 		FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2573122139E8CC0065AAD6 /* ConnectButton.swift */; };
 		FC25731C2139ED710065AAD6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC25731B2139ED710065AAD6 /* AppDelegate.m */; };
-		FC25731F2139ED710065AAD6 /* AppletViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC25731E2139ED710065AAD6 /* AppletViewController.m */; };
-		FC2573222139ED710065AAD6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC2573202139ED710065AAD6 /* Main.storyboard */; };
 		FC2573242139ED710065AAD6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC2573232139ED710065AAD6 /* Assets.xcassets */; };
 		FC2573272139ED710065AAD6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC2573252139ED710065AAD6 /* LaunchScreen.storyboard */; };
 		FC25732A2139ED710065AAD6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2573292139ED710065AAD6 /* main.m */; };
-		FC257331213A004D0065AAD6 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC257330213A004D0065AAD6 /* HomeViewController.m */; };
 		FC25733A213A061E0065AAD6 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC25733B213A061E0065AAD6 /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC3E306D215BF0AA002326AE /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E306C215BF0AA002326AE /* Keychain.swift */; };
 		FC3E3072215BF8ED002326AE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E3071215BF8ED002326AE /* User.swift */; };
 		FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -103,17 +99,11 @@
 		FC2573182139ED710065AAD6 /* SDK Example ObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDK Example ObjC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC25731A2139ED710065AAD6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FC25731B2139ED710065AAD6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		FC25731D2139ED710065AAD6 /* AppletViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppletViewController.h; sourceTree = "<group>"; };
-		FC25731E2139ED710065AAD6 /* AppletViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppletViewController.m; sourceTree = "<group>"; };
-		FC2573212139ED710065AAD6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FC2573232139ED710065AAD6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC2573262139ED710065AAD6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FC2573282139ED710065AAD6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FC2573292139ED710065AAD6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		FC25732F213A004D0065AAD6 /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
-		FC257330213A004D0065AAD6 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		FC257332213A05E80065AAD6 /* SDK Example ObjC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDK Example ObjC-Bridging-Header.h"; sourceTree = "<group>"; };
-		FC3E306C215BF0AA002326AE /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		FC3E3071215BF8ED002326AE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FC44E0882162E81F0063DCA1 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		FC4588FD215172C00038630F /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
@@ -176,11 +166,6 @@
 			children = (
 				FC25731A2139ED710065AAD6 /* AppDelegate.h */,
 				FC25731B2139ED710065AAD6 /* AppDelegate.m */,
-				FC25732F213A004D0065AAD6 /* HomeViewController.h */,
-				FC257330213A004D0065AAD6 /* HomeViewController.m */,
-				FC25731D2139ED710065AAD6 /* AppletViewController.h */,
-				FC25731E2139ED710065AAD6 /* AppletViewController.m */,
-				FC2573202139ED710065AAD6 /* Main.storyboard */,
 				FC2573232139ED710065AAD6 /* Assets.xcassets */,
 				FC2573252139ED710065AAD6 /* LaunchScreen.storyboard */,
 				FC2573282139ED710065AAD6 /* Info.plist */,
@@ -251,7 +236,6 @@
 				FCD9958F218277EE00F69149 /* LoginViewController.swift */,
 				FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */,
 				FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */,
-				FC3E306C215BF0AA002326AE /* Keychain.swift */,
 				FCBA16172139ACD800EB1BC8 /* Assets.xcassets */,
 				FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */,
 				FCBA161C2139ACD800EB1BC8 /* Info.plist */,
@@ -408,7 +392,6 @@
 			files = (
 				FC2573272139ED710065AAD6 /* LaunchScreen.storyboard in Resources */,
 				FC2573242139ED710065AAD6 /* Assets.xcassets in Resources */,
-				FC2573222139ED710065AAD6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,10 +427,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC25731F2139ED710065AAD6 /* AppletViewController.m in Sources */,
 				FC25732A2139ED710065AAD6 /* main.m in Sources */,
 				FC25731C2139ED710065AAD6 /* AppDelegate.m in Sources */,
-				FC257331213A004D0065AAD6 /* HomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,7 +463,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCBA16132139ACD600EB1BC8 /* AppletViewController.swift in Sources */,
-				FC3E306D215BF0AA002326AE /* Keychain.swift in Sources */,
 				FCBA16112139ACD600EB1BC8 /* AppDelegate.swift in Sources */,
 				FCD99590218277EE00F69149 /* LoginViewController.swift in Sources */,
 				FCBA16232139AF5E00EB1BC8 /* HomeViewController.swift in Sources */,
@@ -510,14 +490,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		FC2573202139ED710065AAD6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FC2573212139ED710065AAD6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		FC2573252139ED710065AAD6 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

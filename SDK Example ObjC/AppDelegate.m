@@ -7,27 +7,15 @@
 //
 
 #import "AppDelegate.h"
-#import <IFTTT_SDK/IFTTT_SDK.h>
-
-@interface AppDelegate () <IFTTTUserTokenProviding>
-
-@end
 
 @implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
  
-    IFTTTAppletSession.shared.serviceID = @"google_calendar";
-    IFTTTAppletSession.shared.userTokenProvider = self;
-    
     return YES;
 }
-
-- (NSString *)iftttUserToken {
-    return nil; // FIXME: Set up ObjC keychain
-}
-
+    
 @end
 
 

@@ -52,10 +52,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+/// Mock device keychain store
+class KeychainMock {
+    static let shared = KeychainMock()
+    
+    private var storage = [String : String]()
+    
+    subscript(key: String) -> String? {
+        get {
+            return storage[key]
+        }
+        set {
+            storage[key] = newValue
+        }
+    }
+}
+
 struct IFTTTAuthenication: UserTokenProviding {
     static let shared = IFTTTAuthenication()
     
-    let keychain = Keychain(service: "com.my-app")
+    let keychain = KeychainMock.shared
     
     func apiExampleOauthToken(_ token: String) {
         keychain["my_user_token"] = token
