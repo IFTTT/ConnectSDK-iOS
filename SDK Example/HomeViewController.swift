@@ -15,6 +15,9 @@ class HomeViewController: UITableViewController {
     
     var applets: [Item] {
         return [
+            ("QbQVRU7D", "Blink your LIFX lights when your Uber is arriving"),
+            ("a7deY5ri", "LIFX lights turn on when Arlo detects motion"),
+            ("DZFhNWa4", "Flash when Gmail arrives"),
             ("PMEHLDAV", "Turn on your LIFX lights"),
             ("mZRHhST7", "Copy a saved track to a playlist")
         ]

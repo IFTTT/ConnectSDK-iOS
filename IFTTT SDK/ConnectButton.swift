@@ -184,6 +184,17 @@ public class ConnectButton: UIView {
     
     var emailInteraction = EmailInteraction()
     
+    /// Shakes email horizontally to give a visual indication that it is invalid
+    func performInvalidEmailAnimation() {
+        backgroundView.transform = CGAffineTransform(translationX: -10, y: 0)
+        let animator = UIViewPropertyAnimator(duration: 0.3,
+                                              timingParameters: UISpringTimingParameters(mass: 1, stiffness: 1000, damping: 7, initialVelocity: .zero))
+        animator.addAnimations {
+            self.backgroundView.transform = .identity
+        }
+        animator.startAnimation()
+    }
+    
     var stepInteraction = SelectInteraction() {
         didSet {
             updateInteraction()

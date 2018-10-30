@@ -17,7 +17,7 @@ import SafariServices
 /// - unknownRedirect: Redirect params did not match what we expected. This should never happen. Verify you are using the latest SDK.
 /// - unknownResponse: Response params did not match what we expected. This should never happen. Verify you are using the latest SDK.
 public enum AppletConnectionError: Error {
-    case invalidEmail
+    case invalidEmail(String)
     case iftttAccountCreationFailed
     case networkError(Error?)
     case unknownRedirect
@@ -46,6 +46,8 @@ public protocol ConnectInteractionDelegate: class {
     ///   - controller: The connect interaction controller
     ///   - viewController: The view controller to present
     func connectInteraction(_ interation: ConnectInteraction, show viewController: UIViewController)
+    
+    func connectInteraction(_ interaction: ConnectInteraction, nonFatalActivationError error: AppletConnectionError)
     
     /// Applet activation is finished
     ///
@@ -421,7 +423,14 @@ public class ConnectInteraction {
                 }
             }
             button.emailInteraction.onConfirm = { [weak self] email in
-                self?.transition(to: .checkEmailIsExistingUser(email))
+                if email.isValidEmail {
+                    self?.transition(to: .checkEmailIsExistingUser(email))
+                } else {
+                    if let delegate = self?.delegate {
+                        delegate.connectInteraction(self!, nonFatalActivationError: .invalidEmail(email))
+                    }
+                    self?.button.performInvalidEmailAnimation()
+                }
             }
             
             

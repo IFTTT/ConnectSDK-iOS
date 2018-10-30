@@ -28,7 +28,7 @@ class AppletViewController: UIViewController {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = .systemFont(ofSize: 24, weight: .bold)
         return label
     }()
     
@@ -37,7 +37,7 @@ class AppletViewController: UIViewController {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
-        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.font = .systemFont(ofSize: 18, weight: .medium)
         return label
     }()
     
@@ -111,6 +111,9 @@ class AppletViewController: UIViewController {
 extension AppletViewController: ConnectInteractionDelegate {
     func connectInteraction(_ controller: ConnectInteraction, show viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
+    }
+    func connectInteraction(_ interaction: ConnectInteraction, nonFatalActivationError error: AppletConnectionError) {
+        
     }
     func connectInteraction(_ controller: ConnectInteraction, appletActivationFinished outcome: AppletConnectionOutcome) {
         
