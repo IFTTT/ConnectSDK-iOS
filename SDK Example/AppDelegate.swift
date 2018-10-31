@@ -9,6 +9,46 @@
 import UIKit
 import IFTTT_SDK
 
+/// Add style. Tests connect button on light and dark apps
+enum Style {
+    case light
+    case dark
+    
+    static var currentStyle: Style = Bool.random() ? .light : .dark
+    
+    var foregroundColor: UIColor {
+        switch self {
+        case .light: return .black
+        case .dark: return .white
+        }
+    }
+    
+    var backgroundColor: UIColor {
+        switch self {
+        case .light: return .white
+        case .dark: return .black
+        }
+    }
+}
+
+class NavigationController: UINavigationController {
+    
+    override func loadView() {
+        super.loadView()
+        
+        navigationBar.barTintColor = Style.currentStyle.backgroundColor
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        switch Style.currentStyle {
+        case .light:
+            return .default
+        case .dark:
+            return .lightContent
+        }
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -17,7 +57,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func login() {
-        window?.rootViewController = UINavigationController(rootViewController: HomeViewController())
+        window?.rootViewController = NavigationController(rootViewController: HomeViewController())
+    }
+    
+    @objc func swapStyle() {
+        Style.currentStyle = Style.currentStyle == .light ? .dark : .light
+        login()
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

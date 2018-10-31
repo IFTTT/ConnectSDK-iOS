@@ -27,7 +27,6 @@ class AppletViewController: UIViewController {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = .black
         label.font = .systemFont(ofSize: 24, weight: .bold)
         return label
     }()
@@ -36,7 +35,6 @@ class AppletViewController: UIViewController {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = .black
         label.font = .systemFont(ofSize: 18, weight: .medium)
         return label
     }()
@@ -67,7 +65,9 @@ class AppletViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        view.backgroundColor = .white
+        view.backgroundColor = Style.currentStyle.backgroundColor
+        [titleLabel, descriptionLabel].forEach { $0.textColor = Style.currentStyle.foregroundColor }
+        connectButton.style = Style.currentStyle == .light ? .light : .dark
         
         let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel, connectButton])
         stackView.axis = .vertical
@@ -99,12 +99,6 @@ class AppletViewController: UIViewController {
         super.viewDidLoad()
         
         fetch()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
     }
 }
 

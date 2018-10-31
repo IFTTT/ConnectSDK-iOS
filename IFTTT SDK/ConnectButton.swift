@@ -27,9 +27,25 @@ fileprivate struct Layout {
 //@IBDesignable
 public class ConnectButton: UIView {
     
+    /// Adjusts the button for a white or black background
+    ///
+    /// - light: Style the button for a white background (Default)
+    /// - dark: Style the button for a black background
+    public enum Style {
+        case light
+        case dark
+    }
+    
+    public var style: Style {
+        didSet {
+            updateStyle()
+        }
+    }
+    
     /// Create an Applet connect button. This is primarily an internal type. This is the only public method.
     /// Use with ConnectInteraction
-    public init() {
+    public init(style: Style = .light) {
+        self.style = style
         super.init(frame: .zero)
         createLayout()
     }
@@ -320,6 +336,23 @@ public class ConnectButton: UIView {
     
     // MARK: - UI
     
+    private func updateStyle() {
+        switch style {
+        case .light:
+            footerLabelAnimator.primary.label.textColor = .black
+            footerLabelAnimator.transition.label.textColor = .black
+            
+            backgroundView.layer.borderColor = nil
+            
+        case .dark:
+            footerLabelAnimator.primary.label.textColor = .white
+            footerLabelAnimator.transition.label.textColor = .white
+            
+            backgroundView.layer.borderColor = UIColor.iftttBorderColor.cgColor
+            backgroundView.layer.borderWidth = 2
+        }
+    }
+    
     fileprivate let backgroundView = PillView()
     
     fileprivate let serviceIconView = UIImageView()
@@ -357,7 +390,6 @@ public class ConnectButton: UIView {
     let footerLabelAnimator = LabelAnimator {
         $0.numberOfLines = 0
         $0.textAlignment = .center
-        $0.textColor = .iftttBlack
     }
     
     class LabelAnimator {
@@ -417,10 +449,10 @@ public class ConnectButton: UIView {
             
             static let zero = Insets(left: 0, right: 0)
             static let standard = Insets(left: 0.5 * Layout.height,
-                                                        right: 0.5 * Layout.height)
+                                         right: 0.5 * Layout.height)
             
             static let avoidServiceIcon = Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
-                                                                right: standard.right)
+                                                 right: standard.right)
             
             static func avoidSwitchKnob(isOn: Bool) -> Insets {
                 let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
@@ -654,7 +686,7 @@ public class ConnectButton: UIView {
             
             addSubview(outline)
             outline.layer.borderWidth = lineWidth
-            outline.layer.borderColor = UIColor(white: 1, alpha: 0.25).cgColor
+            outline.layer.borderColor = UIColor.iftttBorderColor.cgColor
             
             outline.constrain.center(in: self)
             outline.constrain.square(length: Layout.checkmarkDiameter)

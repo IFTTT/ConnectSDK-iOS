@@ -26,6 +26,15 @@ class HomeViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let swapStyle = UIBarButtonItem(title: Style.currentStyle == .light ? "Use dark style": "Use light style",
+                                        style: .plain,
+                                        target: AppDelegate.shared!,
+                                        action: #selector(AppDelegate.swapStyle))
+        navigationItem.rightBarButtonItem = swapStyle
+        
+        tableView.backgroundColor = Style.currentStyle.backgroundColor
+        tableView.separatorColor = UIColor(white: 0.5, alpha: 0.5)
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
     }
     
@@ -39,6 +48,8 @@ class HomeViewController: UITableViewController {
         let applet = applets[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         cell.textLabel?.text = applet.name
+        cell.backgroundColor = Style.currentStyle.backgroundColor
+        cell.textLabel?.textColor = Style.currentStyle.foregroundColor
         return cell
     }
     
