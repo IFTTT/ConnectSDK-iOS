@@ -226,15 +226,15 @@ public class ConnectButton: UIView {
             return currentToggleTransition
         }
         guard
-            case .toggle = currentState,
+            case .toggle(_, _, let isOn) = currentState,
             let nextState = toggleInteraction.nextToggleState?()
         else {
             return nil
         }
         let t = transition(to: nextState)
-        t.onComplete {
-            if case .toggle(_, _, let isOn) = self.currentState {
-                self.toggleInteraction.onToggle?(isOn)
+        t.animator.addCompletion { position in
+            if position == .end {
+                self.toggleInteraction.onToggle?(!isOn)
             }
         }
         return t
@@ -842,6 +842,9 @@ private extension ConnectButton {
     func animator(forTransitionTo state: State, from previousState: State) -> UIViewPropertyAnimator {
         let animator = UIViewPropertyAnimator(duration: animationDuration,
                                               timingParameters: UISpringTimingParameters(dampingRatio: 1))
+        
+        // FIXME: Let's avoid repitition here to make sure it's consistent between states
+        
         switch (previousState, state) {
             
         // Setup switch
@@ -945,6 +948,21 @@ private extension ConnectButton {
                 }
             }
         
+            
+        // Toggle to step (When email is skipped)
+        case (.toggle(_, _, let isOn), .step(_, let message)) where isOn == true:
+            progressBar.configure(with: nil)
+            
+            primaryLabelAnimator.transition(with: .crossfade,
+                                            updatedText: .text(message),
+                                            insets: .standard,
+                                            addingTo: animator)
+            
+            animator.addAnimations {
+                self.switchControl.alpha = 0
+                self.backgroundView.backgroundColor = .iftttGrey
+            }
+            
             
         // Email to step progress
         case (.email, .step(let service, let message)):

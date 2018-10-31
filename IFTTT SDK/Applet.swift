@@ -159,10 +159,6 @@ public extension Applet {
             POST = "POST"
         }
         
-        public let api: URL
-        public let path: String
-        public let method: Method
-        
         public let urlRequest: URLRequest
         
         public struct Response {
@@ -212,28 +208,38 @@ public extension Applet {
         }
         
         private init(path: String, method: Method, completion: @escaping CompletionHandler) {
-            let api = URL(string: "https://api.ifttt.com/v2")!
-            
-            self.api = api
-            self.path = path
-            self.method = method
-            
-            let url = api.appendingPathComponent(path)
+            let url = API.base.appendingPathComponent(path)
             
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             
             if let userToken = Applet.Session.shared.userToken, userToken.isEmpty == false {
-                let tokenString = "Bearer \(userToken)"
-                request.addValue(tokenString, forHTTPHeaderField: "Authorization")
+                request.addIftttUserToken(userToken)
             }
             if let inviteCode = Applet.Session.shared.inviteCode, inviteCode.isEmpty == false {
-                request.addValue(inviteCode, forHTTPHeaderField: "IFTTT-Invite-Code")
+                request.addIftttInviteCode(inviteCode)
             }
             
             self.urlRequest = request
             self.completion = completion
         }
+    }
+}
+
+
+// MARK: - API
+
+struct API {
+    static let base = URL(string: "https://api.ifttt.com/v2")!
+}
+
+extension URLRequest {
+    mutating func addIftttUserToken(_ token: String) {
+        let tokenString = "Bearer \(token)"
+        addValue(tokenString, forHTTPHeaderField: "Authorization")
+    }
+    mutating func addIftttInviteCode(_ code: String) {
+        addValue(code, forHTTPHeaderField: "IFTTT-Invite-Code")
     }
 }
 
@@ -287,20 +293,27 @@ extension Applet {
 // MARK: - Connect configuration (Internal)
 
 struct ConnectConfiguration {
+    enum UserLookupMethod {
+        case token(String), email(String)
+    }
+    
     let isExistingUser: Bool
+    let userId: User.Id
     let partnerOpaqueToken: String?
 }
 
 extension Applet.Session {
     
-    func getConnectConfiguration(userEmail: String,
+    func getConnectConfiguration(user: ConnectConfiguration.UserLookupMethod,
                                  waitUntil: TimeInterval,
                                  timeout: TimeInterval,
-                                 _ completion: @escaping (ConnectConfiguration) -> Void) {
+                                 _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
         
         let urlSession = Applet.Session.shared.urlSession
         var isExistingUser: Bool = false
+        var userId: User.Id?
         var partnerOpaqueToken: String?
+        var error: Error?
         
         let semaphore = DispatchSemaphore(value: 0)
         
@@ -313,32 +326,59 @@ extension Applet.Session {
                 request.httpBody = body
                 request.timeoutInterval = timeout
                 
-                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _) in
+                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _error) in
                     partnerOpaqueToken = parser["token"].string
+                    error = _error
                     semaphore.signal()
-                    }.resume()
+                }.resume()
             } else {
                 semaphore.signal()
             }
         }
-        let checkEmail = {
-            let url = URL(string: "https://api.ifttt.com/v2/account/find?email=\(userEmail)")!
-            var request = URLRequest(url: url)
-            request.timeoutInterval = timeout
-            
-            urlSession.jsonTask(with: request, waitUntil: waitUntil) { (_, response, _) in
-                isExistingUser = response?.statusCode == 204
-                semaphore.signal()
+        let checkUser = {
+            switch user {
+            case .email(let email):
+                userId = .email(email)
+                
+                let url = URL(string: "https://api.ifttt.com/v2/account/find?email=\(email)")!
+                var request = URLRequest(url: url)
+                request.timeoutInterval = timeout
+                
+                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (_, response, _error) in
+                    isExistingUser = response?.statusCode == 204
+                    error = _error
+                    semaphore.signal()
                 }.resume()
+            
+            case .token(let token):
+                let url = API.base.appendingPathComponent("/me")
+                var request = URLRequest(url: url)
+                request.addIftttUserToken(token)
+                request.timeoutInterval = timeout
+                
+                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _error) in
+                    if let username = parser["user_login"].string {
+                        userId = .username(username)
+                    }
+                    error = _error
+                    semaphore.signal()
+                }.resume()
+            }
         }
         
         partnerHandshake()
-        checkEmail()
+        checkUser()
         
         DispatchQueue(label: "com.ifttt.get-connect-configuration").async {
-            [partnerHandshake, checkEmail].forEach { _ in semaphore.wait() }
+            [partnerHandshake, checkUser].forEach { _ in semaphore.wait() }
             DispatchQueue.main.async {
-                completion(ConnectConfiguration(isExistingUser: isExistingUser, partnerOpaqueToken: partnerOpaqueToken))
+                if let userId = userId {
+                    completion(ConnectConfiguration(isExistingUser: isExistingUser,
+                                                    userId: userId,
+                                                    partnerOpaqueToken: partnerOpaqueToken), error)
+                } else {
+                    completion(nil, error) // Something went wrong
+                }
             }
         }
     }

@@ -351,8 +351,7 @@ public class ConnectInteraction {
         case
         initial,
         
-        getUserId,
-        checkEmailIsExistingUser(String),
+        identifyUser(ConnectConfiguration.UserLookupMethod),
         
         logInExistingUser(User.Id),
         logInComplete(nextStep: ActivationStep),
@@ -407,24 +406,22 @@ public class ConnectInteraction {
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.nextToggleState = {
-//                if let _ = Applet.Session.shared.userToken {
-//                    // User is already logged in to IFTTT
-//                    // Retrieve their user ID and skip email step
-//                    return .step(for: nil, message: "button.state.accessing_existing_account".localized)
-//                } else {
+                if let _ = Applet.Session.shared.userToken {
+                    return .toggle(for: self.connectingService, message: "", isOn: true)
+                } else {
                     return .email(suggested: Applet.Session.shared.suggestedUserEmail)
-//                }
+                }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
-                if let _ = Applet.Session.shared.userToken {
-                    self?.transition(to: .getUserId)
+                if let token = Applet.Session.shared.userToken {
+                    self?.transition(to: .identifyUser(.token(token)))
                 } else {
                     self?.button.configureFooter(FooterMessages.enterEmail.value, animated: false)
                 }
             }
             button.emailInteraction.onConfirm = { [weak self] email in
                 if email.isValidEmail {
-                    self?.transition(to: .checkEmailIsExistingUser(email))
+                    self?.transition(to: .identifyUser(.email(email)))
                 } else {
                     if let delegate = self?.delegate {
                         delegate.connectInteraction(self!, nonFatalActivationError: .invalidEmail(email))
@@ -459,36 +456,38 @@ public class ConnectInteraction {
             }
             
             
-        // MARK: - Get user ID from user token
-        case (.initial?, .getUserId):
-            // FIXME: Make a request to /me to get user id
-            break
-            
-            
         // MARK: - Check if email is an existing user
-        case (.initial?, .checkEmailIsExistingUser(let email)):
+        case (.initial?, .identifyUser(let lookupMethod)):
             let timeout: TimeInterval = 3 // Network request timeout
             
-            button.transition(to:
-                .step(for: nil,
-                      message: "button.state.checking_account".localized)
+            switch lookupMethod {
+            case .email:
+                button.transition(to:
+                    .step(for: nil,
+                          message: "button.state.checking_account".localized)
                 ).preform()
+                
+            case .token:
+                button.transition(to:
+                    .step(for: nil,
+                          message: "button.state.accessing_existing_account".localized)
+                ).preform()
+            }
             
             let progress = button.progressTransition(timeout: timeout)
             progress.preform()
             
-            Applet.Session.shared.getConnectConfiguration(userEmail: email,
+            Applet.Session.shared.getConnectConfiguration(user: lookupMethod,
                                                           waitUntil: 1,
                                                           timeout: timeout)
-            { (configuration) in
+            { (configuration, error) in
+                guard let configuration = configuration else {
+                    self.transition(to: .failed(.networkError(error)))
+                    return
+                }
                 self.currentConfiguration = configuration
                 
-                if configuration.isExistingUser {
-                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
-                    progress.onComplete {
-                        self.transition(to: .logInExistingUser(.email(email)))
-                    }
-                } else {
+                if case .email(let email) = configuration.userId, configuration.isExistingUser == false {
                     // There is no account for this user
                     // Show a fake message that we are creating an account
                     // Then move to the first step of the service connection flow
@@ -507,6 +506,11 @@ public class ConnectInteraction {
                             // We know that this is a new user so we must connect the primary service first and create an account
                             self.transition(to: .serviceConnection(self.applet.primaryService, newUserEmail: email))
                         }
+                    }
+                } else { // Existing IFTTT user
+                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
+                    progress.onComplete {
+                        self.transition(to: .logInExistingUser(configuration.userId))
                     }
                 }
             }
