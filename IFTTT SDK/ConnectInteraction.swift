@@ -280,6 +280,9 @@ public class ConnectInteraction {
     private func openActivationURL(_ url: URL) {
         let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
         controller.delegate = redirectObserving
+        if #available(iOS 11.0, *) {
+            controller.dismissButtonStyle = .cancel
+        } 
         currentSafariViewController = controller
         delegate?.connectInteraction(self, show: controller)
     }
