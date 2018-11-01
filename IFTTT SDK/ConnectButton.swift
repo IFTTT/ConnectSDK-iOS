@@ -24,6 +24,7 @@ fileprivate struct Layout {
 
 // MARK: - Connect Button
 
+// FIXME: Get IBDesignable working
 //@IBDesignable
 public class ConnectButton: UIView {
     
@@ -36,6 +37,7 @@ public class ConnectButton: UIView {
         case dark
     }
     
+    // FIXME: Make this an IBInspectable property
     public var style: Style {
         didSet {
             updateStyle()
