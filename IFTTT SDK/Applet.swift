@@ -446,11 +446,12 @@ extension Applet.Session {
                     partnerOpaqueToken = parser["token"].string
                     error = _error
                     semaphore.signal()
-                    }.resume()
+                }.resume()
             } else {
                 semaphore.signal()
             }
         }
+        
         let checkUser = {
             switch user {
             case .email(let email):
@@ -464,7 +465,7 @@ extension Applet.Session {
                     isExistingUser = response?.statusCode == 204
                     error = _error
                     semaphore.signal()
-                    }.resume()
+                }.resume()
                 
             case .token(let token):
                 let url = API.base.appendingPathComponent("/me")
@@ -478,7 +479,7 @@ extension Applet.Session {
                     }
                     error = _error
                     semaphore.signal()
-                    }.resume()
+                }.resume()
             }
         }
         
