@@ -14,7 +14,7 @@ extension UIColor {
     static var iftttOrange = UIColor(hex: 0xEE4433)
     static var iftttLightGrey = UIColor(hex: 0xCCCCCC)
     static var iftttGrey = UIColor(hex: 0x414141)
-    static var iftttBorderColor = UIColor(white: 1, alpha: 0.25)
+    static var iftttBorderColor = UIColor(white: 1, alpha: 0.2)
     
     var hsba: [CGFloat]? {
         var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
@@ -22,6 +22,43 @@ extension UIColor {
             return [h, s, b, a]
         }
         return nil
+    }
+    
+    /// Option type defining each color component in HSBA
+    struct HSBA: OptionSet {
+        let rawValue: Int
+        
+        static let h = HSBA(rawValue: 1 << 0)
+        static let s = HSBA(rawValue: 1 << 1)
+        static let b = HSBA(rawValue: 1 << 2)
+        static let a = HSBA(rawValue: 1 << 2)
+        
+        static let monochrome: HSBA = [.s, .b]
+        static let all: HSBA = [.h, .s, .b, .a]
+    }
+    
+    /// Returns the distance between the 2 colors where 0 is the same color and 1 is completely different (ie. white v. black)
+    func distance(from otherColor: UIColor, comparing: HSBA = .all) -> CGFloat {
+        guard self != otherColor else {
+            return 0
+        }
+        guard let hsba = self.hsba, let otherHsba = otherColor.hsba else {
+            return 1
+        }
+        var value: CGFloat = 0
+        if comparing.contains(.h) {
+            value += pow(hsba[0] - otherHsba[0], 2)
+        }
+        if comparing.contains(.s) {
+            value += pow(hsba[1] - otherHsba[1], 2)
+        }
+        if comparing.contains(.b) {
+            value += pow(hsba[2] - otherHsba[2], 2)
+        }
+        if comparing.contains(.a) {
+            value += pow(hsba[3] - otherHsba[3], 2)
+        }
+        return sqrt(value)
     }
     
     /// Get the constrast color for a primary color

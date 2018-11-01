@@ -145,7 +145,7 @@ class PillButton: PillView {
         }
     }
     
-    init(_ image: UIImage, _ configure: ((PillButton) -> Void)?) {
+    init(_ image: UIImage, _ configure: ((PillButton) -> Void)? = nil) {
         super.init()
         
         addSubview(imageView)
@@ -156,7 +156,7 @@ class PillButton: PillView {
         configure?(self)
     }
     
-    init(_ text: String, _ configure: ((PillButton) -> Void)?) {
+    init(_ text: String, _ configure: ((PillButton) -> Void)? = nil) {
         super.init()
         
         label.text = text

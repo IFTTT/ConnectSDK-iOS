@@ -11,8 +11,8 @@ import Foundation
 // MARK: - Model
 
 /// A structure that encapsulates interacting with a connect service.
-public struct Applet {
-
+public struct Applet: Equatable {
+    
     /// Represents the various states an `Applet` can be in based on interaction.
     public enum Status: String {
         
@@ -30,7 +30,7 @@ public struct Applet {
     }
     
     /// Information about a connect service.
-    public struct Service {
+    public struct Service: Equatable {
         
         /// The identifier of the service.
         public let id: String
@@ -52,6 +52,10 @@ public struct Applet {
         
         /// THe `URL` to the service.
         public let url: URL
+        
+        public static func ==(lhs: Service, rhs: Service) -> Bool {
+            return lhs.id == rhs.id
+        }
     }
     
     /// The identifier of the `Applet`.
@@ -85,6 +89,10 @@ public struct Applet {
     }
     
     let activationURL: URL
+    
+    public static func ==(lhs: Applet, rhs: Applet) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 
@@ -215,36 +223,80 @@ public extension Applet {
 
 public extension Applet {
     
+    /// Handles network requests related to the `Applet` connection service.
     public struct Request {
         
+        /// The HTTP request method options.
         public enum Method: String {
-            case
-            GET = "GET",
-            POST = "POST"
+            
+            /// The HTTP GET method.
+            case GET = "GET"
+            
+            /// The HTTP POST method.
+            case POST = "POST"
         }
         
+        /// The `Request`'s `URLRequest` that task are completed on.
         public let urlRequest: URLRequest
         
+        /// A structure encapsulating responses from the `Applet` activation service network requests.
         public struct Response {
+            
+            /// The metadata associated with the response to network request.
             public let urlResponse: URLResponse?
+            
+            /// The network repsonse status code.
             public let statusCode: Int?
+            
+            /// The `Result` of the network request.
             public let result: Result
         }
-        public enum Result {
-            case success(Applet), failure(Error?)
-        }
-        public typealias CompletionHandler = (Response) -> Void
         
+        /// An enum to encapsulate success and failure responses from a network request.
+        public enum Result {
+            
+            /// A successful result with an `Applet`.
+            ///
+            /// - Parameter applet: An `Applet` downloaded from the `Session`.
+            case success(_ applet: Applet)
+            
+            /// A failure result with an optionally provided `Error`.
+            ///
+            /// - Parameter error: An optional `Error` with information about why the request failed.
+            case failure(_ error: Error?)
+        }
+        
+        /// A handler that is used when a `Response` is recieve from a network request.
+        ///
+        /// - Parameter response: The `Response` object from the completed request.
+        public typealias CompletionHandler = (_ response: Response) -> Void
+        
+        /// A closure called when a network task has completed.
         public let completion: CompletionHandler
         
+        /// Starts a network task on a `Applet`'s `Session`.
+        ///
+        /// - Parameter session: A `Session` to begin the network request on. Defaults to the shared session.
         public func start(with session: Session = .shared) {
             task(with: session.urlSession, urlRequest: urlRequest, minimumDuration: nil).resume()
         }
         
+        /// A `Request` configured for an `Applet` with the provided identifier.
+        ///
+        /// - Parameters:
+        ///   - id: The identifier of the `Applet`.
+        ///   - completion: A `CompletionHandler` for handling the result of the request.
+        /// - Returns: A `Request` configured to get the `Applet`.
         public static func applet(id: String, _ completion: @escaping CompletionHandler) -> Request {
             return Request(path: "/applets/\(id)", method: .GET, completion: completion)
         }
         
+        /// A disconnection `Request` for an `Applet` with the provided identifier.
+        ///
+        /// - Parameters:
+        ///   - id: The identifier of the `Applet`.
+        ///   - completion: A `CompletionHandler` for handling the result of the request.
+        /// - Returns: A `Request` configured to disconnect the `Applet`.
         public static func disconnectApplet(id: String, _ completion: @escaping CompletionHandler) -> Request {
             return Request(path: "/applets/\(id)/disable)", method: .POST, completion: completion)
         }
@@ -394,7 +446,7 @@ extension Applet.Session {
                     partnerOpaqueToken = parser["token"].string
                     error = _error
                     semaphore.signal()
-                }.resume()
+                    }.resume()
             } else {
                 semaphore.signal()
             }
@@ -412,8 +464,8 @@ extension Applet.Session {
                     isExistingUser = response?.statusCode == 204
                     error = _error
                     semaphore.signal()
-                }.resume()
-            
+                    }.resume()
+                
             case .token(let token):
                 let url = API.base.appendingPathComponent("/me")
                 var request = URLRequest(url: url)
@@ -426,7 +478,7 @@ extension Applet.Session {
                     }
                     error = _error
                     semaphore.signal()
-                }.resume()
+                    }.resume()
             }
         }
         

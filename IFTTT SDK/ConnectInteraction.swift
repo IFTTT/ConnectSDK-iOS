@@ -154,6 +154,7 @@ public class ConnectInteraction {
         case
         poweredBy,
         enterEmail,
+        emailInvalid,
         signedIn(username: String),
         connect(Applet.Service, to: Applet.Service),
         manage,
@@ -166,7 +167,11 @@ public class ConnectInteraction {
                                       attributes: [.font : typestyle.adjusting(weight: .heavy).font])
         }
         
-        var value: NSAttributedString {
+        var value: ConnectButton.LabelValue {
+            return .attributed(attributedString)
+        }
+        
+        var attributedString: NSAttributedString {
             switch self {
             case .poweredBy:
                 let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
@@ -176,6 +181,10 @@ public class ConnectInteraction {
             
             case .enterEmail:
                 let text = "button.footer.email".localized
+                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
+                
+            case .emailInvalid:
+                let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : typestyle.font])
                 
             case .signedIn(let username):
@@ -271,6 +280,9 @@ public class ConnectInteraction {
     private func openActivationURL(_ url: URL) {
         let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
         controller.delegate = redirectObserving
+        if #available(iOS 11.0, *) {
+            controller.dismissButtonStyle = .cancel
+        } 
         currentSafariViewController = controller
         delegate?.connectInteraction(self, show: controller)
     }
@@ -399,24 +411,24 @@ public class ConnectInteraction {
             
             let animated = previous != nil
             
-            button.transition(to: initialButtonState).preform(animated: animated)
-            button.configureFooter(FooterMessages.poweredBy.value, animated: animated)
+            button.animator(for:
+                .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)
+            ).preform(animated: animated)
             
             button.toggleInteraction.isTapEnabled = true
             button.toggleInteraction.isDragEnabled = true
             
-            button.toggleInteraction.nextToggleState = {
+            button.toggleInteraction.toggleTransition = {
                 if let _ = Applet.Session.shared.userToken {
-                    return .toggle(for: self.connectingService, message: "", isOn: true)
+                    return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
-                    return .email(suggested: Applet.Session.shared.suggestedUserEmail)
+                    return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
+                                        footerValue: FooterMessages.enterEmail.value)
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
                 if let token = Applet.Session.shared.userToken {
                     self?.transition(to: .identifyUser(.token(token)))
-                } else {
-                    self?.button.configureFooter(FooterMessages.enterEmail.value, animated: false)
                 }
             }
             button.emailInteraction.onConfirm = { [weak self] email in
@@ -426,6 +438,7 @@ public class ConnectInteraction {
                     if let delegate = self?.delegate {
                         delegate.connectInteraction(self!, nonFatalActivationError: .invalidEmail(email))
                     }
+                    self?.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
                     self?.button.performInvalidEmailAnimation()
                 }
             }
@@ -435,8 +448,9 @@ public class ConnectInteraction {
         case (_, .connected):
             let animated = previous != nil
             
-            button.transition(to: connectedButtonState).preform(animated: animated)
-            button.configureFooter(FooterMessages.manage.value, animated: animated)
+            button.animator(for: .buttonState(connectedButtonState,
+                                              footerValue: FooterMessages.manage.value)
+            ).preform(animated: animated)
             
             button.footerInteraction.isTapEnabled = true
             
@@ -445,11 +459,16 @@ public class ConnectInteraction {
                 appletChangedStatus(isOn: true)
             }
             
+            // Toggle from here goes to disconnection confirmation
+            // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
             button.toggleInteraction.isTapEnabled = true
             
+            // The next toggle state is still the connected state since the user will confirm as part of the next step
+            // We only change the footer to "slide to disconnect"
             let nextState = connectedButtonState
-            button.toggleInteraction.nextToggleState = {
-                return nextState
+            button.toggleInteraction.toggleTransition = {
+                return .buttonState(nextState,
+                                    footerValue: FooterMessages.disconnect.value)
             }
             button.toggleInteraction.onToggle = { [weak self] _ in
                 self?.transition(to: .confirmDisconnect)
@@ -462,19 +481,19 @@ public class ConnectInteraction {
             
             switch lookupMethod {
             case .email:
-                button.transition(to:
-                    .step(for: nil,
-                          message: "button.state.checking_account".localized)
+                button.animator(for: .buttonState(.step(for: nil,
+                                                        message: "button.state.checking_account".localized),
+                                                  footerValue: FooterMessages.poweredBy.value)
                 ).preform()
                 
             case .token:
-                button.transition(to:
-                    .step(for: nil,
-                          message: "button.state.accessing_existing_account".localized)
+                button.animator(for: .buttonState(.step(for: nil,
+                                                        message: "button.state.accessing_existing_account".localized),
+                                                  footerValue: FooterMessages.poweredBy.value)
                 ).preform()
             }
             
-            let progress = button.progressTransition(timeout: timeout)
+            let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
             Applet.Session.shared.getConnectConfiguration(user: lookupMethod,
@@ -491,15 +510,14 @@ public class ConnectInteraction {
                     // There is no account for this user
                     // Show a fake message that we are creating an account
                     // Then move to the first step of the service connection flow
-                    self.button.transition(to:
-                        .step(for: nil,
-                              message: "button.state.creating_account".localized)
-                        ).preform()
+                    self.button.animator(for: .buttonState(.step(for: nil,
+                                                                 message: "button.state.creating_account".localized))
+                    ).preform()
                     
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete {
                         // Show "fake" success
-                        self.button.transition(to: .stepComplete(for: nil)).preform()
+                        self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
                         
                         // After a short delay, show first service connection
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -521,21 +539,24 @@ public class ConnectInteraction {
             openActivationURL(applet.activationURL(.login(userId)))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
-            let transition = button.transition(to: .stepComplete(for: nil))
-            transition.onComplete {
+            let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
+            animation.onComplete {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.transition(to: nextStep)
                 }
             }
-            transition.preform()
+            animation.preform()
             
             
         // MARK: - Service connection
         case (_, .serviceConnection(let service, let newUserEmail)):
-            button.transition(to:
-                .step(for: service,
-                      message: "button.state.sign_in".localized(arguments: service.name))
-                ).preform()
+            let footer = service == applet.primaryService ?
+                FooterMessages.poweredBy : FooterMessages.connect(service, to: applet.primaryService)
+            
+            button.animator(for: .buttonState(.step(for: service,
+                                                    message: "button.state.sign_in".localized(arguments: service.name)),
+                                              footerValue: footer.value)
+            ).preform()
             
             let token: String? = {
                 if service.id == applet.primaryService.id {
@@ -552,13 +573,14 @@ public class ConnectInteraction {
             
         case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep)):
             //FIXME: The web needs to tell us whether to say connecting or saving here
-            button.transition(to: .step(for: service, message: "button.state.connecting".localized)).preform()
-            button.configureFooter(FooterMessages.poweredBy.value, animated: true)
+            button.animator(for: .buttonState(.step(for: service, message: "button.state.connecting".localized),
+                                              footerValue: FooterMessages.poweredBy.value)
+            ).preform()
 
-            let progressBar = button.progressTransition(timeout: 2)
+            let progressBar = button.progressBar(timeout: 2)
             progressBar.preform()
             progressBar.onComplete {
-                self.button.transition(to: .stepComplete(for: service)).preform()
+                self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.transition(to: nextStep)
                 }
@@ -592,8 +614,9 @@ public class ConnectInteraction {
             let nextState: ConnectButton.State = .toggle(for: connectingService,
                                                          message: "button.state.disconnecting".localized,
                                                          isOn: false)
-            button.toggleInteraction.nextToggleState = {
-                return nextState
+            button.toggleInteraction.toggleTransition = {
+                return .buttonState(nextState,
+                                    footerValue: .none)
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
                 if isOn {
@@ -603,12 +626,10 @@ public class ConnectInteraction {
                 }
             }
             
-            button.configureFooter(FooterMessages.disconnect.value, animated: true)
-            
         case (.confirmDisconnect?, .processDisconnect):
             let timeout: TimeInterval = 3 // Network request timeout
             
-            let progress = button.progressTransition(timeout: timeout)
+            let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
             Applet.Request.disconnectApplet(id: applet.id) { (response) in
@@ -627,9 +648,10 @@ public class ConnectInteraction {
         case (.processDisconnect?, .disconnected):
             appletChangedStatus(isOn: false)
             
-            button.transition(to: .toggle(for: connectingService,
-                                          message: "button.state.disconnected".localized,
-                                          isOn: false)).preform()
+            button.animator(for: .buttonState(.toggle(for: connectingService,
+                                                      message: "button.state.disconnected".localized,
+                                                      isOn: false))
+            ).preform()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.transition(to: .initial)

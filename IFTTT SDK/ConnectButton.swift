@@ -19,11 +19,13 @@ fileprivate struct Layout {
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter: CGFloat = 24
+    static let borderWidth: CGFloat = 2
 }
 
 
 // MARK: - Connect Button
 
+// FIXME: Get IBDesignable working
 //@IBDesignable
 public class ConnectButton: UIView {
     
@@ -36,6 +38,7 @@ public class ConnectButton: UIView {
         case dark
     }
     
+    // FIXME: Make this an IBInspectable property
     public var style: Style {
         didSet {
             updateStyle()
@@ -65,40 +68,6 @@ public class ConnectButton: UIView {
         step(for: Applet.Service?, message: String),
         stepComplete(for: Applet.Service?)
         
-        struct Transition {
-            fileprivate let animator: UIViewPropertyAnimator
-            
-            func preform(animated: Bool = true) {
-                if animated {
-                    animator.startAnimation()
-                } else {
-                    animator.startAnimation()
-                    animator.stopAnimation(false)
-                    animator.finishAnimation(at: .end)
-                }
-            }
-            func pause() {
-                animator.pauseAnimation()
-            }
-            func set(progress: CGFloat) {
-                // The animation will automatically finish if it hits 0 or 1
-                animator.fractionComplete = max(0.001, min(0.999, progress))
-            }
-            func resume(with timing: UITimingCurveProvider, duration: TimeInterval? = nil) {
-                var durationFactor: CGFloat = 1
-                if let continueDuration = duration {
-                    let timeElasped = TimeInterval(1 - animator.fractionComplete) * animator.duration
-                    durationFactor = CGFloat((continueDuration + timeElasped) / animator.duration)
-                }
-                animator.continueAnimation(withTimingParameters: timing, durationFactor: durationFactor)
-            }
-            func onComplete(_ body: @escaping (() -> Void)) {
-                animator.addCompletion { (_) in
-                    body()
-                }
-            }
-        }
-        
         var description: String {
             switch self {
             case .initialization: return "initialization"
@@ -110,34 +79,82 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: State = .initialization
-    
-    func progressTransition(timeout: TimeInterval) -> State.Transition {
-        return State.Transition(animator: progressBar.animator(duration: timeout))
+    /// Groups button State and footer value into a single state transition
+    struct Transition {
+        let state: State?
+        let footerValue: LabelValue?
+        
+        static func buttonState(_ state: State) -> Transition {
+            return Transition(state: state, footerValue: nil)
+        }
+        static func buttonState(_ state: State, footerValue: LabelValue) -> Transition {
+            return Transition(state: state, footerValue: footerValue)
+        }
+        static func footerValue(_ value: LabelValue) -> Transition {
+            return Transition(state: nil, footerValue: value)
+        }
     }
     
-    func transition(to state: State) -> State.Transition {
-        let transition = State.Transition(animator: animator(forTransitionTo: state, from: currentState))
-        transition.animator.addCompletion { (position) in
-            if position == .end {
-                self.currentState = state
+    /// Wrapper for UIViewPropertyAnimator
+    /// Drives button state transitions
+    struct Animator {
+        fileprivate let animator: UIViewPropertyAnimator
+        
+        func preform(animated: Bool = true) {
+            if animated {
+                animator.startAnimation()
+            } else {
+                animator.startAnimation()
+                animator.stopAnimation(false)
+                animator.finishAnimation(at: .end)
             }
         }
-        return transition
-    }
-    
-    func configureFooter(_ attributedString: NSAttributedString, animated: Bool) {
-        if animated {
-            let animator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UICubicTimingParameters(animationCurve: .easeOut))
-            footerLabelAnimator.transition(with: .rotateDown,
-                                           updatedText: .attributed(attributedString),
-                                           addingTo: animator)
-            animator.startAnimation()
-        } else {
-            footerLabelAnimator.configure(.attributed(attributedString))
+        func pause() {
+            animator.pauseAnimation()
+        }
+        func set(progress: CGFloat) {
+            // The animation will automatically finish if it hits 0 or 1
+            animator.fractionComplete = max(0.001, min(0.999, progress))
+        }
+        func resume(with timing: UITimingCurveProvider, duration: TimeInterval? = nil) {
+            var durationFactor: CGFloat = 1
+            if let continueDuration = duration {
+                let timeElasped = TimeInterval(1 - animator.fractionComplete) * animator.duration
+                durationFactor = CGFloat((continueDuration + timeElasped) / animator.duration)
+            }
+            animator.continueAnimation(withTimingParameters: timing, durationFactor: durationFactor)
+        }
+        func onComplete(_ body: @escaping (() -> Void)) {
+            animator.addCompletion { (_) in
+                body()
+            }
         }
     }
     
+    private(set) var currentState: State = .initialization
+    
+    func progressBar(timeout: TimeInterval) -> Animator {
+        return Animator(animator: progressBar.animator(duration: timeout))
+    }
+    
+    func animator(for transition: Transition) -> Animator {
+        let animator = Animator(animator: UIViewPropertyAnimator(duration: 0.5,
+                                                                 timingParameters: UISpringTimingParameters(dampingRatio: 1)))
+        if let state = transition.state {
+            animator.animator.addCompletion { (position) in
+                if position == .end {
+                    self.currentState = state
+                }
+            }
+            animation(forTransitionTo: state, from: currentState, with: animator.animator)
+        }
+        if let footerValue = transition.footerValue {
+            footerLabelAnimator.transition(with: .rotateDown,
+                                           updatedValue: footerValue,
+                                           addingTo: animator.animator)
+        }
+        return animator
+    }
     
     
     // MARK: - Interaction
@@ -173,8 +190,8 @@ public class ConnectButton: UIView {
         
         var resistance: Resistance = .light
         
-        /// What is the next state of the toggle
-        var nextToggleState: (() -> State)?
+        /// What is the next button state when switching the toggle
+        var toggleTransition: (() -> Transition)?
         
         /// Callback when switch is toggled
         /// Sends true if switch has been toggled to the on position
@@ -235,41 +252,41 @@ public class ConnectButton: UIView {
         self?.footerInteraction.onSelect?()
     }
     
-    private var currentToggleTransition: State.Transition?
+    private var currentToggleAnimation: Animator?
     
-    private func getToggleTransition() -> State.Transition? {
-        if currentToggleTransition != nil {
-            return currentToggleTransition
+    private func getToggleAnimation() -> Animator? {
+        if currentToggleAnimation != nil {
+            return currentToggleAnimation
         }
         guard
             case .toggle(_, _, let isOn) = currentState,
-            let nextState = toggleInteraction.nextToggleState?()
+            let nextState = toggleInteraction.toggleTransition?()
         else {
             return nil
         }
-        let t = transition(to: nextState)
-        t.animator.addCompletion { position in
+        let a = animator(for: nextState)
+        a.animator.addCompletion { position in
             if position == .end {
                 self.toggleInteraction.onToggle?(!isOn)
             }
         }
-        return t
+        return a
     }
     
     @objc private func handleSwitchTap(_ gesture: SelectGestureRecognizer) {
         if gesture.state == .ended {
-            if let transition = getToggleTransition() {
-                transition.preform()
-                currentToggleTransition = nil
+            if let animation = getToggleAnimation() {
+                animation.preform()
+                currentToggleAnimation = nil
             }
         }
     }
     
     @objc private func handleSwitchDrag(_ gesture: UIPanGestureRecognizer) {
-        guard let transition = getToggleTransition() else {
+        guard let animation = getToggleAnimation() else {
             return
         }
-        currentToggleTransition = transition
+        currentToggleAnimation = animation
         
         let location = gesture.location(in: switchControl).x
         var progress = location / switchControl.bounds.width
@@ -282,27 +299,27 @@ public class ConnectButton: UIView {
         case .possible:
             break
         case .began:
-            transition.preform()
-            transition.pause()
+            animation.preform()
+            animation.pause()
         
         case .changed:
-            transition.set(progress: progress)
+            animation.set(progress: progress)
             
         case .ended:
             // Decide if we should reverse the transition
             // switchControl.isOn gives us the value that we are animating towards
             if toggleInteraction.resistance.shouldReverse(switchOn: switchControl.isOn, velocity: v, progress: progress) {
-                transition.animator.isReversed = true
+                animation.animator.isReversed = true
             }
-            transition.resume(with: UISpringTimingParameters(dampingRatio: 1,
+            animation.resume(with: UISpringTimingParameters(dampingRatio: 1,
                                                              initialVelocity: CGVector(dx: v, dy: 0)))
-            currentToggleTransition = nil
+            currentToggleAnimation = nil
             
         case .cancelled, .failed:
-            transition.animator.isReversed = true
-            transition.resume(with: UISpringTimingParameters(dampingRatio: 1,
+            animation.animator.isReversed = true
+            animation.resume(with: UISpringTimingParameters(dampingRatio: 1,
                                                              initialVelocity: CGVector(dx: v, dy: 0)))
-            currentToggleTransition = nil
+            currentToggleAnimation = nil
         }
     }
     
@@ -339,17 +356,29 @@ public class ConnectButton: UIView {
     private func updateStyle() {
         switch style {
         case .light:
+            emailConfirmButton.backgroundColor = .black
+            emailConfirmButton.imageView.tintColor = .white
+            emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
+            
             footerLabelAnimator.primary.label.textColor = .black
             footerLabelAnimator.transition.label.textColor = .black
             
             backgroundView.layer.borderColor = nil
             
         case .dark:
+            emailConfirmButton.backgroundColor = .white
+            emailConfirmButton.imageView.tintColor = .black
+            // Add a shadow to the left side of the button to delineate it from the email field background
+            let layer = emailConfirmButton.layer
+            layer.shadowColor = UIColor.black.cgColor
+            layer.shadowOpacity = 0.2
+            layer.shadowRadius = 5
+            layer.shadowOffset = CGSize(width: -2, height: 0)
+            
             footerLabelAnimator.primary.label.textColor = .white
             footerLabelAnimator.transition.label.textColor = .white
             
             backgroundView.layer.borderColor = UIColor.iftttBorderColor.cgColor
-            backgroundView.layer.borderWidth = 2
         }
     }
     
@@ -364,10 +393,7 @@ public class ConnectButton: UIView {
     /// This scopes effects of layoutIfNeeded
     fileprivate let emailConfirmButtonTrack = PassthroughView()
     
-    fileprivate let emailConfirmButton = PillButton(Assets.Button.emailConfirm) {
-        $0.imageView.tintColor = .white
-        $0.backgroundColor = .black
-    }
+    fileprivate let emailConfirmButton = PillButton(Assets.Button.emailConfirm)
     
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
@@ -380,6 +406,45 @@ public class ConnectButton: UIView {
     
     // MARK: Text
     
+    enum LabelValue: Equatable {
+        case
+        none,
+        text(String),
+        attributed(NSAttributedString)
+        
+        func update(label: UILabel) {
+            switch self {
+            case .none:
+                label.text = nil
+                label.attributedText = nil
+            case .text(let text):
+                label.text = text
+            case .attributed(let text):
+                label.attributedText = text
+            }
+        }
+        
+        var isEmpty: Bool {
+            if case .none = self {
+                return true
+            }
+            return false
+        }
+        
+        static func ==(lhs: LabelValue, rhs: LabelValue) -> Bool {
+            switch (lhs, rhs) {
+            case (.none, .none):
+                return true
+            case (.text(let lhs), .text(let rhs)):
+                return lhs == rhs
+            case (.attributed(let lhs), .attributed(let rhs)):
+                return lhs == rhs
+            default:
+                return false
+            }
+        }
+    }
+    
     fileprivate var primaryLabelAnimator = LabelAnimator {
         $0.textAlignment = .center
         $0.textColor = .white
@@ -387,17 +452,19 @@ public class ConnectButton: UIView {
         $0.adjustsFontSizeToFitWidth = true
     }
     
-    let footerLabelAnimator = LabelAnimator {
+    fileprivate let footerLabelAnimator = LabelAnimator {
         $0.numberOfLines = 0
         $0.textAlignment = .center
     }
     
-    class LabelAnimator {
+    fileprivate class LabelAnimator {
         
         typealias View = (label: UILabel, view: UIStackView)
         
         let primary: View
         let transition: View
+        
+        private var currrentValue: LabelValue = .none
         
         init(_ configuration: @escaping (UILabel) -> Void) {
             primary = LabelAnimator.views(configuration)
@@ -417,31 +484,6 @@ public class ConnectButton: UIView {
             crossfade,
             slideInFromRight,
             rotateDown
-        }
-        enum Value {
-            case
-            none,
-            text(String),
-            attributed(NSAttributedString)
-            
-            func update(label: UILabel) {
-                switch self {
-                case .none:
-                    label.text = nil
-                    label.attributedText = nil
-                case .text(let text):
-                    label.text = text
-                case .attributed(let text):
-                    label.attributedText = text
-                }
-            }
-            
-            var isEmpty: Bool {
-                if case .none = self {
-                    return true
-                }
-                return false
-            }
         }
         struct Insets {
             let left: CGFloat
@@ -469,20 +511,25 @@ public class ConnectButton: UIView {
             }
         }
         
-        func configure(_ value: Value, insets: Insets? = nil) {
+        func configure(_ value: LabelValue, insets: Insets? = nil) {
             value.update(label: primary.label)
             insets?.apply(primary.view)
+            currrentValue = value
         }
         
         func transition(with effect: Effect,
-                        updatedText: Value,
+                        updatedValue: LabelValue,
                         insets: Insets? = nil,
                         addingTo animator: UIViewPropertyAnimator) {
+            guard updatedValue != currrentValue else {
+                animator.addAnimations { }
+                return
+            }
             
             // Update the transition to view
             transition.view.isHidden = false
             insets?.apply(transition.view)
-            updatedText.update(label: transition.label)
+            updatedValue.update(label: transition.label)
             
             // Set final state at the end of the animation
             animator.addCompletion { position in
@@ -495,7 +542,8 @@ public class ConnectButton: UIView {
                 
                 if position == .end {
                     insets?.apply(self.primary.view)
-                    updatedText.update(label: self.primary.label)
+                    updatedValue.update(label: self.primary.label)
+                    self.currrentValue = updatedValue
                 }
             }
             
@@ -612,9 +660,19 @@ public class ConnectButton: UIView {
             }
         }
         
-        func configure(with service: Applet.Service?) {
-            knob.iconView.set(imageURL: service?.colorIconURL)
-            knob.backgroundColor = service?.brandColor ?? .iftttBlue
+        func configure(with service: Applet.Service) {
+            knob.iconView.set(imageURL: service.colorIconURL)
+            
+            let color = service.brandColor
+            knob.backgroundColor = color
+            
+            // If the knob color is too close to black, draw a border around it
+            if color.distance(from: .black, comparing: .monochrome) < 0.2 {
+                knob.layer.borderWidth = Layout.borderWidth
+                knob.layer.borderColor = UIColor.iftttBorderColor.cgColor
+            } else {
+                knob.layer.borderColor = UIColor.clear.cgColor
+            }
         }
         
         let knob = Knob()
@@ -869,11 +927,7 @@ private extension ConnectButton.ProgressBar {
 // MARK: Button state
 
 private extension ConnectButton {
-    var animationDuration: TimeInterval { return 0.5 }
-    
-    func animator(forTransitionTo state: State, from previousState: State) -> UIViewPropertyAnimator {
-        let animator = UIViewPropertyAnimator(duration: animationDuration,
-                                              timingParameters: UISpringTimingParameters(dampingRatio: 1))
+    func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator) {
         
         // FIXME: Let's avoid repitition here to make sure it's consistent between states
         
@@ -882,7 +936,7 @@ private extension ConnectButton {
         // Setup switch
         case (.initialization, .toggle(let service, let message, let isOn)):
             primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             insets: .avoidSwitchKnob(isOn: isOn),
                                             addingTo: animator)
             animator.addAnimations {
@@ -891,6 +945,9 @@ private extension ConnectButton {
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.curvature = 1
                 self.switchControl.alpha = 1
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.layer.borderWidth = Layout.borderWidth
             }
             
             
@@ -898,7 +955,7 @@ private extension ConnectButton {
         case (.toggle(_, let lastMessage, let wasOn), .toggle(_, let message, let isOn)) where wasOn == isOn:
             if lastMessage != message {
                 primaryLabelAnimator.transition(with: .rotateDown,
-                                                updatedText: .text(message),
+                                                updatedValue: .text(message),
                                                 insets: .avoidSwitchKnob(isOn: isOn),
                                                 addingTo: animator)
             }
@@ -908,9 +965,9 @@ private extension ConnectButton {
         // Toggle
         case (.toggle, .toggle(_, let message, let isOn)):
             primaryLabelAnimator.transition(with: .crossfade,
-                             updatedText: .text(message),
-                             insets: .avoidSwitchKnob(isOn: isOn),
-                             addingTo: animator)
+                                            updatedValue: .text(message),
+                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            addingTo: animator)
             
             progressBar.configure(with: nil)
             progressBar.alpha = 1
@@ -936,7 +993,7 @@ private extension ConnectButton {
             emailConfirmButton.curvature = 1
             
             primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedText: .none,
+                                            updatedValue: .none,
                                             addingTo: animator)
             
             progressBar.configure(with: nil)
@@ -955,6 +1012,9 @@ private extension ConnectButton {
                 self.emailConfirmButton.transform = .identity
                 self.emailConfirmButton.curvature = 0
                 self.emailConfirmButton.alpha = 1
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.layer.borderWidth = 0
             }
             animator.addCompletion { position in
                 // Keep the knob is a "clean" state since we don't animate backwards from this step
@@ -986,7 +1046,7 @@ private extension ConnectButton {
             progressBar.configure(with: nil)
             
             primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             insets: .standard,
                                             addingTo: animator)
             
@@ -1001,7 +1061,7 @@ private extension ConnectButton {
             progressBar.configure(with: service)
             
             primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
@@ -1014,6 +1074,9 @@ private extension ConnectButton {
                 
                 self.serviceIconView.set(imageURL: service?.colorIconURL)
                 self.serviceIconView.alpha = 1
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.layer.borderWidth = Layout.borderWidth
             }
             animator.addCompletion { (_) in
                 self.emailConfirmButton.backgroundColor = .black
@@ -1024,7 +1087,7 @@ private extension ConnectButton {
         // Changing the message during a step
         case (.step, .step(_, let message)):
             primaryLabelAnimator.transition(with: .rotateDown,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             addingTo: animator)
             animator.addAnimations { }
             
@@ -1032,7 +1095,7 @@ private extension ConnectButton {
         // Completing a step
         case (.step, .stepComplete(let service)):
             primaryLabelAnimator.transition(with: .rotateDown,
-                                            updatedText: .none,
+                                            updatedValue: .none,
                                             addingTo: animator)
             
             backgroundView.backgroundColor = service?.brandColor ?? .black
@@ -1055,7 +1118,7 @@ private extension ConnectButton {
             progressBar.configure(with: service)
             
             primaryLabelAnimator.transition(with: .slideInFromRight,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
@@ -1073,7 +1136,7 @@ private extension ConnectButton {
         case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true:
             switchControl.primeAnimation_centerKnob()
             primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             insets: .avoidSwitchKnob(isOn: isOn),
                                             addingTo: animator)
             progressBar.configure(with: service)
@@ -1101,7 +1164,7 @@ private extension ConnectButton {
         // Abort a flow
         case (.step, .toggle(let service, let message, let isOn)) where isOn == false:
             primaryLabelAnimator.transition(with: .rotateDown,
-                                            updatedText: .text(message),
+                                            updatedValue: .text(message),
                                             insets: .avoidSwitchKnob(isOn: isOn),
                                             addingTo: animator)
             
@@ -1120,6 +1183,5 @@ private extension ConnectButton {
         default:
             fatalError("Connect button state transition from \(previousState) to \(state) is invalid")
         }
-        return animator
     }
 }
