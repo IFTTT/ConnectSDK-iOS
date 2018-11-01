@@ -451,7 +451,6 @@ extension Applet.Session {
                 semaphore.signal()
             }
         }
-        
         let checkUser = {
             switch user {
             case .email(let email):
@@ -466,7 +465,6 @@ extension Applet.Session {
                     error = _error
                     semaphore.signal()
                 }.resume()
-                
             case .token(let token):
                 let url = API.base.appendingPathComponent("/me")
                 var request = URLRequest(url: url)
