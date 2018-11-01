@@ -14,7 +14,7 @@ extension UIColor {
     static var iftttOrange = UIColor(hex: 0xEE4433)
     static var iftttLightGrey = UIColor(hex: 0xCCCCCC)
     static var iftttGrey = UIColor(hex: 0x414141)
-    static var iftttBorderColor = UIColor(white: 1, alpha: 0.25)
+    static var iftttBorderColor = UIColor(white: 1, alpha: 0.2)
     
     var hsba: [CGFloat]? {
         var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0

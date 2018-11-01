@@ -355,17 +355,29 @@ public class ConnectButton: UIView {
     private func updateStyle() {
         switch style {
         case .light:
+            emailConfirmButton.backgroundColor = .black
+            emailConfirmButton.imageView.tintColor = .white
+            emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
+            
             footerLabelAnimator.primary.label.textColor = .black
             footerLabelAnimator.transition.label.textColor = .black
             
             backgroundView.layer.borderColor = nil
             
         case .dark:
+            emailConfirmButton.backgroundColor = .white
+            emailConfirmButton.imageView.tintColor = .black
+            // Add a shadow to the left side of the button to delineate it from the email field background
+            let layer = emailConfirmButton.layer
+            layer.shadowColor = UIColor.black.cgColor
+            layer.shadowOpacity = 0.2
+            layer.shadowRadius = 5
+            layer.shadowOffset = CGSize(width: -2, height: 0)
+            
             footerLabelAnimator.primary.label.textColor = .white
             footerLabelAnimator.transition.label.textColor = .white
             
             backgroundView.layer.borderColor = UIColor.iftttBorderColor.cgColor
-            backgroundView.layer.borderWidth = 2
         }
     }
     
@@ -380,10 +392,7 @@ public class ConnectButton: UIView {
     /// This scopes effects of layoutIfNeeded
     fileprivate let emailConfirmButtonTrack = PassthroughView()
     
-    fileprivate let emailConfirmButton = PillButton(Assets.Button.emailConfirm) {
-        $0.imageView.tintColor = .white
-        $0.backgroundColor = .black
-    }
+    fileprivate let emailConfirmButton = PillButton(Assets.Button.emailConfirm)
     
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
@@ -925,6 +934,9 @@ private extension ConnectButton {
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.curvature = 1
                 self.switchControl.alpha = 1
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.layer.borderWidth = 2
             }
             
             
@@ -989,6 +1001,9 @@ private extension ConnectButton {
                 self.emailConfirmButton.transform = .identity
                 self.emailConfirmButton.curvature = 0
                 self.emailConfirmButton.alpha = 1
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.layer.borderWidth = 0
             }
             animator.addCompletion { position in
                 // Keep the knob is a "clean" state since we don't animate backwards from this step
@@ -1048,6 +1063,9 @@ private extension ConnectButton {
                 
                 self.serviceIconView.set(imageURL: service?.colorIconURL)
                 self.serviceIconView.alpha = 1
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.layer.borderWidth = 2
             }
             animator.addCompletion { (_) in
                 self.emailConfirmButton.backgroundColor = .black
