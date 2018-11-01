@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Model
 
-public struct Applet {
+public struct Applet: Equatable {
     public enum Status: String {
         case
         initial = "never_enabled",
@@ -19,7 +19,7 @@ public struct Applet {
         unknown = ""
     }
     
-    public struct Service {
+    public struct Service: Equatable {
         public let id: String
         public let name: String
         public let isPrimary: Bool
@@ -27,6 +27,10 @@ public struct Applet {
         public let colorIconURL: URL
         public let brandColor: UIColor
         public let url: URL
+        
+        public static func ==(lhs: Service, rhs: Service) -> Bool {
+            return lhs.id == rhs.id
+        }
     }
     
     public let id: String
@@ -52,6 +56,10 @@ public struct Applet {
     }
     
     let activationURL: URL
+    
+    public static func ==(lhs: Applet, rhs: Applet) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 

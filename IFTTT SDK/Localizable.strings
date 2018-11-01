@@ -22,6 +22,7 @@
 
 "button.footer.powered_by" = "POWERED BY ";
 "button.footer.email" = "Sign in to IFTTT or create a new account";
+"button.footer.email.invalid" = "Enter valid email";
 "button.footer.signed_in" = " sign in to ";
 "button.footer.connect" = "Sign in to connect %@ with %@";
 "button.footer.manage" = "You're all set. Manage connection with ";
