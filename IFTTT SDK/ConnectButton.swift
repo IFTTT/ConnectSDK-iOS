@@ -19,6 +19,7 @@ fileprivate struct Layout {
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter: CGFloat = 24
+    static let borderWidth: CGFloat = 2
 }
 
 
@@ -659,9 +660,19 @@ public class ConnectButton: UIView {
             }
         }
         
-        func configure(with service: Applet.Service?) {
-            knob.iconView.set(imageURL: service?.colorIconURL)
-            knob.backgroundColor = service?.brandColor ?? .iftttBlue
+        func configure(with service: Applet.Service) {
+            knob.iconView.set(imageURL: service.colorIconURL)
+            
+            let color = service.brandColor
+            knob.backgroundColor = color
+            
+            // If the knob color is too close to black, draw a border around it
+            if color.distance(from: .black, comparing: .monochrome) < 0.2 {
+                knob.layer.borderWidth = Layout.borderWidth
+                knob.layer.borderColor = UIColor.iftttBorderColor.cgColor
+            } else {
+                knob.layer.borderColor = UIColor.clear.cgColor
+            }
         }
         
         let knob = Knob()
@@ -936,7 +947,7 @@ private extension ConnectButton {
                 self.switchControl.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.layer.borderWidth = 2
+                self.backgroundView.layer.borderWidth = Layout.borderWidth
             }
             
             
@@ -1065,7 +1076,7 @@ private extension ConnectButton {
                 self.serviceIconView.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.layer.borderWidth = 2
+                self.backgroundView.layer.borderWidth = Layout.borderWidth
             }
             animator.addCompletion { (_) in
                 self.emailConfirmButton.backgroundColor = .black
