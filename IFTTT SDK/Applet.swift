@@ -50,7 +50,7 @@ public struct Applet: Equatable {
         /// A primary color defined by the service's brand.
         public let brandColor: UIColor
         
-        /// THe `URL` to the service.
+        /// The `URL` to the service.
         public let url: URL
         
         public static func ==(lhs: Service, rhs: Service) -> Bool {
