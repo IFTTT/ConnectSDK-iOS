@@ -10,43 +10,76 @@ import Foundation
 
 // MARK: - Model
 
+/// A structure that encapsulates interacting with a connect service.
 public struct Applet {
+
+    /// Represents the various states an `Applet` can be in based on interaction.
     public enum Status: String {
-        case
-        initial = "never_enabled",
-        enabled = "enabled",
-        disabled = "disabled",
-        unknown = ""
+        
+        /// This Applet has never been enabled.
+        case initial = "never_enabled"
+        
+        /// The Applet is currently enabled.
+        case enabled = "enabled"
+        
+        /// The Applet has been disabled.
+        case disabled = "disabled"
+        
+        /// The Applet is in an unexpected state.
+        case unknown = ""
     }
     
+    /// Information about a connect service.
     public struct Service {
+        
+        /// The identifier of the service.
         public let id: String
+        
+        /// A name for the service.
         public let name: String
+        
+        /// Whether the service is the primary service.
         public let isPrimary: Bool
+        
+        /// The `URL` to a monochrome version of the icon.
         public let monochromeIconURL: URL
+        
+        /// The `URL` to a color version of the icon.
         public let colorIconURL: URL
+        
+        /// A primary color defined by the service's brand.
         public let brandColor: UIColor
+        
+        /// THe `URL` to the service.
         public let url: URL
     }
     
+    /// The identifier of the `Applet`.
     public let id: String
     
+    /// The name of the `Applet`.
     public let name: String
     
+    /// Information about the `Applet`.
     public let description: String
     
+    /// The `Status` of the `Applet`.
     public internal(set) var status: Status
     
     mutating func updating(status: Status) {
         self.status = status
     }
     
+    /// The `URL` for the `Applet`.
     public let url: URL
     
+    /// An array of `Service`s associated with the `Applet`.
     public let services: [Service]
     
+    /// The main `Service` for the `Applet`.
     public let primaryService: Service
     
+    /// An array of the `Service`s that work with this `Applet`.
     public var worksWithServices: [Service] {
         return services.filter({ $0.isPrimary == false })
     }
@@ -57,20 +90,36 @@ public struct Applet {
 
 // MARK: - Session Manager
 
+/// A protocol that defines APIs for requesting tokens for services.
 public protocol TokenProviding {
+    
+    /// Provides the partner OAuth token for the provided session.
+    ///
+    /// - Parameter session: The `Applet.Session` that the partner OAuth token is for.
+    /// - Returns: A `String` that respresents the OAuth token for the partner's connection service.
     func partnerOauthTokenForServiceConnection(_ session: Applet.Session) -> String
+    
+    /// Provides the IFTTT user token for the provided session.
+    ///
+    /// - Parameter session: The `Applet.Session` that the IFTTT user token is for.
+    /// - Returns: A `String` that respresents the IFTTT user token for the connection service.
     func iftttUserToken(for session: Applet.Session) -> String?
 }
 
 extension Notification.Name {
+    
+    /// A `Notification.Name` used to post notifications when the app recieves a redirect request for an `Applet` activation.
     static var iftttAppletActivationRedirect: Notification.Name {
         return Notification.Name("ifttt.applet.activation.redirect")
     }
 }
 
 public extension Applet {
+    
+    /// Encapsulates various information used for interacting with Applet configuration and activation.
     public class Session {
         
+        /// The configured shared `Session`. This must be configured with the static function `begin(tokenProvider:suggestedUserEmail:appletActivationRedirect:inviteCode:)` first before calling, otherwise it will result in an exception.
         public static var shared: Session {
             if let session = _shared {
                 return session
@@ -81,6 +130,14 @@ public extension Applet {
         
         private static var _shared: Session?
         
+        /// Creates the shared session configured with the provided parameters. The result is discardable and can be accessed again by calling the `Session.shared` instance.
+        ///
+        /// - Parameters:
+        ///   - tokenProvider: An object that handle providing tokens for the session.
+        ///   - suggestedUserEmail: A `String` provided as the suggested user's email address.
+        ///   - appletActivationRedirect: A `URL` used as the activation redirection endpoint.
+        ///   - inviteCode: An optional `String` containing an invitation code for the session.
+        /// - Returns: A configured `Session`, to use on the `Applet`. This is discardable and can be accessed again by calling the `Session.shared` instance.
         @discardableResult
         static public func begin(tokenProvider: TokenProviding, suggestedUserEmail: String, appletActivationRedirect: URL, inviteCode: String?) -> Session {
             assert(suggestedUserEmail.isValidEmail, "You must provide a valid email address for the user")
@@ -99,28 +156,35 @@ public extension Applet {
             return shared
         }
         
+        /// An object that handle providing tokens for the session.
         public let tokenProvider: TokenProviding
         
+        /// A `String` provided as the suggested user's email address.
         public let suggestedUserEmail: String
         
+        /// A `URL` used as the activation redirection endpoint.
         public let appletActivationRedirect: URL
         
+        /// An optional `String` containing an invitation code for the session.
         public let inviteCode: String?
         
+        /// An object for handling network data transfer tasks for the session.
         public let urlSession: URLSession
         
-        /// Handles redirects during applet activation
+        /// Handles redirects during applet activation.
         ///
         /// - Parameters:
-        ///   - url: The open url
-        ///   - options: The open url options
-        /// - Returns: True if this is an IFTTT SDK redirect
+        ///   - url: The `URL` resource to open.
+        ///   - options: A dictionary of `URL` handling options. For information about the possible keys in this dictionary, see UIApplicationOpenURLOptionsKey.
+        /// - Returns: True if this is an IFTTT SDK redirect. False for any other `URL`.
         public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-            // Check if the source is safari view controller and the scheme matches the SDK redirect
+            
+            // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
             if let source = options[.sourceApplication] as? String, url.scheme == appletActivationRedirect.scheme && source == "com.apple.SafariViewService" {
                 NotificationCenter.default.post(name: .iftttAppletActivationRedirect, object: url)
                 return true
             }
+            
             return false
         }
         
