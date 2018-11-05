@@ -181,6 +181,9 @@ public extension Applet {
         
         /// Handles redirects during applet activation.
         ///
+        /// Generally, this is used to handle url redirects the app recieves in `func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool` in the `AppDelgate`.
+        /// - Example: `Applet.Session.shared.handleApplicationRedirect(url: url, options: options)`.
+        ///
         /// - Parameters:
         ///   - url: The `URL` resource to open.
         ///   - options: A dictionary of `URL` handling options. For information about the possible keys in this dictionary, see UIApplicationOpenURLOptionsKey.
