@@ -70,10 +70,6 @@ public struct Applet: Equatable {
     /// The `Status` of the `Applet`.
     public internal(set) var status: Status
     
-    mutating func updating(status: Status) {
-        self.status = status
-    }
-    
     /// The `URL` for the `Applet`.
     public let url: URL
     
@@ -117,9 +113,7 @@ public protocol TokenProviding {
 extension Notification.Name {
     
     /// A `Notification.Name` used to post notifications when the app recieves a redirect request for an `Applet` activation.
-    static var iftttAppletActivationRedirect: Notification.Name {
-        return Notification.Name("ifttt.applet.activation.redirect")
-    }
+    static let iftttAppletActivationRedirect = Notification.Name("ifttt.applet.activation.redirect")
 }
 
 public extension Applet {

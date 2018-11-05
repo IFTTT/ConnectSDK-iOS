@@ -94,7 +94,8 @@ public class ConnectInteraction {
     public private(set) var applet: Applet
     
     private func appletChangedStatus(isOn: Bool) {
-        applet.updating(status: isOn ? .enabled : .disabled)
+        applet.status =  isOn ? .enabled : .disabled
+        
         if isOn {
             delegate?.connectInteraction(self, appletActivationFinished: .succeeded(applet))
         } else {
