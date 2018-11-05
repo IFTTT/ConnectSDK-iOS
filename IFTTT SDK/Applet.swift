@@ -67,9 +67,7 @@ public protocol TokenProviding {
 }
 
 extension Notification.Name {
-    static var iftttAppletActivationRedirect: Notification.Name {
-        return Notification.Name("ifttt.applet.activation.redirect")
-    }
+    static let iftttAppletActivationRedirect = Notification.Name("ifttt.applet.activation.redirect")
 }
 
 public extension Applet {
