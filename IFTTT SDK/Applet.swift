@@ -142,9 +142,9 @@ public extension Applet {
         ///
         /// - Parameters:
         ///   - tokenProvider: An object that handle providing tokens for the session.
-        ///   - suggestedUserEmail: A `String` provided as the suggested user's email address.
-        ///   - appletActivationRedirect: A `URL` used as the activation redirection endpoint.
-        ///   - inviteCode: An optional `String` containing an invitation code for the session.
+        ///   - suggestedUserEmail: A `String` provided as the suggested user's email address for their IFTTT account. If the user already has an IFTTT account with the same email, it will use that, otherwise it will create them a new account with this email.
+        ///   - appletActivationRedirect: A `URL` used as the activation redirection endpoint. This must be registered on `platform.ifttt.com` and set in the applications `Info.plist`.
+        ///   - inviteCode: An optional `String` containing an invitation code for the session. Used when testing unpublished services. The code can be found on `platform.ifttt.com`.
         /// - Returns: A configured `Session`, to use on the `Applet`. This is discardable and can be accessed again by calling the `Session.shared` instance.
         @discardableResult
         static public func begin(tokenProvider: TokenProviding, suggestedUserEmail: String, appletActivationRedirect: URL, inviteCode: String?) -> Session {
