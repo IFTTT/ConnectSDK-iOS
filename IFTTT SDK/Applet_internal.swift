@@ -52,8 +52,8 @@ extension Applet.Service {
         guard
             let id = parser["service_id"].string,
             let name = parser["service_name"].string,
-            let monochromeIconURL = parser["monochrome_icon_url"].url,
-            let colorIconURL = parser["color_icon_url"].url,
+            let templateIconURL = parser["monochrome_icon_url"].url,
+            let transparentBackgroundIconURL = parser["color_icon_url"].url,
             let brandColor = parser["brand_color"].color,
             let url = parser["url"].url else {
                 return nil
@@ -61,8 +61,8 @@ extension Applet.Service {
         self.id = id
         self.name = name
         self.isPrimary = parser["is_primary"].bool ?? false
-        self.monochromeIconURL = monochromeIconURL
-        self.onColorIconURL = colorIconURL
+        self.templateIconURL = templateIconURL
+        self.transparentBackgroundIconURL = transparentBackgroundIconURL
         self.brandColor = brandColor
         self.url = url
     }

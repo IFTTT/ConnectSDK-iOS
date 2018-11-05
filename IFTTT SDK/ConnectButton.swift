@@ -661,7 +661,7 @@ public class ConnectButton: UIView {
         }
         
         func configure(with service: Applet.Service) {
-            knob.iconView.set(imageURL: service.onColorIconURL)
+            knob.iconView.set(imageURL: service.transparentBackgroundIconURL)
             
             let color = service.brandColor
             knob.backgroundColor = color
@@ -1072,7 +1072,7 @@ private extension ConnectButton {
                 
                 self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
                 
-                self.serviceIconView.set(imageURL: service?.onColorIconURL)
+                self.serviceIconView.set(imageURL: service?.transparentBackgroundIconURL)
                 self.serviceIconView.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
@@ -1125,7 +1125,7 @@ private extension ConnectButton {
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
                 
-                self.serviceIconView.set(imageURL: service?.onColorIconURL)
+                self.serviceIconView.set(imageURL: service?.transparentBackgroundIconURL)
                 self.serviceIconView.alpha = 1
                 
                 self.checkmark.alpha = 0

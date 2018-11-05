@@ -41,11 +41,11 @@ public struct Applet: Equatable {
         /// Whether the service is the primary service.
         public let isPrimary: Bool
         
-        /// The `URL` to a monochrome version of the icon.
-        public let monochromeIconURL: URL
+        /// The `URL` to an icon that is intended to be tinted. Typically this is white or black.
+        public let templateIconURL: URL
         
-        /// The `URL` to a color version of the icon.
-        public let onColorIconURL: URL
+        /// The `URL`of an icon that is intended to be presented on top of a background with the service's `brandColor`.
+        public let transparentBackgroundIconURL: URL
         
         /// A primary color defined by the service's brand.
         public let brandColor: UIColor
