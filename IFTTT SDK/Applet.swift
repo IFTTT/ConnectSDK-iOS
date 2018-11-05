@@ -41,10 +41,6 @@ public struct Applet: Equatable {
     
     public internal(set) var status: Status
     
-    mutating func updating(status: Status) {
-        self.status = status
-    }
-    
     public let url: URL
     
     public let services: [Service]
