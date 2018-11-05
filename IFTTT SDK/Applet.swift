@@ -45,7 +45,7 @@ public struct Applet: Equatable {
         public let monochromeIconURL: URL
         
         /// The `URL` to a color version of the icon.
-        public let colorIconURL: URL
+        public let onColorIconURL: URL
         
         /// A primary color defined by the service's brand.
         public let brandColor: UIColor

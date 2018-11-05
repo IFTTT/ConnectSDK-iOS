@@ -62,7 +62,7 @@ extension Applet.Service {
         self.name = name
         self.isPrimary = parser["is_primary"].bool ?? false
         self.monochromeIconURL = monochromeIconURL
-        self.colorIconURL = colorIconURL
+        self.onColorIconURL = colorIconURL
         self.brandColor = brandColor
         self.url = url
     }
