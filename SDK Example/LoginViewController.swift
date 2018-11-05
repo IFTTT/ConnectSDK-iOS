@@ -78,7 +78,8 @@ class LoginViewController: UIViewController {
                     IFTTTAuthenication.shared.apiExampleOauthToken(token)
                     self.loginIftttUser(token)
                 } else {
-                    self.loginFailed(statusCode!)
+                    // FIXME: - Will crash if offline because status code is nil. Adding temporary solution.
+                    self.loginFailed(statusCode ?? 404)
                 }
             }
         }.resume()
