@@ -266,7 +266,7 @@ public extension Applet {
             case failure(_ error: Error?)
         }
         
-        /// A handler that is used when a `Response` is recieve from a network request.
+        /// A handler that is used when a `Response` is recieved from a network request.
         ///
         /// - Parameter response: The `Response` object from the completed request.
         public typealias CompletionHandler = (_ response: Response) -> Void
