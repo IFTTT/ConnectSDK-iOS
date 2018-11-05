@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// A structure that encapsulates interacting with a connect service.
+/// A structure representing an Applet created using the IFTTT Platform.
 public struct Applet: Equatable {
     
     /// Represents the various states an `Applet` can be in based on interaction.
