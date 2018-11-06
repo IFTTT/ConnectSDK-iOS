@@ -103,19 +103,17 @@ class AppletViewController: UIViewController {
 }
 
 extension AppletViewController: ConnectInteractionDelegate {
+    
     func connectInteraction(_ controller: ConnectInteraction, show viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
     }
-    func connectInteraction(_ interaction: ConnectInteraction, nonFatalActivationError error: AppletConnectionError) {
+    
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishActivationWithResult result: Result<Applet>) {
         
     }
-    func connectInteraction(_ controller: ConnectInteraction, appletActivationFinished outcome: AppletConnectionOutcome) {
+    
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Applet>) {
         
     }
-    func connectInteraction(_ interation: ConnectInteraction, appletDeactivated applet: Applet) {
-        
-    }
-    func connectInteraction(_ interation: ConnectInteraction, appletDeactivationFailedWithError error: AppletConnectionError) {
-        
-    }
+
 }
