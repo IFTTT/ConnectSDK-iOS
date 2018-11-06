@@ -44,8 +44,8 @@ public struct Applet: Equatable {
         /// The `URL` to an icon that is intended to be tinted. Typically this is white or black.
         public let templateIconURL: URL
         
-        /// The `URL`of an icon that is intended to be presented on top of a background with the service's `brandColor`.
-        public let transparentBackgroundIconURL: URL
+        /// The `URL` of an icon that is intended to be presented on top of a background with the service's `brandColor`. Also know as `applet logo`.
+        public let standardIconURL: URL
         
         /// A primary color defined by the service's brand.
         public let brandColor: UIColor
