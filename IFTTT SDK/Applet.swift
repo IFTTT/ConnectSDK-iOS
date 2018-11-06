@@ -113,7 +113,7 @@ public protocol TokenProviding {
 extension Notification.Name {
     
     /// A `Notification.Name` used to post notifications when the app recieves a redirect request for an `Applet` activation.
-    static let iftttAppletActivationRedirect = Notification.Name("ifttt.applet.activation.redirect")
+    static let appletActivationRedirect = Notification.Name("ifttt.applet.activation.redirect")
 }
 
 public extension Applet {
@@ -186,7 +186,7 @@ public extension Applet {
             
             // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
             if let source = options[.sourceApplication] as? String, url.scheme == appletActivationRedirect.scheme && source == "com.apple.SafariViewService" {
-                NotificationCenter.default.post(name: .iftttAppletActivationRedirect, object: url)
+                NotificationCenter.default.post(name: .appletActivationRedirect, object: url)
                 return true
             }
             
