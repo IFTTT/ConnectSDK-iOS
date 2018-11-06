@@ -117,8 +117,8 @@ struct IFTTTAuthenication: TokenProviding {
     
     let keychain = KeychainMock.shared
     
-    var partnerOAuthToken: String? {
-        return keychain["my_user_token"]
+    var partnerOAuthToken: String {
+        return keychain["my_user_token"] ?? ""
     }
     
     var iftttServiceToken: String? {

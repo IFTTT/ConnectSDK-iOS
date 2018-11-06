@@ -89,7 +89,7 @@ public extension Applet {
             return tokenProvider.iftttServiceToken
         }
         
-        var partnerOAuthToken: String? {
+        var partnerOAuthToken: String {
             return tokenProvider.partnerOAuthToken
         }
         
@@ -123,7 +123,7 @@ extension Applet.Session {
         let semaphore = DispatchSemaphore(value: 0)
         
         let partnerHandshake = {
-            if let partnerOAuthToken = self.partnerOAuthToken, let body = try? JSONSerialization.data(withJSONObject: ["token" : partnerOAuthToken]) {
+            if !self.partnerOAuthToken.isEmpty, let body = try? JSONSerialization.data(withJSONObject: ["token" : self.partnerOAuthToken]) {
                 
                 var request = URLRequest(url: URL(string: "https://ifttt.com/access/api/handshake")!)
                 request.httpMethod = "POST"
@@ -134,7 +134,7 @@ extension Applet.Session {
                     partnerOpaqueToken = parser["token"].string
                     error = _error
                     semaphore.signal()
-                    }.resume()
+                }.resume()
             } else {
                 semaphore.signal()
             }

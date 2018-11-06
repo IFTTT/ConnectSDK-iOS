@@ -11,7 +11,8 @@ import Foundation
 /// A protocol that defines APIs for requesting tokens for services.
 public protocol TokenProviding {
     
-    var partnerOAuthToken: String? { get }
+    
+    var partnerOAuthToken: String { get }
     
     var iftttServiceToken: String? { get }
     
