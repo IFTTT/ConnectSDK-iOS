@@ -117,17 +117,19 @@ struct IFTTTAuthenication: TokenProviding {
     
     let keychain = KeychainMock.shared
     
+    var partnerOAuthToken: String? {
+        return keychain["my_user_token"]
+    }
+    
+    var iftttServiceToken: String? {
+        return keychain["ifttt_user_token"]
+    }
+    
     func apiExampleOauthToken(_ token: String) {
         keychain["my_user_token"] = token
-    }
-    func partnerOauthTokenForServiceConnection(_ session: Applet.Session) -> String {
-        return keychain["my_user_token"] ?? ""
     }
     
     func setIftttUserToken(_ token: String?) {
         keychain["ifttt_user_token"] = token
-    }
-    func iftttUserToken(for session: Applet.Session) -> String? {
-        return keychain["ifttt_user_token"]
     }
 }

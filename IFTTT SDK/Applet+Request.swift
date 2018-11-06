@@ -116,7 +116,7 @@ public extension Applet {
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             
-            if let userToken = Applet.Session.shared.userToken, userToken.isEmpty == false {
+            if let userToken = Applet.Session.shared.iftttServiceToken, userToken.isEmpty == false {
                 request.addIftttUserToken(userToken)
             }
             if let inviteCode = Applet.Session.shared.inviteCode, inviteCode.isEmpty == false {
