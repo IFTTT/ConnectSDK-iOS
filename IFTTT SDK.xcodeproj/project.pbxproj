@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
 		1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* TokenProviding.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
 		1DFE02092190E35300856ABC /* Applet+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* Applet+Session.swift */; };
@@ -75,6 +76,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
 		1DFE02082190E35300856ABC /* Applet+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Applet+Session.swift"; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */,
 				1DFE02042190E25500856ABC /* TokenProviding.swift */,
+				1D981C32219210D7001784C4 /* Result<ResultType>.swift */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
 				FCF29FC72187C8C2004B1100 /* Applet_internal.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Applet+Request.swift in Sources */,
+				1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */,
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				1DFE020F2190E42100856ABC /* ConnectConfiguration.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
