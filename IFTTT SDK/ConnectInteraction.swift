@@ -78,7 +78,6 @@ public extension ConnectInteractionDelegate {
     func connectInteraction(_ connectInteraction: ConnectInteraction, didRecieveInvalidEmail email: String) { }
 }
 
-
 /// Controller for the ConnectButton. It is mandatory that you interact with the ConnectButton only through this controller.
 public class ConnectInteraction {
     
