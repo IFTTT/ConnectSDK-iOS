@@ -16,5 +16,4 @@ struct ConnectConfiguration {
     
     let isExistingUser: Bool
     let userId: User.Id
-    let partnerOpaqueToken: String?
 }

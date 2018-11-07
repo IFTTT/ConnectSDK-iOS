@@ -561,7 +561,7 @@ public class ConnectInteraction {
             
             let token: String? = {
                 if service.id == applet.primaryService.id {
-                    return currentConfiguration?.partnerOpaqueToken
+                    return Applet.Session.shared.partnerOAuthToken
                 }
                 return nil
             }()

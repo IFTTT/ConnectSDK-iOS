@@ -120,30 +120,39 @@ extension Applet.Session {
     private func checkUser(user: ConnectConfiguration.UserLookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
         switch user {
         case .email(let email):
-            let url = URL(string: "\(API.base)/account/find?email=\(email)")!
-            var request = URLRequest(url: url)
-            request.timeoutInterval = timeout
-            
-            urlSession.jsonTask(with: request, waitUntil: waitUntil) { _, response, error in
-                let configuration = ConnectConfiguration(isExistingUser: response?.statusCode == 204, userId: .email(email), partnerOpaqueToken: self.partnerOAuthToken)
+            urlSession.jsonTask(with: URLRequest.makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
+                let configuration = ConnectConfiguration(isExistingUser: response?.statusCode == 204, userId: .email(email))
                 completion(configuration, error)
             }.resume()
         case .token(let token):
-            let url = URL(string: "\(API.base)/me")!
-            var request = URLRequest(url: url)
-            request.addIftttUserToken(token)
-            request.timeoutInterval = timeout
-            
-            urlSession.jsonTask(with: request, waitUntil: waitUntil) { parser, _, error in
+            urlSession.jsonTask(with: URLRequest.makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
                 guard let username = parser["user_login"].string else {
                     completion(nil, error)
                     return
                 }
                 
-                let configuration = ConnectConfiguration(isExistingUser: false, userId: .username(username), partnerOpaqueToken: self.partnerOAuthToken)
+                let configuration = ConnectConfiguration(isExistingUser: false, userId: .username(username))
                 completion(configuration, error)
             }.resume()
         }
+    }
+}
+
+extension URLRequest {
+    
+    static func makeFindUserByEmailRequest(with email: String, timeout: TimeInterval) -> URLRequest {
+        let url = URL(string: "\(API.base)/account/find?email=\(email)")!
+        var request = URLRequest(url: url)
+        request.timeoutInterval = timeout
+        return request
+    }
+    
+    static func makeFindUserByTokenRequest(with token: String, timeout: TimeInterval) -> URLRequest {
+        let url = URL(string: "\(API.base)/me")!
+        var request = URLRequest(url: url)
+        request.addIftttUserToken(token)
+        request.timeoutInterval = timeout
+        return request
     }
 }
 
