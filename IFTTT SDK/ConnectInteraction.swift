@@ -430,7 +430,7 @@ public class ConnectInteraction {
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.toggleTransition = {
-                if let _ = Applet.Session.shared.iftttServiceToken {
+                if self.tokenProvider.iftttServiceToken != nil {
                     return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
                     return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
@@ -438,7 +438,7 @@ public class ConnectInteraction {
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
-                if let token = Applet.Session.shared.iftttServiceToken {
+                if let token = self?.tokenProvider.iftttServiceToken {
                     self?.transition(to: .identifyUser(.token(token)))
                 }
             }
@@ -569,12 +569,7 @@ public class ConnectInteraction {
                                               footerValue: footer.value)
             ).preform()
             
-            let token: String? = {
-                if service.id == applet.primaryService.id {
-                    return Applet.Session.shared.partnerOAuthToken
-                }
-                return nil
-            }()
+            let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthToken : nil
             
             let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token))
             button.stepInteraction.isTapEnabled = true
