@@ -109,80 +109,42 @@ public extension Applet {
 
 extension Applet.Session {
     
-    func getConnectConfiguration(user: ConnectConfiguration.UserLookupMethod,
-                                 waitUntil: TimeInterval,
-                                 timeout: TimeInterval,
-                                 _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
-        
-        let urlSession = Applet.Session.shared.urlSession
-        var isExistingUser: Bool = false
-        var userId: User.Id?
-        var partnerOpaqueToken: String?
-        var error: Error?
-        
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        let partnerHandshake = {
-            if !self.partnerOAuthToken.isEmpty, let body = try? JSONSerialization.data(withJSONObject: ["token" : self.partnerOAuthToken]) {
-                
-                var request = URLRequest(url: URL(string: "https://ifttt.com/access/api/handshake")!)
-                request.httpMethod = "POST"
-                request.httpBody = body
-                request.timeoutInterval = timeout
-                
-                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _error) in
-                    partnerOpaqueToken = parser["token"].string
-                    error = _error
-                    semaphore.signal()
-                }.resume()
-            } else {
-                semaphore.signal()
-            }
-        }
-        let checkUser = {
-            switch user {
-            case .email(let email):
-                userId = .email(email)
-                
-                let url = URL(string: "https://api.ifttt.com/v2/account/find?email=\(email)")!
-                var request = URLRequest(url: url)
-                request.timeoutInterval = timeout
-                
-                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (_, response, _error) in
-                    isExistingUser = response?.statusCode == 204
-                    error = _error
-                    semaphore.signal()
-                    }.resume()
-            case .token(let token):
-                let url = API.base.appendingPathComponent("/me")
-                var request = URLRequest(url: url)
-                request.addIftttUserToken(token)
-                request.timeoutInterval = timeout
-                
-                urlSession.jsonTask(with: request, waitUntil: waitUntil) { (parser, _, _error) in
-                    if let username = parser["user_login"].string {
-                        userId = .username(username)
-                    }
-                    error = _error
-                    semaphore.signal()
-                    }.resume()
-            }
-        }
-        
-        partnerHandshake()
-        checkUser()
-        
-        DispatchQueue(label: "com.ifttt.get-connect-configuration").async {
-            [partnerHandshake, checkUser].forEach { _ in semaphore.wait() }
+    func getConnectConfiguration(user: ConnectConfiguration.UserLookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
+        checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { configuration, error in
             DispatchQueue.main.async {
-                if let userId = userId {
-                    completion(ConnectConfiguration(isExistingUser: isExistingUser,
-                                                    userId: userId,
-                                                    partnerOpaqueToken: partnerOpaqueToken), error)
-                } else {
-                    completion(nil, error) // Something went wrong
-                }
+                completion(configuration, error)
             }
         }
     }
+    
+    private func checkUser(user: ConnectConfiguration.UserLookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
+        switch user {
+        case .email(let email):
+            let url = URL(string: "\(API.base)/account/find?email=\(email)")!
+            var request = URLRequest(url: url)
+            request.timeoutInterval = timeout
+            
+            urlSession.jsonTask(with: request, waitUntil: waitUntil) { _, response, error in
+                let configuration = ConnectConfiguration(isExistingUser: response?.statusCode == 204, userId: .email(email), partnerOpaqueToken: self.partnerOAuthToken)
+                completion(configuration, error)
+            }.resume()
+        case .token(let token):
+            let url = URL(string: "\(API.base)/me")!
+            var request = URLRequest(url: url)
+            request.addIftttUserToken(token)
+            request.timeoutInterval = timeout
+            
+            urlSession.jsonTask(with: request, waitUntil: waitUntil) { parser, _, error in
+                guard let username = parser["user_login"].string else {
+                    completion(nil, error)
+                    return
+                }
+                
+                let configuration = ConnectConfiguration(isExistingUser: false, userId: .username(username), partnerOpaqueToken: self.partnerOAuthToken)
+                completion(configuration, error)
+            }.resume()
+        }
+    }
 }
+
+
