@@ -110,9 +110,19 @@ public class ConnectInteraction {
     
     public private(set) weak var delegate: ConnectInteractionDelegate?
     
-    public init(_ button: ConnectButton, applet: Applet, delegate: ConnectInteractionDelegate) {
-        self.button = button
+    let tokenProvider: TokenProviding
+    
+    /// Creates a new `ConnectInteraction`.
+    ///
+    /// - Parameters:
+    ///   - connectButton: The `ConnectButton` that the controller is handling interaction for.
+    ///   - applet: The `Applet` in this interaction
+    ///   - tokenProvider: A `TokenProviding` object for providing tokens for requests.
+    ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
+    public init(connectButton: ConnectButton, applet: Applet, tokenProvider: TokenProviding, delegate: ConnectInteractionDelegate) {
+        self.button = connectButton
         self.applet = applet
+        self.tokenProvider = tokenProvider
         self.delegate = delegate
         self.connectingService = applet.worksWithServices.first ?? applet.primaryService
 

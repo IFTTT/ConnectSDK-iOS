@@ -47,7 +47,7 @@ class AppletViewController: UIViewController {
         titleLabel.text = applet.name
         descriptionLabel.text = applet.description
         
-        connectInteractor = ConnectInteraction(connectButton, applet: applet, delegate: self)
+        connectInteractor = ConnectInteraction(connectButton: connectButton, applet: applet, tokenProvider: IFTTTAuthenication.shared, delegate: self)
     }
     
     private func fetch() {
