@@ -43,7 +43,7 @@ extension Applet {
                 queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
             }
             if let token = token {
-                queryItems.append(URLQueryItem(name: "token", value: token))
+                queryItems.append(URLQueryItem(name: "code", value: token))
             }
             queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
         }
