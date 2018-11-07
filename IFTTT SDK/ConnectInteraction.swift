@@ -485,13 +485,13 @@ public class ConnectInteraction {
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
                                                   footerValue: FooterMessages.poweredBy.value)
-                ).preform()
+            ).preform()
                 
             case .token:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.accessing_existing_account".localized),
                                                   footerValue: FooterMessages.poweredBy.value)
-                ).preform()
+            ).preform()
             }
             
             let progress = button.progressBar(timeout: timeout)
@@ -513,7 +513,7 @@ public class ConnectInteraction {
                     // Then move to the first step of the service connection flow
                     self.button.animator(for: .buttonState(.step(for: nil,
                                                                  message: "button.state.creating_account".localized))
-                    ).preform()
+                ).preform()
                     
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete {

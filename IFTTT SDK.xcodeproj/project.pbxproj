@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* TokenProviding.swift */; };
+		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
+		1DFE02092190E35300856ABC /* Applet+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* Applet+Session.swift */; };
+		1DFE020B2190E39B00856ABC /* Applet+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020A2190E39B00856ABC /* Applet+Request.swift */; };
+		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
+		1DFE020F2190E42100856ABC /* ConnectConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */; };
+		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
+		1DFE02152190E54200856ABC /* Applet+URLGeneration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02142190E54200856ABC /* Applet+URLGeneration.swift */; };
+		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
 		FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* About.swift */; };
 		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
 		FC04FE2321507DDF008AC8A5 /* UIElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE2221507DDF008AC8A5 /* UIElements.swift */; };
@@ -66,6 +75,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1DFE02042190E25500856ABC /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
+		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
+		1DFE02082190E35300856ABC /* Applet+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Applet+Session.swift"; sourceTree = "<group>"; };
+		1DFE020A2190E39B00856ABC /* Applet+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Applet+Request.swift"; sourceTree = "<group>"; };
+		1DFE020C2190E3DB00856ABC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectConfiguration.swift; sourceTree = "<group>"; };
+		1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
+		1DFE02142190E54200856ABC /* Applet+URLGeneration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Applet+URLGeneration.swift"; sourceTree = "<group>"; };
+		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC04FE2221507DDF008AC8A5 /* UIElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElements.swift; sourceTree = "<group>"; };
@@ -123,6 +141,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1DFE02112190E44400856ABC /* Applet */ = {
+			isa = PBXGroup;
+			children = (
+				FCBA16042138A4EE00EB1BC8 /* Applet.swift */,
+				1DFE02142190E54200856ABC /* Applet+URLGeneration.swift */,
+				1DFE02082190E35300856ABC /* Applet+Session.swift */,
+				1DFE020A2190E39B00856ABC /* Applet+Request.swift */,
+				1DFE020C2190E3DB00856ABC /* API.swift */,
+				1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */,
+				1DFE02182190E59F00856ABC /* Extensions */,
+			);
+			name = Applet;
+			sourceTree = "<group>";
+		};
+		1DFE02182190E59F00856ABC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				1DFE02062190E2E600856ABC /* Notification+Redirect.swift */,
+				1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */,
+				1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		FCBA15E021389F7500EB1BC8 = {
 			isa = PBXGroup;
 			children = (
@@ -214,9 +256,10 @@
 		FCF29FC92187CF71004B1100 /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				FCBA16042138A4EE00EB1BC8 /* Applet.swift */,
+				1DFE02112190E44400856ABC /* Applet */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */,
+				1DFE02042190E25500856ABC /* TokenProviding.swift */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -369,14 +412,23 @@
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,
 				FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */,
+				1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */,
+				1DFE02092190E35300856ABC /* Applet+Session.swift in Sources */,
 				FC04FE2321507DDF008AC8A5 /* UIElements.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */,
+				1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */,
+				1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectInteraction.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
 				FCF29FC72187C8C2004B1100 /* Applet_internal.swift in Sources */,
+				1DFE020B2190E39B00856ABC /* Applet+Request.swift in Sources */,
+				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
+				1DFE020F2190E42100856ABC /* ConnectConfiguration.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */,
+				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
+				1DFE02152190E54200856ABC /* Applet+URLGeneration.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Applet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
