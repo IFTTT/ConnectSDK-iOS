@@ -10,44 +10,69 @@ import Foundation
 
 extension Applet {
     
+    private enum URLQueryItemConstants {
+        static let sdkReturnName = "sdk_return_to"
+        static let inviteCodeName = "invite_code"
+        static let userIdName = "user_id"
+        static let emailName = "email"
+        static let skipSDKRedirectName = "skip_sdk_redirect"
+        static let sdkCreatAccountName = "sdk_create_account"
+        static let tokenName = "code"
+        static let defaultTrueValue = "true"
+    }
+    
     enum ActivationStep {
         case
         login(User.Id),
         serviceConnection(newUserEmail: String?, token: String?)
     }
     
-    func activationURL(_ step: ActivationStep) -> URL {
+    func activationURL(for step: ActivationStep) -> URL {
         let session = Applet.Session.shared
-        
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
-        var queryItems = [URLQueryItem]()
-        queryItems.append(URLQueryItem(name: "sdk_return_to", value: session.appletActivationRedirect.absoluteString))
+        components?.queryItems = queryItems(for: step, with: session)
+        return components?.url ?? activationURL
+    }
+    
+    private func queryItems(for step: ActivationStep, with session: Applet.Session) -> [URLQueryItem] {
+        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: session.appletActivationRedirect.absoluteString)]
         
         if let inviteCode = session.inviteCode {
-            queryItems.append(URLQueryItem(name: "invite_code", value: inviteCode))
+            queryItems.append(URLQueryItem(name: URLQueryItemConstants.inviteCodeName, value: inviteCode))
         }
         
         switch step {
-        case .login(let id):
-            switch id {
-            case .username(let username):
-                // FIXME: Verify this param name when we have it
-                queryItems.append(URLQueryItem(name: "user_id", value: username))
-            case .email(let email):
-                queryItems.append(URLQueryItem(name: "email", value: email))
-            }
-            
-        case .serviceConnection(let newUserEmail, let token):
-            if let email = newUserEmail {
-                queryItems.append(URLQueryItem(name: "email", value: email))
-                queryItems.append(URLQueryItem(name: "sdk_create_account", value: "true"))
-            }
-            if let token = token {
-                queryItems.append(URLQueryItem(name: "code", value: token))
-            }
-            queryItems.append(URLQueryItem(name: "skip_sdk_redirect", value: "true"))
+        case let .login(userId):
+            queryItems.append(queryItemForLogin(userId: userId))
+        case let .serviceConnection(userEmail, token):
+            queryItems.append(contentsOf: queryItemsforServiceConnection(userEmail: userEmail, token: token))
         }
-        components?.queryItems = queryItems
-        return components?.url ?? activationURL
+        
+        return queryItems
+    }
+    
+    private func queryItemForLogin( userId: User.Id) -> URLQueryItem {
+        switch userId {
+        case let .username(username):
+            // FIXME: Verify this param name when we have it
+            return URLQueryItem(name: URLQueryItemConstants.userIdName, value: username)
+        case let .email(email):
+            return URLQueryItem(name: URLQueryItemConstants.emailName, value: email)
+        }
+    }
+    
+    private func queryItemsforServiceConnection(userEmail: String?, token: String?) -> [URLQueryItem] {
+        var queryItems = [URLQueryItem(name: URLQueryItemConstants.skipSDKRedirectName, value: URLQueryItemConstants.defaultTrueValue)]
+        
+        if let email = userEmail {
+            queryItems.append(URLQueryItem(name: URLQueryItemConstants.emailName, value: email))
+            queryItems.append(URLQueryItem(name: URLQueryItemConstants.sdkCreatAccountName, value: URLQueryItemConstants.defaultTrueValue))
+        }
+        
+        if let token = token {
+            queryItems.append(URLQueryItem(name: URLQueryItemConstants.tokenName, value: token))
+        }
+        
+        return queryItems
     }
 }
