@@ -420,7 +420,7 @@ public class ConnectInteraction {
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.toggleTransition = {
-                if let _ = Applet.Session.shared.userToken {
+                if let _ = Applet.Session.shared.iftttServiceToken {
                     return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
                     return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
@@ -428,7 +428,7 @@ public class ConnectInteraction {
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
-                if let token = Applet.Session.shared.userToken {
+                if let token = Applet.Session.shared.iftttServiceToken {
                     self?.transition(to: .identifyUser(.token(token)))
                 }
             }
