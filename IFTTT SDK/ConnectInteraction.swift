@@ -9,19 +9,22 @@
 import UIKit
 import SafariServices
 
-/// An error occurred, preventing Applet connection
-///
-/// - invalidEmail: Must provide a valid email.
-/// - iftttAccountCreationFailed: For some reason we could not create an IFTTT account for a new user.
-/// - networkError: Some generic networking error occurred.
-/// - unknownRedirect: Redirect params did not match what we expected. This should never happen. Verify you are using the latest SDK.
-/// - unknownResponse: Response params did not match what we expected. This should never happen. Verify you are using the latest SDK.
+/// An error occurred, preventing Applet connection.
 public enum AppletConnectionError: Error {
-    case invalidEmail(String)
+    
+    /// For some reason we could not create an IFTTT account for a new user.
     case iftttAccountCreationFailed
+    
+    /// Some generic networking error occurred.
     case networkError(Error?)
+    
+    /// A user canceled the Applet connection process.
     case canceled
+    
+    /// Redirect params did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownRedirect
+    
+    /// Response params did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownResponse
 }
 
@@ -62,6 +65,17 @@ public protocol ConnectInteractionDelegate: class {
     ///   - connectInteraction: The `ConnectInteraction` controller that is sending the message.
     ///   - result: A result of the applet deactivation request.
     func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Applet>)
+    
+    /// The connection interaction recieved an invalid email from the user. The default implementation of this function is to do nothing.
+    ///
+    /// - Parameters:
+    ///   - connectInteraction: The `ConnectInteraction` controller that is sending the message.
+    ///   - email: The invalid email `String` provided by the user.
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didRecieveInvalidEmail email: String)
+}
+
+public extension ConnectInteractionDelegate {
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didRecieveInvalidEmail email: String) { }
 }
 
 
@@ -423,7 +437,7 @@ public class ConnectInteraction {
                 if email.isValidEmail {
                     self.transition(to: .identifyUser(.email(email)))
                 } else {
-                    self.delegate?.connectInteraction(self, didFinishActivationWithResult: .failure(AppletConnectionError.invalidEmail(email)))
+                    self.delegate?.connectInteraction(self, didRecieveInvalidEmail: email)
                     self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
                     self.button.performInvalidEmailAnimation()
                 }
