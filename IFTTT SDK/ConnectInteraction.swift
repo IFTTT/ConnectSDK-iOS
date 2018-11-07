@@ -212,7 +212,7 @@ public class ConnectInteraction {
         
         override init() {
             super.init()
-            NotificationCenter.default.addObserver(forName: .iftttAppletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .appletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }
@@ -402,7 +402,7 @@ public class ConnectInteraction {
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.toggleTransition = {
-                if let _ = Applet.Session.shared.userToken {
+                if let _ = Applet.Session.shared.iftttServiceToken {
                     return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
                     return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
@@ -410,7 +410,7 @@ public class ConnectInteraction {
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
-                if let token = Applet.Session.shared.userToken {
+                if let token = Applet.Session.shared.iftttServiceToken {
                     self?.transition(to: .identifyUser(.token(token)))
                 }
             }
@@ -470,13 +470,14 @@ public class ConnectInteraction {
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
                                                   footerValue: FooterMessages.poweredBy.value)
-                    ).preform()
+            ).preform()
+
                 
             case .token:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.accessing_existing_account".localized),
                                                   footerValue: FooterMessages.poweredBy.value)
-                    ).preform()
+            ).preform()
             }
             
             let progress = button.progressBar(timeout: timeout)
@@ -498,7 +499,7 @@ public class ConnectInteraction {
                     // Then move to the first step of the service connection flow
                     self.button.animator(for: .buttonState(.step(for: nil,
                                                                  message: "button.state.creating_account".localized))
-                        ).preform()
+                ).preform()
                     
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete {
@@ -522,7 +523,7 @@ public class ConnectInteraction {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(applet.activationURL(.login(userId)))
+            openActivationURL(applet.activationURL(for: .login(userId)))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -551,7 +552,7 @@ public class ConnectInteraction {
                 return nil
             }()
             
-            let url = applet.activationURL(.serviceConnection(newUserEmail: newUserEmail, token: token))
+            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token))
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)

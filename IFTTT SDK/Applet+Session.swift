@@ -78,19 +78,19 @@ public extension Applet {
             
             // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
             if let source = options[.sourceApplication] as? String, url.scheme == appletActivationRedirect.scheme && source == "com.apple.SafariViewService" {
-                NotificationCenter.default.post(name: .iftttAppletActivationRedirect, object: url)
+                NotificationCenter.default.post(name: .appletActivationRedirect, object: url)
                 return true
             }
             
             return false
         }
         
-        var userToken: String? {
-            return tokenProvider.iftttUserToken(for: self)
+        var iftttServiceToken: String? {
+            return tokenProvider.iftttServiceToken
         }
         
-        var partnerToken: String {
-            return tokenProvider.partnerOauthTokenForServiceConnection(self)
+        var partnerOAuthToken: String {
+            return tokenProvider.partnerOAuthToken
         }
         
         private init(urlSession: URLSession,
@@ -123,8 +123,7 @@ extension Applet.Session {
         let semaphore = DispatchSemaphore(value: 0)
         
         let partnerHandshake = {
-            if self.partnerToken.isEmpty == false,
-                let body = try? JSONSerialization.data(withJSONObject: ["token" : self.partnerToken]) {
+            if !self.partnerOAuthToken.isEmpty, let body = try? JSONSerialization.data(withJSONObject: ["token" : self.partnerOAuthToken]) {
                 
                 var request = URLRequest(url: URL(string: "https://ifttt.com/access/api/handshake")!)
                 request.httpMethod = "POST"
@@ -135,7 +134,7 @@ extension Applet.Session {
                     partnerOpaqueToken = parser["token"].string
                     error = _error
                     semaphore.signal()
-                    }.resume()
+                }.resume()
             } else {
                 semaphore.signal()
             }
