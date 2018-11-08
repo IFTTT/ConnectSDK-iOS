@@ -10,11 +10,11 @@ import Foundation
 
 public extension Applet {
     
-    /// Handles network requests related to the `Applet` connection service.
+    /// Handles network requests related to the `Connection`.
     public struct Request {
         
         /// The HTTP request method options.
-        public enum Method: String {
+        enum Method: String {
             
             /// The HTTP GET method.
             case GET = "GET"
@@ -25,24 +25,24 @@ public extension Applet {
         
         /// The `Request`'s `URLRequest` that task are completed on.
         public let urlRequest: URLRequest
-
-        /// A `Request` configured for an `Applet` with the provided identifier.
+        
+        /// A `Request` configured for an `Connection` with the provided identifier.
         ///
         /// - Parameters:
-        ///   - id: The identifier of the `Applet`.
-        ///   - completion: A `CompletionHandler` for handling the result of the request.
-        /// - Returns: A `Request` configured to get the `Applet`.
-        public static func applet(id: String, tokenProvider: TokenProviding) -> URLRequest {
-            return Request(path: "/applets/\(id)", method: .GET, tokenProvider: tokenProvider).urlRequest
+        ///   - id: The identifier of the `Connection`.
+        ///   - tokenProvider: An object that handle providing tokens for a request.
+        /// - Returns: A `Request` configured to get the `Connection`.
+        public static func getConnection(for id: String, tokenProvider: TokenProviding) -> Request {
+            return Request(path: "/applets/\(id)", method: .GET, tokenProvider: tokenProvider)
         }
         
-        /// A disconnection `Request` for an `Applet` with the provided identifier.
+        /// A disconnection `Request` for an `Connection` with the provided identifier.
         ///
         /// - Parameters:
-        ///   - id: The identifier of the `Applet`.
-        ///   - completion: A `CompletionHandler` for handling the result of the request.
-        /// - Returns: A `Request` configured to disconnect the `Applet`.
-        public static func disconnectApplet(id: String, tokenProvider: TokenProviding) -> Request {
+        ///   - id: The identifier of the `Connection`.
+        ///   - tokenProvider: An object that handle providing tokens for a request.
+        /// - Returns:  A `Request` configured to disconnect the `Connection`.
+        public static func disconnectConnection(with id: String, tokenProvider: TokenProviding) -> Request {
             return Request(path: "/applets/\(id)/disable)", method: .POST, tokenProvider: tokenProvider)
         }
         

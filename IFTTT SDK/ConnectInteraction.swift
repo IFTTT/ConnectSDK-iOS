@@ -627,7 +627,7 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Applet.Request.disconnectApplet(id: applet.id, tokenProvider: connectionConfiguration.tokenProvider)
+            let request = Applet.Request.disconnectConnection(with: applet.id, tokenProvider: connectionConfiguration.tokenProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {
