@@ -60,4 +60,56 @@ final class ConnectionNetworkController {
         request.timeoutInterval = timeout
         return request
     }
+    
+    public enum ConnectionNetworkControllerError: Error {
+        case unknownResponse
+    }
+    
+    /// A structure encapsulating responses from the `Applet` activation service network requests.
+    public struct Response {
+        
+        /// The metadata associated with the response to network request.
+        public let urlResponse: URLResponse?
+        
+        /// The network repsonse status code.
+        public let statusCode: Int?
+        
+        /// The `Result` of the network request.
+        public let result: Result<Applet>
+    }
+    
+    /// A handler that is used when a `Response` is recieved from a network request.
+    ///
+    /// - Parameter response: The `Response` object from the completed request.
+    public typealias CompletionHandler = (_ response: Response) -> Void
+    
+    /// Starts a network task on a `Applet`'s `Session`.
+    ///
+    /// - Parameter session: A `Session` to begin the network request on. Defaults to the shared session.
+    public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) {
+        task(urlRequest: urlRequest, minimumDuration: nil, completion: completion).resume()
+    }
+    
+    func start(urlRequest: URLRequest, waitUntil minimumDuration: TimeInterval, timeout: TimeInterval, completion: @escaping CompletionHandler) {
+        var urlRequest = urlRequest
+        urlRequest.timeoutInterval = timeout
+        task(urlRequest: urlRequest, minimumDuration: minimumDuration, completion: completion).resume()
+    }
+    
+    private func task(urlRequest: URLRequest, minimumDuration: TimeInterval?, completion: @escaping CompletionHandler) -> URLSessionDataTask {
+        let handler = { (parser: Parser, response: HTTPURLResponse?, error: Error?) in
+            let statusCode = response?.statusCode
+            if let applet = Applet.parseAppletsResponse(parser)?.first {
+                completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
+            } else {
+                completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error ?? ConnectionNetworkControllerError.unknownResponse)))
+            }
+        }
+        if let minimumDuration = minimumDuration {
+            return urlSession.jsonTask(with: urlRequest, waitUntil: minimumDuration, handler)
+        } else {
+            return urlSession.jsonTask(with: urlRequest, handler)
+        }
+    }
+    
 }

@@ -56,7 +56,8 @@ class HomeViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let applet = applets[indexPath.row]
-        let controller = AppletViewController(appletId: applet.appletId)
+        let connectionConfiguration = ConnectionConfiguration(id: applet.appletId, suggestedUserEmail: "jon@ifttt.com", activationRedirect: URL(string: "ifttt-api-example://sdk-callback")!, inviteCode: "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c")
+        let controller = AppletViewController(connectionConfiguration: connectionConfiguration)
         navigationController?.pushViewController(controller, animated: true)
     }
 }

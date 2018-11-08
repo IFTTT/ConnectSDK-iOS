@@ -10,11 +10,11 @@ import UIKit
 import IFTTT_SDK
 
 class AppletViewController: UIViewController {
-
-    let appletId: String
     
-    init(appletId: String) {
-        self.appletId = appletId
+    private let connectionConfiguration: ConnectionConfiguration
+    
+    init(connectionConfiguration: ConnectionConfiguration) {
+        self.connectionConfiguration = connectionConfiguration
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -39,28 +39,9 @@ class AppletViewController: UIViewController {
         return label
     }()
     
-    lazy var connectButton = ConnectButton()
+    private lazy var connectButton = ConnectButton()
     
-    private var connectInteractor: ConnectInteraction?
-    
-    private func configure(with applet: Applet) {
-        titleLabel.text = applet.name
-        descriptionLabel.text = applet.description
-        
-        connectInteractor = ConnectInteraction(connectButton: connectButton, applet: applet, tokenProvider: IFTTTAuthenication.shared, delegate: self)
-    }
-    
-    private func fetch() {
-        Applet.Request.applet(id: appletId) { (response) in
-            switch response.result {
-            case .success(let applet):
-                self.configure(with: applet)
-            case .failure:
-                break
-            }
-        }
-        .start()
-    }
+    private lazy var connectInteractor = ConnectInteraction(connectButton: connectButton, connectionConfiguration: connectionConfiguration, tokenProvider: IFTTTAuthenication.shared, delegate: self)
     
     override func loadView() {
         super.loadView()
@@ -97,8 +78,8 @@ class AppletViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        fetch()
+        titleLabel.text = connectInteractor.applet?.name
+        descriptionLabel.text = connectInteractor.applet?.description
     }
 }
 

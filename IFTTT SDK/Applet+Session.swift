@@ -35,15 +35,7 @@ public extension Applet {
         @discardableResult
         static public func begin(tokenProvider: TokenProviding, suggestedUserEmail: String, appletActivationRedirect: URL, inviteCode: String?) -> Session {
             assert(suggestedUserEmail.isValidEmail, "You must provide a valid email address for the user")
-            
-            let configuration = URLSessionConfiguration.ephemeral
-            configuration.httpAdditionalHeaders = [
-                "Accept" : "application/json"
-            ]
-            let urlSession = URLSession(configuration: configuration)
-            
-            _shared = Session(urlSession: urlSession,
-                              tokenProvider: tokenProvider,
+            _shared = Session(tokenProvider: tokenProvider,
                               suggestedUserEmail: suggestedUserEmail,
                               appletActivationRedirect: appletActivationRedirect,
                               inviteCode: inviteCode)
@@ -61,9 +53,6 @@ public extension Applet {
         
         /// An optional `String` containing an invitation code for the session.
         public let inviteCode: String?
-        
-        /// An object for handling network data transfer tasks for the session.
-        public let urlSession: URLSession
         
         /// Handles redirects during applet activation.
         ///
@@ -93,12 +82,10 @@ public extension Applet {
             return tokenProvider.partnerOAuthToken
         }
         
-        private init(urlSession: URLSession,
-                     tokenProvider: TokenProviding,
+        private init(tokenProvider: TokenProviding,
                      suggestedUserEmail: String,
                      appletActivationRedirect: URL,
                      inviteCode: String?) {
-            self.urlSession = urlSession
             self.tokenProvider = tokenProvider
             self.suggestedUserEmail = suggestedUserEmail
             self.appletActivationRedirect = appletActivationRedirect
