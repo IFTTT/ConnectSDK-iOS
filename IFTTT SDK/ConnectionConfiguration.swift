@@ -20,12 +20,12 @@ public struct ConnectionConfiguration {
     public let tokenProvider: TokenProviding
     
     /// A `URL` used as the activation redirection endpoint.
-    public let activationRedirect: URL
+    public let connectActivationRedirectURL: URL
     
-    public init(applet: Applet, suggestedUserEmail: String, tokenProvider: TokenProviding, activationRedirect: URL) {
+    public init(applet: Applet, suggestedUserEmail: String, tokenProvider: TokenProviding, connectActivationRedirectURL: URL) {
         self.applet = applet
         self.suggestedUserEmail = suggestedUserEmail
         self.tokenProvider = tokenProvider
-        self.activationRedirect = activationRedirect
+        self.connectActivationRedirectURL = connectActivationRedirectURL
     }
 }

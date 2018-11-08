@@ -536,7 +536,7 @@ public class ConnectInteraction {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(applet.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.activationRedirect))
+            openActivationURL(applet.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.connectActivationRedirectURL))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -560,7 +560,7 @@ public class ConnectInteraction {
             
             let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthToken : nil
             
-            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.activationRedirect)
+            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.connectActivationRedirectURL)
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)

@@ -8,18 +8,22 @@
 
 import Foundation
 
-public final class ConnectionRedirectHandler {
+/// A class to handle redirections of `URL`s recieved as a part of the `Connection` activation process.
+public final class ConnectRedirectHandler {
     
-    private let activationRedirect: URL
+    private let connectActivationRedirectURL: URL
     
-    public init(activationRedirect: URL) {
-        self.activationRedirect = activationRedirect
+    /// A `ConnectRedirectHandler` configured to handle a `URL`.
+    ///
+    /// - Parameter connectActivationRedirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
+    public init(connectActivationRedirectURL: URL) {
+        self.connectActivationRedirectURL = connectActivationRedirectURL
     }
     
-    /// Handles redirects during applet activation.
+    /// Handles redirects during a `Connection` activation.
     ///
     /// Generally, this is used to handle url redirects the app recieves in `func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool` in the `AppDelgate`.
-    /// - Example: `Applet.Session.shared.handleApplicationRedirect(url: url, options: options)`.
+    /// - Example: `ConnectRedirectHandler.handleApplicationRedirect(url: url, options: options)`.
     ///
     /// - Parameters:
     ///   - url: The `URL` resource to open.
@@ -28,7 +32,7 @@ public final class ConnectionRedirectHandler {
     public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         
         // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
-        if let source = options[.sourceApplication] as? String, url.scheme == activationRedirect.scheme && source == "com.apple.SafariViewService" {
+        if let source = options[.sourceApplication] as? String, url.scheme == connectActivationRedirectURL.scheme && source == "com.apple.SafariViewService" {
             NotificationCenter.default.post(name: .appletActivationRedirect, object: url)
             return true
         }

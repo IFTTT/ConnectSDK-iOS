@@ -56,8 +56,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    static let activationRedirect = URL(string: "ifttt-api-example://sdk-callback")!
-    private let connectionRedirectHandler = ConnectionRedirectHandler(activationRedirect: AppDelegate.activationRedirect)
+    static let connectActivationRedirectURL = URL(string: "ifttt-api-example://sdk-callback")!
+    private let connectionRedirectHandler = ConnectRedirectHandler(connectActivationRedirectURL: AppDelegate.connectActivationRedirectURL)
     
     func login() {
         window?.rootViewController = NavigationController(rootViewController: HomeViewController())
