@@ -17,7 +17,7 @@ extension Applet {
         static let emailName = "email"
         static let skipSDKRedirectName = "skip_sdk_redirect"
         static let sdkCreatAccountName = "sdk_create_account"
-        static let tokenName = "token"
+        static let tokenName = "code"
         static let defaultTrueValue = "true"
     }
     
