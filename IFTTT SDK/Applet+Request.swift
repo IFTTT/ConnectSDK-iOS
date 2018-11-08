@@ -32,8 +32,8 @@ public extension Applet {
         ///   - id: The identifier of the `Applet`.
         ///   - completion: A `CompletionHandler` for handling the result of the request.
         /// - Returns: A `Request` configured to get the `Applet`.
-        public static func applet(id: String) -> URLRequest {
-            return Request(path: "/applets/\(id)", method: .GET).urlRequest
+        public static func applet(id: String, iftttServiceToken: String?, inviteCode: String?) -> URLRequest {
+            return Request(path: "/applets/\(id)", method: .GET, iftttServiceToken: iftttServiceToken, inviteCode: inviteCode).urlRequest
         }
         
         /// A disconnection `Request` for an `Applet` with the provided identifier.
@@ -42,20 +42,21 @@ public extension Applet {
         ///   - id: The identifier of the `Applet`.
         ///   - completion: A `CompletionHandler` for handling the result of the request.
         /// - Returns: A `Request` configured to disconnect the `Applet`.
-        public static func disconnectApplet(id: String) -> Request {
-            return Request(path: "/applets/\(id)/disable)", method: .POST)
+        public static func disconnectApplet(id: String, iftttServiceToken: String?, inviteCode: String?) -> Request {
+            return Request(path: "/applets/\(id)/disable)", method: .POST, iftttServiceToken: iftttServiceToken, inviteCode: inviteCode)
         }
         
-        private init(path: String, method: Method) {
+        private init(path: String, method: Method, iftttServiceToken: String?, inviteCode: String?) {
             let url = API.base.appendingPathComponent(path)
             
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             
-            if let userToken = Applet.Session.shared.iftttServiceToken, userToken.isEmpty == false {
+            if let userToken = iftttServiceToken, userToken.isEmpty == false {
                 request.addIftttUserToken(userToken)
             }
-            if let inviteCode = Applet.Session.shared.inviteCode, inviteCode.isEmpty == false {
+            
+            if let inviteCode = inviteCode, inviteCode.isEmpty == false {
                 request.addIftttInviteCode(inviteCode)
             }
             

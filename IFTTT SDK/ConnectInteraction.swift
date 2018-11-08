@@ -118,12 +118,12 @@ public class ConnectInteraction {
     ///   - applet: The `Applet` in this interaction
     ///   - tokenProvider: A `TokenProviding` object for providing tokens for requests.
     ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
-    public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, tokenProvider: TokenProviding, delegate: ConnectInteractionDelegate) {
+    public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectInteractionDelegate) {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
         self.applet = connectionConfiguration.applet
+        self.tokenProvider = connectionConfiguration.tokenProvider
         self.connectionNetworkController = ConnectionNetworkController()
-        self.tokenProvider = tokenProvider
         self.delegate = delegate
         setupConnection(for: applet)
     }
@@ -421,7 +421,7 @@ public class ConnectInteraction {
                 if self.tokenProvider.iftttServiceToken != nil {
                     return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
-                    return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
+                    return .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
                                         footerValue: FooterMessages.enterEmail.value)
                 }
             }
@@ -536,7 +536,7 @@ public class ConnectInteraction {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(applet.activationURL(for: .login(userId)))
+            openActivationURL(applet.activationURL(for: .login(userId), configuration: connectionConfiguration))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -560,7 +560,7 @@ public class ConnectInteraction {
             
             let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthToken : nil
             
-            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token))
+            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), configuration: connectionConfiguration)
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
@@ -627,7 +627,7 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Applet.Request.disconnectApplet(id: applet.id)
+            let request = Applet.Request.disconnectApplet(id: applet.id, iftttServiceToken: connectionConfiguration.tokenProvider.iftttServiceToken,  inviteCode: connectionConfiguration.inviteCode)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {

@@ -27,17 +27,16 @@ extension Applet {
         serviceConnection(newUserEmail: String?, token: String?)
     }
     
-    func activationURL(for step: ActivationStep) -> URL {
-        let session = Applet.Session.shared
+    func activationURL(for step: ActivationStep, configuration: ConnectionConfiguration) -> URL {
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
-        components?.queryItems = queryItems(for: step, with: session)
+        components?.queryItems = queryItems(for: step, configuration: configuration)
         return components?.url ?? activationURL
     }
     
-    private func queryItems(for step: ActivationStep, with session: Applet.Session) -> [URLQueryItem] {
-        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: session.appletActivationRedirect.absoluteString)]
+    private func queryItems(for step: ActivationStep, configuration: ConnectionConfiguration) -> [URLQueryItem] {
+        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: configuration.activationRedirect.absoluteString)]
         
-        if let inviteCode = session.inviteCode {
+        if let inviteCode = configuration.inviteCode {
             queryItems.append(URLQueryItem(name: URLQueryItemConstants.inviteCodeName, value: inviteCode))
         }
         

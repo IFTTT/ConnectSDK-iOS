@@ -41,7 +41,7 @@ class AppletViewController: UIViewController {
     
     private lazy var connectButton = ConnectButton()
     
-    private lazy var connectInteractor = ConnectInteraction(connectButton: connectButton, connectionConfiguration: connectionConfiguration, tokenProvider: IFTTTAuthenication.shared, delegate: self)
+    private lazy var connectInteractor = ConnectInteraction(connectButton: connectButton, connectionConfiguration: connectionConfiguration, delegate: self)
     
     override func loadView() {
         super.loadView()
