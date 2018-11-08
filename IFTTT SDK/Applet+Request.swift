@@ -32,8 +32,8 @@ public extension Applet {
         ///   - id: The identifier of the `Applet`.
         ///   - completion: A `CompletionHandler` for handling the result of the request.
         /// - Returns: A `Request` configured to get the `Applet`.
-        public static func applet(id: String, iftttServiceToken: String?, inviteCode: String?) -> URLRequest {
-            return Request(path: "/applets/\(id)", method: .GET, iftttServiceToken: iftttServiceToken, inviteCode: inviteCode).urlRequest
+        public static func applet(id: String, tokenProvider: TokenProviding) -> URLRequest {
+            return Request(path: "/applets/\(id)", method: .GET, tokenProvider: tokenProvider).urlRequest
         }
         
         /// A disconnection `Request` for an `Applet` with the provided identifier.
@@ -42,21 +42,21 @@ public extension Applet {
         ///   - id: The identifier of the `Applet`.
         ///   - completion: A `CompletionHandler` for handling the result of the request.
         /// - Returns: A `Request` configured to disconnect the `Applet`.
-        public static func disconnectApplet(id: String, iftttServiceToken: String?, inviteCode: String?) -> Request {
-            return Request(path: "/applets/\(id)/disable)", method: .POST, iftttServiceToken: iftttServiceToken, inviteCode: inviteCode)
+        public static func disconnectApplet(id: String, tokenProvider: TokenProviding) -> Request {
+            return Request(path: "/applets/\(id)/disable)", method: .POST, tokenProvider: tokenProvider)
         }
         
-        private init(path: String, method: Method, iftttServiceToken: String?, inviteCode: String?) {
+        private init(path: String, method: Method, tokenProvider: TokenProviding) {
             let url = API.base.appendingPathComponent(path)
             
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             
-            if let userToken = iftttServiceToken, userToken.isEmpty == false {
+            if let userToken = tokenProvider.iftttServiceToken, userToken.isEmpty == false {
                 request.addIftttUserToken(userToken)
             }
             
-            if let inviteCode = inviteCode, inviteCode.isEmpty == false {
+            if let inviteCode = tokenProvider.inviteCode, inviteCode.isEmpty == false {
                 request.addIftttInviteCode(inviteCode)
             }
             

@@ -536,7 +536,7 @@ public class ConnectInteraction {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(applet.activationURL(for: .login(userId), connectionProvider: connectionConfiguration.connectionProvider))
+            openActivationURL(applet.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.activationRedirect))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -560,7 +560,7 @@ public class ConnectInteraction {
             
             let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthToken : nil
             
-            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), connectionProvider: connectionConfiguration.connectionProvider)
+            let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.activationRedirect)
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
@@ -627,7 +627,7 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Applet.Request.disconnectApplet(id: applet.id, iftttServiceToken: connectionConfiguration.tokenProvider.iftttServiceToken, inviteCode: connectionConfiguration.connectionProvider.inviteCode)
+            let request = Applet.Request.disconnectApplet(id: applet.id, tokenProvider: connectionConfiguration.tokenProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {

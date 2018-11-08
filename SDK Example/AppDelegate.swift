@@ -108,18 +108,6 @@ class KeychainMock {
     }
 }
 
-struct IFTTTConnection: ConnectionProviding {
-    static let shared = IFTTTConnection()
-    
-    var activationRedirect: URL {
-        return URL(string: "ifttt-api-example://sdk-callback")!
-    }
-    
-    var inviteCode: String? {
-        return "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
-    }
-}
-
 struct IFTTTAuthenication: TokenProviding {
     static let shared = IFTTTAuthenication()
     
@@ -131,6 +119,10 @@ struct IFTTTAuthenication: TokenProviding {
     
     var iftttServiceToken: String? {
         return keychain["ifttt_user_token"]
+    }
+    
+    var inviteCode: String? {
+        return "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
     }
     
     func apiExampleOauthToken(_ token: String) {

@@ -62,10 +62,10 @@ class HomeViewController: UITableViewController {
     }
     
     private func fetchConnection(with id: String, indexPath: IndexPath) {
-        connectionNetworkController.start(urlRequest: Applet.Request.applet(id: id, iftttServiceToken: IFTTTAuthenication.shared.iftttServiceToken, inviteCode: IFTTTConnection.shared.inviteCode)) { [weak self] response in
+        connectionNetworkController.start(urlRequest: Applet.Request.applet(id: id, tokenProvider: IFTTTAuthenication.shared)) { [weak self] response in
             switch response.result {
             case .success(let applet):
-                let connectionConfiguration = ConnectionConfiguration(applet: applet, connectionProvider: IFTTTConnection.shared, tokenProvider: IFTTTAuthenication.shared, suggestedUserEmail: "jon@ifttt.com")
+                let connectionConfiguration = ConnectionConfiguration(applet: applet, suggestedUserEmail: "jon@ifttt.com", tokenProvider: IFTTTAuthenication.shared, activationRedirect: URL(string: "ifttt-api-example://sdk-callback")!)
                 let controller = AppletViewController(connectionConfiguration: connectionConfiguration)
                 self?.navigationController?.pushViewController(controller, animated: true)
             case .failure:
