@@ -65,7 +65,7 @@ class HomeViewController: UITableViewController {
         connectionNetworkController.start(urlRequest: Applet.Request.applet(id: id, tokenProvider: IFTTTAuthenication.shared)) { [weak self] response in
             switch response.result {
             case .success(let applet):
-                let connectionConfiguration = ConnectionConfiguration(applet: applet, suggestedUserEmail: "jon@ifttt.com", tokenProvider: IFTTTAuthenication.shared, activationRedirect: URL(string: "ifttt-api-example://sdk-callback")!)
+                let connectionConfiguration = ConnectionConfiguration(applet: applet, suggestedUserEmail: "jon@ifttt.com", tokenProvider: IFTTTAuthenication.shared, activationRedirect: AppDelegate.activationRedirect)
                 let controller = AppletViewController(connectionConfiguration: connectionConfiguration)
                 self?.navigationController?.pushViewController(controller, animated: true)
             case .failure:
