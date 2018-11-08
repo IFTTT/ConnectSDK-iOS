@@ -13,23 +13,19 @@ public struct ConnectionConfiguration {
     /// The identifier of the `Connection`.
     public let applet: Applet
     
-    /// An object that handle providing tokens for the session.
+    // An object that handle providing common information for a session.
+    public let connectionProvider: ConnectionProviding
+    
+    /// An object that handle providing tokens for a session.
     public let tokenProvider: TokenProviding
     
     /// A `String` provided as the suggested user's email address.
     public let suggestedUserEmail: String
     
-    /// A `URL` used as the activation redirection endpoint.
-    public let activationRedirect: URL
-    
-    /// An optional `String` containing an invitation code for the session.
-    public let inviteCode: String?
-    
-    public init(applet: Applet, tokenProvider: TokenProviding, suggestedUserEmail: String, activationRedirect: URL, inviteCode: String?) {
+    public init(applet: Applet, connectionProvider: ConnectionProviding, tokenProvider: TokenProviding, suggestedUserEmail: String) {
         self.applet = applet
+        self.connectionProvider = connectionProvider
         self.tokenProvider = tokenProvider
         self.suggestedUserEmail = suggestedUserEmail
-        self.activationRedirect = activationRedirect
-        self.inviteCode = inviteCode
     }
 }

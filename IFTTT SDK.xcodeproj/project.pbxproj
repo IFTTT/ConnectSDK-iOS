@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
+		1D4B50AE2194AC70004D1559 /* ConnectionProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AD2194AC70004D1559 /* ConnectionProviding.swift */; };
 		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
 		1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* TokenProviding.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
@@ -80,6 +81,7 @@
 /* Begin PBXFileReference section */
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
+		1D4B50AD2194AC70004D1559 /* ConnectionProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProviding.swift; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
@@ -265,9 +267,10 @@
 				1DFE02112190E44400856ABC /* Applet */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */,
-				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
+				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
 				1DFE02042190E25500856ABC /* TokenProviding.swift */,
+				1D4B50AD2194AC70004D1559 /* ConnectionProviding.swift */,
 				1D981C32219210D7001784C4 /* Result<ResultType>.swift */,
 			);
 			name = Public;
@@ -423,6 +426,7 @@
 				FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */,
 				1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */,
 				1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */,
+				1D4B50AE2194AC70004D1559 /* ConnectionProviding.swift in Sources */,
 				1DFE02092190E35300856ABC /* Applet+Session.swift in Sources */,
 				FC04FE2321507DDF008AC8A5 /* UIElements.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */,
