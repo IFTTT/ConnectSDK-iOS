@@ -11,7 +11,7 @@ import Foundation
 public struct ConnectionConfiguration {
     
     /// The identifier of the `Connection`.
-    public let id: String
+    public let applet: Applet
     
     /// A `String` provided as the suggested user's email address.
     public let suggestedUserEmail: String
@@ -22,8 +22,8 @@ public struct ConnectionConfiguration {
     /// An optional `String` containing an invitation code for the session.
     public let inviteCode: String?
     
-    public init(id: String, suggestedUserEmail: String, activationRedirect: URL, inviteCode: String?) {
-        self.id = id
+    public init(applet: Applet, suggestedUserEmail: String, activationRedirect: URL, inviteCode: String?) {
+        self.applet = applet
         self.suggestedUserEmail = suggestedUserEmail
         self.activationRedirect = activationRedirect
         self.inviteCode = inviteCode

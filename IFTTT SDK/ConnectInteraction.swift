@@ -86,15 +86,10 @@ public class ConnectInteraction {
     
     /// The Applet in this interaction
     /// The controller may change the connection status of the Applet
-    public private(set) var applet: Applet?
+    public private(set) var applet: Applet
     
     private func appletChangedStatus(isOn: Bool) {
-        guard let applet = applet else {
-            assertionFailure("Applet is nil so the status can not be changed.")
-            return
-        }
-        
-        self.applet?.status = isOn ? .enabled : .disabled
+        self.applet.status = isOn ? .enabled : .disabled
         
         if isOn {
             delegate?.connectInteraction(self, didFinishActivationWithResult: .success(applet))
@@ -107,7 +102,7 @@ public class ConnectInteraction {
     /// This defines the service icon & brand color of the button in its initial and final (activated) states
     /// It is always the first service connected
     public var connectingService: Applet.Service {
-        return applet!.worksWithServices.first ?? applet!.primaryService
+        return applet.worksWithServices.first ?? applet.primaryService
     }
     
     public private(set) weak var delegate: ConnectInteractionDelegate?
@@ -126,24 +121,11 @@ public class ConnectInteraction {
     public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, tokenProvider: TokenProviding, delegate: ConnectInteractionDelegate) {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
+        self.applet = connectionConfiguration.applet
         self.connectionNetworkController = ConnectionNetworkController()
         self.tokenProvider = tokenProvider
         self.delegate = delegate
-        fetch()
-    }
-    
-    private func fetch() {
-        let request = Applet.Request.applet(id: connectionConfiguration.id)
-        connectionNetworkController.start(urlRequest: request.urlRequest) { response in
-            switch response.result {
-            case .success(let applet):
-                self.applet = applet
-                self.setupConnection(for: applet)
-            case .failure:
-                break
-                
-            }
-        }
+        setupConnection(for: applet)
     }
     
     private func setupConnection(for applet: Applet) {
@@ -172,11 +154,6 @@ public class ConnectInteraction {
     // MARK: - Footer
     
     private func showAboutPage() {
-        guard let applet = applet else {
-            assertionFailure("Applet is nil so the status can not be changed.")
-            return
-        }
-        
         delegate?.connectInteraction(self, show: AboutViewController(primaryService: applet.primaryService, secondaryService: applet.worksWithServices.first))
     }
     
@@ -352,11 +329,6 @@ public class ConnectInteraction {
                 return .failed(error)
                 
             case .serviceConnection(let id):
-                guard let applet = applet else {
-                    assertionFailure("Applet is nil so the status can not be changed.")
-                    return .failed(.unknownRedirect)
-                }
-                
                 if let service = applet.services.first(where: { $0.id == id }) {
                     // If service connection comes after a redirect we must have already completed user log in or account creation
                     // Therefore newUserEmail is always nil here
@@ -416,11 +388,6 @@ public class ConnectInteraction {
     
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
-        guard let applet = applet else {
-            assertionFailure("Applet is nil so the status can not be changed.")
-            return
-        }
-        
         // Cleanup
         button.toggleInteraction = .init()
         button.emailInteraction = .init()
@@ -555,7 +522,7 @@ public class ConnectInteraction {
                         // After a short delay, show first service connection
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             // We know that this is a new user so we must connect the primary service first and create an account
-                            self.transition(to: .serviceConnection(applet.primaryService, newUserEmail: email))
+                            self.transition(to: .serviceConnection(self.applet.primaryService, newUserEmail: email))
                         }
                     }
                 } else { // Existing IFTTT user

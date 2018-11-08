@@ -78,8 +78,8 @@ class AppletViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleLabel.text = connectInteractor.applet?.name
-        descriptionLabel.text = connectInteractor.applet?.description
+        titleLabel.text = connectInteractor.applet.name
+        descriptionLabel.text = connectInteractor.applet.description
     }
 }
 

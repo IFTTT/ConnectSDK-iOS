@@ -32,8 +32,8 @@ public extension Applet {
         ///   - id: The identifier of the `Applet`.
         ///   - completion: A `CompletionHandler` for handling the result of the request.
         /// - Returns: A `Request` configured to get the `Applet`.
-        public static func applet(id: String) -> Request {
-            return Request(path: "/applets/\(id)", method: .GET)
+        public static func applet(id: String) -> URLRequest {
+            return Request(path: "/applets/\(id)", method: .GET).urlRequest
         }
         
         /// A disconnection `Request` for an `Applet` with the provided identifier.
