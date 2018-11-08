@@ -105,7 +105,8 @@ public class ConnectInteraction {
     
     public private(set) weak var delegate: ConnectInteractionDelegate?
     
-    let tokenProvider: TokenProviding
+    private let connectionNetworkController: ConnectionNetworkController
+    private let tokenProvider: TokenProviding
     
     /// Creates a new `ConnectInteraction`.
     ///
@@ -117,6 +118,7 @@ public class ConnectInteraction {
     public init(connectButton: ConnectButton, applet: Applet, tokenProvider: TokenProviding, delegate: ConnectInteractionDelegate) {
         self.button = connectButton
         self.applet = applet
+        self.connectionNetworkController = ConnectionNetworkController()
         self.tokenProvider = tokenProvider
         self.delegate = delegate
         self.connectingService = applet.worksWithServices.first ?? applet.primaryService
@@ -506,10 +508,7 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            Applet.Session.shared.getConnectConfiguration(user: lookupMethod,
-                                                          waitUntil: 1,
-                                                          timeout: timeout)
-            { (configuration, error) in
+            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { configuration, error in
                 guard let configuration = configuration else {
                     self.transition(to: .failed(.networkError(error)))
                     return
