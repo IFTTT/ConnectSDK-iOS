@@ -12,7 +12,7 @@
 		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
 		1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* TokenProviding.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
-		1DFE02092190E35300856ABC /* Applet+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* Applet+Session.swift */; };
+		1DFE02092190E35300856ABC /* ConnectionRedirectHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */; };
 		1DFE020B2190E39B00856ABC /* Applet+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020A2190E39B00856ABC /* Applet+Request.swift */; };
 		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
 		1DFE020F2190E42100856ABC /* ConnectConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */; };
@@ -83,7 +83,7 @@
 		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
-		1DFE02082190E35300856ABC /* Applet+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Applet+Session.swift"; sourceTree = "<group>"; };
+		1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionRedirectHandler.swift; sourceTree = "<group>"; };
 		1DFE020A2190E39B00856ABC /* Applet+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Applet+Request.swift"; sourceTree = "<group>"; };
 		1DFE020C2190E3DB00856ABC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectConfiguration.swift; sourceTree = "<group>"; };
@@ -152,10 +152,7 @@
 			children = (
 				FCBA16042138A4EE00EB1BC8 /* Applet.swift */,
 				1DFE02142190E54200856ABC /* Applet+URLGeneration.swift */,
-				1DFE02082190E35300856ABC /* Applet+Session.swift */,
 				1DFE020A2190E39B00856ABC /* Applet+Request.swift */,
-				1DFE020C2190E3DB00856ABC /* API.swift */,
-				1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */,
 				1DFE02182190E59F00856ABC /* Extensions */,
 			);
 			name = Applet;
@@ -263,10 +260,13 @@
 			isa = PBXGroup;
 			children = (
 				1DFE02112190E44400856ABC /* Applet */,
+				1DFE020C2190E3DB00856ABC /* API.swift */,
+				1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
+				1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */,
 				1DFE02042190E25500856ABC /* TokenProviding.swift */,
 				1D981C32219210D7001784C4 /* Result<ResultType>.swift */,
 			);
@@ -423,7 +423,7 @@
 				FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */,
 				1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */,
 				1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */,
-				1DFE02092190E35300856ABC /* Applet+Session.swift in Sources */,
+				1DFE02092190E35300856ABC /* ConnectionRedirectHandler.swift in Sources */,
 				FC04FE2321507DDF008AC8A5 /* UIElements.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
