@@ -26,17 +26,17 @@ public extension Applet {
         /// The `Request`'s `URLRequest` that task are completed on.
         public let urlRequest: URLRequest
         
-        /// A `Request` configured for an `Connection` with the provided identifier.
+        /// A `Request` configured to get a `Connection` with the provided identifier.
         ///
         /// - Parameters:
         ///   - id: The identifier of the `Connection`.
         ///   - tokenProvider: An object that handle providing tokens for a request.
         /// - Returns: A `Request` configured to get the `Connection`.
-        public static func getConnection(for id: String, tokenProvider: TokenProviding) -> Request {
+        public static func fetchConnection(for id: String, tokenProvider: TokenProviding) -> Request {
             return Request(path: "/applets/\(id)", method: .GET, tokenProvider: tokenProvider)
         }
         
-        /// A disconnection `Request` for an `Connection` with the provided identifier.
+        /// A disconnection `Request` for a `Connection` with the provided identifier.
         ///
         /// - Parameters:
         ///   - id: The identifier of the `Connection`.
