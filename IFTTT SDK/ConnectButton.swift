@@ -366,6 +366,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = .black
             
             backgroundView.border = .none
+            progressBar.insetForButtonBorder = 0
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
@@ -381,6 +382,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = .white
             
             backgroundView.border = .with(color: .iftttBorderColor, width: Layout.borderWidth)
+            progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
     
@@ -608,6 +610,19 @@ public class ConnectButton: UIView {
             }
         }
         
+        /// When using a border with the ConnectButton, set this to the border width
+        /// This will inset the progress bar so it doesn't overlap the border
+        /// When a border isn't used, set this to 0
+        var insetForButtonBorder: CGFloat = 0 {
+            didSet {
+                layoutMargins = UIEdgeInsets(top: insetForButtonBorder,
+                                             left: insetForButtonBorder,
+                                             bottom: insetForButtonBorder,
+                                             right: insetForButtonBorder)
+            }
+        }
+        
+        private let track = UIView()
         private let bar = PassthroughView()
         
         func configure(with service: Applet.Service?) {
@@ -617,7 +632,7 @@ public class ConnectButton: UIView {
         
         private func update() {
             bar.transform = CGAffineTransform(translationX: (1 - fractionComplete) * -bounds.width, y: 0)
-            layer.cornerRadius = 0.5 * bounds.height // Progress bar should match rounded corners of connect button
+            track.layer.cornerRadius = 0.5 * bounds.height // Progress bar should match rounded corners of connect button
         }
         
         override func layoutSubviews() {
@@ -628,10 +643,17 @@ public class ConnectButton: UIView {
         init() {
             super.init(frame: .zero)
             
-            clipsToBounds = true
+            // The track ensures that the progress bar stays within its intended bounds
             
-            addSubview(bar)
-            bar.constrain.edges(to: self)
+            track.clipsToBounds = true
+            
+            addSubview(track)
+            track.constrain.edges(to: layoutMarginsGuide)
+            
+            track.addSubview(bar)
+            bar.constrain.edges(to: track)
+            
+            layoutMargins = .zero
         }
         @available(*, unavailable)
         required init?(coder aDecoder: NSCoder) {
