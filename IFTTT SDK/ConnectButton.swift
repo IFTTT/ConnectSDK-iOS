@@ -12,6 +12,9 @@ import UIKit
 
 fileprivate struct Layout {
     static let height: CGFloat = 64
+    static var maximumWidth: CGFloat {
+        return 6 * height
+    }
     static let knobInset: CGFloat = 4
     static var knobDiameter: CGFloat {
         return height - 2 * knobInset
@@ -838,7 +841,24 @@ public class ConnectButton: UIView {
         stackView.spacing = 20
         
         addSubview(stackView)
-        stackView.constrain.edges(to: self)
+        stackView.constrain.edges(to: self, edges: [.top, .bottom])
+        stackView.constrain.center(in: self)
+        
+        // By defaut, the ConnectButton contents are the full width of the button's view
+        // But set a maximum width
+        // Set the left anchor to break its constraint if the max width is exceeded
+        let leftConstraint = stackView.leftAnchor.constraint(equalTo: leftAnchor)
+        leftConstraint.priority = .defaultHigh
+        leftConstraint.isActive = true
+        
+        // Fallback to the max width
+        // If we don't have this then the button will fit exactly to its content
+        let maxWidth = stackView.widthAnchor.constraint(equalToConstant: Layout.maximumWidth)
+        maxWidth.priority = .defaultHigh
+        maxWidth.isActive = true
+        
+        // Finall set the max width
+        stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
         
         addSubview(footerLabelAnimator.transition.view)
         footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
