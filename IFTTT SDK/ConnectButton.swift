@@ -650,6 +650,10 @@ public class ConnectButton: UIView {
             override init() {
                 super.init()
                 
+                layer.shadowColor = UIColor.black.cgColor
+                layer.shadowOpacity = 0.5
+                layer.shadowRadius = 15
+                
                 addSubview(iconView)
                 iconView.constrain.center(in: self)
                 iconView.constrain.square(length: Layout.serviceIconDiameter)
@@ -827,7 +831,6 @@ public class ConnectButton: UIView {
         emailConfirmButtonTrack.addSubview(emailConfirmButton)
         backgroundView.addSubview(serviceIconView)
         
-        backgroundView.clipsToBounds = true
         backgroundView.heightAnchor.constraint(equalToConstant: Layout.height).isActive = true
         
         progressBar.constrain.edges(to: backgroundView)
