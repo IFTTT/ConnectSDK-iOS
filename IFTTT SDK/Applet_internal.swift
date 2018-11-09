@@ -33,7 +33,7 @@ extension Applet {
     static func parseAppletsResponse(_ parser: Parser) -> [Applet]? {
         if let type = parser["type"].string {
             switch type {
-            case "applet":
+            case "connection":
                 if let applet = Applet(parser: parser) {
                     return [applet]
                 }

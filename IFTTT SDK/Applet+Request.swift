@@ -33,7 +33,7 @@ public extension Applet {
         ///   - tokenProvider: An object that handle providing tokens for a request.
         /// - Returns: A `Request` configured to get the `Connection`.
         public static func fetchConnection(for id: String, tokenProvider: TokenProviding) -> Request {
-            return Request(path: "/applets/\(id)", method: .GET, tokenProvider: tokenProvider)
+            return Request(path: "/connections/\(id)", method: .GET, tokenProvider: tokenProvider)
         }
         
         /// A disconnection `Request` for a `Connection` with the provided identifier.
@@ -43,7 +43,7 @@ public extension Applet {
         ///   - tokenProvider: An object that handle providing tokens for a request.
         /// - Returns:  A `Request` configured to disconnect the `Connection`.
         public static func disconnectConnection(with id: String, tokenProvider: TokenProviding) -> Request {
-            return Request(path: "/applets/\(id)/disable)", method: .POST, tokenProvider: tokenProvider)
+            return Request(path: "/connections/\(id)/disable)", method: .POST, tokenProvider: tokenProvider)
         }
         
         private init(path: String, method: Method, tokenProvider: TokenProviding) {
