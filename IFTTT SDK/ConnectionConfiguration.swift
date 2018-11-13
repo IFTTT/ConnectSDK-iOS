@@ -8,10 +8,11 @@
 
 import Foundation
 
+/// Encapsulates the information needed to authenticate a `Connection`'s services.
 public struct ConnectionConfiguration {
     
     /// The identifier of the `Connection`.
-    public let applet: Connection
+    public let connection: Connection
     
     /// A `String` provided as the suggested user's email address.
     public let suggestedUserEmail: String
@@ -22,8 +23,15 @@ public struct ConnectionConfiguration {
     /// A `URL` used as the activation redirection endpoint.
     public let connectActivationRedirectURL: URL
     
-    public init(applet: Connection, suggestedUserEmail: String, tokenProvider: TokenProviding, connectActivationRedirectURL: URL) {
-        self.applet = applet
+    /// Creates a new `ConnectionConfiguration`.
+    ///
+    /// - Parameters:
+    ///   - connection: The `Connection` for authentication.
+    ///   - suggestedUserEmail: A `String` with a an email for the user.
+    ///   - tokenProvider: A `TokenProviding` conforming object for providing credentials.
+    ///   - connectActivationRedirectURL: The `URL` that is used for authentication redirects.
+    public init(connection: Connection, suggestedUserEmail: String, tokenProvider: TokenProviding, connectActivationRedirectURL: URL) {
+        self.connection = connection
         self.suggestedUserEmail = suggestedUserEmail
         self.tokenProvider = tokenProvider
         self.connectActivationRedirectURL = connectActivationRedirectURL

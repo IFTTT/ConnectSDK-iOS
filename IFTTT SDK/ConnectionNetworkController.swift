@@ -34,7 +34,7 @@ public final class ConnectionNetworkController {
         /// The network repsonse status code.
         public let statusCode: Int?
         
-        /// The `Result` of the network request.
+        /// The `Result<Connection>` of the network request.
         public let result: Result<Connection>
     }
     

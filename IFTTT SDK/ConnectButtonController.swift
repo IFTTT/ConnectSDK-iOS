@@ -119,7 +119,7 @@ public class ConnectButtonController {
     public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate) {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
-        self.connection = connectionConfiguration.applet
+        self.connection = connectionConfiguration.connection
         self.tokenProvider = connectionConfiguration.tokenProvider
         self.connectionNetworkController = ConnectionNetworkController()
         self.delegate = delegate
@@ -332,7 +332,7 @@ public class ConnectButtonController {
                     // Therefore newUserEmail is always nil here
                     return .serviceConnection(service, newUserEmail: nil)
                 } else {
-                    // For some reason, the service ID we received from web doesn't match the applet
+                    // For some reason, the service ID we received from web doesn't match the connection
                     // If this ever happens, it is due to a bug on web
                     return .failed(.unknownRedirect)
                 }
