@@ -8,26 +8,26 @@
 
 import Foundation
 
-/// A structure representing an Applet created using the IFTTT Platform.
+/// A structure representing a Connection created using the IFTTT Platform.
 public struct Connection: Equatable {
     
-    /// Represents the various states an `Applet` can be in based on interaction.
+    /// Represents the various states a `Connection` can be in based on interaction.
     public enum Status: String {
         
-        /// This Applet has never been enabled.
+        /// It has never been enabled.
         case initial = "never_enabled"
         
-        /// The Applet is currently enabled.
+        /// It is currently enabled.
         case enabled = "enabled"
         
-        /// The Applet has been disabled.
+        /// It has been disabled.
         case disabled = "disabled"
         
-        /// The Applet is in an unexpected state.
+        /// It is in an unexpected state.
         case unknown = ""
     }
     
-    /// Information about a connect service.
+    /// Information about a Connection's service.
     public struct Service: Equatable {
         
         /// The identifier of the service.
@@ -42,7 +42,7 @@ public struct Connection: Equatable {
         /// The `URL` to an icon that is intended to be tinted. Typically this is white or black. Also know as `Works with icon` on the IFTTT platform.
         public let templateIconURL: URL
         
-        /// The `URL` of an icon that is intended to be presented on top of a background with the service's `brandColor`. Also know as `Applet logo` on the IFTTT platform.
+        /// The `URL` of an icon that is intended to be presented on top of a background with the service's `brandColor`. Also know as `Connection logo` on the IFTTT platform.
         public let standardIconURL: URL
         
         /// A primary color defined by the service's brand.
@@ -56,28 +56,28 @@ public struct Connection: Equatable {
         }
     }
     
-    /// The identifier of the `Applet`.
+    /// The identifier of the `Connection`.
     public let id: String
     
-    /// The name of the `Applet`.
+    /// The name of the `Connection`.
     public let name: String
     
-    /// Information about the `Applet`.
+    /// Information about the `Connection`.
     public let description: String
     
-    /// The `Status` of the `Applet`.
+    /// The `Status` of the `Connection`.
     public internal(set) var status: Status
     
-    /// The `URL` for the `Applet`.
+    /// The `URL` for the `Connection`.
     public let url: URL
     
-    /// An array of `Service`s associated with the `Applet`.
+    /// An array of `Service`s associated with the `Connection`.
     public let services: [Service]
     
-    /// The main `Service` for the `Applet`.
+    /// The main `Service` for the `Connection`.
     public let primaryService: Service
     
-    /// An array of the `Service`s that work with this `Applet`.
+    /// An array of the `Service`s that work with this `Connection`.
     public var worksWithServices: [Service] {
         return services.filter({ $0.isPrimary == false })
     }
