@@ -33,7 +33,7 @@ public final class AuthenticationRedirectHandler {
         
         // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
         if let source = options[.sourceApplication] as? String, url.scheme == connectionRedirectURL.scheme && source == "com.apple.SafariViewService" {
-            NotificationCenter.default.post(name: .appletActivationRedirect, object: url)
+            NotificationCenter.default.post(name: .authorizationRedirect, object: url)
             return true
         }
         
