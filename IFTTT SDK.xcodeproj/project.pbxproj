@@ -30,7 +30,7 @@
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44E0882162E81F0063DCA1 /* LogoView.swift */; };
 		FC4588FE215172C00038630F /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4588FD215172C00038630F /* Images.swift */; };
-		FC74F1D82152AE4D00035A66 /* ConnectInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */; };
+		FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */; };
 		FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FCBA15FB21389F7500EB1BC8 /* IFTTT_SDK.h in Headers */ = {isa = PBXBuildFile; fileRef = FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16042138A4EE00EB1BC8 /* Connection.swift */; };
@@ -99,7 +99,7 @@
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC44E0882162E81F0063DCA1 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		FC4588FD215172C00038630F /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
-		FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInteraction.swift; sourceTree = "<group>"; };
+		FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButtonController.swift; sourceTree = "<group>"; };
 		FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IFTTT_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IFTTT_SDK.h; sourceTree = "<group>"; };
 		FCBA15EE21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -263,7 +263,7 @@
 				1DFE020C2190E3DB00856ABC /* API.swift */,
 				1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
-				FC74F1D72152AE4D00035A66 /* ConnectInteraction.swift */,
+				FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
 				1DFE02082190E35300856ABC /* ConnectRedirectHandler.swift */,
@@ -430,7 +430,7 @@
 				1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */,
 				1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
-				FC74F1D82152AE4D00035A66 /* ConnectInteraction.swift in Sources */,
+				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
 				FCF29FC72187C8C2004B1100 /* Applet_internal.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
