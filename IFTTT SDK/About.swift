@@ -11,10 +11,10 @@ import SafariServices
 
 class AboutViewController: UIViewController {
     
-    let primaryService: Applet.Service
-    let secondaryService: Applet.Service?
+    let primaryService: Connection.Service
+    let secondaryService: Connection.Service?
     
-    init(primaryService: Applet.Service, secondaryService: Applet.Service?) {
+    init(primaryService: Connection.Service, secondaryService: Connection.Service?) {
         self.primaryService = primaryService
         self.secondaryService = secondaryService
         

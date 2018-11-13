@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Applet {
+extension Connection {
     init?(parser: Parser) {
         guard
             let id = parser["id"].string,
@@ -30,15 +30,15 @@ extension Applet {
         }
         self.primaryService = primaryService
     }
-    static func parseAppletsResponse(_ parser: Parser) -> [Applet]? {
+    static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {
         if let type = parser["type"].string {
             switch type {
             case "connection":
-                if let applet = Applet(parser: parser) {
+                if let applet = Connection(parser: parser) {
                     return [applet]
                 }
             case "list":
-                return parser["data"].compactMap { Applet(parser: $0) }
+                return parser["data"].compactMap { Connection(parser: $0) }
             default:
                 break
             }
@@ -47,7 +47,7 @@ extension Applet {
     }
 }
 
-extension Applet.Service {
+extension Connection.Service {
     init?(parser: Parser) {
         guard
             let id = parser["service_id"].string,
