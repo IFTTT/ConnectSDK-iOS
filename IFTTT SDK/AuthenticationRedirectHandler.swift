@@ -1,5 +1,5 @@
 //
-//  Connection+Session.swift
+//  AuthenticationRedirectHandler.swift
 //  IFTTT SDK
 //
 //  Created by Michael Amundsen on 11/5/18.
@@ -9,21 +9,21 @@
 import Foundation
 
 /// A class to handle redirections of `URL`s recieved as a part of the `Connection` activation process.
-public final class ConnectRedirectHandler {
+public final class AuthenticationRedirectHandler {
     
-    private let connectActivationRedirectURL: URL
+    private let authorizationRedirectURL: URL
     
-    /// A `ConnectRedirectHandler` configured to handle a `URL`.
+    /// An `AuthenticationRedirectHandler` configured to handle a `URL`.
     ///
-    /// - Parameter connectActivationRedirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
-    public init(connectActivationRedirectURL: URL) {
-        self.connectActivationRedirectURL = connectActivationRedirectURL
+    /// - Parameter authorizationRedirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
+    public init(authorizationRedirectURL: URL) {
+        self.authorizationRedirectURL = authorizationRedirectURL
     }
     
     /// Handles redirects during a `Connection` activation.
     ///
     /// Generally, this is used to handle url redirects the app recieves in `func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool` in the `AppDelgate`.
-    /// - Example: `ConnectRedirectHandler.handleApplicationRedirect(url: url, options: options)`.
+    /// - Example: `AuthenticationRedirectHandler.handleApplicationRedirect(url: url, options: options)`.
     ///
     /// - Parameters:
     ///   - url: The `URL` resource to open.
@@ -32,8 +32,8 @@ public final class ConnectRedirectHandler {
     public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         
         // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
-        if let source = options[.sourceApplication] as? String, url.scheme == connectActivationRedirectURL.scheme && source == "com.apple.SafariViewService" {
-            NotificationCenter.default.post(name: .appletActivationRedirect, object: url)
+        if let source = options[.sourceApplication] as? String, url.scheme == authorizationRedirectURL.scheme && source == "com.apple.SafariViewService" {
+            NotificationCenter.default.post(name: .authorizationRedirect, object: url)
             return true
         }
         

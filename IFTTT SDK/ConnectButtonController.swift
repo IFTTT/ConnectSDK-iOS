@@ -234,7 +234,7 @@ public class ConnectButtonController {
         
         override init() {
             super.init()
-            NotificationCenter.default.addObserver(forName: .appletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }
@@ -254,7 +254,7 @@ public class ConnectButtonController {
                     return
             }
             switch nextStep {
-            case "service_connection":
+            case "service_authentication":
                 if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
                     onRedirect?(.serviceConnection(id: serviceId))
                 } else {
@@ -559,6 +559,7 @@ public class ConnectButtonController {
             let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
             
             let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
