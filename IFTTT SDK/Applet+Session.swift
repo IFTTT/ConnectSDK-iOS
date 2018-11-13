@@ -89,8 +89,8 @@ public extension Applet {
             return tokenProvider.iftttServiceToken
         }
         
-        var partnerOAuthToken: String {
-            return tokenProvider.partnerOAuthToken
+        var partnerOAuthCode: String {
+            return tokenProvider.partnerOAuthCode
         }
         
         private init(urlSession: URLSession,
