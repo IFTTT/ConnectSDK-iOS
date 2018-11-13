@@ -147,7 +147,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1DFE02112190E44400856ABC /* Applet */ = {
+		1DFE02112190E44400856ABC /* Connection */ = {
 			isa = PBXGroup;
 			children = (
 				FCBA16042138A4EE00EB1BC8 /* Connection.swift */,
@@ -155,7 +155,7 @@
 				1DFE020A2190E39B00856ABC /* Connection+Request.swift */,
 				1DFE02182190E59F00856ABC /* Extensions */,
 			);
-			name = Applet;
+			name = Connection;
 			sourceTree = "<group>";
 		};
 		1DFE02182190E59F00856ABC /* Extensions */ = {
@@ -259,7 +259,7 @@
 		FCF29FC92187CF71004B1100 /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				1DFE02112190E44400856ABC /* Applet */,
+				1DFE02112190E44400856ABC /* Connection */,
 				1DFE020C2190E3DB00856ABC /* API.swift */,
 				1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
