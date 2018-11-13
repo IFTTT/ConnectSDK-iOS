@@ -558,7 +558,7 @@ public class ConnectInteraction {
                                               footerValue: footer.value)
                 ).preform()
             
-            let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthToken : nil
+            let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthCode : nil
             
             let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.connectActivationRedirectURL)
             button.stepInteraction.isTapEnabled = true
