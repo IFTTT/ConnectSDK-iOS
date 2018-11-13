@@ -32,7 +32,7 @@ public extension Connection {
         ///   - id: The identifier of the `Connection`.
         ///   - tokenProvider: An object that handle providing tokens for a request.
         /// - Returns: A `Request` configured to get the `Connection`.
-        public static func fetchConnection(for id: String, tokenProvider: TokenProviding) -> Request {
+        public static func fetchConnection(for id: String, tokenProvider: CredentialProvider) -> Request {
             return Request(path: "/connections/\(id)", method: .GET, tokenProvider: tokenProvider)
         }
         
@@ -42,11 +42,11 @@ public extension Connection {
         ///   - id: The identifier of the `Connection`.
         ///   - tokenProvider: An object that handle providing tokens for a request.
         /// - Returns:  A `Request` configured to disconnect the `Connection`.
-        public static func disconnectConnection(with id: String, tokenProvider: TokenProviding) -> Request {
+        public static func disconnectConnection(with id: String, tokenProvider: CredentialProvider) -> Request {
             return Request(path: "/connections/\(id)/disable)", method: .POST, tokenProvider: tokenProvider)
         }
         
-        private init(path: String, method: Method, tokenProvider: TokenProviding) {
+        private init(path: String, method: Method, tokenProvider: CredentialProvider) {
             let url = API.base.appendingPathComponent(path)
             
             var request = URLRequest(url: url)

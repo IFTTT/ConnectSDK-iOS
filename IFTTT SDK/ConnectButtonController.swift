@@ -108,7 +108,7 @@ public class ConnectButtonController {
     
     private let connectionConfiguration: ConnectionConfiguration
     private let connectionNetworkController: ConnectionNetworkController
-    private let tokenProvider: TokenProviding
+    private let tokenProvider: CredentialProvider
     
     /// Creates a new `ConnectButtonController`.
     ///
@@ -120,7 +120,7 @@ public class ConnectButtonController {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
         self.connection = connectionConfiguration.connection
-        self.tokenProvider = connectionConfiguration.tokenProvider
+        self.tokenProvider = connectionConfiguration.credentialProvider
         self.connectionNetworkController = ConnectionNetworkController()
         self.delegate = delegate
         setupConnection(for: connection)
@@ -534,7 +534,7 @@ public class ConnectButtonController {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
+            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -558,8 +558,8 @@ public class ConnectButtonController {
             
             let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
             
-            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.tokenProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
-
+            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+            
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
@@ -626,7 +626,7 @@ public class ConnectButtonController {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Connection.Request.disconnectConnection(with: connection.id, tokenProvider: connectionConfiguration.tokenProvider)
+            let request = Connection.Request.disconnectConnection(with: connection.id, tokenProvider: connectionConfiguration.credentialProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {
