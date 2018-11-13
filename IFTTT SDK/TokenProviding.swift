@@ -16,4 +16,7 @@ public protocol TokenProviding {
     
     /// Provides the service's token associated with the IFTTT platform.
     var iftttServiceToken: String? { get }
+    
+    /// Provides the service's token associated with the IFTTT platform.
+    var inviteCode: String? { get }
 }
