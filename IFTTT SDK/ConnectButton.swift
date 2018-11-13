@@ -45,7 +45,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    /// Create an Connection connect button. This is primarily an internal type. This is the only public method.
+    /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method.
     /// Use with ConnectInteraction
     public init(style: Style = .light) {
         self.style = style
