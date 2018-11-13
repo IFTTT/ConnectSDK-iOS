@@ -105,9 +105,19 @@ public class ConnectInteraction {
     
     public private(set) weak var delegate: ConnectInteractionDelegate?
     
-    public init(_ button: ConnectButton, applet: Applet, delegate: ConnectInteractionDelegate) {
-        self.button = button
+    let tokenProvider: TokenProviding
+    
+    /// Creates a new `ConnectInteraction`.
+    ///
+    /// - Parameters:
+    ///   - connectButton: The `ConnectButton` that the controller is handling interaction for.
+    ///   - applet: The `Applet` in this interaction
+    ///   - tokenProvider: A `TokenProviding` object for providing tokens for requests.
+    ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
+    public init(connectButton: ConnectButton, applet: Applet, tokenProvider: TokenProviding, delegate: ConnectInteractionDelegate) {
+        self.button = connectButton
         self.applet = applet
+        self.tokenProvider = tokenProvider
         self.delegate = delegate
         self.connectingService = applet.worksWithServices.first ?? applet.primaryService
         
@@ -415,7 +425,7 @@ public class ConnectInteraction {
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.toggleTransition = {
-                if let _ = Applet.Session.shared.iftttServiceToken {
+                if self.tokenProvider.iftttServiceToken != nil {
                     return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
                     return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
@@ -423,7 +433,7 @@ public class ConnectInteraction {
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
-                if let token = Applet.Session.shared.iftttServiceToken {
+                if let token = self?.tokenProvider.iftttServiceToken {
                     self?.transition(to: .identifyUser(.token(token)))
                 }
             }
@@ -558,12 +568,7 @@ public class ConnectInteraction {
                                               footerValue: footer.value)
                 ).preform()
             
-            let token: String? = {
-                if service.id == applet.primaryService.id {
-                    return currentConfiguration?.partnerOpaqueToken
-                }
-                return nil
-            }()
+            let token = service.id == applet.primaryService.id ? tokenProvider.partnerOAuthCode : nil
             
             let url = applet.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token))
             button.stepInteraction.isTapEnabled = true
