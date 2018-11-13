@@ -11,13 +11,13 @@ import Foundation
 /// A class to handle redirections of `URL`s recieved as a part of the `Connection` activation process.
 public final class AuthenticationRedirectHandler {
     
-    private let connectionRedirectURL: URL
+    private let authorizationRedirectURL: URL
     
-    /// A `AuthenticationRedirectHandler` configured to handle a `URL`.
+    /// An `AuthenticationRedirectHandler` configured to handle a `URL`.
     ///
-    /// - Parameter connectionRedirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
-    public init(connectionRedirectURL: URL) {
-        self.connectionRedirectURL = connectionRedirectURL
+    /// - Parameter authorizationRedirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
+    public init(authorizationRedirectURL: URL) {
+        self.authorizationRedirectURL = authorizationRedirectURL
     }
     
     /// Handles redirects during a `Connection` activation.
@@ -32,7 +32,7 @@ public final class AuthenticationRedirectHandler {
     public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         
         // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
-        if let source = options[.sourceApplication] as? String, url.scheme == connectionRedirectURL.scheme && source == "com.apple.SafariViewService" {
+        if let source = options[.sourceApplication] as? String, url.scheme == authorizationRedirectURL.scheme && source == "com.apple.SafariViewService" {
             NotificationCenter.default.post(name: .authorizationRedirect, object: url)
             return true
         }
