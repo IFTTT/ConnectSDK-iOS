@@ -27,13 +27,13 @@ extension Connection {
         serviceConnection(newUserEmail: String?, token: String?)
     }
     
-    func activationURL(for step: ActivationStep, tokenProvider: TokenProviding, activationRedirect: URL) -> URL {
+    func activationURL(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> URL {
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
         components?.queryItems = queryItems(for: step, tokenProvider: tokenProvider, activationRedirect: activationRedirect)
         return components?.url ?? activationURL
     }
     
-    private func queryItems(for step: ActivationStep, tokenProvider: TokenProviding, activationRedirect: URL) -> [URLQueryItem] {
+    private func queryItems(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
         var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: activationRedirect.absoluteString)]
         
         if let inviteCode = tokenProvider.inviteCode {

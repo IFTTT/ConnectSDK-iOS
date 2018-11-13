@@ -10,7 +10,7 @@
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
 		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
-		1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* TokenProviding.swift */; };
+		1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* CredentialProvider.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
 		1DFE02092190E35300856ABC /* AuthenticationRedirectHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* AuthenticationRedirectHandler.swift */; };
 		1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020A2190E39B00856ABC /* Connection+Request.swift */; };
@@ -81,7 +81,7 @@
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
-		1DFE02042190E25500856ABC /* TokenProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProviding.swift; sourceTree = "<group>"; };
+		1DFE02042190E25500856ABC /* CredentialProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialProvider.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
 		1DFE02082190E35300856ABC /* AuthenticationRedirectHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRedirectHandler.swift; sourceTree = "<group>"; };
 		1DFE020A2190E39B00856ABC /* Connection+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Request.swift"; sourceTree = "<group>"; };
@@ -267,7 +267,7 @@
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
 				1DFE02082190E35300856ABC /* AuthenticationRedirectHandler.swift */,
-				1DFE02042190E25500856ABC /* TokenProviding.swift */,
+				1DFE02042190E25500856ABC /* CredentialProvider.swift */,
 				1D981C32219210D7001784C4 /* Result<ResultType>.swift */,
 			);
 			name = Public;
@@ -428,7 +428,7 @@
 				FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
 				1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */,
-				1DFE02052190E25500856ABC /* TokenProviding.swift in Sources */,
+				1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,

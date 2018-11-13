@@ -18,7 +18,7 @@ public struct ConnectionConfiguration {
     public let suggestedUserEmail: String
     
     /// An object that handle providing tokens for a session.
-    public let tokenProvider: TokenProviding
+    public let tokenProvider: CredentialProvider
     
     /// A `URL` used as the activation redirection endpoint.
     public let connectionRedirectURL: URL
@@ -28,9 +28,9 @@ public struct ConnectionConfiguration {
     /// - Parameters:
     ///   - connection: The `Connection` for authentication.
     ///   - suggestedUserEmail: A `String` with a an email for the user.
-    ///   - tokenProvider: A `TokenProviding` conforming object for providing credentials.
+    ///   - tokenProvider: A `CredentialProvider` conforming object for providing credentials.
     ///   - connectionRedirectURL: The `URL` that is used for authentication redirects.
-    public init(connection: Connection, suggestedUserEmail: String, tokenProvider: TokenProviding, connectionRedirectURL: URL) {
+    public init(connection: Connection, suggestedUserEmail: String, tokenProvider: CredentialProvider, connectionRedirectURL: URL) {
         self.connection = connection
         self.suggestedUserEmail = suggestedUserEmail
         self.tokenProvider = tokenProvider

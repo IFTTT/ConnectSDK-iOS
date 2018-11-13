@@ -110,7 +110,7 @@ class KeychainMock {
     }
 }
 
-struct IFTTTAuthenication: TokenProviding {
+struct IFTTTAuthenication: CredentialProvider {
     static let shared = IFTTTAuthenication()
     
     let keychain = KeychainMock.shared

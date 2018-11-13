@@ -108,7 +108,7 @@ public class ConnectButtonController {
     
     private let connectionConfiguration: ConnectionConfiguration
     private let connectionNetworkController: ConnectionNetworkController
-    private let tokenProvider: TokenProviding
+    private let tokenProvider: CredentialProvider
     
     /// Creates a new `ConnectButtonController`.
     ///
