@@ -9,8 +9,8 @@
 import UIKit
 import SafariServices
 
-/// An error occurred, preventing Connection connection.
-public enum AppletConnectionError: Error {
+/// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
+public enum ConnectButtonControllerError: Error {
     
     /// For some reason we could not create an IFTTT account for a new user.
     case iftttAccountCreationFailed
@@ -18,13 +18,13 @@ public enum AppletConnectionError: Error {
     /// Some generic networking error occurred.
     case networkError(Error?)
     
-    /// A user canceled the Applet connection process.
+    /// A user canceled the service authentication with the `Connection`.
     case canceled
     
-    /// Redirect params did not match what we expected. This should never happen. Verify you are using the latest SDK.
+    /// Redirect parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownRedirect
     
-    /// Response params did not match what we expected. This should never happen. Verify you are using the latest SDK.
+    /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownResponse
 }
 
@@ -229,7 +229,7 @@ public class ConnectInteraction {
             serviceConnection(id: String),
             complete,
             canceled,
-            failed(AppletConnectionError)
+            failed(ConnectButtonControllerError)
         }
         
         var onRedirect: ((Outcome) -> Void)?
@@ -373,7 +373,7 @@ public class ConnectInteraction {
         case logInComplete(nextStep: ActivationStep)
         case serviceConnection(Connection.Service, newUserEmail: String?)
         case serviceConnectionComplete(Connection.Service, nextStep: ActivationStep)
-        case failed(AppletConnectionError)
+        case failed(ConnectButtonControllerError)
         case canceled
         case connected
         case confirmDisconnect
@@ -584,7 +584,7 @@ public class ConnectInteraction {
             
         // MARK: - Cancel & failure states
         case (_, .canceled):
-            delegate?.connectInteraction(self, didFinishActivationWithResult: .failure(AppletConnectionError.canceled))
+            delegate?.connectInteraction(self, didFinishActivationWithResult: .failure(ConnectButtonControllerError.canceled))
             transition(to: .initial)
             
         case (_, .failed(let error)):
