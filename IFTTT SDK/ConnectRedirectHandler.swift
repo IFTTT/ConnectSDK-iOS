@@ -1,5 +1,5 @@
 //
-//  Applet+Session.swift
+//  Connection+Session.swift
 //  IFTTT SDK
 //
 //  Created by Michael Amundsen on 11/5/18.

@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// A protocol that defines APIs for providing tokens used during the service connection process for an Applet.
+/// A protocol that defines APIs for providing tokens used during the service connection process for an Connection.
 public protocol TokenProviding {
     
     /// Provides the partner's OAuth code for a service during Applet connection.

@@ -1,5 +1,5 @@
 //
-//  Applet+Request.swift
+//  Connection+Request.swift
 //  IFTTT SDK
 //
 //  Created by Michael Amundsen on 11/5/18.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public extension Applet {
+public extension Connection {
     
     /// Handles network requests related to the `Connection`.
     public struct Request {

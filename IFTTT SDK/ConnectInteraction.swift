@@ -9,7 +9,7 @@
 import UIKit
 import SafariServices
 
-/// An error occurred, preventing Applet connection.
+/// An error occurred, preventing Connection connection.
 public enum AppletConnectionError: Error {
     
     /// For some reason we could not create an IFTTT account for a new user.
@@ -32,7 +32,7 @@ public enum AppletConnectionError: Error {
 public protocol ConnectInteractionDelegate: class {
     
     /// The connect interaction needs to present a view controller
-    /// This includes the About IFTTT page and Safari VC during Applet activation
+    /// This includes the About IFTTT page and Safari VC during Connection activation
     /// Implementation is required
     ///
     /// - Parameters:
@@ -40,7 +40,7 @@ public protocol ConnectInteractionDelegate: class {
     ///   - viewController: The view controller to present
     func connectInteraction(_ connectInteraction: ConnectInteraction, show viewController: UIViewController)
     
-    /// Applet activation is finished.
+    /// Connection activation is finished.
     ///
     /// On success, the connect interaction transitions the button to its connected state.
     ///
@@ -53,18 +53,18 @@ public protocol ConnectInteractionDelegate: class {
     /// - Parameters:
     ///   - connectInteraction: The `ConnectInteraction` controller that is sending the message.
     ///   - result: A result of the applet activation request.
-    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishActivationWithResult result: Result<Applet>)
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishActivationWithResult result: Result<Connection>)
     
-    /// Applet deactivation is finished.
+    /// Connection deactivation is finished.
     ///
     /// On success, the connect interaction transitions the button to its deactivated initial state.
     ///
-    /// On failure, the connect interaction will reset the Applet to the connected state but will not show any messaging. The user attempted to deactivate the Applet but something unexpected went wrong, likely a network failure. It is up to you to do this. This should be rare but should be handled.
+    /// On failure, the connect interaction will reset the Connection to the connected state but will not show any messaging. The user attempted to deactivate the Connection but something unexpected went wrong, likely a network failure. It is up to you to do this. This should be rare but should be handled.
     ///
     /// - Parameters:
     ///   - connectInteraction: The `ConnectInteraction` controller that is sending the message.
     ///   - result: A result of the applet deactivation request.
-    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Applet>)
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Connection>)
     
     /// The connection interaction recieved an invalid email from the user. The default implementation of this function is to do nothing.
     ///
@@ -86,7 +86,7 @@ public class ConnectInteraction {
     
     /// The Applet in this interaction
     /// The controller may change the connection status of the Applet
-    public private(set) var applet: Applet
+    public private(set) var applet: Connection
     
     private func appletChangedStatus(isOn: Bool) {
         self.applet.status = isOn ? .enabled : .disabled
@@ -101,7 +101,7 @@ public class ConnectInteraction {
     /// The service that is being connected to the primary (owner) service
     /// This defines the service icon & brand color of the button in its initial and final (activated) states
     /// It is always the first service connected
-    public var connectingService: Applet.Service {
+    public var connectingService: Connection.Service {
         return applet.worksWithServices.first ?? applet.primaryService
     }
     
@@ -128,7 +128,7 @@ public class ConnectInteraction {
         setupConnection(for: applet)
     }
     
-    private func setupConnection(for applet: Applet) {
+    private func setupConnection(for applet: Connection) {
         button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
@@ -163,7 +163,7 @@ public class ConnectInteraction {
         enterEmail,
         emailInvalid,
         signedIn(username: String),
-        connect(Applet.Service, to: Applet.Service),
+        connect(Connection.Service, to: Connection.Service),
         manage,
         disconnect
         
@@ -371,8 +371,8 @@ public class ConnectInteraction {
         case identifyUser(ConnectConfiguration.UserLookupMethod)
         case logInExistingUser(User.Id)
         case logInComplete(nextStep: ActivationStep)
-        case serviceConnection(Applet.Service, newUserEmail: String?)
-        case serviceConnectionComplete(Applet.Service, nextStep: ActivationStep)
+        case serviceConnection(Connection.Service, newUserEmail: String?)
+        case serviceConnectionComplete(Connection.Service, nextStep: ActivationStep)
         case failed(AppletConnectionError)
         case canceled
         case connected
@@ -456,7 +456,7 @@ public class ConnectInteraction {
             
             button.footerInteraction.isTapEnabled = true
             
-            // Applet was changed to this state, not initialized with it, so let the delegate know
+            // Connection was changed to this state, not initialized with it, so let the delegate know
             if previous != nil {
                 appletChangedStatus(isOn: true)
             }
@@ -594,7 +594,7 @@ public class ConnectInteraction {
             
         // MARK: - Disconnect
         case (.connected?, .confirmDisconnect):
-            // The user must slide to deactivate the Applet
+            // The user must slide to deactivate the Connection
             button.toggleInteraction.isTapEnabled = false
             button.toggleInteraction.isDragEnabled = true
             button.toggleInteraction.resistance = .heavy
@@ -627,7 +627,7 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Applet.Request.disconnectConnection(with: applet.id, tokenProvider: connectionConfiguration.tokenProvider)
+            let request = Connection.Request.disconnectConnection(with: applet.id, tokenProvider: connectionConfiguration.tokenProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {

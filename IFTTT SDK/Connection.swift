@@ -1,5 +1,5 @@
 //
-//  Applet.swift
+//  Connection.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 8/30/18.
@@ -9,7 +9,7 @@
 import Foundation
 
 /// A structure representing an Applet created using the IFTTT Platform.
-public struct Applet: Equatable {
+public struct Connection: Equatable {
     
     /// Represents the various states an `Applet` can be in based on interaction.
     public enum Status: String {
@@ -84,7 +84,7 @@ public struct Applet: Equatable {
     
     let activationURL: URL
     
-    public static func ==(lhs: Applet, rhs: Applet) -> Bool {
+    public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
     }
 }

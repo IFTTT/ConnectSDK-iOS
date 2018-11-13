@@ -89,11 +89,11 @@ extension AppletViewController: ConnectInteractionDelegate {
         present(viewController, animated: true, completion: nil)
     }
     
-    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishActivationWithResult result: Result<Applet>) {
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishActivationWithResult result: Result<Connection>) {
         
     }
     
-    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Applet>) {
+    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Connection>) {
         
     }
 

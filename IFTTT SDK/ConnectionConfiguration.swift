@@ -11,7 +11,7 @@ import Foundation
 public struct ConnectionConfiguration {
     
     /// The identifier of the `Connection`.
-    public let applet: Applet
+    public let applet: Connection
     
     /// A `String` provided as the suggested user's email address.
     public let suggestedUserEmail: String
@@ -22,7 +22,7 @@ public struct ConnectionConfiguration {
     /// A `URL` used as the activation redirection endpoint.
     public let connectActivationRedirectURL: URL
     
-    public init(applet: Applet, suggestedUserEmail: String, tokenProvider: TokenProviding, connectActivationRedirectURL: URL) {
+    public init(applet: Connection, suggestedUserEmail: String, tokenProvider: TokenProviding, connectActivationRedirectURL: URL) {
         self.applet = applet
         self.suggestedUserEmail = suggestedUserEmail
         self.tokenProvider = tokenProvider

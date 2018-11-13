@@ -45,7 +45,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    /// Create an Applet connect button. This is primarily an internal type. This is the only public method.
+    /// Create an Connection connect button. This is primarily an internal type. This is the only public method.
     /// Use with ConnectInteraction
     public init(style: Style = .light) {
         self.style = style
@@ -63,10 +63,10 @@ public class ConnectButton: UIView {
     enum State: CustomStringConvertible {
         case
         initialization,
-        toggle(for: Applet.Service, message: String, isOn: Bool),
+        toggle(for: Connection.Service, message: String, isOn: Bool),
         email(suggested: String?),
-        step(for: Applet.Service?, message: String),
-        stepComplete(for: Applet.Service?)
+        step(for: Connection.Service?, message: String),
+        stepComplete(for: Connection.Service?)
         
         var description: String {
             switch self {
@@ -609,7 +609,7 @@ public class ConnectButton: UIView {
         
         private let bar = PassthroughView()
         
-        func configure(with service: Applet.Service?) {
+        func configure(with service: Connection.Service?) {
             fractionComplete = 0
             bar.backgroundColor = service?.brandColor.contrasting() ?? .black
         }
@@ -660,7 +660,7 @@ public class ConnectButton: UIView {
             }
         }
         
-        func configure(with service: Applet.Service) {
+        func configure(with service: Connection.Service) {
             knob.iconView.set(imageURL: service.standardIconURL)
             
             let color = service.brandColor

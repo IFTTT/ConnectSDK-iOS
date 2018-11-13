@@ -62,7 +62,7 @@ class HomeViewController: UITableViewController {
     }
     
     private func fetchConnection(with id: String, indexPath: IndexPath) {
-        connectionNetworkController.start(urlRequest: Applet.Request.fetchConnection(for: id, tokenProvider: IFTTTAuthenication.shared).urlRequest) { [weak self] response in
+        connectionNetworkController.start(urlRequest: Connection.Request.fetchConnection(for: id, tokenProvider: IFTTTAuthenication.shared).urlRequest) { [weak self] response in
             switch response.result {
             case .success(let applet):
                 let connectionConfiguration = ConnectionConfiguration(applet: applet, suggestedUserEmail: "jon@ifttt.com", tokenProvider: IFTTTAuthenication.shared, connectActivationRedirectURL: AppDelegate.connectActivationRedirectURL)

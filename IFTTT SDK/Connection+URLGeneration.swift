@@ -1,5 +1,5 @@
 //
-//  Applet+URLGeneration.swift
+//  Connection+URLGeneration.swift
 //  IFTTT SDK
 //
 //  Created by Michael Amundsen on 11/5/18.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Applet {
+extension Connection {
     
     private enum URLQueryItemConstants {
         static let sdkReturnName = "sdk_return_to"

@@ -25,7 +25,7 @@ public final class ConnectionNetworkController {
         case unknownResponse
     }
     
-    /// A structure encapsulating responses from the `Applet` activation service network requests.
+    /// A structure encapsulating responses from the `Connection` activation service network requests.
     public struct Response {
         
         /// The metadata associated with the response to network request.
@@ -35,7 +35,7 @@ public final class ConnectionNetworkController {
         public let statusCode: Int?
         
         /// The `Result` of the network request.
-        public let result: Result<Applet>
+        public let result: Result<Connection>
     }
     
     /// A handler that is used when a `Response` is recieved from a network request.
@@ -43,7 +43,7 @@ public final class ConnectionNetworkController {
     /// - Parameter response: The `Response` object from the completed request.
     public typealias CompletionHandler = (_ response: Response) -> Void
     
-    /// Starts a network task on a `Applet`'s `Session`.
+    /// Starts a network task on a `Connection`'s `Session`.
     ///
     /// - Parameter session: A `Session` to begin the network request on. Defaults to the shared session.
     public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) {
@@ -59,7 +59,7 @@ public final class ConnectionNetworkController {
     private func task(urlRequest: URLRequest, minimumDuration: TimeInterval?, completion: @escaping CompletionHandler) -> URLSessionDataTask {
         let handler = { (parser: Parser, response: HTTPURLResponse?, error: Error?) in
             let statusCode = response?.statusCode
-            if let applet = Applet.parseAppletsResponse(parser)?.first {
+            if let applet = Connection.parseAppletsResponse(parser)?.first {
                 completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
             } else {
                 completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error ?? ConnectionNetworkControllerError.unknownResponse)))
