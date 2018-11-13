@@ -1,5 +1,5 @@
 //
-//  ConnectInteractionController.swift
+//  ConnectButtonController.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 9/19/18.
@@ -9,146 +9,150 @@
 import UIKit
 import SafariServices
 
-/// An error occurred, preventing Applet connection
-///
-/// - invalidEmail: Must provide a valid email.
-/// - iftttAccountCreationFailed: For some reason we could not create an IFTTT account for a new user.
-/// - networkError: Some generic networking error occurred.
-/// - unknownRedirect: Redirect params did not match what we expected. This should never happen. Verify you are using the latest SDK.
-/// - unknownResponse: Response params did not match what we expected. This should never happen. Verify you are using the latest SDK.
-public enum AppletConnectionError: Error {
-    case invalidEmail(String)
+/// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
+public enum ConnectButtonControllerError: Error {
+    
+    /// For some reason we could not create an IFTTT account for a new user.
     case iftttAccountCreationFailed
+    
+    /// Some generic networking error occurred.
     case networkError(Error?)
+    
+    /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from sign in process on an authorization page in a safari view controller.
+    case canceled
+    
+    /// Redirect parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownRedirect
+    
+    /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownResponse
 }
 
-/// The result of an attempt to turn on an Applet
-///
-/// - succeeded: The Applet was successfully connected
-/// - canceled: The user canceled connection attempt
-/// - failed: Some error prevented the user from connecting the Applet
-public enum AppletConnectionOutcome {
-    case succeeded(Applet)
-    case canceled
-    case failed(AppletConnectionError)
-}
-
-/// Defines the communication between ConnectInteractionController and your app. It is required to implement this protocol.
-public protocol ConnectInteractionDelegate: class {
+/// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
+public protocol ConnectButtonControllerDelegate: class {
     
-    /// The connect interaction needs to present a view controller
-    /// This includes the About IFTTT page and Safari VC during Applet activation
-    /// Implementation is required
+    /// The `ConnectButtonController` to present a view controller.
+    /// This includes the About IFTTT page and Safari VC during Connection activation.
+    /// Implementation is required.
     ///
     /// - Parameters:
-    ///   - controller: The connect interaction controller
-    ///   - viewController: The view controller to present
-    func connectInteraction(_ interation: ConnectInteraction, show viewController: UIViewController)
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
+    ///   - viewController: The view controller to present.
+    func connectButtonController(_ connectButtonController: ConnectButtonController, show viewController: UIViewController)
     
-    func connectInteraction(_ interaction: ConnectInteraction, nonFatalActivationError error: AppletConnectionError)
-    
-    /// Applet activation is finished
+    /// Connection activation is finished.
     ///
-    /// On succeeded, the connect interaction transitions the button to its connected state.
-    /// On canceled, the connect interaction resets the button to its initial state.
+    /// On success, the controller transitions the button to its connected state.
     ///
-    /// For these two scenarios it's not neccessary for you to show additional confirmation, however, you may
-    /// want to update your app's UI in some way or ask they user why they canceled.
-    ///
-    /// On failed, the connect interaction resets the button to its initial state but does not present any error message.
+    /// On failure, the controller resets the button to its initial state but does not present any error message.
     /// It is up to you to decided how to present an error message to your user. You may use our message or one you provide.
     ///
-    /// - Parameters:
-    ///   - interation: The connect interaction controller
-    ///   - outcome: The outcome of Applet activation
-    func connectInteraction(_ interation: ConnectInteraction, appletActivationFinished outcome: AppletConnectionOutcome)
-    
-    /// The user deactivated the Applet
+    /// For these two scenarios it's not neccessary for you to show additional confirmation, however, you may
+    /// want to update your app's UI in some way or ask they user why they canceled if you recieve a canceled error.
     ///
     /// - Parameters:
-    ///   - interation: The connect interaction controller
-    ///   - appletDeactivated: The Applet which was deactivated
-    func connectInteraction(_ interation: ConnectInteraction, appletDeactivated applet: Applet)
+    ///   - connectInteraction: The `ConnectButtonController` controller that is sending the message.
+    ///   - result: A result of the connection activation request.
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>)
     
-    /// The user attempted to deactivate the Applet but something unexpected went wrong, likely a network failure.
-    /// The connect interaction will reset the Applet to the connected state but will not show any messaging.
-    /// It is up to you to do this. This should be rare but should be handled.
+    /// Connection deactivation is finished.
+    ///
+    /// On success, the controller transitions the button to its deactivated initial state.
+    ///
+    /// On failure, the controller will reset the Connection to the connected state but will not show any messaging. The user attempted to deactivate the Connection but something unexpected went wrong, likely a network failure. It is up to you to do this. This should be rare but should be handled.
     ///
     /// - Parameters:
-    ///   - interation: The connect interaction controller
-    ///   - error: The error
-    func connectInteraction(_ interation: ConnectInteraction, appletDeactivationFailedWithError error: AppletConnectionError)
+    ///   - connectInteraction: The `ConnectButtonController` controller that is sending the message.
+    ///   - result: A result of the connection deactivation request.
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>)
+    
+    /// The controller recieved an invalid email from the user. The default implementation of this function is to do nothing.
+    ///
+    /// - Parameters:
+    ///   - connectInteraction: The `ConnectButtonController` controller that is sending the message.
+    ///   - email: The invalid email `String` provided by the user.
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String)
 }
 
+public extension ConnectButtonControllerDelegate {
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) { }
+}
 
-/// Controller for the ConnectButton. It is mandatory that you interact with the ConnectButton only through this controller.
-public class ConnectInteraction {
+/// A controller that handles the `ConnectButton` when authenticating a `Connection`. It is mandatory that you interact with the ConnectButton only through this controller.
+public class ConnectButtonController {
     
     /// The connect button in this interaction
     public let button: ConnectButton
     
-    /// The Applet in this interaction
-    /// The controller may change the connection status of the Applet
-    public private(set) var applet: Applet
+    /// The `Connection` the controller is handling. The controller may change the `Connection.Status` of the `Connection`.
+    public private(set) var connection: Connection
     
     private func appletChangedStatus(isOn: Bool) {
-        applet.status =  isOn ? .enabled : .disabled
+        self.connection.status = isOn ? .enabled : .disabled
         
         if isOn {
-            delegate?.connectInteraction(self, appletActivationFinished: .succeeded(applet))
+            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(connection))
         } else {
-            delegate?.connectInteraction(self, appletDeactivated: applet)
+            delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
     }
     
     /// The service that is being connected to the primary (owner) service
     /// This defines the service icon & brand color of the button in its initial and final (activated) states
     /// It is always the first service connected
-    public let connectingService: Applet.Service
+    public var connectingService: Connection.Service {
+        return connection.worksWithServices.first ?? connection.primaryService
+    }
     
-    public private(set) weak var delegate: ConnectInteractionDelegate?
+    public private(set) weak var delegate: ConnectButtonControllerDelegate?
     
-    public init(_ button: ConnectButton, applet: Applet, delegate: ConnectInteractionDelegate) {
-        self.button = button
-        self.applet = applet
+    private let connectionConfiguration: ConnectionConfiguration
+    private let connectionNetworkController: ConnectionNetworkController
+    private let tokenProvider: CredentialProvider
+    
+    /// Creates a new `ConnectButtonController`.
+    ///
+    /// - Parameters:
+    ///   - connectButton: The `ConnectButton` that the controller is handling interaction for.
+    ///   - connectionConfiguration: The `ConnectionConfiguration` with information for authenticating a `Connection`.
+    ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
+    public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate) {
+        self.button = connectButton
+        self.connectionConfiguration = connectionConfiguration
+        self.connection = connectionConfiguration.connection
+        self.tokenProvider = connectionConfiguration.credentialProvider
+        self.connectionNetworkController = ConnectionNetworkController()
         self.delegate = delegate
-        self.connectingService = applet.worksWithServices.first ?? applet.primaryService
-
+        setupConnection(for: connection)
+    }
+    
+    private func setupConnection(for connection: Connection) {
         button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
-
-        switch applet.status {
+        
+        switch connection.status {
         case .initial, .unknown:
             transition(to: .initial)
-
+            
         case .enabled, .disabled:
             transition(to: .connected)
         }
     }
     
     private var initialButtonState: ConnectButton.State {
-        return .toggle(
-            for: connectingService,
-            message: "button.state.connect".localized(arguments: connectingService.name),
-            isOn: false)
+        return .toggle(for: connectingService, message: "button.state.connect".localized(arguments: connectingService.name), isOn: false)
     }
     
     private var connectedButtonState: ConnectButton.State {
-        return .toggle(for: connectingService,
-                       message: "button.state.connected".localized,
-                       isOn: true)
+        return .toggle(for: connectingService, message: "button.state.connected".localized, isOn: true)
     }
     
     
     // MARK: - Footer
     
     private func showAboutPage() {
-        delegate?.connectInteraction(self,
-                                     show: AboutViewController(primaryService: applet.primaryService,
-                                                               secondaryService: applet.worksWithServices.first))
+        delegate?.connectButtonController(self, show: AboutViewController(primaryService: connection.primaryService, secondaryService: connection.worksWithServices.first))
     }
     
     enum FooterMessages {
@@ -157,7 +161,7 @@ public class ConnectInteraction {
         enterEmail,
         emailInvalid,
         signedIn(username: String),
-        connect(Applet.Service, to: Applet.Service),
+        connect(Connection.Service, to: Connection.Service),
         manage,
         disconnect
         
@@ -179,7 +183,7 @@ public class ConnectInteraction {
                                                      attributes: [.font : typestyle.adjusting(weight: .bold).font])
                 text.append(iftttText)
                 return text
-            
+                
             case .enterEmail:
                 let text = "button.footer.email".localized
                 return NSAttributedString(string: text, attributes: [.font : typestyle.font])
@@ -223,14 +227,14 @@ public class ConnectInteraction {
             serviceConnection(id: String),
             complete,
             canceled,
-            failed(AppletConnectionError)
+            failed(ConnectButtonControllerError)
         }
         
         var onRedirect: ((Outcome) -> Void)?
         
         override init() {
             super.init()
-            NotificationCenter.default.addObserver(forName: .appletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }
@@ -250,7 +254,7 @@ public class ConnectInteraction {
                     return
             }
             switch nextStep {
-            case "service_connection":
+            case "service_authentication":
                 if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
                     onRedirect?(.serviceConnection(id: serviceId))
                 } else {
@@ -285,7 +289,7 @@ public class ConnectInteraction {
             controller.dismissButtonStyle = .cancel
         } 
         currentSafariViewController = controller
-        delegate?.connectInteraction(self, show: controller)
+        delegate?.connectButtonController(self, show: controller)
     }
     
     private var redirectObserving: RedirectObserving?
@@ -323,12 +327,12 @@ public class ConnectInteraction {
                 return .failed(error)
                 
             case .serviceConnection(let id):
-                if let service = applet.services.first(where: { $0.id == id }) {
+                if let service = connection.services.first(where: { $0.id == id }) {
                     // If service connection comes after a redirect we must have already completed user log in or account creation
                     // Therefore newUserEmail is always nil here
                     return .serviceConnection(service, newUserEmail: nil)
                 } else {
-                    // For some reason, the service ID we received from web doesn't match the applet
+                    // For some reason, the service ID we received from web doesn't match the connection
                     // If this ever happens, it is due to a bug on web
                     return .failed(.unknownRedirect)
                 }
@@ -358,28 +362,21 @@ public class ConnectInteraction {
     }
     
     
-    // MARK: - Applet activation & deactivation
+    // MARK: - Connection activation & deactivation
     
     indirect enum ActivationStep {
-        case
-        initial,
-        
-        identifyUser(ConnectConfiguration.UserLookupMethod),
-        
-        logInExistingUser(User.Id),
-        logInComplete(nextStep: ActivationStep),
-        
-        serviceConnection(Applet.Service, newUserEmail: String?),
-        serviceConnectionComplete(Applet.Service, nextStep: ActivationStep),
-        
-        failed(AppletConnectionError),
-        canceled,
-        
-        connected,
-        
-        confirmDisconnect,
-        processDisconnect,
-        disconnected
+        case initial
+        case identifyUser(ConnectConfiguration.UserLookupMethod)
+        case logInExistingUser(User.Id)
+        case logInComplete(nextStep: ActivationStep)
+        case serviceConnection(Connection.Service, newUserEmail: String?)
+        case serviceConnectionComplete(Connection.Service, nextStep: ActivationStep)
+        case failed(ConnectButtonControllerError)
+        case canceled
+        case connected
+        case confirmDisconnect
+        case processDisconnect
+        case disconnected
     }
     
     /// State machine state
@@ -389,7 +386,6 @@ public class ConnectInteraction {
     
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
-        
         // Cleanup
         button.toggleInteraction = .init()
         button.emailInteraction = .init()
@@ -414,33 +410,36 @@ public class ConnectInteraction {
             
             button.animator(for:
                 .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)
-            ).preform(animated: animated)
+                ).preform(animated: animated)
             
             button.toggleInteraction.isTapEnabled = true
             button.toggleInteraction.isDragEnabled = true
             
             button.toggleInteraction.toggleTransition = {
-                if let _ = Applet.Session.shared.iftttServiceToken {
+                if self.tokenProvider.iftttServiceToken != nil {
                     return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
                 } else {
-                    return .buttonState(.email(suggested: Applet.Session.shared.suggestedUserEmail),
+                    return .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
                                         footerValue: FooterMessages.enterEmail.value)
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
-                if let token = Applet.Session.shared.iftttServiceToken {
+                if let token = self?.tokenProvider.iftttServiceToken {
                     self?.transition(to: .identifyUser(.token(token)))
                 }
             }
             button.emailInteraction.onConfirm = { [weak self] email in
+                guard let self = self else {
+                    assertionFailure("It is expected that `self` is not nil here.")
+                    return
+                }
+                
                 if email.isValidEmail {
-                    self?.transition(to: .identifyUser(.email(email)))
+                    self.transition(to: .identifyUser(.email(email)))
                 } else {
-                    if let delegate = self?.delegate {
-                        delegate.connectInteraction(self!, nonFatalActivationError: .invalidEmail(email))
-                    }
-                    self?.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
-                    self?.button.performInvalidEmailAnimation()
+                    self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
+                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
+                    self.button.performInvalidEmailAnimation()
                 }
             }
             
@@ -451,11 +450,11 @@ public class ConnectInteraction {
             
             button.animator(for: .buttonState(connectedButtonState,
                                               footerValue: FooterMessages.manage.value)
-            ).preform(animated: animated)
+                ).preform(animated: animated)
             
             button.footerInteraction.isTapEnabled = true
             
-            // Applet was changed to this state, not initialized with it, so let the delegate know
+            // Connection was changed to this state, not initialized with it, so let the delegate know
             if previous != nil {
                 appletChangedStatus(isOn: true)
             }
@@ -486,6 +485,7 @@ public class ConnectInteraction {
                                                         message: "button.state.checking_account".localized),
                                                   footerValue: FooterMessages.poweredBy.value)
             ).preform()
+
                 
             case .token:
                 button.animator(for: .buttonState(.step(for: nil,
@@ -497,10 +497,7 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            Applet.Session.shared.getConnectConfiguration(user: lookupMethod,
-                                                          waitUntil: 1,
-                                                          timeout: timeout)
-            { (configuration, error) in
+            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { configuration, error in
                 guard let configuration = configuration else {
                     self.transition(to: .failed(.networkError(error)))
                     return
@@ -523,7 +520,7 @@ public class ConnectInteraction {
                         // After a short delay, show first service connection
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             // We know that this is a new user so we must connect the primary service first and create an account
-                            self.transition(to: .serviceConnection(self.applet.primaryService, newUserEmail: email))
+                            self.transition(to: .serviceConnection(self.connection.primaryService, newUserEmail: email))
                         }
                     }
                 } else { // Existing IFTTT user
@@ -533,11 +530,11 @@ public class ConnectInteraction {
                     }
                 }
             }
-
+            
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(applet.activationURL(.login(userId)))
+            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -551,22 +548,18 @@ public class ConnectInteraction {
             
         // MARK: - Service connection
         case (_, .serviceConnection(let service, let newUserEmail)):
-            let footer = service == applet.primaryService ?
-                FooterMessages.poweredBy : FooterMessages.connect(service, to: applet.primaryService)
+            let footer = service == connection.primaryService ?
+                FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
             
             button.animator(for: .buttonState(.step(for: service,
                                                     message: "button.state.sign_in".localized(arguments: service.name)),
                                               footerValue: footer.value)
-            ).preform()
+                ).preform()
             
-            let token: String? = {
-                if service.id == applet.primaryService.id {
-                    return currentConfiguration?.partnerOpaqueToken
-                }
-                return nil
-            }()
+            let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
             
-            let url = applet.activationURL(.serviceConnection(newUserEmail: newUserEmail, token: token))
+            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+            
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
@@ -576,8 +569,8 @@ public class ConnectInteraction {
             //FIXME: The web needs to tell us whether to say connecting or saving here
             button.animator(for: .buttonState(.step(for: service, message: "button.state.connecting".localized),
                                               footerValue: FooterMessages.poweredBy.value)
-            ).preform()
-
+                ).preform()
+            
             let progressBar = button.progressBar(timeout: 2)
             progressBar.preform()
             progressBar.onComplete {
@@ -586,21 +579,21 @@ public class ConnectInteraction {
                     self.transition(to: nextStep)
                 }
             }
-        
+            
             
         // MARK: - Cancel & failure states
         case (_, .canceled):
-            delegate?.connectInteraction(self, appletActivationFinished: .canceled)
+            delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(ConnectButtonControllerError.canceled))
             transition(to: .initial)
             
         case (_, .failed(let error)):
-            delegate?.connectInteraction(self, appletActivationFinished: .failed(error))
+            delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error))
             transition(to: .initial)
             
             
         // MARK: - Disconnect
         case (.connected?, .confirmDisconnect):
-            // The user must slide to deactivate the Applet
+            // The user must slide to deactivate the Connection
             button.toggleInteraction.isTapEnabled = false
             button.toggleInteraction.isDragEnabled = true
             button.toggleInteraction.resistance = .heavy
@@ -633,18 +626,19 @@ public class ConnectInteraction {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            Applet.Request.disconnectApplet(id: applet.id) { (response) in
+            let request = Connection.Request.disconnectConnection(with: connection.id, tokenProvider: connectionConfiguration.credentialProvider)
+            connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {
                     switch response.result {
                     case .success:
                         self.transition(to: .disconnected)
                     case .failure(let error):
-                        self.delegate?.connectInteraction(self, appletDeactivationFailedWithError: .networkError(error))
+                        self.delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
                         self.transition(to: .connected)
                     }
                 }
-            }.start(waitUntil: 1, timeout: timeout)
+            }
             
         case (.processDisconnect?, .disconnected):
             appletChangedStatus(isOn: false)
@@ -652,7 +646,7 @@ public class ConnectInteraction {
             button.animator(for: .buttonState(.toggle(for: connectingService,
                                                       message: "button.state.disconnected".localized,
                                                       isOn: false))
-            ).preform()
+                ).preform()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.transition(to: .initial)

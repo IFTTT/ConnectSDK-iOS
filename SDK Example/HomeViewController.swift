@@ -24,6 +24,8 @@ class HomeViewController: UITableViewController {
         ]
     }
     
+    private let connectionNetworkController = ConnectionNetworkController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,7 +58,23 @@ class HomeViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let applet = applets[indexPath.row]
-        let controller = AppletViewController(appletId: applet.appletId)
-        navigationController?.pushViewController(controller, animated: true)
+        fetchConnection(with: applet.appletId, indexPath: indexPath)
+    }
+    
+    private func fetchConnection(with id: String, indexPath: IndexPath) {
+        connectionNetworkController.start(urlRequest: Connection.Request.fetchConnection(for: id, tokenProvider: IFTTTAuthenication.shared).urlRequest) { [weak self] response in
+            switch response.result {
+            case .success(let applet):
+                let connectionConfiguration = ConnectionConfiguration(connection: applet, suggestedUserEmail: "jon@ifttt.com", credentialProvider: IFTTTAuthenication.shared, connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                let controller = AppletViewController(connectionConfiguration: connectionConfiguration)
+                self?.navigationController?.pushViewController(controller, animated: true)
+            case .failure:
+                let alertController = UIAlertController(title: "Opps", message: "We were not able to retrieve the selected Connection. Please check your network connect.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alertController.addAction(okAction)
+                self?.present(alertController, animated: true, completion: nil)
+                self?.tableView.deselectRow(at: indexPath, animated: true)
+            }
+        }
     }
 }

@@ -10,6 +10,6 @@ import Foundation
 
 extension Notification.Name {
     
-    /// A `Notification.Name` used to post notifications when the app recieves a redirect request for an `Applet` activation.
-    static let appletActivationRedirect = Notification.Name("ifttt.applet.activation.redirect")
+    /// A `Notification.Name` used to post notifications when the app recieves a redirect request for a `Connection` activation.
+    static let authorizationRedirect = Notification.Name("ifttt.authorization.redirect")
 }

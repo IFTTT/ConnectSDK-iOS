@@ -56,6 +56,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    static let connectionRedirectURL = URL(string: "ifttt-api-example://sdk-callback")!
+    private let connectionRedirectHandler = AuthenticationRedirectHandler(authorizationRedirectURL: AppDelegate.connectionRedirectURL)
+    
     func login() {
         window?.rootViewController = NavigationController(rootViewController: HomeViewController())
     }
@@ -71,11 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         IFTTTAuthenication.shared.setIftttUserToken(nil)
         
-        Applet.Session.begin(tokenProvider: IFTTTAuthenication.shared,
-                             suggestedUserEmail: "jon@ifttt.com",
-                             appletActivationRedirect: URL(string: "ifttt-api-example://sdk-callback")!,
-                             inviteCode: "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c")
-        
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.backgroundColor = .white
         window.rootViewController = LoginViewController()
@@ -86,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        if Applet.Session.shared.handleApplicationRedirect(url: url, options: options) {
+        if connectionRedirectHandler.handleApplicationRedirect(url: url, options: options) {
             // This is an IFTTT SDK redirect, it will take over from here
             return true
         } else {
@@ -112,17 +110,21 @@ class KeychainMock {
     }
 }
 
-struct IFTTTAuthenication: TokenProviding {
+struct IFTTTAuthenication: CredentialProvider {
     static let shared = IFTTTAuthenication()
     
     let keychain = KeychainMock.shared
     
-    var partnerOAuthToken: String {
+    var partnerOAuthCode: String {
         return keychain["my_user_token"] ?? ""
     }
     
     var iftttServiceToken: String? {
         return keychain["ifttt_user_token"]
+    }
+    
+    var inviteCode: String? {
+        return "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
     }
     
     func apiExampleOauthToken(_ token: String) {
