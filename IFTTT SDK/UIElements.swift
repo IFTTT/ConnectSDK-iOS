@@ -104,9 +104,9 @@ class PillView: UIView {
         let rawValue: Int
         
         /// Reveal the left end cap
-        static let left     = EndCapMask(rawValue: 1 << 0)
+        static let left = EndCapMask(rawValue: 1 << 0)
         /// Reveal the right end cap
-        static let right    = EndCapMask(rawValue: 1 << 1)
+        static let right = EndCapMask(rawValue: 1 << 1)
         
         /// Reveal both endcaps
         static let all: EndCapMask = [.left, .right]
@@ -134,8 +134,10 @@ class PillView: UIView {
         let width: CGFloat
         var opacity: CGFloat
         
-        static func with(color: UIColor, width: CGFloat) -> Border {
-            return Border(color: color, width: width, opacity: 1)
+        init(color: UIColor, width: CGFloat, opacity: CGFloat = 1) {
+            self.color = color
+            self.width = width
+            self.opacity = opacity
         }
         static let none = Border(color: .clear, width: 0, opacity: 0)
     }
@@ -221,11 +223,15 @@ class PillView: UIView {
      */
     
     private let topBorder = UIView()
-    private var topBorderHeight: NSLayoutConstraint!
+    private lazy var topBorderHeight: NSLayoutConstraint = {
+        return topBorder.heightAnchor.constraint(equalToConstant: 0)
+    }()
     private let leftBorder = EndCapView(isLeftSide: true)
     private let rightBorder = EndCapView(isLeftSide: false)
     private let bottomBorder = UIView()
-    private var bottomBorderHeight: NSLayoutConstraint!
+    private lazy var bottomBorderHeight: NSLayoutConstraint = {
+        return bottomBorder.heightAnchor.constraint(equalToConstant: 0)
+    }()
     
     override var backgroundColor: UIColor? {
         get {
@@ -260,14 +266,12 @@ class PillView: UIView {
         addSubview(bottomBorder)
         
         topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right])
-        topBorderHeight = topBorder.heightAnchor.constraint(equalToConstant: 0)
         topBorderHeight.isActive = true
         
         leftBorder.constrain.edges(to: leftCapView)
         rightBorder.constrain.edges(to: rightCapView)
         
         bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right])
-        bottomBorderHeight = bottomBorder.heightAnchor.constraint(equalToConstant: 0)
         bottomBorderHeight.isActive = true
     }
     

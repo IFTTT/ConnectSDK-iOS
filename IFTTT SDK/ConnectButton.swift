@@ -12,18 +12,12 @@ import UIKit
 
 fileprivate struct Layout {
     static let height: CGFloat = 64
-    static var maximumWidth: CGFloat {
-        return 6 * height
-    }
+    static let maximumWidth = 6 * height
     static let knobInset: CGFloat = 4
-    static var knobDiameter: CGFloat {
-        return height - 2 * knobInset
-    }
+    static let knobDiameter = height - 2 * knobInset
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
-    static var serviceIconDiameter: CGFloat {
-        return 0.5 * knobDiameter
-    }
+    static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2
 }
 
@@ -384,7 +378,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = .white
             footerLabelAnimator.transition.label.textColor = .white
             
-            backgroundView.border = .with(color: .iftttBorderColor, width: Layout.borderWidth)
+            backgroundView.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
             progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
@@ -701,7 +695,7 @@ public class ConnectButton: UIView {
             
             // If the knob color is too close to black, draw a border around it
             if color.distance(from: .black, comparing: .monochrome) < 0.2 {
-                knob.border = .with(color: .iftttBorderColor, width: Layout.borderWidth)
+                knob.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
             } else {
                 knob.border = .none
             }
@@ -848,7 +842,7 @@ public class ConnectButton: UIView {
         // But set a maximum width
         // Set the left anchor to break its constraint if the max width is exceeded
         let leftConstraint = stackView.leftAnchor.constraint(equalTo: leftAnchor)
-        leftConstraint.priority = .defaultHigh
+        leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 1)
         leftConstraint.isActive = true
         
         // Fallback to the max width
@@ -857,7 +851,7 @@ public class ConnectButton: UIView {
         maxWidth.priority = .defaultHigh
         maxWidth.isActive = true
         
-        // Finall set the max width
+        // Finally set the max width
         stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
         
         addSubview(footerLabelAnimator.transition.view)
