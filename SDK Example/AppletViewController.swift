@@ -41,7 +41,7 @@ class AppletViewController: UIViewController {
     
     private lazy var connectButton = ConnectButton()
     
-    private lazy var connectInteractor = ConnectInteraction(connectButton: connectButton, connectionConfiguration: connectionConfiguration, delegate: self)
+    private lazy var connectInteractor = ConnectButtonController(connectButton: connectButton, connectionConfiguration: connectionConfiguration, delegate: self)
     
     override func loadView() {
         super.loadView()
@@ -78,22 +78,22 @@ class AppletViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleLabel.text = connectInteractor.applet.name
-        descriptionLabel.text = connectInteractor.applet.description
+        titleLabel.text = connectInteractor.connection.name
+        descriptionLabel.text = connectInteractor.connection.description
     }
 }
 
-extension AppletViewController: ConnectInteractionDelegate {
+extension AppletViewController: ConnectButtonControllerDelegate {
     
-    func connectInteraction(_ controller: ConnectInteraction, show viewController: UIViewController) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController, show viewController: UIViewController) {
         present(viewController, animated: true, completion: nil)
     }
     
-    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishActivationWithResult result: Result<Connection>) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>) {
         
     }
     
-    func connectInteraction(_ connectInteraction: ConnectInteraction, didFinishDeactivationWithResult result: Result<Connection>) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>) {
         
     }
 
