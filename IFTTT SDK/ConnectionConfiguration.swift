@@ -20,20 +20,21 @@ public struct ConnectionConfiguration {
     /// A `CredentialProvider` conforming object for providing credentials.
     public let credentialProvider: CredentialProvider
     
-    /// A `URL` used as the activation redirection endpoint.
-    public let connectionRedirectURL: URL
+    /// The `URL` that is used for authentication redirects.
+    public let connectAuthorizationRedirectURL: URL
     
     /// Creates a new `ConnectionConfiguration`.
     ///
     /// - Parameters:
     ///   - connection: The `Connection` for authentication.
-    ///   - suggestedUserEmail: A `String` provided as the suggested user's email address.
+    ///   - suggestedUserEmail: A `String` with a an email for the user.
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
-    ///   - connectionRedirectURL: The `URL` that is used for authentication redirects endpoint.
-    public init(connection: Connection, suggestedUserEmail: String, tokenProvider: CredentialProvider, connectionRedirectURL: URL) {
+    ///   - connectAuthorizationRedirectURL: The `URL` that is used for authentication redirects.
+    public init(connection: Connection, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
         self.connection = connection
         self.suggestedUserEmail = suggestedUserEmail
-        self.credentialProvider = tokenProvider
-        self.connectionRedirectURL = connectionRedirectURL
+        self.credentialProvider = credentialProvider
+        self.connectAuthorizationRedirectURL = connectAuthorizationRedirectURL
+
     }
 }

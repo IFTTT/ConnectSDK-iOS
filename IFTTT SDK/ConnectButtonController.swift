@@ -18,7 +18,7 @@ public enum ConnectButtonControllerError: Error {
     /// Some generic networking error occurred.
     case networkError(Error?)
     
-    /// A user canceled the service authentication with the `Connection`.
+    /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from sign in process on an authorization page in a safari view controller.
     case canceled
     
     /// Redirect parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
@@ -234,7 +234,7 @@ public class ConnectButtonController {
         
         override init() {
             super.init()
-            NotificationCenter.default.addObserver(forName: .appletActivationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }
@@ -254,7 +254,7 @@ public class ConnectButtonController {
                     return
             }
             switch nextStep {
-            case "service_connection":
+            case "service_authentication":
                 if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
                     onRedirect?(.serviceConnection(id: serviceId))
                 } else {
@@ -534,7 +534,7 @@ public class ConnectButtonController {
             
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectionRedirectURL))
+            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
             
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -558,7 +558,8 @@ public class ConnectButtonController {
             
             let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
             
-            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectionRedirectURL)
+            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+            
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
