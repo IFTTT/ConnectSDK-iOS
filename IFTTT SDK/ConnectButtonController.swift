@@ -18,7 +18,7 @@ public enum ConnectButtonControllerError: Error {
     /// Some generic networking error occurred.
     case networkError(Error?)
     
-    /// A user canceled the service authentication with the `Connection`.
+    /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from sign in process on an authorization page in a safari view controller.
     case canceled
     
     /// Redirect parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
