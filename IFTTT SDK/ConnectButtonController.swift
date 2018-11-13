@@ -254,7 +254,7 @@ public class ConnectButtonController {
                     return
             }
             switch nextStep {
-            case "service_connection":
+            case "service_authentication":
                 if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
                     onRedirect?(.serviceConnection(id: serviceId))
                 } else {
