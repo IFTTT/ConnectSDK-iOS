@@ -626,7 +626,7 @@ public class ConnectButtonController {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Connection.Request.disconnectConnection(with: connection.id, tokenProvider: connectionConfiguration.credentialProvider)
+            let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: connectionConfiguration.credentialProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {
