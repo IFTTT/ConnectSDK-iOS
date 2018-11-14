@@ -30,15 +30,12 @@ public enum ConnectButtonControllerError: Error {
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
 public protocol ConnectButtonControllerDelegate: class {
-    
-    /// The `ConnectButtonController` to present a view controller.
-    /// This includes the About IFTTT page and Safari VC during Connection activation.
-    /// Implementation is required.
+
+    /// The `ConnectButtonController` needs to present a view controller. This includes the About IFTTT page and Safari VC during Connection activation.
     ///
-    /// - Parameters:
-    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
-    ///   - viewController: The view controller to present.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, show viewController: UIViewController)
+    /// - Parameter connectButtonController: The `ConnectButtonController` controller that is sending the message.
+    /// - Returns: A `UIViewController` to present other view controllers on.
+    func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController
     
     /// Connection activation is finished.
     ///
@@ -152,7 +149,9 @@ public class ConnectButtonController {
     // MARK: - Footer
     
     private func showAboutPage() {
-        delegate?.connectButtonController(self, show: AboutViewController(primaryService: connection.primaryService, secondaryService: connection.worksWithServices.first))
+        let aboutViewController = AboutViewController(primaryService: connection.primaryService, secondaryService: connection.worksWithServices.first)
+        let presentingViewController = delegate?.presentingViewController(for: self)
+        presentingViewController?.present(aboutViewController, animated: true, completion: nil)
     }
     
     enum FooterMessages {
@@ -289,7 +288,9 @@ public class ConnectButtonController {
             controller.dismissButtonStyle = .cancel
         } 
         currentSafariViewController = controller
-        delegate?.connectButtonController(self, show: controller)
+        
+        let presentingViewController = delegate?.presentingViewController(for: self)
+        presentingViewController?.present(controller, animated: true, completion: nil)
     }
     
     private var redirectObserving: RedirectObserving?
