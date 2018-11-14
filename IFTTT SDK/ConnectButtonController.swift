@@ -145,13 +145,17 @@ public class ConnectButtonController {
         return .toggle(for: connectingService, message: "button.state.connected".localized, isOn: true)
     }
     
+    private func present(_ viewController: UIViewController) {
+        let presentingViewController = delegate?.presentingViewController(for: self)
+        presentingViewController?.present(viewController, animated: true, completion: nil)
+    }
+    
     
     // MARK: - Footer
     
     private func showAboutPage() {
         let aboutViewController = AboutViewController(primaryService: connection.primaryService, secondaryService: connection.worksWithServices.first)
-        let presentingViewController = delegate?.presentingViewController(for: self)
-        presentingViewController?.present(aboutViewController, animated: true, completion: nil)
+        present(aboutViewController)
     }
     
     enum FooterMessages {
@@ -288,9 +292,7 @@ public class ConnectButtonController {
             controller.dismissButtonStyle = .cancel
         } 
         currentSafariViewController = controller
-        
-        let presentingViewController = delegate?.presentingViewController(for: self)
-        presentingViewController?.present(controller, animated: true, completion: nil)
+        present(controller)
     }
     
     private var redirectObserving: RedirectObserving?
