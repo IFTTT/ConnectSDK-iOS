@@ -512,8 +512,6 @@ public class ConnectButtonController {
         switch lookupMethod {
         case .email:
             button.animator(for: .buttonState(.step(for: nil, message: "button.state.checking_account".localized), footerValue: FooterMessages.poweredBy.value)).preform()
-            
-            
         case .token:
             button.animator(for: .buttonState(.step(for: nil, message: "button.state.accessing_existing_account".localized), footerValue: FooterMessages.poweredBy.value)).preform()
         }
