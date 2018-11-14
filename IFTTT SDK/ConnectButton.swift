@@ -44,8 +44,9 @@ public class ConnectButton: UIView {
         }
     }
     
-    /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method.
-    /// Use with ConnectInteraction
+    /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.
+    ///
+    /// - Parameter style: Adjust the buttons background for light and dark backgrounds. Defaults to a light style.
     public init(style: Style = .light) {
         self.style = style
         super.init(frame: .zero)

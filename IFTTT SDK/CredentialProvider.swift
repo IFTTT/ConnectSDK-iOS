@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// A protocol that defines APIs for providing tokens used during the service connection process for an `Connection`.
+/// A protocol that defines APIs for providing credentials used during the service authentication process for an `Connection`.
 public protocol CredentialProvider {
     
     /// Provides the partner's OAuth code for a service during authentication with a `Connection`.
@@ -17,6 +17,6 @@ public protocol CredentialProvider {
     /// Provides the service's token associated with the IFTTT platform.
     var iftttServiceToken: String? { get }
     
-    /// Provides the invite code for testing an unpublished `Connection` services with the IFTTT platform.
+    /// Provides the invite code for testing an unpublished `Connection`'s services with the IFTTT platform.
     var inviteCode: String? { get }
 }

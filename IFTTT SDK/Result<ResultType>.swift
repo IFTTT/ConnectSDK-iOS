@@ -8,13 +8,13 @@
 
 import Foundation
 
-/// Models success and failure states from an API.
+/// An object to model success and failure states from an API.
 public enum Result<ResultType> {
     
-    /// The operation was successful. The associated value is the result that was returned from the API.
+    /// The operation was successful. The passed associated value is the result that was returned from the API.
     case success(ResultType)
     
-    /// The operation failed. The associated value is the error that was encountered.
+    /// The operation failed. The passed associated value is the error that was encountered.
     case failure(Error)
 }
 
