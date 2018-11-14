@@ -12,13 +12,12 @@ import UIKit
 
 fileprivate struct Layout {
     static let height: CGFloat = 64
-    static let knobInset: CGFloat = 6
-    static var knobDiameter: CGFloat {
-        return height - 2 * knobInset
-    }
+    static let maximumWidth = 6 * height
+    static let knobInset: CGFloat = 4
+    static let knobDiameter = height - 2 * knobInset
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
-    static let serviceIconDiameter: CGFloat = 24
+    static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2
 }
 
@@ -363,7 +362,8 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = .black
             footerLabelAnimator.transition.label.textColor = .black
             
-            backgroundView.layer.borderColor = UIColor.clear.cgColor
+            backgroundView.border = .none
+            progressBar.insetForButtonBorder = 0
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
@@ -378,7 +378,8 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = .white
             footerLabelAnimator.transition.label.textColor = .white
             
-            backgroundView.layer.borderColor = UIColor.iftttBorderColor.cgColor
+            backgroundView.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
+            progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
     
@@ -573,18 +574,17 @@ public class ConnectButton: UIView {
                 }
                 
             case .rotateDown:
-                let scale: CGFloat = 0.9
-                let translate: CGFloat = 20
+                let translate: CGFloat = 12
                 
                 // Starting position for the new text
                 // It will rotate down into place
                 transition.label.alpha = 0
-                transition.label.transform = CGAffineTransform(translationX: 0, y: -translate).scaledBy(x: scale, y: scale)
+                transition.label.transform = CGAffineTransform(translationX: 0, y: -translate)
                 
                 animator.addAnimations {
                     // Fade out the current text and rotate it down
                     self.primary.label.alpha = 0
-                    self.primary.label.transform = CGAffineTransform(translationX: 0, y: translate).scaledBy(x: scale, y: scale)
+                    self.primary.label.transform = CGAffineTransform(translationX: 0, y: translate)
                 }
                 animator.addAnimations({
                     // Fade in the new text and rotate down from the top
@@ -607,6 +607,19 @@ public class ConnectButton: UIView {
             }
         }
         
+        /// When using a border with the ConnectButton, set this to the border width
+        /// This will inset the progress bar so it doesn't overlap the border
+        /// When a border isn't used, set this to 0
+        var insetForButtonBorder: CGFloat = 0 {
+            didSet {
+                layoutMargins = UIEdgeInsets(top: insetForButtonBorder,
+                                             left: insetForButtonBorder,
+                                             bottom: insetForButtonBorder,
+                                             right: insetForButtonBorder)
+            }
+        }
+        
+        private let track = UIView()
         private let bar = PassthroughView()
         
         func configure(with service: Connection.Service?) {
@@ -616,6 +629,7 @@ public class ConnectButton: UIView {
         
         private func update() {
             bar.transform = CGAffineTransform(translationX: (1 - fractionComplete) * -bounds.width, y: 0)
+            track.layer.cornerRadius = 0.5 * bounds.height // Progress bar should match rounded corners of connect button
         }
         
         override func layoutSubviews() {
@@ -626,8 +640,17 @@ public class ConnectButton: UIView {
         init() {
             super.init(frame: .zero)
             
-            addSubview(bar)
-            bar.constrain.edges(to: self)
+            // The track ensures that the progress bar stays within its intended bounds
+            
+            track.clipsToBounds = true
+            
+            addSubview(track)
+            track.constrain.edges(to: layoutMarginsGuide)
+            
+            track.addSubview(bar)
+            bar.constrain.edges(to: track)
+            
+            layoutMargins = .zero
         }
         @available(*, unavailable)
         required init?(coder aDecoder: NSCoder) {
@@ -645,6 +668,10 @@ public class ConnectButton: UIView {
             
             override init() {
                 super.init()
+                
+                layer.shadowColor = UIColor.black.cgColor
+                layer.shadowOpacity = 0.5
+                layer.shadowRadius = 15
                 
                 addSubview(iconView)
                 iconView.constrain.center(in: self)
@@ -668,10 +695,9 @@ public class ConnectButton: UIView {
             
             // If the knob color is too close to black, draw a border around it
             if color.distance(from: .black, comparing: .monochrome) < 0.2 {
-                knob.layer.borderWidth = Layout.borderWidth
-                knob.layer.borderColor = UIColor.iftttBorderColor.cgColor
+                knob.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
             } else {
-                knob.layer.borderColor = UIColor.clear.cgColor
+                knob.border = .none
             }
         }
         
@@ -759,6 +785,7 @@ public class ConnectButton: UIView {
             checkmarkShape.fillColor = UIColor.clear.cgColor
             checkmarkShape.strokeColor = UIColor.white.cgColor
             checkmarkShape.lineCap = .round
+            checkmarkShape.lineJoin = .round
             checkmarkShape.lineWidth = lineWidth
             
             // Offset by line width (this visually centered the checkmark)
@@ -808,7 +835,24 @@ public class ConnectButton: UIView {
         stackView.spacing = 20
         
         addSubview(stackView)
-        stackView.constrain.edges(to: self)
+        stackView.constrain.edges(to: self, edges: [.top, .bottom])
+        stackView.constrain.center(in: self)
+        
+        // By defaut, the ConnectButton contents are the full width of the button's view
+        // But set a maximum width
+        // Set the left anchor to break its constraint if the max width is exceeded
+        let leftConstraint = stackView.leftAnchor.constraint(equalTo: leftAnchor)
+        leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 1)
+        leftConstraint.isActive = true
+        
+        // Fallback to the max width
+        // If we don't have this then the button will fit exactly to its content
+        let maxWidth = stackView.widthAnchor.constraint(equalToConstant: Layout.maximumWidth)
+        maxWidth.priority = .defaultHigh
+        maxWidth.isActive = true
+        
+        // Finally set the max width
+        stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
         
         addSubview(footerLabelAnimator.transition.view)
         footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
@@ -823,7 +867,6 @@ public class ConnectButton: UIView {
         emailConfirmButtonTrack.addSubview(emailConfirmButton)
         backgroundView.addSubview(serviceIconView)
         
-        backgroundView.clipsToBounds = true
         backgroundView.heightAnchor.constraint(equalToConstant: Layout.height).isActive = true
         
         progressBar.constrain.edges(to: backgroundView)
@@ -943,11 +986,11 @@ private extension ConnectButton {
                 self.backgroundView.backgroundColor = .black
                 self.switchControl.configure(with: service)
                 self.switchControl.isOn = isOn
-                self.switchControl.knob.curvature = 1
+                self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.layer.borderWidth = Layout.borderWidth
+                self.backgroundView.border.opacity = 1
             }
             
             
@@ -990,7 +1033,7 @@ private extension ConnectButton {
             emailEntryField.text = suggested
             
             emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
-            emailConfirmButton.curvature = 1
+            emailConfirmButton.maskedEndCaps = .all // Match the switch knob at the start of the animation
             
             primaryLabelAnimator.transition(with: .crossfade,
                                             updatedValue: .none,
@@ -1004,22 +1047,22 @@ private extension ConnectButton {
                 
                 self.switchControl.isOn = true
                 self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-                self.switchControl.knob.curvature = 0
+                self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
                 self.switchControl.alpha = 0
                 
                 self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
                 
                 self.emailConfirmButton.transform = .identity
-                self.emailConfirmButton.curvature = 0
+                self.emailConfirmButton.maskedEndCaps = .right
                 self.emailConfirmButton.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.layer.borderWidth = 0
+                self.backgroundView.border.opacity = 0
             }
             animator.addCompletion { position in
                 // Keep the knob is a "clean" state since we don't animate backwards from this step
                 self.switchControl.knob.transform = .identity
-                self.switchControl.knob.curvature = 1
+                self.switchControl.knob.maskedEndCaps = .all // reset
                 
                 switch position {
                 case .start:
@@ -1076,7 +1119,7 @@ private extension ConnectButton {
                 self.serviceIconView.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.layer.borderWidth = Layout.borderWidth
+                self.backgroundView.border.opacity = 1
             }
             animator.addCompletion { (_) in
                 self.emailConfirmButton.backgroundColor = .black
@@ -1103,6 +1146,7 @@ private extension ConnectButton {
             checkmark.alpha = 1
             checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
             animator.addAnimations {
+                self.serviceIconView.alpha = 0
                 self.progressBar.alpha = 0
                 self.checkmark.outline.transform = .identity
             }
@@ -1174,7 +1218,7 @@ private extension ConnectButton {
                 self.backgroundView.backgroundColor = .black
                 self.switchControl.configure(with: service)
                 self.switchControl.isOn = isOn
-                self.switchControl.knob.curvature = 1
+                self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1
                 
                 self.serviceIconView.alpha = 0
