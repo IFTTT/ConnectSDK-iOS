@@ -22,7 +22,7 @@ public final class ConnectionNetworkController {
         self.urlSession = urlSession
     }
     
-    /// An error occurred, preventing the network controller from completing `Connection` network requestd.
+    /// An error occurred, preventing the network controller from completing `Connection` network requests.
     public enum ConnectionNetworkControllerError: Error {
         
         /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
