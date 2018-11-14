@@ -85,8 +85,8 @@ class AppletViewController: UIViewController {
 
 extension AppletViewController: ConnectButtonControllerDelegate {
     
-    func connectButtonController(_ connectButtonController: ConnectButtonController, show viewController: UIViewController) {
-        present(viewController, animated: true, completion: nil)
+    func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
+        return self
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>) {
