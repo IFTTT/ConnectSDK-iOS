@@ -8,10 +8,12 @@
 
 import Foundation
 
+/// A controller for handling making network request for `Connection`s.
 public final class ConnectionNetworkController {
     
     private let urlSession: URLSession
     
+    /// Creates a `ConnectionNetworkController`.
     public convenience init() {
         self.init(urlSession: .connectionURLSession)
     }
@@ -20,8 +22,10 @@ public final class ConnectionNetworkController {
         self.urlSession = urlSession
     }
     
-    
+    /// An error occurred, preventing the network controller from completing `Connection` network requests.
     public enum ConnectionNetworkControllerError: Error {
+        
+        /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
         case unknownResponse
     }
     
@@ -42,10 +46,12 @@ public final class ConnectionNetworkController {
     ///
     /// - Parameter response: The `Response` object from the completed request.
     public typealias CompletionHandler = (_ response: Response) -> Void
-    
-    /// Starts a network task on a `Connection`'s `Session`.
+
+    /// Starts a task to fetch information from the network for the provided request.
     ///
-    /// - Parameter session: A `Session` to begin the network request on. Defaults to the shared session.
+    /// - Parameters:
+    ///   - urlRequest: A `URLRequest` to complete the network request on.
+    ///   - completion: A `CompletionHandler` for providing a response of the data recieved from the request or an error that occured.
     public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) {
         task(urlRequest: urlRequest, minimumDuration: nil, completion: completion).resume()
     }

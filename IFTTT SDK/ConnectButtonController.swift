@@ -18,7 +18,7 @@ public enum ConnectButtonControllerError: Error {
     /// Some generic networking error occurred.
     case networkError(Error?)
     
-    /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from sign in process on an authorization page in a safari view controller.
+    /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
     
     /// Redirect parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
@@ -51,7 +51,7 @@ public protocol ConnectButtonControllerDelegate: class {
     /// want to update your app's UI in some way or ask they user why they canceled if you recieve a canceled error.
     ///
     /// - Parameters:
-    ///   - connectInteraction: The `ConnectButtonController` controller that is sending the message.
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>)
     
@@ -62,14 +62,14 @@ public protocol ConnectButtonControllerDelegate: class {
     /// On failure, the controller will reset the Connection to the connected state but will not show any messaging. The user attempted to deactivate the Connection but something unexpected went wrong, likely a network failure. It is up to you to do this. This should be rare but should be handled.
     ///
     /// - Parameters:
-    ///   - connectInteraction: The `ConnectButtonController` controller that is sending the message.
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection deactivation request.
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>)
     
     /// The controller recieved an invalid email from the user. The default implementation of this function is to do nothing.
     ///
     /// - Parameters:
-    ///   - connectInteraction: The `ConnectButtonController` controller that is sending the message.
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - email: The invalid email `String` provided by the user.
     func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String)
 }
@@ -104,6 +104,7 @@ public class ConnectButtonController {
         return connection.worksWithServices.first ?? connection.primaryService
     }
     
+    /// An `ConnectButtonControllerDelegate` object that will recieved messages about events that happen on the `ConnectButtonController`.
     public private(set) weak var delegate: ConnectButtonControllerDelegate?
     
     private let connectionConfiguration: ConnectionConfiguration
@@ -670,7 +671,7 @@ public class ConnectButtonController {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            let request = Connection.Request.disconnectConnection(with: connection.id, tokenProvider: connectionConfiguration.credentialProvider)
+            let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: connectionConfiguration.credentialProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                 progress.onComplete {

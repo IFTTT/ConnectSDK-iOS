@@ -30,33 +30,33 @@ public extension Connection {
         ///
         /// - Parameters:
         ///   - id: The identifier of the `Connection`.
-        ///   - tokenProvider: An object that handle providing tokens for a request.
+        ///   - credentialProvider: An object that handle providing credentials for a request.
         /// - Returns: A `Request` configured to get the `Connection`.
-        public static func fetchConnection(for id: String, tokenProvider: CredentialProvider) -> Request {
-            return Request(path: "/connections/\(id)", method: .GET, tokenProvider: tokenProvider)
+        public static func fetchConnection(for id: String, credentialProvider: CredentialProvider) -> Request {
+            return Request(path: "/connections/\(id)", method: .GET, credentialProvider: credentialProvider)
         }
         
         /// A disconnection `Request` for a `Connection` with the provided identifier.
         ///
         /// - Parameters:
         ///   - id: The identifier of the `Connection`.
-        ///   - tokenProvider: An object that handle providing tokens for a request.
+        ///   - credentialProvider: An object that handle providing credentials for a request.
         /// - Returns:  A `Request` configured to disconnect the `Connection`.
-        public static func disconnectConnection(with id: String, tokenProvider: CredentialProvider) -> Request {
-            return Request(path: "/connections/\(id)/disable)", method: .POST, tokenProvider: tokenProvider)
+        public static func disconnectConnection(with id: String, credentialProvider: CredentialProvider) -> Request {
+            return Request(path: "/connections/\(id)/disable)", method: .POST, credentialProvider: credentialProvider)
         }
         
-        private init(path: String, method: Method, tokenProvider: CredentialProvider) {
+        private init(path: String, method: Method, credentialProvider: CredentialProvider) {
             let url = API.base.appendingPathComponent(path)
             
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             
-            if let userToken = tokenProvider.iftttServiceToken, userToken.isEmpty == false {
+            if let userToken = credentialProvider.iftttServiceToken, userToken.isEmpty == false {
                 request.addIftttUserToken(userToken)
             }
             
-            if let inviteCode = tokenProvider.inviteCode, inviteCode.isEmpty == false {
+            if let inviteCode = credentialProvider.inviteCode, inviteCode.isEmpty == false {
                 request.addIftttInviteCode(inviteCode)
             }
             
