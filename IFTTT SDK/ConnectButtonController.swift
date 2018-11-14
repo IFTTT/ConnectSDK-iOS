@@ -222,12 +222,28 @@ public class ConnectButtonController {
     
     class RedirectObserving: NSObject, SFSafariViewControllerDelegate {
         
+        private struct QueryItems {
+            static let nextStep = "next_step"
+            static let serviceAuthentication = "service_authentication"
+            static let serviceId = "service_id"
+            static let complete = "complete"
+            static let config = "config"
+            static let error = "error"
+            static let errorType = "error_type"
+            static let errorTypeAccountCreation = "account_creation"
+        }
+        
+        /// Authorization redirect encodes some information about what comes next in the flow
+        ///
+        /// - serviceConnection: In the next step, authorize a service.
+        /// - complete: The Connection is complete. `didConfiguration` is true, if the Connection required a configuration step on web.
+        /// - canceled: Service connection or IFTTT login was canceled by closing Safari VC.
+        /// - failed: An error occurred on web, aborting the flow.
         enum Outcome {
-            case
-            serviceConnection(id: String),
-            complete,
-            canceled,
-            failed(ConnectButtonControllerError)
+            case serviceAuthorization(id: String)
+            case complete(didConfiguration: Bool)
+            case canceled
+            case failed(ConnectButtonControllerError)
         }
         
         var onRedirect: ((Outcome) -> Void)?
@@ -248,23 +264,24 @@ public class ConnectButtonController {
                 let url = notification.object as? URL,
                 let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                 let queryItems = components.queryItems,
-                let nextStep = queryItems.first(where: { $0.name == "next_step" })?.value
+                let nextStep = queryItems.first(where: { $0.name == QueryItems.nextStep })?.value
                 else {
                     onRedirect?(.failed(.unknownRedirect))
                     return
             }
             switch nextStep {
-            case "service_authentication":
-                if let serviceId = queryItems.first(where: { $0.name == "service_id" })?.value {
-                    onRedirect?(.serviceConnection(id: serviceId))
+            case QueryItems.serviceAuthentication:
+                if let serviceId = queryItems.first(where: { $0.name == QueryItems.serviceId })?.value {
+                    onRedirect?(.serviceAuthorization(id: serviceId))
                 } else {
                     onRedirect?(.failed(.unknownRedirect))
                 }
-            case "complete":
-                onRedirect?(.complete)
+            case QueryItems.complete:
+                let didConfiguration = queryItems.first(where: { $0.name == QueryItems.config })?.value == "true"
+                onRedirect?(.complete(didConfiguration: didConfiguration))
                 
-            case "error":
-                if let reason = queryItems.first(where: { $0.name == "error_type" })?.value, reason == "account_creation" {
+            case QueryItems.error:
+                if let reason = queryItems.first(where: { $0.name == QueryItems.errorType })?.value, reason == QueryItems.errorTypeAccountCreation {
                     onRedirect?(.failed(.iftttAccountCreationFailed))
                 } else {
                     onRedirect?(.failed(.unknownRedirect))
@@ -317,6 +334,9 @@ public class ConnectButtonController {
             return
         }
         
+        // Did the Connection on web include a configuration step
+        var didConfiguration = false
+        
         // Determine the next step based on the redirect result
         let nextStep: ActivationStep = {
             switch outcome {
@@ -326,7 +346,7 @@ public class ConnectButtonController {
             case .failed(let error):
                 return .failed(error)
                 
-            case .serviceConnection(let id):
+            case .serviceAuthorization(let id):
                 if let service = connection.services.first(where: { $0.id == id }) {
                     // If service connection comes after a redirect we must have already completed user log in or account creation
                     // Therefore newUserEmail is always nil here
@@ -336,7 +356,8 @@ public class ConnectButtonController {
                     // If this ever happens, it is due to a bug on web
                     return .failed(.unknownRedirect)
                 }
-            case .complete:
+            case .complete(let _didConfiguration):
+                didConfiguration = _didConfiguration
                 return .connected
             }
         }()
@@ -354,7 +375,8 @@ public class ConnectButtonController {
             case .serviceConnection(let previousService, _)?:
                 // Show the animation for service connection before moving on to the next step
                 transition(to: .serviceConnectionComplete(previousService,
-                                                          nextStep: nextStep))
+                                                          nextStep: nextStep,
+                                                          didConfiguration: didConfiguration))
             default:
                 transition(to: nextStep)
             }
@@ -364,13 +386,27 @@ public class ConnectButtonController {
     
     // MARK: - Connection activation & deactivation
     
+    /// Defines the `Connection` authorization state machine
+    ///
+    /// - initial: The `Connection` is in the initial state (not authorized)
+    /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
+    /// - logInExistingUser: Ensure that the user is logged into IFTTT in Safari VC. This is required even if we have a user token.
+    /// - logInComplete: User was successfully logged in to IFTTT in Safari VC. `nextStep` specifies what come next in the flow. It originates from the authorization redirect. 
+    /// - serviceConnection: Authorize one of this `Connection`s services
+    /// - serviceConnectionComplete: Service authorization was successful. `nextStep` specifies what come next in the flow. It originates from the authorization redirect. `didConfiguration` is set when `nextStep` is `complete` and the `Connection` required a configuration step on web. When this happens we show different copy after service authorization.
+    /// - failed: The `Connection` could not be authorized due to some error.
+    /// - canceled: The `Connection` authorization was canceled.
+    /// - connected: The `Connection` was successfully authorized.
+    /// - confirmDisconnect: The "Slide to disconnect" state, asking for the user's confirmation to disable the `Connection`.
+    /// - processDisconnect: Disable the `Connection`.
+    /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
         case initial
         case identifyUser(ConnectConfiguration.UserLookupMethod)
         case logInExistingUser(User.Id)
         case logInComplete(nextStep: ActivationStep)
         case serviceConnection(Connection.Service, newUserEmail: String?)
-        case serviceConnectionComplete(Connection.Service, nextStep: ActivationStep)
+        case serviceConnectionComplete(Connection.Service, nextStep: ActivationStep, didConfiguration: Bool)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected
@@ -565,9 +601,17 @@ public class ConnectButtonController {
                 self?.openActivationURL(url)
             }
             
-        case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep)):
-            //FIXME: The web needs to tell us whether to say connecting or saving here
-            button.animator(for: .buttonState(.step(for: service, message: "button.state.connecting".localized),
+        case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep, let didConfiguration)):
+            // If the next step is complete, check if the Connection required configuration
+            let message: String = {
+                if didConfiguration {
+                    return "button.state.saving_configuration".localized
+                } else {
+                    return "button.state.connecting".localized
+                }
+            }()
+            
+            button.animator(for: .buttonState(.step(for: service, message: message),
                                               footerValue: FooterMessages.poweredBy.value)
                 ).preform()
             
