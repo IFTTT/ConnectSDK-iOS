@@ -24,8 +24,7 @@ fileprivate struct Layout {
 
 // MARK: - Connect Button
 
-// FIXME: Get IBDesignable working
-//@IBDesignable
+@IBDesignable
 public class ConnectButton: UIView {
     
     /// Adjusts the button for a white or black background
@@ -37,10 +36,24 @@ public class ConnectButton: UIView {
         case dark
     }
     
-    // FIXME: Make this an IBInspectable property
+    /// Adjust the button's style
     public var style: Style {
         didSet {
             updateStyle()
+        }
+    }
+    
+    /// This wraps `style` for use in Storyboards
+    /// If adjusting programatically, consider using `style`
+    @IBInspectable
+    public var isLightStyle: Bool {
+        get { return style == .light }
+        set {
+            if newValue {
+                style = .light
+            } else {
+                style = .dark
+            }
         }
     }
     
@@ -52,9 +65,17 @@ public class ConnectButton: UIView {
         super.init(frame: .zero)
         createLayout()
     }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        self.init()
+    public override init(frame: CGRect) {
+        style = .light
+        super.init(frame: frame)
+        createLayout()
+        setupInterfaceBuilderPreview()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        style = .light
+        super.init(coder: aDecoder)
+        createLayout()
+        setupInterfaceBuilderPreview()
     }
     
     
@@ -388,6 +409,16 @@ public class ConnectButton: UIView {
             backgroundView.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
             progressBar.insetForButtonBorder = Layout.borderWidth
         }
+    }
+    
+    /// When this button is configured in a Storyboard / NIB, this defines the preview state
+    private func setupInterfaceBuilderPreview() {
+        backgroundView.backgroundColor = .black
+        switchControl.alpha = 1
+        switchControl.isOn = false
+        switchControl.knob.backgroundColor = .iftttBlue
+        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob(isOn: false))
+        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
     }
     
     fileprivate let backgroundView = PillView()
