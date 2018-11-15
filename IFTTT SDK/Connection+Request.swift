@@ -53,7 +53,7 @@ public extension Connection {
             request.httpMethod = method.rawValue
             
             if let userToken = credentialProvider.iftttServiceToken, userToken.isEmpty == false {
-                request.addIftttUserToken(userToken)
+                request.addIftttServiceToken(userToken)
             }
             
             if let inviteCode = credentialProvider.inviteCode, inviteCode.isEmpty == false {

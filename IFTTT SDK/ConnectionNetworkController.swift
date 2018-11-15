@@ -118,7 +118,7 @@ public final class ConnectionNetworkController {
     
     private func makeFindUserByTokenRequest(with token: String, timeout: TimeInterval) -> URLRequest {
         var request = URLRequest(url: API.findUserByToken)
-        request.addIftttUserToken(token)
+        request.addIftttServiceToken(token)
         request.timeoutInterval = timeout
         return request
     }
