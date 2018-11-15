@@ -874,14 +874,23 @@ public class ConnectButton: UIView {
         stackView.spacing = 20
         
         addSubview(stackView)
-        stackView.constrain.edges(to: self, edges: [.top, .bottom])
-        stackView.constrain.center(in: self)
+        stackView.constrain.edges(to: self, edges: [.top])
+        
+        // Center the button but with just less than required priority
+        // This prevents it from interfering with `_UITemporaryLayoutHeight` during setup
+        let centerXConstraint = stackView.centerXAnchor.constraint(equalTo: centerXAnchor)
+        centerXConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 1)
+        centerXConstraint.isActive = true
+        
+        let centerYConstraint = stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        centerYConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 1)
+        centerYConstraint.isActive = true
         
         // By defaut, the ConnectButton contents are the full width of the button's view
         // But set a maximum width
         // Set the left anchor to break its constraint if the max width is exceeded
         let leftConstraint = stackView.leftAnchor.constraint(equalTo: leftAnchor)
-        leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 1)
+        leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 2)
         leftConstraint.isActive = true
         
         // Fallback to the max width
