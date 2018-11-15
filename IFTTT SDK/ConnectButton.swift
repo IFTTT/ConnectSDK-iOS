@@ -141,6 +141,12 @@ public class ConnectButton: UIView {
         let animator = Animator(animator: UIViewPropertyAnimator(duration: 0.5,
                                                                  timingParameters: UISpringTimingParameters(dampingRatio: 1)))
         if let state = transition.state {
+            // We currently can't support interrupting animations with other touch events
+            // This is due to the way that we update 'currentState' in the animation completion
+            // Animations must complete before we will respond to the next event
+            // Note: This does not effect dragging the toggle since any ongoing touch events will continue
+            animator.animator.isUserInteractionEnabled = false
+            
             animator.animator.addCompletion { (position) in
                 if position == .end {
                     self.currentState = state
