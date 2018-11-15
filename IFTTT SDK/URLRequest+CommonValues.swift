@@ -10,7 +10,7 @@ import Foundation
 
 extension URLRequest {
     
-    mutating func addIftttUserToken(_ token: String) {
+    mutating func addIftttServiceToken(_ token: String) {
         let tokenString = "Bearer \(token)"
         addValue(tokenString, forHTTPHeaderField: "Authorization")
     }
