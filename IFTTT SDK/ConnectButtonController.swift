@@ -39,7 +39,7 @@ public protocol ConnectButtonControllerDelegate: class {
     
     /// Connection activation is finished.
     ///
-    /// On success, the controller transitions the button to its connected state.
+    /// On success, the controller transitions the button to its connected state. It is recommended that you fetch or refresh the user's IFTTT token after successfully authenticating a connection.
     ///
     /// On failure, the controller resets the button to its initial state but does not present any error message.
     /// It is up to you to decided how to present an error message to your user. You may use our message or one you provide.

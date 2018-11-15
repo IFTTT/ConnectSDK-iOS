@@ -90,7 +90,7 @@ extension AppletViewController: ConnectButtonControllerDelegate {
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>) {
-        
+        // On successful connection, it is recommended that you fetch or refresh the user's IFTTT token that you are providing the `CredentialProvider`.
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>) {
