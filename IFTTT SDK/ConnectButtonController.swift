@@ -29,6 +29,7 @@ public enum ConnectButtonControllerError: Error {
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
+@available(iOS 10.0, *)
 public protocol ConnectButtonControllerDelegate: class {
 
     /// The `ConnectButtonController` needs to present a view controller. This includes the About IFTTT page and Safari VC during Connection activation.
@@ -71,11 +72,13 @@ public protocol ConnectButtonControllerDelegate: class {
     func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String)
 }
 
+@available(iOS 10.0, *)
 public extension ConnectButtonControllerDelegate {
     func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) { }
 }
 
 /// A controller that handles the `ConnectButton` when authenticating a `Connection`. It is mandatory that you interact with the ConnectButton only through this controller.
+@available(iOS 10.0, *)
 public class ConnectButtonController {
     
     /// The connect button in this interaction

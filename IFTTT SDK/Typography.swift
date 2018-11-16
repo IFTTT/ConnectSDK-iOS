@@ -9,11 +9,13 @@
 import UIKit
 
 extension UIFont {
+    @available(iOS 10.0, *)
     static func ifttt(_ typestyle: Typestyle) -> UIFont {
         return typestyle.font
     }
 }
 
+@available(iOS 10.0, *)
 public struct Typestyle {
     public static var dynamicTypeIsEnabled: Bool = true
     

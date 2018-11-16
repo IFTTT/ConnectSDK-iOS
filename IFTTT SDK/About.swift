@@ -9,6 +9,7 @@
 import UIKit
 import SafariServices
 
+@available(iOS 10.0, *)
 class AboutViewController: UIViewController {
     
     let primaryService: Connection.Service
