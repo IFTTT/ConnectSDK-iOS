@@ -418,7 +418,7 @@ public class ConnectButton: UIView {
         switchControl.alpha = 1
         switchControl.isOn = false
         switchControl.knob.backgroundColor = .iftttBlue
-        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob(isOn: false))
+        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
         footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
     }
     
@@ -536,13 +536,9 @@ public class ConnectButton: UIView {
             static let avoidServiceIcon = Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
                                                  right: standard.right)
             
-            static func avoidSwitchKnob(isOn: Bool) -> Insets {
+            static var avoidSwitchKnob: Insets {
                 let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
-                if isOn {
-                    return Insets(left: standard.left, right: avoidSwitch)
-                } else {
-                    return Insets(left: avoidSwitch, right: standard.right)
-                }
+                return Insets(left: avoidSwitch, right: avoidSwitch)
             }
             
             fileprivate func apply(_ view: UIStackView) {
@@ -925,7 +921,7 @@ public class ConnectButton: UIView {
         
         emailEntryField.constrain.edges(to: backgroundView,
                                         inset: UIEdgeInsets(top: 0, left: LabelAnimator.Insets.standard.left,
-                                                            bottom: 0, right: LabelAnimator.Insets.avoidSwitchKnob(isOn: true).right))
+                                                            bottom: 0, right: LabelAnimator.Insets.avoidSwitchKnob.right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
@@ -1035,7 +1031,7 @@ private extension ConnectButton {
         case (.initialization, .toggle(let service, let message, let isOn)):
             primaryLabelAnimator.transition(with: .crossfade,
                                             updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            insets: .avoidSwitchKnob,
                                             addingTo: animator)
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
@@ -1054,7 +1050,7 @@ private extension ConnectButton {
             if lastMessage != message {
                 primaryLabelAnimator.transition(with: .rotateDown,
                                                 updatedValue: .text(message),
-                                                insets: .avoidSwitchKnob(isOn: isOn),
+                                                insets: .avoidSwitchKnob,
                                                 addingTo: animator)
             }
             animator.addAnimations { }
@@ -1064,7 +1060,7 @@ private extension ConnectButton {
         case (.toggle, .toggle(_, let message, let isOn)):
             primaryLabelAnimator.transition(with: .crossfade,
                                             updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            insets: .avoidSwitchKnob,
                                             addingTo: animator)
             
             progressBar.configure(with: nil)
@@ -1236,7 +1232,7 @@ private extension ConnectButton {
             switchControl.primeAnimation_centerKnob()
             primaryLabelAnimator.transition(with: .crossfade,
                                             updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            insets: .avoidSwitchKnob,
                                             addingTo: animator)
             progressBar.configure(with: service)
             
@@ -1264,7 +1260,7 @@ private extension ConnectButton {
         case (.step, .toggle(let service, let message, let isOn)) where isOn == false:
             primaryLabelAnimator.transition(with: .rotateDown,
                                             updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob(isOn: isOn),
+                                            insets: .avoidSwitchKnob,
                                             addingTo: animator)
             
             progressBar.configure(with: service)
