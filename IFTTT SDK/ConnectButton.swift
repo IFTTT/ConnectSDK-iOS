@@ -24,6 +24,7 @@ fileprivate struct Layout {
 
 // MARK: - Connect Button
 
+@available(iOS 10.0, *)
 @IBDesignable
 public class ConnectButton: UIView {
     
@@ -949,6 +950,7 @@ public class ConnectButton: UIView {
 
 // MARK: Gesture recognizer delegate (Toggle interaction)
 
+@available(iOS 10.0, *)
 extension ConnectButton: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // Prevents the toggle gesture from interfering with scrolling when it is placed in a scroll view
@@ -958,6 +960,7 @@ extension ConnectButton: UIGestureRecognizerDelegate {
 
 // MARK: Text field delegate (email)
 
+@available(iOS 10.0, *)
 extension ConnectButton: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         confirmEmail()
@@ -970,6 +973,7 @@ extension ConnectButton: UITextFieldDelegate {
 
 // MARK: Checkmark
 
+@available(iOS 10.0, *)
 private extension ConnectButton.CheckmarkView {
     func drawCheckmark(duration: TimeInterval) {
         UIView.performWithoutAnimation {
@@ -987,6 +991,7 @@ private extension ConnectButton.CheckmarkView {
     }
 }
 
+@available(iOS 10.0, *)
 extension ConnectButton.CheckmarkView: CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if anim is CAKeyframeAnimation {
@@ -1005,6 +1010,7 @@ extension ConnectButton.CheckmarkView: CAAnimationDelegate {
 
 // MARK: Progress bar
 
+@available(iOS 10.0, *)
 private extension ConnectButton.ProgressBar {
     func animator(duration: TimeInterval) -> UIViewPropertyAnimator {
         fractionComplete = 0
@@ -1017,6 +1023,7 @@ private extension ConnectButton.ProgressBar {
 
 // MARK: Button state
 
+@available(iOS 10.0, *)
 private extension ConnectButton {
     func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator) {
         

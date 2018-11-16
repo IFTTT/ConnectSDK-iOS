@@ -10,6 +10,7 @@ import UIKit
 
 // MARK: - Autolayout
 
+@available(iOS 10.0, *)
 extension UIView {
     var constrain: Constraints {
         return Constraints(view: self)
@@ -84,6 +85,7 @@ extension UILabel {
     }
 }
 
+@available(iOS 10.0, *)
 extension UIStackView {
     convenience init(_ views: [UIView], _ configure: ((UIStackView) -> Void)?) {
         self.init(arrangedSubviews: views)
@@ -96,6 +98,7 @@ extension UIStackView {
 
 /// A UI view with circular endcaps
 /// Each end cap may be configured individually to be square or rounded
+@available(iOS 10.0, *)
 class PillView: UIView {
     
     /// A mask for revealing the left and right end caps
@@ -284,6 +287,7 @@ class PillView: UIView {
 
 // MARK: - Pill button
 
+@available(iOS 10.0, *)
 class PillButton: PillView {
     
     let label = UILabel()
@@ -346,6 +350,7 @@ class PassthroughView: UIView {
 
 // MARK: - SelectGestureRecognizer
 
+@available(iOS 10.0, *)
 class Selectable: NSObject, UIGestureRecognizerDelegate {
     var isEnabled: Bool {
         get { return gesture.isEnabled }
@@ -378,6 +383,7 @@ class Selectable: NSObject, UIGestureRecognizerDelegate {
     }
 }
 
+@available(iOS 10.0, *)
 class SelectGestureRecognizer: UIGestureRecognizer {
     
     var cancelsOnForceTouch: Bool = false
