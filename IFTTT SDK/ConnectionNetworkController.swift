@@ -47,6 +47,15 @@ public final class ConnectionNetworkController {
     /// - Parameter response: The `Response` object from the completed request.
     public typealias CompletionHandler = (_ response: Response) -> Void
 
+    /// Starts a task to fetch information about a `Connection`.
+    ///
+    /// - Parameters:
+    ///   - request: A `Connection.Request` to complete the network request on.
+    ///   - completion: A `CompletionHandler` for providing a response of the data recieved from the request or an error that occured.
+    public func start(request: Connection.Request, completion: @escaping CompletionHandler) {
+        start(urlRequest: request.urlRequest, completion: completion)
+    }
+    
     /// Starts a task to fetch information from the network for the provided request.
     ///
     /// - Parameters:
