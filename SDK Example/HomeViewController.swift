@@ -15,11 +15,6 @@ class HomeViewController: UITableViewController {
     
     var applets: [Item] {
         return [
-            ("QbQVRU7D", "Blink your LIFX lights when your Uber is arriving"),
-            ("a7deY5ri", "LIFX lights turn on when Arlo detects motion"),
-            ("fSLXkRzw", "Turn on your lights at sunset"),
-            ("DZFhNWa4", "Flash when Gmail arrives"),
-            ("PMEHLDAV", "Turn on your LIFX lights"),
             ("mZRHhST7", "Copy a saved track to a playlist")
         ]
     }
@@ -65,7 +60,10 @@ class HomeViewController: UITableViewController {
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: IFTTTAuthenication.shared)) { [weak self] response in
             switch response.result {
             case .success(let applet):
-                let connectionConfiguration = ConnectionConfiguration(connection: applet, suggestedUserEmail: "jon@ifttt.com", credentialProvider: IFTTTAuthenication.shared, connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                let connectionConfiguration = ConnectionConfiguration(connection: applet,
+                                                                      suggestedUserEmail: ExampleUserEmail,
+                                                                      credentialProvider: IFTTTAuthenication.shared,
+                                                                      connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
                 let controller = AppletViewController(connectionConfiguration: connectionConfiguration)
                 self?.navigationController?.pushViewController(controller, animated: true)
             case .failure:
