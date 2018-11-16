@@ -8,8 +8,8 @@
 
 import UIKit
 
+@available(iOS 10.0, *)
 extension Bundle {
-    @available(iOS 10.0, *)
     static var sdk: Bundle {
         return Bundle(for: ConnectButton.self)
     }
@@ -29,19 +29,18 @@ struct Assets {
     }
 }
 
+@available(iOS 10.0, *)
 private extension UIImage {
-    @available(iOS 10.0, *)
     static func iftttAsset(named: String) -> UIImage {
         return UIImage(named: named, in: Bundle.sdk, compatibleWith: nil)!
     }
 }
 
+@available(iOS 10.0, *)
 extension String {
-    @available(iOS 10.0, *)
     func localized(arguments: CVarArg) -> String {
         return String(format: self.localized, arguments)
     }
-    @available(iOS 10.0, *)
     var localized: String {
         return NSLocalizedString(self, tableName: nil, bundle: Bundle.sdk, value: "", comment: "")
     }

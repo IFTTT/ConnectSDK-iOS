@@ -10,13 +10,12 @@ import UIKit
 
 // MARK: - Autolayout
 
+@available(iOS 10.0, *)
 extension UIView {
-    @available(iOS 10.0, *)
     var constrain: Constraints {
         return Constraints(view: self)
     }
     
-    @available(iOS 10.0, *)
     struct Constraints {
         fileprivate let view: UIView
         

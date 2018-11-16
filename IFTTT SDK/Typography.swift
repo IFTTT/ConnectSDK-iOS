@@ -8,8 +8,8 @@
 
 import UIKit
 
+@available(iOS 10.0, *)
 extension UIFont {
-    @available(iOS 10.0, *)
     static func ifttt(_ typestyle: Typestyle) -> UIFont {
         return typestyle.font
     }
