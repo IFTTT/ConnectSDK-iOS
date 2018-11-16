@@ -43,7 +43,7 @@ public extension Connection {
         ///   - credentialProvider: An object that handle providing credentials for a request.
         /// - Returns:  A `Request` configured to disconnect the `Connection`.
         public static func disconnectConnection(with id: String, credentialProvider: CredentialProvider) -> Request {
-            return Request(path: "/connections/\(id)/disable)", method: .POST, credentialProvider: credentialProvider)
+            return Request(path: "/connections/\(id)/disable", method: .POST, credentialProvider: credentialProvider)
         }
         
         private init(path: String, method: Method, credentialProvider: CredentialProvider) {
