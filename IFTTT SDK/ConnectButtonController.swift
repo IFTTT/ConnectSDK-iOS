@@ -563,7 +563,7 @@ public class ConnectButtonController {
                         // After a short delay, show first service connection
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             // We know that this is a new user so we must connect the primary service first and create an account
-                            self.transition(to: .serviceConnection(self.connection.primaryService, newUserEmail: email))
+                            self.transition(to: .serviceConnection(self.connectingService, newUserEmail: email))
                         }
                     }
                 } else { // Existing IFTTT user
