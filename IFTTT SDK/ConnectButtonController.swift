@@ -357,7 +357,7 @@ public class ConnectButtonController {
                 if let service = connection.services.first(where: { $0.id == id }) {
                     // If service connection comes after a redirect we must have already completed user log in or account creation
                     // Therefore newUserEmail is always nil here
-                    return .serviceConnection(service, newUserEmail: nil)
+                    return .serviceAuthentication(service, newUserEmail: nil)
                 } else {
                     // For some reason, the service ID we received from web doesn't match the connection
                     // If this ever happens, it is due to a bug on web
@@ -376,14 +376,22 @@ public class ConnectButtonController {
         default:
             switch currentActivationStep {
             case .logInExistingUser?:
-                // Show the animation for log in complete before moving on to the next step
-                transition(to: .logInComplete(nextStep: nextStep))
+                if didConfiguration {
+                    transition(to: .connectionConfigurationComplete(connectingService))
+                } else {
+                    // Show the animation for log in complete before moving on to the next step
+                    transition(to: .logInComplete(nextStep: nextStep))
+                }
                 
-            case .serviceConnection(let previousService, _)?:
-                // Show the animation for service connection before moving on to the next step
-                transition(to: .serviceConnectionComplete(previousService,
-                                                          nextStep: nextStep,
-                                                          didConfiguration: didConfiguration))
+            case .serviceAuthentication(let previousService, _)?:
+                if didConfiguration {
+                    transition(to: .connectionConfigurationComplete(previousService))
+                } else {
+                    // Show the animation for service connection before moving on to the next step
+                    transition(to: .serviceAuthenticationComplete(previousService,
+                                                                  nextStep: nextStep))
+                }
+                
             default:
                 transition(to: nextStep)
             }
@@ -399,10 +407,11 @@ public class ConnectButtonController {
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
     /// - logInExistingUser: Ensure that the user is logged into IFTTT in Safari VC. This is required even if we have a user token.
     /// - logInComplete: User was successfully logged in to IFTTT in Safari VC. `nextStep` specifies what come next in the flow. It originates from the authorization redirect. 
-    /// - serviceConnection: Authorize one of this `Connection`s services
-    /// - serviceConnectionComplete: Service authorization was successful. `nextStep` specifies what come next in the flow. It originates from the authorization redirect. `didConfiguration` is set when `nextStep` is `complete` and the `Connection` required a configuration step on web. When this happens we show different copy after service authorization.
+    /// - serviceAuthentication: Authorize one of this `Connection`s services
+    /// - serviceConnectionComplete: Service authorization was successful. `nextStep` specifies what come next in the flow. It originates from the authorization redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
+    /// - connectionConfigurationComplete: This state always preceeds `connected` when the `Connection` required configuration on web. It includes the `Service` which was configured. 
     /// - connected: The `Connection` was successfully authorized.
     /// - confirmDisconnect: The "Slide to disconnect" state, asking for the user's confirmation to disable the `Connection`.
     /// - processDisconnect: Disable the `Connection`.
@@ -412,8 +421,9 @@ public class ConnectButtonController {
         case identifyUser(ConnectConfiguration.UserLookupMethod)
         case logInExistingUser(User.Id)
         case logInComplete(nextStep: ActivationStep)
-        case serviceConnection(Connection.Service, newUserEmail: String?)
-        case serviceConnectionComplete(Connection.Service, nextStep: ActivationStep, didConfiguration: Bool)
+        case serviceAuthentication(Connection.Service, newUserEmail: String?)
+        case serviceAuthenticationComplete(Connection.Service, nextStep: ActivationStep)
+        case connectionConfigurationComplete(Connection.Service)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected
@@ -563,7 +573,7 @@ public class ConnectButtonController {
                         // After a short delay, show first service connection
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             // We know that this is a new user so we must connect the primary service first and create an account
-                            self.transition(to: .serviceConnection(self.connection.primaryService, newUserEmail: email))
+                            self.transition(to: .serviceAuthentication(self.connection.primaryService, newUserEmail: email))
                         }
                     }
                 } else { // Existing IFTTT user
@@ -588,9 +598,11 @@ public class ConnectButtonController {
             }
             animation.preform()
             
+        case (.logInExistingUser?, .connectionConfigurationComplete(let service)):
+            connectionConfigurationCompleted(service: service)
             
         // MARK: - Service connection
-        case (_, .serviceConnection(let service, let newUserEmail)):
+        case (_, .serviceAuthentication(let service, let newUserEmail)):
             let footer = service == connection.primaryService ?
                 FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
             
@@ -608,17 +620,9 @@ public class ConnectButtonController {
                 self?.openActivationURL(url)
             }
             
-        case (.serviceConnection?, .serviceConnectionComplete(let service, let nextStep, let didConfiguration)):
-            // If the next step is complete, check if the Connection required configuration
-            let message: String = {
-                if didConfiguration {
-                    return "button.state.saving_configuration".localized
-                } else {
-                    return "button.state.connecting".localized
-                }
-            }()
-            
-            button.animator(for: .buttonState(.step(for: service, message: message),
+        case (.serviceAuthentication?, .serviceAuthenticationComplete(let service, let nextStep)):
+            button.animator(for: .buttonState(.step(for: service,
+                                                    message: "button.state.connecting".localized),
                                               footerValue: FooterMessages.poweredBy.value)
                 ).preform()
             
@@ -631,6 +635,8 @@ public class ConnectButtonController {
                 }
             }
             
+        case (.serviceAuthentication?, .connectionConfigurationComplete(let service)):
+            connectionConfigurationCompleted(service: service)
             
         // MARK: - Cancel & failure states
         case (_, .canceled):
@@ -705,6 +711,31 @@ public class ConnectButtonController {
             
         default:
             fatalError("Invalid state transition")
+        }
+    }
+    
+    
+    /// Show confirmation that `Connection` configuration was successfully saved.
+    /// This is something that happens on web if the `Connection` required some configuration.
+    /// It is not neccessarily preceeded by a `Service` authentication. It is possible that all `Service`s were
+    /// already authenticated. In that case this will be preceeded by identify user and IFTTT log in for Safari VC.
+    ///
+    /// This will automatically transition to the `connected` state.
+    ///
+    /// - Parameter service: The service that was configured.
+    func connectionConfigurationCompleted(service: Connection.Service) {
+        button.animator(for: .buttonState(.step(for: service,
+                                                message: "button.state.saving_configuration".localized),
+                                          footerValue: FooterMessages.poweredBy.value)
+            ).preform()
+        
+        let progressBar = button.progressBar(timeout: 2)
+        progressBar.preform()
+        progressBar.onComplete {
+            self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.transition(to: .connected)
+            }
         }
     }
 }

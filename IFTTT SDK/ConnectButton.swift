@@ -662,7 +662,6 @@ public class ConnectButton: UIView {
         private let bar = PassthroughView()
         
         func configure(with service: Connection.Service?) {
-            fractionComplete = 0
             bar.backgroundColor = service?.brandColor.contrasting() ?? .black
         }
         
@@ -1183,11 +1182,14 @@ private extension ConnectButton {
             
             
         // Changing the message during a step
-        case (.step, .step(_, let message)):
+        case (.step, .step(let service, let message)):
+            progressBar.configure(with: service)
             primaryLabelAnimator.transition(with: .rotateDown,
                                             updatedValue: .text(message),
                                             addingTo: animator)
-            animator.addAnimations { }
+            animator.addAnimations {
+                self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
+            }
             
             
         // Completing a step
