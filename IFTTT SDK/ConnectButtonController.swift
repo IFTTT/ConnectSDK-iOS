@@ -409,7 +409,7 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
         case initial
-        case identifyUser(ConnectConfiguration.UserLookupMethod)
+        case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
         case logInComplete(nextStep: ActivationStep)
         case serviceConnection(Connection.Service, newUserEmail: String?)
@@ -424,8 +424,6 @@ public class ConnectButtonController {
     
     /// State machine state
     private var currentActivationStep: ActivationStep?
-    
-    private var currentConfiguration: ConnectConfiguration?
     
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
@@ -540,14 +538,13 @@ public class ConnectButtonController {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
             
-            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { configuration, error in
-                guard let configuration = configuration else {
+            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { user, error in
+                guard let user = user else {
                     self.transition(to: .failed(.networkError(error)))
                     return
                 }
-                self.currentConfiguration = configuration
                 
-                if case .email(let email) = configuration.userId, configuration.isExistingUser == false {
+                if case .email(let email) = user.id, user.isExistingUser == false {
                     // There is no account for this user
                     // Show a fake message that we are creating an account
                     // Then move to the first step of the service connection flow
@@ -569,7 +566,7 @@ public class ConnectButtonController {
                 } else { // Existing IFTTT user
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                     progress.onComplete {
-                        self.transition(to: .logInExistingUser(configuration.userId))
+                        self.transition(to: .logInExistingUser(user.id))
                     }
                 }
             }

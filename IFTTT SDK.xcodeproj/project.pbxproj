@@ -15,7 +15,6 @@
 		1DFE02092190E35300856ABC /* AuthenticationRedirectHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* AuthenticationRedirectHandler.swift */; };
 		1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020A2190E39B00856ABC /* Connection+Request.swift */; };
 		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
-		1DFE020F2190E42100856ABC /* ConnectConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */; };
 		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
 		1DFE02152190E54200856ABC /* Connection+URLGeneration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02142190E54200856ABC /* Connection+URLGeneration.swift */; };
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
@@ -86,7 +85,6 @@
 		1DFE02082190E35300856ABC /* AuthenticationRedirectHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRedirectHandler.swift; sourceTree = "<group>"; };
 		1DFE020A2190E39B00856ABC /* Connection+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Request.swift"; sourceTree = "<group>"; };
 		1DFE020C2190E3DB00856ABC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
-		1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectConfiguration.swift; sourceTree = "<group>"; };
 		1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
 		1DFE02142190E54200856ABC /* Connection+URLGeneration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+URLGeneration.swift"; sourceTree = "<group>"; };
 		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
@@ -261,7 +259,6 @@
 			children = (
 				1DFE02112190E44400856ABC /* Connection */,
 				1DFE020C2190E3DB00856ABC /* API.swift */,
-				1DFE020E2190E42100856ABC /* ConnectConfiguration.swift */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
@@ -436,7 +433,6 @@
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
 				1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */,
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
-				1DFE020F2190E42100856ABC /* ConnectConfiguration.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,

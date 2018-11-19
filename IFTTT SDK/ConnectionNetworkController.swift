@@ -91,7 +91,7 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: ConnectConfiguration.UserLookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
+    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) {
         checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { configuration, error in
             DispatchQueue.main.async {
                 completion(configuration, error)
@@ -99,11 +99,11 @@ public final class ConnectionNetworkController {
         }
     }
     
-    private func checkUser(user: ConnectConfiguration.UserLookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (ConnectConfiguration?, Error?) -> Void) {
+    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) {
         switch user {
         case .email(let email):
             urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
-                let configuration = ConnectConfiguration(isExistingUser: response?.statusCode == 204, userId: .email(email))
+                let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
                 completion(configuration, error)
                 }.resume()
         case .token(let token):
@@ -113,7 +113,7 @@ public final class ConnectionNetworkController {
                     return
                 }
                 
-                let configuration = ConnectConfiguration(isExistingUser: false, userId: .username(username))
+                let configuration = User(id: .username(username), isExistingUser: false)
                 completion(configuration, error)
                 }.resume()
         }
