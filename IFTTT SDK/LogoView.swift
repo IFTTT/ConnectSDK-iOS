@@ -12,12 +12,12 @@ import UIKit
 class LogoView: UIView {
     
     var primaryColor: UIColor {
-        get { return primaryView.backgroundColor! }
+        get { return primaryView.backgroundColor ?? .clear }
         set { primaryView.backgroundColor = newValue }
     }
     
     var secondaryColor: UIColor {
-        get { return secondaryView.backgroundColor! }
+        get { return secondaryView.backgroundColor ?? .clear }
         set { secondaryView.backgroundColor = newValue }
     }
     
