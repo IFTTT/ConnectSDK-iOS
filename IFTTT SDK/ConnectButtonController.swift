@@ -142,11 +142,15 @@ public class ConnectButtonController {
     }
 
     private var initialButtonState: ConnectButton.State {
-        return .toggle(for: connectingService, message: "button.state.connect".localized(arguments: connectingService.name), isOn: false)
+        return .toggle(for: connectingService.connectButtonService,
+                       message: "button.state.connect".localized(arguments: connectingService.name),
+                       isOn: false)
     }
 
     private var connectedButtonState: ConnectButton.State {
-        return .toggle(for: connectingService, message: "button.state.connected".localized, isOn: true)
+        return .toggle(for: connectingService.connectButtonService,
+                       message: "button.state.connected".localized,
+                       isOn: true)
     }
 
     private func present(_ viewController: UIViewController) {
@@ -468,7 +472,7 @@ public class ConnectButtonController {
 
             button.toggleInteraction.toggleTransition = {
                 if self.tokenProvider.iftttServiceToken != nil {
-                    return .buttonState(.toggle(for: self.connectingService, message: "", isOn: true))
+                    return .buttonState(.toggle(for: self.connectingService.connectButtonService, message: "", isOn: true))
                 } else {
                     return .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
                                         footerValue: FooterMessages.enterEmail.value)
@@ -596,14 +600,14 @@ public class ConnectButtonController {
             animation.preform()
 
         case (.logInExistingUser?, .connectionConfigurationComplete(let service)):
-            connectionConfigurationCompleted(service: service)
+            connectionConfigurationCompleted(service: service.connectButtonService)
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
             let footer = service == connection.primaryService ?
                 FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
 
-            button.animator(for: .buttonState(.step(for: service,
+            button.animator(for: .buttonState(.step(for: service.connectButtonService,
                                                     message: "button.state.sign_in".localized(arguments: service.name)),
                                               footerValue: footer.value)
                 ).preform()
@@ -618,7 +622,7 @@ public class ConnectButtonController {
             }
 
         case (.serviceAuthentication?, .serviceAuthenticationComplete(let service, let nextStep)):
-            button.animator(for: .buttonState(.step(for: service,
+            button.animator(for: .buttonState(.step(for: service.connectButtonService,
                                                     message: "button.state.connecting".localized),
                                               footerValue: FooterMessages.poweredBy.value)
                 ).preform()
@@ -626,14 +630,14 @@ public class ConnectButtonController {
             let progressBar = button.progressBar(timeout: 2)
             progressBar.preform()
             progressBar.onComplete {
-                self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
+                self.button.animator(for: .buttonState(.stepComplete(for: service.connectButtonService))).preform()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.transition(to: nextStep)
                 }
             }
 
         case (.serviceAuthentication?, .connectionConfigurationComplete(let service)):
-            connectionConfigurationCompleted(service: service)
+            connectionConfigurationCompleted(service: service.connectButtonService)
 
         // MARK: - Cancel & failure states
         case (_, .canceled):
@@ -659,7 +663,7 @@ public class ConnectButtonController {
                 }
             }
 
-            let nextState: ConnectButton.State = .toggle(for: connectingService,
+            let nextState: ConnectButton.State = .toggle(for: connectingService.connectButtonService,
                                                          message: "button.state.disconnecting".localized,
                                                          isOn: false)
             button.toggleInteraction.toggleTransition = {
@@ -697,7 +701,7 @@ public class ConnectButtonController {
         case (.processDisconnect?, .disconnected):
             appletChangedStatus(isOn: false)
 
-            button.animator(for: .buttonState(.toggle(for: connectingService,
+            button.animator(for: .buttonState(.toggle(for: connectingService.connectButtonService,
                                                       message: "button.state.disconnected".localized,
                                                       isOn: false))
                 ).preform()
@@ -720,7 +724,7 @@ public class ConnectButtonController {
     /// This will automatically transition to the `connected` state.
     ///
     /// - Parameter service: The service that was configured.
-    func connectionConfigurationCompleted(service: Connection.Service) {
+    func connectionConfigurationCompleted(service: ConnectButton.Service) {
         button.animator(for: .buttonState(.step(for: service,
                                                 message: "button.state.saving_configuration".localized),
                                           footerValue: FooterMessages.poweredBy.value)
@@ -734,5 +738,15 @@ public class ConnectButtonController {
                 self.transition(to: .connected)
             }
         }
+    }
+}
+
+
+// MARK: - Convenience
+
+@available(iOS 10.0, *)
+private extension Connection.Service {
+    var connectButtonService: ConnectButton.Service {
+        return ConnectButton.Service(standardIconURL: standardIconURL, brandColor: brandColor)
     }
 }

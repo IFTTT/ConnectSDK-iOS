@@ -12,19 +12,19 @@ import UIKit
 class LogoView: UIView {
     
     var primaryColor: UIColor {
-        get { return primaryView.backgroundColor ?? .iftttBlue }
+        get { return primaryView.backgroundColor ?? .clear }
         set { primaryView.backgroundColor = newValue }
     }
     
     var secondaryColor: UIColor {
-        get { return secondaryView.backgroundColor ?? .iftttOrange }
+        get { return secondaryView.backgroundColor ?? .clear }
         set { secondaryView.backgroundColor = newValue }
     }
     
     private let primaryView = UIView()
     private let secondaryView = UIView()
     
-    init(primary: UIColor = .iftttBlue, secondary: UIColor = .iftttOrange) {
+    init(primary: UIColor, secondary: UIColor) {
         super.init(frame: .zero)
         
         primaryColor = primary
@@ -39,7 +39,8 @@ class LogoView: UIView {
         secondaryView.constrain.edges(to: self, edges: [.left, .bottom, .right])
     }
     
-    required convenience init?(coder aDecoder: NSCoder) {
-        self.init()
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
