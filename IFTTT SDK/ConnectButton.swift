@@ -35,6 +35,18 @@ public class ConnectButton: UIView {
     public enum Style {
         case light
         case dark
+        
+        fileprivate struct Font {
+            static let connect = UIFont(name: "AvenirNext-Bold",
+                                        size: 24)!
+        }
+        
+        fileprivate struct Color {
+            static let blue = UIColor(hex: 0x0099FF)
+            static let lightGrey = UIColor(hex: 0xCCCCCC)
+            static let grey = UIColor(hex: 0x414141)
+            static let border = UIColor(white: 1, alpha: 0.2)
+        }
     }
     
     /// Adjust the button's style
@@ -82,13 +94,18 @@ public class ConnectButton: UIView {
     
     // MARK: - Button state
     
+    struct Service {
+        let standardIconURL: URL?
+        let brandColor: UIColor
+    }
+    
     enum State: CustomStringConvertible {
         case
         initialization,
-        toggle(for: Connection.Service, message: String, isOn: Bool),
+        toggle(for: Service, message: String, isOn: Bool),
         email(suggested: String?),
-        step(for: Connection.Service?, message: String),
-        stepComplete(for: Connection.Service?)
+        step(for: Service?, message: String),
+        stepComplete(for: Service?)
         
         var description: String {
             switch self {
@@ -407,7 +424,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = .white
             footerLabelAnimator.transition.label.textColor = .white
             
-            backgroundView.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
+            backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
             progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
@@ -417,7 +434,7 @@ public class ConnectButton: UIView {
         backgroundView.backgroundColor = .black
         switchControl.alpha = 1
         switchControl.isOn = false
-        switchControl.knob.backgroundColor = .iftttBlue
+        switchControl.knob.backgroundColor = Style.Color.blue
         primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
         footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
     }
@@ -488,7 +505,7 @@ public class ConnectButton: UIView {
     fileprivate var primaryLabelAnimator = LabelAnimator {
         $0.textAlignment = .center
         $0.textColor = .white
-        $0.font = .ifttt(Typestyle.h4.callout().nonDynamic)
+        $0.font = Style.Font.connect
         $0.adjustsFontSizeToFitWidth = true
     }
     
@@ -657,7 +674,7 @@ public class ConnectButton: UIView {
         private let track = UIView()
         private let bar = PassthroughView()
         
-        func configure(with service: Connection.Service?) {
+        func configure(with service: Service?) {
             bar.backgroundColor = service?.brandColor.contrasting() ?? .black
         }
         
@@ -722,7 +739,7 @@ public class ConnectButton: UIView {
             }
         }
         
-        func configure(with service: Connection.Service) {
+        func configure(with service: Service) {
             knob.iconView.set(imageURL: service.standardIconURL)
             
             let color = service.brandColor
@@ -730,7 +747,7 @@ public class ConnectButton: UIView {
             
             // If the knob color is too close to black, draw a border around it
             if color.distance(from: .black, comparing: .monochrome) < 0.2 {
-                knob.border = .init(color: .iftttBorderColor, width: Layout.borderWidth)
+                knob.border = .init(color: Style.Color.border, width: Layout.borderWidth)
             } else {
                 knob.border = .none
             }
@@ -805,7 +822,7 @@ public class ConnectButton: UIView {
             
             addSubview(outline)
             outline.layer.borderWidth = lineWidth
-            outline.layer.borderColor = UIColor.iftttBorderColor.cgColor
+            outline.layer.borderColor = Style.Color.border.cgColor
             
             outline.constrain.center(in: self)
             outline.constrain.square(length: Layout.checkmarkDiameter)
@@ -1066,7 +1083,7 @@ private extension ConnectButton {
             progressBar.alpha = 1
             
             animator.addAnimations {
-                self.backgroundView.backgroundColor = isOn ? .black : .iftttGrey
+                self.backgroundView.backgroundColor = isOn ? .black : Style.Color.grey
                 self.switchControl.isOn = isOn
             }
             animator.addCompletion { position in
@@ -1093,7 +1110,7 @@ private extension ConnectButton {
             
             emailEntryField.alpha = 0
             animator.addAnimations {
-                self.backgroundView.backgroundColor = .iftttLightGrey
+                self.backgroundView.backgroundColor = Style.Color.lightGrey
                 
                 self.switchControl.isOn = true
                 self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
@@ -1145,7 +1162,7 @@ private extension ConnectButton {
             
             animator.addAnimations {
                 self.switchControl.alpha = 0
-                self.backgroundView.backgroundColor = .iftttGrey
+                self.backgroundView.backgroundColor = Style.Color.grey
             }
             
             
@@ -1161,9 +1178,9 @@ private extension ConnectButton {
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
                 self.emailConfirmButton.alpha = 0
-                self.emailConfirmButton.backgroundColor = .iftttGrey
+                self.emailConfirmButton.backgroundColor = Style.Color.grey
                 
-                self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
+                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
                 self.serviceIconView.set(imageURL: service?.standardIconURL)
                 self.serviceIconView.alpha = 1
@@ -1184,7 +1201,7 @@ private extension ConnectButton {
                                             updatedValue: .text(message),
                                             addingTo: animator)
             animator.addAnimations {
-                self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
+                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
             }
             
             
@@ -1220,7 +1237,7 @@ private extension ConnectButton {
                                             addingTo: animator)
             
             animator.addAnimations {
-                self.backgroundView.backgroundColor = service?.brandColor ?? .iftttGrey
+                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
                 self.serviceIconView.set(imageURL: service?.standardIconURL)
                 self.serviceIconView.alpha = 1

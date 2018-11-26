@@ -30,6 +30,12 @@ class AboutViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private struct Color {
+        // (IFTTT Orange) The secondary color to use when the primary service is IFTTT
+        static let iftttSecondaryBrandColor = UIColor(hex: 0xEE4433)
+        static let darkGrey = UIColor(hex: 0x222222)
+    }
+    
     private lazy var closeButton = PillButton(Assets.About.close) {
         $0.imageView.tintColor = .white
         $0.onSelect { [weak self] in
@@ -48,7 +54,7 @@ class AboutViewController: UIViewController {
             if let color = secondaryService?.brandColor {
                 return color
             } else if primaryService.id == "ifttt" {
-                return .iftttOrange
+                return Color.iftttSecondaryBrandColor
             } else {
                 return primaryService.brandColor.contrasting()
             }
@@ -126,7 +132,7 @@ class AboutViewController: UIViewController {
     
     private lazy var moreButton: PillButton = {
         let button = PillButton("about.more.button".localized) {
-            $0.backgroundColor = .iftttBlack
+            $0.backgroundColor = Color.darkGrey
             $0.label.numberOfLines = 0
             $0.label.font = .ifttt(Typestyle.h5.callout())
             $0.label.textColor = .white
