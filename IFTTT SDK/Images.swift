@@ -80,9 +80,10 @@ extension UIImageView {
             } else {
                 existingTask.cancel() // New request for a different image, cancel the old one
                 tasksByImageView[self] = nil
-                image = nil
             }
         }
+        
+        image = nil // Reset the image
         let task = ImageDownloader.default.get(imageURL: imageURL) { (image) in
             tasksByImageView[self] = nil
             self.image = image
