@@ -742,11 +742,49 @@ public class ConnectButtonController {
 }
 
 
+// MARK: - Service icons
+
+private class ServiceIconImage: ImageFuture {
+    let url: URL
+    
+    var isComplete: Bool
+    
+    let placeholder: UIImage?
+    
+    var image: UIImage?
+    
+    var completion: ((UIImage?) -> Void)?
+    
+    var downloadTask: URLSessionDataTask?
+    
+    func cancel() {
+        downloadTask?.cancel()
+    }
+    
+    init(iconURL: URL) {
+        url = iconURL
+        placeholder = nil // Not used
+        
+        if let image = ImageCache.default.image(for: iconURL) {
+            isComplete = true
+            self.image = image
+        } else {
+            isComplete = false
+            image = nil
+            downloadTask = ImageDownloader.default.get(imageURL: iconURL) { [weak self] (image) in
+                self?.completion?(image)
+            }
+            downloadTask?.resume()
+        }
+    }
+}
+
+
 // MARK: - Convenience
 
 @available(iOS 10.0, *)
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
-        return ConnectButton.Service(standardIconURL: standardIconURL, brandColor: brandColor)
+        return ConnectButton.Service(standardIcon: ServiceIconImage(iconURL: standardIconURL), brandColor: brandColor)
     }
 }
