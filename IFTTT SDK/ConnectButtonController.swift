@@ -744,7 +744,7 @@ public class ConnectButtonController {
 
 // MARK: - Service icons
 
-private class ServiceIconImage: ImageFuture {
+private class ServiceIconFuture: ImageFuture {
     let url: URL
     
     var isComplete: Bool
@@ -785,6 +785,6 @@ private class ServiceIconImage: ImageFuture {
 @available(iOS 10.0, *)
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
-        return ConnectButton.Service(standardIcon: ServiceIconImage(iconURL: standardIconURL), brandColor: brandColor)
+        return ConnectButton.Service(standardIcon: ServiceIconFuture(iconURL: standardIconURL), brandColor: brandColor)
     }
 }
