@@ -20,10 +20,16 @@
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
 		FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* About.swift */; };
 		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
-		FC04FE2321507DDF008AC8A5 /* UIElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE2221507DDF008AC8A5 /* UIElements.swift */; };
 		FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC094BA2215D9E2D008B35F6 /* Localizable.strings */; };
 		FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* Typography.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
+		FC22B19A21ACCD9C00738023 /* Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19921ACCD9C00738023 /* Autolayout.swift */; };
+		FC22B19C21ACCDA600738023 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19B21ACCDA600738023 /* PillView.swift */; };
+		FC22B19E21ACCDAC00738023 /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19D21ACCDAC00738023 /* PillButton.swift */; };
+		FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19F21ACCDB200738023 /* Selectable.swift */; };
+		FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B1A121ACCDC000738023 /* SelectGestureRecognizer.swift */; };
+		FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B1A321ACCDF800738023 /* PassthroughView.swift */; };
+		FC22B1A621ACCE5E00738023 /* UIKit+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */; };
 		FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2573122139E8CC0065AAD6 /* ConnectButton.swift */; };
 		FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -90,10 +96,16 @@
 		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FC04FE2221507DDF008AC8A5 /* UIElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElements.swift; sourceTree = "<group>"; };
 		FC094BA2215D9E2D008B35F6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		FC22B19921ACCD9C00738023 /* Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autolayout.swift; sourceTree = "<group>"; };
+		FC22B19B21ACCDA600738023 /* PillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillView.swift; sourceTree = "<group>"; };
+		FC22B19D21ACCDAC00738023 /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
+		FC22B19F21ACCDB200738023 /* Selectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selectable.swift; sourceTree = "<group>"; };
+		FC22B1A121ACCDC000738023 /* SelectGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGestureRecognizer.swift; sourceTree = "<group>"; };
+		FC22B1A321ACCDF800738023 /* PassthroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughView.swift; sourceTree = "<group>"; };
+		FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC44E0882162E81F0063DCA1 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		FC4588FD215172C00038630F /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
@@ -234,7 +246,13 @@
 				FCF29FC42187C7E0004B1100 /* JSON.swift */,
 				FCF29FC62187C8C2004B1100 /* Applet_internal.swift */,
 				FCF29FCA2187D0E3004B1100 /* User.swift */,
-				FC04FE2221507DDF008AC8A5 /* UIElements.swift */,
+				FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */,
+				FC22B19921ACCD9C00738023 /* Autolayout.swift */,
+				FC22B19B21ACCDA600738023 /* PillView.swift */,
+				FC22B19D21ACCDAC00738023 /* PillButton.swift */,
+				FC22B1A321ACCDF800738023 /* PassthroughView.swift */,
+				FC22B19F21ACCDB200738023 /* Selectable.swift */,
+				FC22B1A121ACCDC000738023 /* SelectGestureRecognizer.swift */,
 				FC44E0882162E81F0063DCA1 /* LogoView.swift */,
 				FC04FE1A21501A8F008AC8A5 /* About.swift */,
 				FC4588FD215172C00038630F /* Images.swift */,
@@ -415,19 +433,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCF29FCB2187D0E3004B1100 /* User.swift in Sources */,
+				FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */,
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,
+				FC22B1A621ACCE5E00738023 /* UIKit+ConvenienceInit.swift in Sources */,
+				FC22B19E21ACCDAC00738023 /* PillButton.swift in Sources */,
 				FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */,
 				1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */,
+				FC22B19C21ACCDA600738023 /* PillView.swift in Sources */,
 				1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */,
+				FC22B19A21ACCD9C00738023 /* Autolayout.swift in Sources */,
 				1DFE02092190E35300856ABC /* AuthenticationRedirectHandler.swift in Sources */,
-				FC04FE2321507DDF008AC8A5 /* UIElements.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
 				1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */,
 				1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
+				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
 				FC4588FE215172C00038630F /* Images.swift in Sources */,
 				FCF29FC72187C8C2004B1100 /* Applet_internal.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
@@ -438,6 +461,7 @@
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				1DFE02152190E54200856ABC /* Connection+URLGeneration.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
+				FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
