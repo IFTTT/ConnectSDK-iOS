@@ -12,7 +12,7 @@ import IFTTT_SDK
 // Test using the SDK with an email address
 // This is a required property in `ConnectionConfiguration`
 // In a real app, this would be the email address of your signed in user
-var ExampleUserEmail = "jon-test1124"
+var ExampleUserEmail = ""
 
 /// Add style. Tests connect button on light and dark apps
 enum Style {
