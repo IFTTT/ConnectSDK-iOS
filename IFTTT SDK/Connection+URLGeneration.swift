@@ -38,7 +38,9 @@ extension Connection {
     }
     
     private func queryItems(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
-        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: activationRedirect.absoluteString), URLQueryItem(name: URLQueryItemConstants.sdkVersionName, value: URLQueryItemConstants.sdkVersionValue), URLQueryItem(name: URLQueryItemConstants.sdkPlatformName, value: URLQueryItemConstants.sdkPlatformValue)]
+        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: activationRedirect.absoluteString),
+                          URLQueryItem(name: URLQueryItemConstants.sdkVersionName, value: URLQueryItemConstants.sdkVersionValue),
+                          URLQueryItem(name: URLQueryItemConstants.sdkPlatformName, value: URLQueryItemConstants.sdkPlatformValue)]
         
         if let inviteCode = tokenProvider.inviteCode {
             queryItems.append(URLQueryItem(name: URLQueryItemConstants.inviteCodeName, value: inviteCode))
