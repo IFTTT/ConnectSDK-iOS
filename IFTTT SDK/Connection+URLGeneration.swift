@@ -19,6 +19,8 @@ extension Connection {
         static let sdkCreatAccountName = "sdk_create_account"
         static let tokenName = "code"
         static let defaultTrueValue = "true"
+        static let sdkVersionName = "sdk_version"
+        static let sdkVersionValue = "2.0.0-alpha2"
     }
     
     enum ActivationStep {
@@ -34,7 +36,7 @@ extension Connection {
     }
     
     private func queryItems(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
-        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: activationRedirect.absoluteString)]
+        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: activationRedirect.absoluteString), URLQueryItem(name: URLQueryItemConstants.sdkVersionName, value: URLQueryItemConstants.sdkVersionValue)]
         
         if let inviteCode = tokenProvider.inviteCode {
             queryItems.append(URLQueryItem(name: URLQueryItemConstants.inviteCodeName, value: inviteCode))
