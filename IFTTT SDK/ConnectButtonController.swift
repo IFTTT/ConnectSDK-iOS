@@ -481,7 +481,7 @@ public class ConnectButtonController {
         let previous = currentActivationStep
         self.currentActivationStep = step
         
-        let activationStepTransition = ActivationStepTransition(fromActivationStep: previous, toActivationStep: step)
+        let activationStepTransition = ActivationStepTransition(fromActivationStep: previous?.description, toActivationStep: step.description)
 
         switch (previous, step) {
 
@@ -766,15 +766,5 @@ public class ConnectButtonController {
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
         return ConnectButton.Service(standardIconURL: standardIconURL, brandColor: brandColor)
-    }
-}
-
-@available(iOS 10.0, *)
-struct ActivationStepTransition {
-    let fromActivationStep: ConnectButtonController.ActivationStep?
-    let toActivationStep: ConnectButtonController.ActivationStep
-    
-    var description: String {
-        return "Transitioning from activation step: \(fromActivationStep?.description ?? "nil") to \(toActivationStep.description)."
     }
 }

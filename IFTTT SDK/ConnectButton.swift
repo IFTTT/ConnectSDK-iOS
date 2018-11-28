@@ -1300,3 +1300,13 @@ private extension ConnectButton {
         }
     }
 }
+
+@available(iOS 10.0, *)
+struct ActivationStepTransition {
+    let fromActivationStep: String?
+    let toActivationStep: String
+    
+    var description: String {
+        return "Transitioning from activation step: \(fromActivationStep ?? "nil") to \(toActivationStep)."
+    }
+}
