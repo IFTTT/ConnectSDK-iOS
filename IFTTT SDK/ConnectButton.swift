@@ -143,7 +143,7 @@ public class ConnectButton: UIView {
         var description: String {
             var outputString = "Activation State Log: "
             activationStateLog.forEach {
-                outputString.append("\($0) ")
+                outputString.append("\n\($0)")
             }
             
             return outputString
