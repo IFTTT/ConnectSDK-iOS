@@ -434,8 +434,39 @@ public class ConnectButtonController {
         case confirmDisconnect
         case processDisconnect
         case disconnected
+        
+        var description: String {
+            switch self {
+            case .initial:
+                return "initial"
+            case .identifyUser:
+                return "identifyUser"
+            case .logInExistingUser:
+                return "logInExistingUser"
+            case .logInComplete:
+                return "logInComplete"
+            case .serviceAuthentication:
+                return "serviceAuthentication"
+            case .serviceAuthenticationComplete:
+                return "serviceAuthenticationComplete"
+            case .connectionConfigurationComplete:
+                return "connectionConfigurationComplete"
+            case .failed:
+                return "failed"
+            case .canceled:
+                return "canceled"
+            case .connected:
+                return "connected"
+            case .confirmDisconnect:
+                return "confirmDisconnect"
+            case .processDisconnect:
+                return "processDisconnect"
+            case .disconnected:
+                return "disconnected"
+            }
+        }
     }
-
+    
     /// State machine state
     private var currentActivationStep: ActivationStep?
 
@@ -449,6 +480,8 @@ public class ConnectButtonController {
 
         let previous = currentActivationStep
         self.currentActivationStep = step
+        
+        let activationStepTransition = ActivationStepTransition(fromActivationStep: previous, toActivationStep: step)
 
         switch (previous, step) {
 
@@ -464,7 +497,7 @@ public class ConnectButtonController {
             let animated = previous != nil
 
             button.animator(for:
-                .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)
+                .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value, activationStepTransition: activationStepTransition)
                 ).preform(animated: animated)
 
             button.toggleInteraction.isTapEnabled = true
@@ -472,10 +505,10 @@ public class ConnectButtonController {
 
             button.toggleInteraction.toggleTransition = {
                 if self.tokenProvider.iftttServiceToken != nil {
-                    return .buttonState(.toggle(for: self.connectingService.connectButtonService, message: "", isOn: true))
+                    return .buttonState(.toggle(for: self.connectingService.connectButtonService, message: "", isOn: true), activationStepTransition: activationStepTransition)
                 } else {
                     return .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
-                                        footerValue: FooterMessages.enterEmail.value)
+                                        footerValue: FooterMessages.enterEmail.value, activationStepTransition: activationStepTransition)
                 }
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
@@ -493,7 +526,7 @@ public class ConnectButtonController {
                     self.transition(to: .identifyUser(.email(email)))
                 } else {
                     self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
-                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
+                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value, activationStepTransition: activationStepTransition)).preform()
                     self.button.performInvalidEmailAnimation()
                 }
             }
@@ -504,7 +537,7 @@ public class ConnectButtonController {
             let animated = previous != nil
 
             button.animator(for: .buttonState(connectedButtonState,
-                                              footerValue: FooterMessages.manage.value)
+                                              footerValue: FooterMessages.manage.value, activationStepTransition: activationStepTransition)
                 ).preform(animated: animated)
 
             button.footerInteraction.isTapEnabled = true
@@ -523,7 +556,7 @@ public class ConnectButtonController {
             let nextState = connectedButtonState
             button.toggleInteraction.toggleTransition = {
                 return .buttonState(nextState,
-                                    footerValue: FooterMessages.disconnect.value)
+                                    footerValue: FooterMessages.disconnect.value, activationStepTransition: activationStepTransition)
             }
             button.toggleInteraction.onToggle = { [weak self] _ in
                 self?.transition(to: .confirmDisconnect)
@@ -538,14 +571,14 @@ public class ConnectButtonController {
             case .email:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
-                                                  footerValue: FooterMessages.poweredBy.value)
+                                                  footerValue: FooterMessages.poweredBy.value, activationStepTransition: activationStepTransition)
             ).preform()
 
 
             case .token:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.accessing_existing_account".localized),
-                                                  footerValue: FooterMessages.poweredBy.value)
+                                                  footerValue: FooterMessages.poweredBy.value, activationStepTransition: activationStepTransition)
             ).preform()
             }
 
@@ -562,14 +595,12 @@ public class ConnectButtonController {
                     // There is no account for this user
                     // Show a fake message that we are creating an account
                     // Then move to the first step of the service connection flow
-                    self.button.animator(for: .buttonState(.step(for: nil,
-                                                                 message: "button.state.creating_account".localized))
-                ).preform()
+                    self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized), activationStepTransition: activationStepTransition)).preform()
 
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete {
                         // Show "fake" success
-                        self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
+                        self.button.animator(for: .buttonState(.stepComplete(for: nil), activationStepTransition: activationStepTransition)).preform()
 
                         // After a short delay, show first service connection
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -591,7 +622,7 @@ public class ConnectButtonController {
             openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
 
         case (.logInExistingUser?, .logInComplete(let nextStep)):
-            let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
+            let animation = button.animator(for: .buttonState(.stepComplete(for: nil), activationStepTransition: activationStepTransition))
             animation.onComplete {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.transition(to: nextStep)
@@ -600,17 +631,14 @@ public class ConnectButtonController {
             animation.preform()
 
         case (.logInExistingUser?, .connectionConfigurationComplete(let service)):
-            connectionConfigurationCompleted(service: service.connectButtonService)
+            connectionConfigurationCompleted(service: service.connectButtonService, activationStepTransition: activationStepTransition)
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
             let footer = service == connection.primaryService ?
                 FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
 
-            button.animator(for: .buttonState(.step(for: service.connectButtonService,
-                                                    message: "button.state.sign_in".localized(arguments: service.name)),
-                                              footerValue: footer.value)
-                ).preform()
+            button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value, activationStepTransition: activationStepTransition)).preform()
 
             let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
 
@@ -622,22 +650,19 @@ public class ConnectButtonController {
             }
 
         case (.serviceAuthentication?, .serviceAuthenticationComplete(let service, let nextStep)):
-            button.animator(for: .buttonState(.step(for: service.connectButtonService,
-                                                    message: "button.state.connecting".localized),
-                                              footerValue: FooterMessages.poweredBy.value)
-                ).preform()
+            button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value, activationStepTransition: activationStepTransition)).preform()
 
             let progressBar = button.progressBar(timeout: 2)
             progressBar.preform()
             progressBar.onComplete {
-                self.button.animator(for: .buttonState(.stepComplete(for: service.connectButtonService))).preform()
+                self.button.animator(for: .buttonState(.stepComplete(for: service.connectButtonService), activationStepTransition: activationStepTransition)).preform()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.transition(to: nextStep)
                 }
             }
 
         case (.serviceAuthentication?, .connectionConfigurationComplete(let service)):
-            connectionConfigurationCompleted(service: service.connectButtonService)
+            connectionConfigurationCompleted(service: service.connectButtonService, activationStepTransition: activationStepTransition)
 
         // MARK: - Cancel & failure states
         case (_, .canceled):
@@ -667,8 +692,7 @@ public class ConnectButtonController {
                                                          message: "button.state.disconnecting".localized,
                                                          isOn: false)
             button.toggleInteraction.toggleTransition = {
-                return .buttonState(nextState,
-                                    footerValue: .none)
+                return .buttonState(nextState, footerValue: .none, activationStepTransition: activationStepTransition)
             }
             button.toggleInteraction.onToggle = { [weak self] isOn in
                 if isOn {
@@ -701,17 +725,14 @@ public class ConnectButtonController {
         case (.processDisconnect?, .disconnected):
             appletChangedStatus(isOn: false)
 
-            button.animator(for: .buttonState(.toggle(for: connectingService.connectButtonService,
-                                                      message: "button.state.disconnected".localized,
-                                                      isOn: false))
-                ).preform()
+            button.animator(for: .buttonState(.toggle(for: connectingService.connectButtonService, message: "button.state.disconnected".localized, isOn: false), activationStepTransition: activationStepTransition)).preform()
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.transition(to: .initial)
             }
 
         default:
-            fatalError("Invalid state transition")
+            assertionFailure("Unexpected activation step transition from \(previous?.description ?? "nil") to \(step.description).")
         }
     }
 
@@ -724,16 +745,13 @@ public class ConnectButtonController {
     /// This will automatically transition to the `connected` state.
     ///
     /// - Parameter service: The service that was configured.
-    func connectionConfigurationCompleted(service: ConnectButton.Service) {
-        button.animator(for: .buttonState(.step(for: service,
-                                                message: "button.state.saving_configuration".localized),
-                                          footerValue: FooterMessages.poweredBy.value)
-            ).preform()
+    func connectionConfigurationCompleted(service: ConnectButton.Service, activationStepTransition: ActivationStepTransition) {
+        button.animator(for: .buttonState(.step(for: service, message: "button.state.saving_configuration".localized), footerValue: FooterMessages.poweredBy.value, activationStepTransition: activationStepTransition)).preform()
 
         let progressBar = button.progressBar(timeout: 2)
         progressBar.preform()
         progressBar.onComplete {
-            self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
+            self.button.animator(for: .buttonState(.stepComplete(for: service), activationStepTransition: activationStepTransition)).preform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: .connected)
             }
@@ -748,5 +766,15 @@ public class ConnectButtonController {
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
         return ConnectButton.Service(standardIconURL: standardIconURL, brandColor: brandColor)
+    }
+}
+
+@available(iOS 10.0, *)
+struct ActivationStepTransition {
+    let fromActivationStep: ConnectButtonController.ActivationStep?
+    let toActivationStep: ConnectButtonController.ActivationStep
+    
+    var description: String {
+        return "Transitioning from activation step: \(fromActivationStep?.description ?? "nil") to \(toActivationStep.description)."
     }
 }
