@@ -122,18 +122,35 @@ public class ConnectButton: UIView {
     struct Transition {
         let state: State?
         let footerValue: LabelValue?
-        let activationStepTransition: ActivationStepTransition
+        let activationStepTransition: String
         
-        static func buttonState(_ state: State, activationStepTransition: ActivationStepTransition) -> Transition {
+        static func buttonState(_ state: State, activationStepTransition: String) -> Transition {
             return Transition(state: state, footerValue: nil, activationStepTransition: activationStepTransition)
         }
-        static func buttonState(_ state: State, footerValue: LabelValue, activationStepTransition: ActivationStepTransition) -> Transition {
+        static func buttonState(_ state: State, footerValue: LabelValue, activationStepTransition: String) -> Transition {
             return Transition(state: state, footerValue: footerValue, activationStepTransition: activationStepTransition)
         }
-        static func footerValue(_ value: LabelValue, activationStepTransition: ActivationStepTransition) -> Transition {
+        static func footerValue(_ value: LabelValue, activationStepTransition: String) -> Transition {
             return Transition(state: nil, footerValue: value, activationStepTransition: activationStepTransition)
         }
     }
+    
+    // MARK: ConnectionDiary
+    
+    struct ConnectionDiary {
+        var activationStateLog: [String]
+        
+        var description: String {
+            var outputString = "Activation State Log: "
+            activationStateLog.forEach {
+                outputString.append("\($0) ")
+            }
+            
+            return outputString
+        }
+    }
+    
+    var connectionDiary = ConnectionDiary(activationStateLog: [])
     
     /// Wrapper for UIViewPropertyAnimator
     /// Drives button state transitions
@@ -1038,9 +1055,11 @@ private extension ConnectButton.ProgressBar {
 
 @available(iOS 10.0, *)
 private extension ConnectButton {
-    func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator, activationStepTransition: ActivationStepTransition) {
+    func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator, activationStepTransition: String) {
         
         // FIXME: Let's avoid repitition here to make sure it's consistent between states
+        connectionDiary.activationStateLog.append(activationStepTransition)
+        print(connectionDiary.description)
         
         switch (previousState, state) {
             
@@ -1296,17 +1315,7 @@ private extension ConnectButton {
             }
             
         default:
-            assertionFailure("Unexpected animation transition state from \(previousState.description) to \(state.description) for activation step transition from \(activationStepTransition.fromActivationStep?.description ?? "nil") to \(activationStepTransition.toActivationStep.description).")
+            assertionFailure("Unexpected animation transition state from \(previousState.description) to \(state.description) with history \(connectionDiary.description).")
         }
-    }
-}
-
-@available(iOS 10.0, *)
-struct ActivationStepTransition {
-    let fromActivationStep: String?
-    let toActivationStep: String
-    
-    var description: String {
-        return "Transitioning from activation step: \(fromActivationStep ?? "nil") to \(toActivationStep)."
     }
 }

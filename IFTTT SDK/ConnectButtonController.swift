@@ -481,7 +481,7 @@ public class ConnectButtonController {
         let previous = currentActivationStep
         self.currentActivationStep = step
         
-        let activationStepTransition = ActivationStepTransition(fromActivationStep: previous?.description, toActivationStep: step.description)
+        let activationStepTransition = "\(previous?.description ?? "nil") to \(step.description)."
 
         switch (previous, step) {
 
@@ -745,7 +745,7 @@ public class ConnectButtonController {
     /// This will automatically transition to the `connected` state.
     ///
     /// - Parameter service: The service that was configured.
-    func connectionConfigurationCompleted(service: ConnectButton.Service, activationStepTransition: ActivationStepTransition) {
+    func connectionConfigurationCompleted(service: ConnectButton.Service, activationStepTransition: String) {
         button.animator(for: .buttonState(.step(for: service, message: "button.state.saving_configuration".localized), footerValue: FooterMessages.poweredBy.value, activationStepTransition: activationStepTransition)).preform()
 
         let progressBar = button.progressBar(timeout: 2)
