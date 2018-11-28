@@ -771,7 +771,7 @@ private class ServiceIconFuture: ImageFuture {
         } else {
             isComplete = false
             image = nil
-            downloadTask = ImageDownloader.default.get(imageURL: iconURL) { [weak self] (image) in
+            downloadTask = ImageDownloader.default.downloadImage(url: iconURL) { [weak self] (image) in
                 self?.isComplete = true
                 self?.image = image
                 self?.completion?(image)

@@ -10,7 +10,7 @@ import Foundation
 
 struct ImageDownloader {
     
-    static var `default` = ImageDownloader()
+    static let `default` = ImageDownloader()
     
     let urlSession: URLSession
     
@@ -21,17 +21,19 @@ struct ImageDownloader {
         self.cache = cache
     }
     
-    func get(imageURL: URL, _ completion: @escaping (UIImage?) -> Void) -> URLSessionDataTask? {
-        if let image = cache.image(for: imageURL) {
+    func downloadImage(url: URL, _ completion: @escaping (UIImage?) -> Void) -> URLSessionDataTask? {
+        if let image = cache.image(for: url) {
             completion(image)
             return nil
         }
-        let task = urlSession.dataTask(with: imageURL) { (imageData, response, _) in
-            DispatchQueue.main.async {
-                if let imageData = imageData, let response = response, let image = UIImage(data: imageData) {
-                    self.cache.store(imageData: imageData, response: response, for: imageURL)
+        let task = urlSession.dataTask(with: url) { (imageData, response, _) in
+            if let imageData = imageData, let response = response, let image = UIImage(data: imageData) {
+                self.cache.store(imageData: imageData, response: response, for: url)
+                DispatchQueue.main.async {
                     completion(image)
-                } else {
+                }
+            } else {
+                DispatchQueue.main.async {
                     completion(nil)
                 }
             }

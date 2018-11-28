@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ObjectiveC
 
 protocol ImageFuture: class {
     var url: URL { get }
@@ -18,12 +19,14 @@ protocol ImageFuture: class {
     func cancel()
 }
 
-private var futuresByImageView: [UIImageView : ImageFuture] = [:]
-
 extension UIImageView {
+    private struct AssociationKey {
+        static let activeImageFuture = "ifttt.uiimageview.imagefuture"
+    }
+    
     var imageFuture: ImageFuture? {
         get {
-            return futuresByImageView[self]
+            return objc_getAssociatedObject(self, AssociationKey.activeImageFuture) as? ImageFuture
         }
         set {
             guard imageFuture?.url != newValue?.url else {
@@ -31,7 +34,7 @@ extension UIImageView {
             }
             imageFuture?.cancel() // Cancel any existing operation
             
-            futuresByImageView[self] = newValue
+            objc_setAssociatedObject(self, AssociationKey.activeImageFuture, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             imageFuture?.update(imageView: self)
         }
     }

@@ -10,11 +10,20 @@ import Foundation
 
 struct ImageCache {
     
-    static var `default` = ImageCache()
+    struct Capacity {
+        private static let MB = 1024 * 1024 // One MegaByte
+        
+        static let inMemory = 4 * MB
+        static let onDisk = 20 * MB
+    }
+    
+    static let `default` = ImageCache()
     
     let urlCache: URLCache
     
-    init(urlCache: URLCache = URLCache(memoryCapacity: 4 * 1024 * 1024, diskCapacity: 20 * 1024 * 1024, diskPath: nil)) {
+    init(urlCache: URLCache = URLCache(memoryCapacity: Capacity.inMemory,
+                                       diskCapacity: Capacity.onDisk,
+                                       diskPath: nil)) {
         self.urlCache = urlCache
     }
     
