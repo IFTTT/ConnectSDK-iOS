@@ -1062,8 +1062,6 @@ private extension ConnectButton {
         
         // FIXME: Let's avoid repitition here to make sure it's consistent between states
         
-        print(connectionDiary.description)
-        
         switch (previousState, state) {
             
         // Setup switch
