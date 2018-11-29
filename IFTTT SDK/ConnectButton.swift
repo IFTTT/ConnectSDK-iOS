@@ -118,6 +118,27 @@ public class ConnectButton: UIView {
         }
     }
     
+    // MARK: ConnectionDiary
+    
+    struct ConnectionDiary {
+        var activationStateLog: [String]
+        
+        var description: String {
+            var outputString = "Activation State Log:"
+            activationStateLog.forEach {
+                outputString.append("\n\($0)")
+            }
+            
+            return outputString
+        }
+    }
+    
+    private var connectionDiary = ConnectionDiary(activationStateLog: [])
+    
+    func addConnectionLog(_ log: String) {
+        connectionDiary.activationStateLog.append(log)
+    }
+    
     /// Groups button State and footer value into a single state transition
     struct Transition {
         let state: State?
@@ -1295,7 +1316,7 @@ private extension ConnectButton {
             }
             
         default:
-            fatalError("Connect button state transition from \(previousState) to \(state) is invalid")
+            assertionFailure("Unexpected animation transition state from \(previousState.description) to \(state.description) with history \(connectionDiary.description).")
         }
     }
 }
