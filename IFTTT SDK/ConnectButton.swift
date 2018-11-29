@@ -118,20 +118,40 @@ public class ConnectButton: UIView {
         }
     }
     
+    // MARK: ConnectionDiary
+    
+    struct ConnectionDiary {
+        var activationStateLog: [String]
+        
+        var description: String {
+            var outputString = "Activation State Log:"
+            activationStateLog.forEach {
+                outputString.append("\n\($0)")
+            }
+            
+            return outputString
+        }
+    }
+    
+    private var connectionDiary = ConnectionDiary(activationStateLog: [])
+    
+    func addConnectionLog(_ log: String) {
+        connectionDiary.activationStateLog.append(log)
+    }
+    
     /// Groups button State and footer value into a single state transition
     struct Transition {
         let state: State?
         let footerValue: LabelValue?
-        let connectionDiary: ConnectButtonController.ConnectionDiary
         
-        static func buttonState(_ state: State, connectionDiary: ConnectButtonController.ConnectionDiary) -> Transition {
-            return Transition(state: state, footerValue: nil, connectionDiary: connectionDiary)
+        static func buttonState(_ state: State) -> Transition {
+            return Transition(state: state, footerValue: nil)
         }
-        static func buttonState(_ state: State, footerValue: LabelValue, connectionDiary: ConnectButtonController.ConnectionDiary) -> Transition {
-            return Transition(state: state, footerValue: footerValue, connectionDiary: connectionDiary)
+        static func buttonState(_ state: State, footerValue: LabelValue) -> Transition {
+            return Transition(state: state, footerValue: footerValue)
         }
-        static func footerValue(_ value: LabelValue, connectionDiary: ConnectButtonController.ConnectionDiary) -> Transition {
-            return Transition(state: nil, footerValue: value, connectionDiary: connectionDiary)
+        static func footerValue(_ value: LabelValue) -> Transition {
+            return Transition(state: nil, footerValue: value)
         }
     }
     
@@ -192,7 +212,7 @@ public class ConnectButton: UIView {
                     self.currentState = state
                 }
             }
-            animation(forTransitionTo: state, from: currentState, with: animator.animator, connectionDiary: transition.connectionDiary)
+            animation(forTransitionTo: state, from: currentState, with: animator.animator)
         }
         if let footerValue = transition.footerValue {
             footerLabelAnimator.transition(with: .rotateDown,
@@ -1038,7 +1058,7 @@ private extension ConnectButton.ProgressBar {
 
 @available(iOS 10.0, *)
 private extension ConnectButton {
-    func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator, connectionDiary: ConnectButtonController.ConnectionDiary) {
+    func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator) {
         
         // FIXME: Let's avoid repitition here to make sure it's consistent between states
         
