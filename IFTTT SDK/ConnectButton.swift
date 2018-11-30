@@ -71,7 +71,7 @@ public class ConnectButton: UIView {
     }
     
     /// Network controller responsible to loading images from a URL to an UIImageView.
-    /// This controller is controller is used to serve service icons
+    /// This controller is responsible for serving service icons
     var imageViewNetworkController: ImageViewNetworkController?
     
     /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.

@@ -750,6 +750,8 @@ public class ConnectButtonController {
 private class ServiceIconsNetworkController: ImageViewNetworkController {
     let downloader = ImageDownloader()
     
+    /// Prefetch and cache service icon images for this `Connection`.
+    /// This will be it very unlikely that an image is delayed and visually "pops in".
     func prefetchImages(for connection: Connection) {
         connection.services.forEach {
             downloader.downloadImage(url: $0.templateIconURL, { _ in})
