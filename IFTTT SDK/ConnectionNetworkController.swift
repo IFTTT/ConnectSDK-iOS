@@ -122,6 +122,7 @@ public final class ConnectionNetworkController {
     private func makeFindUserByEmailRequest(with email: String, timeout: TimeInterval) -> URLRequest {
         var request = URLRequest(url: API.findUserBy(email: email))
         request.timeoutInterval = timeout
+        request.addVersionTracking()
         return request
     }
     
@@ -129,6 +130,7 @@ public final class ConnectionNetworkController {
         var request = URLRequest(url: API.findUserByToken)
         request.addIftttServiceToken(token)
         request.timeoutInterval = timeout
+        request.addVersionTracking()
         return request
     }
 }

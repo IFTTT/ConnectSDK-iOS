@@ -59,6 +59,7 @@ public extension Connection {
             if let inviteCode = credentialProvider.inviteCode, inviteCode.isEmpty == false {
                 request.addIftttInviteCode(inviteCode)
             }
+            request.addVersionTracking()
             
             self.urlRequest = request
         }
