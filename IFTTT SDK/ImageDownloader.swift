@@ -10,31 +10,30 @@ import Foundation
 
 struct ImageDownloader {
     
-    static let `default` = ImageDownloader()
-    
     let urlSession: URLSession
     
     let cache: ImageCache
     
-    init(urlSession: URLSession = URLSession(configuration: .default), cache: ImageCache = .default) {
+    init(urlSession: URLSession = URLSession(configuration: .default), cache: ImageCache = ImageCache()) {
         self.urlSession = urlSession
         self.cache = cache
     }
     
-    func downloadImage(url: URL, _ completion: @escaping (UIImage?) -> Void) -> URLSessionDataTask? {
+    @discardableResult
+    func downloadImage(url: URL, _ completion: @escaping (Result<UIImage>) -> Void) -> URLSessionDataTask? {
         if let image = cache.image(for: url) {
-            completion(image)
+            completion(.success(image))
             return nil
         }
-        let task = urlSession.dataTask(with: url) { (imageData, response, _) in
+        let task = urlSession.dataTask(with: url) { (imageData, response, error) in
             if let imageData = imageData, let response = response, let image = UIImage(data: imageData) {
                 self.cache.store(imageData: imageData, response: response, for: url)
                 DispatchQueue.main.async {
-                    completion(image)
+                    completion(.success(image))
                 }
             } else {
                 DispatchQueue.main.async {
-                    completion(nil)
+                    completion(.failure(error ?? NetworkError.invalidImageData))
                 }
             }
         }

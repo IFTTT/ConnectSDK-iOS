@@ -17,8 +17,6 @@ struct ImageCache {
         static let onDisk = 20 * MB
     }
     
-    static let `default` = ImageCache()
-    
     let urlCache: URLCache
     
     init(urlCache: URLCache = URLCache(memoryCapacity: Capacity.inMemory,

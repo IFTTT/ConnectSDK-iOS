@@ -70,6 +70,10 @@ public class ConnectButton: UIView {
         }
     }
     
+    /// Network controller responsible to loading images from a URL to an UIImageView.
+    /// This controller is controller is used to serve service icons
+    var imageViewNetworkController: ImageViewNetworkController?
+    
     /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.
     ///
     /// - Parameter style: Adjust the buttons background for light and dark backgrounds. Defaults to a light style.
@@ -95,7 +99,7 @@ public class ConnectButton: UIView {
     // MARK: - Button state
     
     struct Service {
-        let standardIcon: ImageFuture
+        let standardIconURL: URL
         let brandColor: UIColor
     }
     
@@ -739,8 +743,8 @@ public class ConnectButton: UIView {
             }
         }
         
-        func configure(with service: Service) {
-            knob.iconView.imageFuture = service.standardIcon
+        func configure(with service: Service, networkController: ImageViewNetworkController?) {
+            networkController?.setImage(with: service.standardIconURL, for: knob.iconView)
             
             let color = service.brandColor
             knob.backgroundColor = color
@@ -1051,7 +1055,8 @@ private extension ConnectButton {
                                             addingTo: animator)
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
-                self.switchControl.configure(with: service)
+                self.switchControl.configure(with: service,
+                                             networkController: self.imageViewNetworkController)
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1
@@ -1182,7 +1187,7 @@ private extension ConnectButton {
                 
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
-                self.serviceIconView.imageFuture = service?.standardIcon
+                self.imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
                 self.serviceIconView.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
@@ -1239,7 +1244,7 @@ private extension ConnectButton {
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
-                self.serviceIconView.imageFuture = service?.standardIcon
+                self.imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
                 self.serviceIconView.alpha = 1
                 
                 self.checkmark.alpha = 0
@@ -1260,7 +1265,8 @@ private extension ConnectButton {
                 
                 self.backgroundView.backgroundColor = .black
                 
-                self.switchControl.configure(with: service)
+                self.switchControl.configure(with: service,
+                                             networkController: self.imageViewNetworkController)
                 self.switchControl.alpha = 1
                 self.switchControl.isOn = true
                 
@@ -1286,7 +1292,8 @@ private extension ConnectButton {
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
-                self.switchControl.configure(with: service)
+                self.switchControl.configure(with: service,
+                                             networkController: self.imageViewNetworkController)
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1

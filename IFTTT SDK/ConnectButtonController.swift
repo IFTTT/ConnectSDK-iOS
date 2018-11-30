@@ -108,7 +108,8 @@ public class ConnectButtonController {
     public private(set) weak var delegate: ConnectButtonControllerDelegate?
 
     private let connectionConfiguration: ConnectionConfiguration
-    private let connectionNetworkController: ConnectionNetworkController
+    private let connectionNetworkController = ConnectionNetworkController()
+    private let serviceIconNetworkController = ServiceIconsNetworkController()
     private let tokenProvider: CredentialProvider
 
     /// Creates a new `ConnectButtonController`.
@@ -122,12 +123,14 @@ public class ConnectButtonController {
         self.connectionConfiguration = connectionConfiguration
         self.connection = connectionConfiguration.connection
         self.tokenProvider = connectionConfiguration.credentialProvider
-        self.connectionNetworkController = ConnectionNetworkController()
         self.delegate = delegate
         setupConnection(for: connection)
     }
 
     private func setupConnection(for connection: Connection) {
+        button.imageViewNetworkController = serviceIconNetworkController
+        serviceIconNetworkController.prefetchImages(for: connection)
+        
         button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
@@ -742,41 +745,44 @@ public class ConnectButtonController {
 }
 
 
-// MARK: - Service icons
+// MARK: - Service icons downloader
 
-private class ServiceIconFuture: ImageFuture {
-    let url: URL
+private class ServiceIconsNetworkController: ImageViewNetworkController {
+    let downloader = ImageDownloader()
     
-    var isComplete: Bool
-    
-    let placeholder: UIImage?
-    
-    var image: UIImage?
-    
-    var completion: ((UIImage?) -> Void)?
-    
-    var downloadTask: URLSessionDataTask?
-    
-    func cancel() {
-        downloadTask?.cancel()
+    func prefetchImages(for connection: Connection) {
+        connection.services.forEach {
+            downloader.downloadImage(url: $0.templateIconURL, { _ in})
+            downloader.downloadImage(url: $0.standardIconURL, { _ in})
+        }
     }
     
-    init(iconURL: URL) {
-        url = iconURL
-        placeholder = nil // Not used
-        
-        if let image = ImageCache.default.image(for: iconURL) {
-            isComplete = true
-            self.image = image
-        } else {
-            isComplete = false
-            image = nil
-            downloadTask = ImageDownloader.default.downloadImage(url: iconURL) { [weak self] (image) in
-                self?.isComplete = true
-                self?.image = image
-                self?.completion?(image)
+    var currentRequests = [UIImageView : URLSessionDataTask]()
+    
+    func setImage(with url: URL?, for imageView: UIImageView) {
+        if let existingTask = currentRequests[imageView] {
+            if existingTask.originalRequest?.url == url {
+                return // This is a duplicate request
+            } else {
+                // The image url was changed
+                existingTask.cancel()
+                currentRequests[imageView] = nil
             }
-            downloadTask?.resume()
+        }
+        
+        imageView.image = nil
+        if let url = url {
+            let task = downloader.downloadImage(url: url) { (result) in
+                switch result {
+                case .success(let image):
+                    imageView.image = image
+                case .failure:
+                    // Images that fail to load are left blank
+                    // Since we attempt to precatch images, this is actually the second try
+                    break
+                }
+            }
+            currentRequests[imageView] = task
         }
     }
 }
@@ -787,6 +793,6 @@ private class ServiceIconFuture: ImageFuture {
 @available(iOS 10.0, *)
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
-        return ConnectButton.Service(standardIcon: ServiceIconFuture(iconURL: standardIconURL), brandColor: brandColor)
+        return ConnectButton.Service(standardIconURL: standardIconURL, brandColor: brandColor)
     }
 }
