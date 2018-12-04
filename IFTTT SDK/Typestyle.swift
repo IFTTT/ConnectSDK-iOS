@@ -1,5 +1,5 @@
 //
-//  Typography.swift
+//  Typestyle.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 9/28/18.
@@ -12,6 +12,9 @@ import UIKit
 extension UIFont {
     static func ifttt(_ typestyle: Typestyle) -> UIFont {
         return typestyle.font
+    }
+    static func iftttCallout(_ typestyle: Typestyle) -> UIFont {
+        return typestyle.callout().font
     }
 }
 
@@ -88,5 +91,8 @@ public struct Typestyle {
     }
     static var caption: Typestyle {
         return Typestyle(weight: .medium, size: 12, isDynamic: true, style: .caption1)
+    }
+    static var small: Typestyle {
+        return Typestyle(weight: .bold, size: 10, isDynamic: true, style: .caption2)
     }
 }

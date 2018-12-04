@@ -21,7 +21,7 @@
 		FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* About.swift */; };
 		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
 		FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC094BA2215D9E2D008B35F6 /* Localizable.strings */; };
-		FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* Typography.swift */; };
+		FC094BA5215ED6F5008B35F6 /* Typestyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* Typestyle.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
@@ -100,7 +100,7 @@
 		FC04FE1A21501A8F008AC8A5 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC094BA2215D9E2D008B35F6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		FC094BA4215ED6F5008B35F6 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		FC094BA4215ED6F5008B35F6 /* Typestyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typestyle.swift; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		FC22B19321ACA54000738023 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		FC22B19521ACA54A00738023 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
@@ -264,7 +264,7 @@
 				FC22B19321ACA54000738023 /* ImageCache.swift */,
 				FC22B19521ACA54A00738023 /* ImageDownloader.swift */,
 				FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */,
-				FC094BA4215ED6F5008B35F6 /* Typography.swift */,
+				FC094BA4215ED6F5008B35F6 /* Typestyle.swift */,
 				FC094BA6215ED72F008B35F6 /* Color.swift */,
 				FCC6DEB1215D90DD008C8405 /* Assets.swift */,
 			);
@@ -469,7 +469,7 @@
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
-				FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */,
+				FC094BA5215ED6F5008B35F6 /* Typestyle.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				1DFE02152190E54200856ABC /* Connection+URLGeneration.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
