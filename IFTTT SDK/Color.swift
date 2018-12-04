@@ -97,4 +97,16 @@ extension UIColor {
             blue: CGFloat(b) / 0xff, alpha: 1
         )
     }
+    
+    var hex: UInt32 {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        self.getRed(&r, green: &g, blue: &b, alpha: nil)
+        
+        var value = UInt32(r * 0xff) << 16
+        value = value | (UInt32(g * 0xff) << 8)
+        value = value | UInt32(b * 0xff)
+        return value
+    }
 }
