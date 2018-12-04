@@ -81,12 +81,12 @@ extension UIColor {
             return
         }
         
-        var value: UInt64 = 0
-        Scanner(string: trimmed).scanHexInt64(&value)
+        var value: UInt32 = 0
+        Scanner(string: trimmed).scanHexInt32(&value)
         self.init(hex: value)
     }
     
-    convenience init(hex: UInt64) {
+    convenience init(hex: UInt32) {
         let r = (hex & 0xff0000) >> 16
         let g = (hex & 0xff00) >> 8
         let b = hex & 0xff
