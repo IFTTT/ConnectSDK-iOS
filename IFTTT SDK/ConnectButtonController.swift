@@ -131,6 +131,9 @@ public class ConnectButtonController {
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
         
+        button.configureEmailField(placeholderText: "button.email.placeholder".localized,
+                                   confirmButtonAsset: Assets.Button.emailConfirm)
+        
         button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
