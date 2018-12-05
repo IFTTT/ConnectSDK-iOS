@@ -21,11 +21,11 @@
 		FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* About.swift */; };
 		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
 		FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC094BA2215D9E2D008B35F6 /* Localizable.strings */; };
-		FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* Typography.swift */; };
+		FC094BA5215ED6F5008B35F6 /* Typestyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* Typestyle.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
-		FC22B19A21ACCD9C00738023 /* Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19921ACCD9C00738023 /* Autolayout.swift */; };
+		FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19921ACCD9C00738023 /* ConstraintsMaker.swift */; };
 		FC22B19C21ACCDA600738023 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19B21ACCDA600738023 /* PillView.swift */; };
 		FC22B19E21ACCDAC00738023 /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19D21ACCDAC00738023 /* PillButton.swift */; };
 		FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19F21ACCDB200738023 /* Selectable.swift */; };
@@ -36,6 +36,7 @@
 		FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44E0882162E81F0063DCA1 /* LogoView.swift */; };
+		FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */; };
 		FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */; };
 		FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */; };
 		FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
@@ -100,11 +101,11 @@
 		FC04FE1A21501A8F008AC8A5 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC094BA2215D9E2D008B35F6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		FC094BA4215ED6F5008B35F6 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		FC094BA4215ED6F5008B35F6 /* Typestyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typestyle.swift; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		FC22B19321ACA54000738023 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		FC22B19521ACA54A00738023 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
-		FC22B19921ACCD9C00738023 /* Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autolayout.swift; sourceTree = "<group>"; };
+		FC22B19921ACCD9C00738023 /* ConstraintsMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsMaker.swift; sourceTree = "<group>"; };
 		FC22B19B21ACCDA600738023 /* PillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillView.swift; sourceTree = "<group>"; };
 		FC22B19D21ACCDAC00738023 /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
 		FC22B19F21ACCDB200738023 /* Selectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selectable.swift; sourceTree = "<group>"; };
@@ -113,6 +114,7 @@
 		FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC44E0882162E81F0063DCA1 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
+		FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButtonController.swift; sourceTree = "<group>"; };
 		FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewNetworkController.swift; sourceTree = "<group>"; };
 		FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IFTTT_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -253,7 +255,7 @@
 				FCF29FC62187C8C2004B1100 /* Applet_internal.swift */,
 				FCF29FCA2187D0E3004B1100 /* User.swift */,
 				FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */,
-				FC22B19921ACCD9C00738023 /* Autolayout.swift */,
+				FC22B19921ACCD9C00738023 /* ConstraintsMaker.swift */,
 				FC22B19B21ACCDA600738023 /* PillView.swift */,
 				FC22B19D21ACCDAC00738023 /* PillButton.swift */,
 				FC22B1A321ACCDF800738023 /* PassthroughView.swift */,
@@ -264,9 +266,10 @@
 				FC22B19321ACA54000738023 /* ImageCache.swift */,
 				FC22B19521ACA54A00738023 /* ImageDownloader.swift */,
 				FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */,
-				FC094BA4215ED6F5008B35F6 /* Typography.swift */,
+				FC094BA4215ED6F5008B35F6 /* Typestyle.swift */,
 				FC094BA6215ED72F008B35F6 /* Color.swift */,
 				FCC6DEB1215D90DD008C8405 /* Assets.swift */,
+				FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -452,7 +455,7 @@
 				1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */,
 				FC22B19C21ACCDA600738023 /* PillView.swift in Sources */,
 				1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */,
-				FC22B19A21ACCD9C00738023 /* Autolayout.swift in Sources */,
+				FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */,
 				1DFE02092190E35300856ABC /* AuthenticationRedirectHandler.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* About.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
@@ -469,7 +472,8 @@
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
-				FC094BA5215ED6F5008B35F6 /* Typography.swift in Sources */,
+				FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */,
+				FC094BA5215ED6F5008B35F6 /* Typestyle.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				1DFE02152190E54200856ABC /* Connection+URLGeneration.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,

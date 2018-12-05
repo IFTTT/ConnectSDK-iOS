@@ -28,6 +28,7 @@ class Selectable: NSObject, UIGestureRecognizerDelegate {
         gesture.delegate = self
         
         view.addGestureRecognizer(gesture)
+        view.isUserInteractionEnabled = true
     }
     
     @objc private func handleSelect(_ gesture: UIGestureRecognizer) {

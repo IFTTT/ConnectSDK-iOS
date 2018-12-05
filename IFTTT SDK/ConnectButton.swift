@@ -461,7 +461,9 @@ public class ConnectButton: UIView {
         switchControl.isOn = false
         switchControl.knob.backgroundColor = Style.Color.blue
         primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
-        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT",
+                                                          attributes: [.font : Typestyle.footnote.adjusting(weight: .bold).font])
+        footerLabelAnimator.configure(.attributed(initialFooterText))
     }
     
     fileprivate let backgroundView = PillView()
@@ -861,8 +863,13 @@ public class ConnectButton: UIView {
             indicator.backgroundColor = .white
             checkmarkShape.fillColor = UIColor.clear.cgColor
             checkmarkShape.strokeColor = UIColor.white.cgColor
+            #if swift(>=4.2)
             checkmarkShape.lineCap = .round
             checkmarkShape.lineJoin = .round
+            #else
+            checkmarkShape.lineCap = kCALineCapRound
+            checkmarkShape.lineJoin = kCALineJoinRound
+            #endif
             checkmarkShape.lineWidth = lineWidth
             
             // Offset by line width (this visually centered the checkmark)
@@ -1021,7 +1028,11 @@ private extension ConnectButton.CheckmarkView {
         let indicatorAnimation = CAKeyframeAnimation(keyPath: "position")
         indicatorAnimation.path = indicatorAnimationPath.cgPath
         indicatorAnimation.duration = 0.6 * duration
+        #if swift(>=4.2)
         indicatorAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        #else
+        indicatorAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
+        #endif
         indicatorAnimation.delegate = self
         indicator.layer.add(indicatorAnimation, forKey: "position along path")
         indicator.layer.position = indicatorAnimationPath.currentPoint
@@ -1039,7 +1050,11 @@ extension ConnectButton.CheckmarkView: CAAnimationDelegate {
             checkmarkAnimation.fromValue = 0
             checkmarkAnimation.toValue = 1
             checkmarkAnimation.duration = 0.4 * anim.duration
+            #if swift(>=4.2)
             checkmarkAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            #else
+            checkmarkAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+            #endif
             self.checkmarkShape.add(checkmarkAnimation, forKey: "draw line")
         }
     }
