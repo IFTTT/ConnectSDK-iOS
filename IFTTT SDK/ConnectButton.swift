@@ -472,7 +472,7 @@ public class ConnectButton: UIView {
     
     // MARK: Email view
     
-    /// If uses the email step, configure the entry field.
+    /// If using the email step, configure the entry field.
     ///
     /// - Parameters:
     ///   - placeholderText: The placeholder text for the email field when it is empty
