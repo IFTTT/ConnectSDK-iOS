@@ -472,16 +472,25 @@ public class ConnectButton: UIView {
     
     // MARK: Email view
     
+    /// If using the email step, configure the entry field.
+    ///
+    /// - Parameters:
+    ///   - placeholderText: The placeholder text for the email field when it is empty
+    ///   - confirmButtonImage: The image asset to use for the email confirm button
+    func configureEmailField(placeholderText: String, confirmButtonAsset: UIImage) {
+        emailEntryField.placeholder = placeholderText
+        emailConfirmButton.imageView.image = confirmButtonAsset
+    }
+    
     /// The container view for the email button
     /// Provide a "track" on which the button is animated
     /// This scopes effects of layoutIfNeeded
     fileprivate let emailConfirmButtonTrack = PassthroughView()
     
-    fileprivate let emailConfirmButton = PillButton(Assets.Button.emailConfirm)
+    fileprivate let emailConfirmButton = PillButton(UIImage())
     
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
-        field.placeholder = "button.email.placeholder".localized
         field.keyboardType = .emailAddress
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
