@@ -1296,7 +1296,7 @@ private extension ConnectButton {
             }
             
             
-        // Transition back to toggle after completed a flow
+        // Transition back to toggle after completing a flow
         case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true:
             switchControl.primeAnimation_centerKnob()
             primaryLabelAnimator.transition(with: .crossfade,
@@ -1304,6 +1304,7 @@ private extension ConnectButton {
                                             insets: .avoidSwitchKnob,
                                             addingTo: animator)
             progressBar.configure(with: service)
+            progressBar.fractionComplete = 0
             
             animator.addAnimations {
                 self.serviceIconView.alpha = 0
@@ -1332,8 +1333,8 @@ private extension ConnectButton {
                                             updatedValue: .text(message),
                                             insets: .avoidSwitchKnob,
                                             addingTo: animator)
-            
             progressBar.configure(with: service)
+            progressBar.fractionComplete = 0
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
