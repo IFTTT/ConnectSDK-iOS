@@ -36,7 +36,7 @@
 "about.control" = "Control how services access your data";
 "about.security" = "Protect and monitor your online data";
 // Gets appended to the TOS and privacy policy links on the about page
-"about.legal.prefix" = "By using this IFTTT service you agree to be bound by the IFTTT ";
+"about.legal.prefix" = "By using this IFTTT service you agree to be bound by these ";
 "about.more.button" = "Learn more";
 
 // Link text for TOS and the privacy policy
