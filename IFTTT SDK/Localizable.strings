@@ -6,6 +6,8 @@
   Copyright © 2018 IFTTT. All rights reserved.
 */
 
+"common.cancel" = "Cancel";
+
 "button.state.connect" = "Connect %@";
 "button.state.connect.brief" = "Connect";
 "button.state.checking_account" = "Checking for IFTTT account…";
@@ -22,7 +24,7 @@
 "button.email.placeholder" = "Your email";
 
 "button.footer.powered_by" = "POWERED BY ";
-"button.footer.email" = "Sign in to IFTTT or create a new account";
+"button.footer.email.legal" = "You are creating or using your IFTTT account subject to ";
 "button.footer.email.invalid" = "Enter valid email";
 "button.footer.signed_in" = " sign in to ";
 "button.footer.connect" = "Sign in to connect %@ with %@";
@@ -40,4 +42,4 @@
 // Link text for TOS and the privacy policy
 "legal.tos" = "Terms of Use";
 "legal.and" = " and ";
-"legal.privacy" = "Privacy Policy.";
+"legal.privacy" = "Privacy Policy";
