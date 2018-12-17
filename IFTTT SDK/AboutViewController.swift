@@ -68,6 +68,10 @@ class AboutViewController: UIViewController {
                 text.append(ifttt)
                 return text
             }()
+            
+            /// The text for legal terms
+            static let legalTermsText = LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
+                                                              attributes: [.foregroundColor : UIColor.white, .font : Typestyle.body.font])
         }
     }
     
@@ -173,14 +177,19 @@ class AboutViewController: UIViewController {
     
     // MARK: - Links
     
-    private lazy var legalTermsView = LegalTermsView(text: LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
-                                                                            attributes: [.foregroundColor : UIColor.white, .font : Typestyle.body.font]))
+    private lazy var legalTermsView = LegalTermsView(text: Constants.Text.legalTermsText) { [weak self] url in
+        self?.open(url: url)
+    }
     
     private lazy var moreButton = PillButton("about.more.button".localized) {
         $0.backgroundColor = Constants.Color.learnMoreButton
         $0.label.numberOfLines = 0
         $0.label.font = .ifttt(Typestyle.h5.callout())
         $0.label.textColor = .white
+        $0.onSelect { [weak self] in
+            // FIXME: Typically this would point to the about page but it is not ready yet
+            self?.open(url: Links.home)
+        }
     }
     
     private lazy var moreButtonContainer = UIStackView([legalTermsView, moreButton]) {
@@ -192,16 +201,6 @@ class AboutViewController: UIViewController {
     private func open(url: URL) {
         let controller = SFSafariViewController(url: url)
         present(controller, animated: true, completion: nil)
-    }
-    
-    private func createLinks() {
-        legalTermsView.onLinkSelected = { [weak self] url in
-            self?.open(url: url)
-        }
-        moreButton.onSelect { [weak self] in
-            // FIXME: Typically this would point to the about page but it is not ready yet
-            self?.open(url: Links.home)
-        }
     }
     
     
@@ -236,12 +235,6 @@ class AboutViewController: UIViewController {
         logoView.constrain.square(length: Constants.Layout.logoSize)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        createLinks()
-    }
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -255,9 +248,11 @@ private extension AboutViewController {
     class LegalTermsView: UIView, UITextViewDelegate {
         
         /// One of the links was selected
-        var onLinkSelected: ((URL) -> Void)?
+        let onLinkSelected: ((URL) -> Void)?
         
-        init(text: NSAttributedString) {
+        init(text: NSAttributedString, onLinkSelected: ((URL) -> Void)?) {
+            self.onLinkSelected = onLinkSelected
+            
             super.init(frame: .zero)
             
             let view = UITextView(frame: .zero)
