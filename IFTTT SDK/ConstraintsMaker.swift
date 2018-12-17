@@ -87,6 +87,13 @@ struct ConstraintsMaker {
         view.heightAnchor.constraint(equalToConstant: length).isActive = true
         view.widthAnchor.constraint(equalToConstant: length).isActive = true
     }
+
+    /// Constrains the `view` to a provided height value.
+    ///
+    /// - Parameter constant: The height of the `view`.
+    func height(to constant: CGFloat) {
+        view.heightAnchor.constraint(equalToConstant: constant).isActive = true
+    }
     
     /// Constrains the `view`s width to that of a layout guide
     ///
