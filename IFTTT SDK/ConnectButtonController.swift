@@ -242,10 +242,17 @@ public class ConnectButtonController {
     class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
         /// Callback when the Safari VC is dismissed by the user
         /// This triggers a cancelation event
-        var onCancelation: (() -> Void)?
+        let onCancelation: () -> Void
+        
+        /// Create a new SafariDelegate
+        ///
+        /// - Parameter onCancelation: The cancelation handler
+        init(onCancelation: @escaping () -> Void) {
+            self.onCancelation = onCancelation
+        }
         
         func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            onCancelation?()
+            onCancelation()
         }
     }
     
@@ -431,8 +438,7 @@ public class ConnectButtonController {
             self?.button.addConnectionLog(redirectLog)
         }
         
-        safariDelegate = SafariDelegate()
-        safariDelegate?.onCancelation = { [weak self] in
+        safariDelegate = SafariDelegate { [weak self] in
             self?.handleCancelation()
         }
     }
