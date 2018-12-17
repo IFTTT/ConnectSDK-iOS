@@ -276,7 +276,7 @@ private extension AboutViewController {
         
         func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
             onLinkSelected?(URL)
-            return true
+            return false
         }
     }
 }
