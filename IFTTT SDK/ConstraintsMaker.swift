@@ -35,6 +35,9 @@ struct ConstraintsMaker {
         view.heightAnchor.constraint(equalToConstant: length).isActive = true
         view.widthAnchor.constraint(equalToConstant: length).isActive = true
     }
+    func height(to constant: CGFloat) {
+        view.heightAnchor.constraint(equalToConstant: constant).isActive = true
+    }
     func width(to otherView: UIView) {
         view.widthAnchor.constraint(equalTo: otherView.widthAnchor).isActive = true
     }
