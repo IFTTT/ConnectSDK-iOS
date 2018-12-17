@@ -13,7 +13,6 @@ extension Connection {
     private enum URLQueryItemConstants {
         static let sdkReturnName = "sdk_return_to"
         static let inviteCodeName = "invite_code"
-        static let userIdName = "user_id"
         static let emailName = "email"
         static let skipSDKRedirectName = "skip_sdk_redirect"
         static let sdkCreatAccountName = "sdk_create_account"
@@ -55,13 +54,7 @@ extension Connection {
     }
     
     private func queryItemForLogin( userId: User.Id) -> URLQueryItem {
-        switch userId {
-        case let .username(username):
-            // FIXME: Verify this param name when we have it
-            return URLQueryItem(name: URLQueryItemConstants.userIdName, value: username)
-        case let .email(email):
-            return URLQueryItem(name: URLQueryItemConstants.emailName, value: email)
-        }
+        return URLQueryItem(name: URLQueryItemConstants.emailName, value: userId.value)
     }
     
     private func queryItemsforServiceConnection(userEmail: String?, token: String?) -> [URLQueryItem] {

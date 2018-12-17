@@ -11,6 +11,15 @@ import Foundation
 struct User {
     enum Id {
         case username(String), email(String)
+        
+        var value: String {
+            switch self {
+            case .username(let username):
+                return username
+            case .email(let email):
+                return email
+            }
+        }
     }
     
     /// We know something about a user when they begin a connect button flow.
