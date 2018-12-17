@@ -1248,6 +1248,7 @@ private extension ConnectButton {
             progressBar.configure(with: service)
             primaryLabelAnimator.transition(with: .rotateDown,
                                             updatedValue: .text(message),
+                                            insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
             imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
