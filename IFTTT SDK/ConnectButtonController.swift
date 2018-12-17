@@ -272,9 +272,39 @@ public class ConnectButtonController {
         }
     }
 
-    // MARK: - Safari VC and redirect handling
+    
+    // MARK: - Safari VC delegate (cancelation handling)
+    
+    /// Delegate object for Safari VC
+    /// Handles user cancelation in the web flow
+    class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
+        /// Callback when the Safari VC is dismissed by the user
+        /// This triggers a cancelation event
+        let onCancelation: () -> Void
+        
+        /// Create a new SafariDelegate
+        ///
+        /// - Parameter onCancelation: The cancelation handler
+        init(onCancelation: @escaping () -> Void) {
+            self.onCancelation = onCancelation
+        }
+        
+        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+            onCancelation()
+        }
+    }
+    
+    /// This objects acts as the Safari VC delegate
+    private var safariDelegate: SafariDelegate?
+    
+    private func handleCancelation() {
+        transition(to: .canceled)
+    }
+    
+    
+    // MARK: - Safari VC redirect handling
 
-    class RedirectObserving: NSObject, SFSafariViewControllerDelegate {
+    class RedirectObserving {
 
         private struct QueryItems {
             static let nextStep = "next_step"
@@ -291,20 +321,17 @@ public class ConnectButtonController {
         ///
         /// - serviceConnection: In the next step, authorize a service.
         /// - complete: The Connection is complete. `didConfiguration` is true, if the Connection required a configuration step on web.
-        /// - canceled: Service connection or IFTTT login was canceled by closing Safari VC.
         /// - failed: An error occurred on web, aborting the flow.
         enum Outcome {
             case serviceAuthorization(id: String)
             case complete(didConfiguration: Bool)
-            case canceled
             case failed(ConnectButtonControllerError)
         }
 
         var onRedirect: ((Outcome) -> Void)?
         var logRedirectQueryItems: (([URLQueryItem]) -> Void)?
 
-        override init() {
-            super.init()
+        init() {
             NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
@@ -349,22 +376,6 @@ public class ConnectButtonController {
                 onRedirect?(.failed(.unknownRedirect))
             }
         }
-
-        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            onRedirect?(.canceled)
-        }
-    }
-
-    private var currentSafariViewController: SFSafariViewController?
-
-    private func openActivationURL(_ url: URL) {
-        let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
-        controller.delegate = redirectObserving
-        if #available(iOS 11.0, *) {
-            controller.dismissButtonStyle = .cancel
-        }
-        currentSafariViewController = controller
-        present(controller)
     }
 
     private var redirectObserving: RedirectObserving?
@@ -372,22 +383,11 @@ public class ConnectButtonController {
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
         // Before we continue and handle this redirect, we must dismiss the active Safari VC
         guard currentSafariViewController == nil else {
-            // In this case the user dismissed Safari on their own by tapping the dismiss button
-            // This is a user cancel, but we have to wait for the VC to finish dismissing
-            // We can do this by monitoring the VC transition coordinator
-            if let transitionCoordinator = currentSafariViewController?.transitionCoordinator, currentSafariViewController?.isBeingDismissed == true {
-                transitionCoordinator.animate(alongsideTransition: { _ in }) { (_) in
-                    // Transition coordinator completion
-                    self.currentSafariViewController = nil
-                    self.handleRedirect(outcome)
-                }
-            } else {
-                // We must have gotten here from a redirect which doesn't automatically dismiss Safari VC
-                // Do that first
-                currentSafariViewController?.dismiss(animated: true, completion: {
-                    self.currentSafariViewController = nil
-                    self.handleRedirect(outcome)
-                })
+            // Redirect doesn't automatically dismiss Safari VC
+            // Do that first
+            currentSafariViewController?.dismiss(animated: true) {
+                self.currentSafariViewController = nil
+                self.handleRedirect(outcome)
             }
             return
         }
@@ -398,9 +398,6 @@ public class ConnectButtonController {
         // Determine the next step based on the redirect result
         let nextStep: ActivationStep = {
             switch outcome {
-            case .canceled:
-                return .canceled
-
             case .failed(let error):
                 return .failed(error)
 
@@ -421,7 +418,7 @@ public class ConnectButtonController {
         }()
 
         switch nextStep {
-        case .canceled, .failed:
+        case .failed:
             transition(to: nextStep)
 
         default:
@@ -449,6 +446,48 @@ public class ConnectButtonController {
         }
     }
 
+    
+    // MARK: - Web flow (IFTTT log in and service activation)
+    
+    private var currentSafariViewController: SFSafariViewController?
+    
+    private func openActivationURL(_ url: URL) {
+        let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+        controller.delegate = safariDelegate
+        if #available(iOS 11.0, *) {
+            controller.dismissButtonStyle = .cancel
+        }
+        currentSafariViewController = controller
+        present(controller)
+    }
+    
+    /// Creates a `RedirectObserving` and a `SafariDelegate` to track interaction in the web portion of the activation flow
+    private func prepareActivationWebFlow() {
+        redirectObserving = RedirectObserving()
+        redirectObserving?.onRedirect = { [weak self] outcome in
+            self?.handleRedirect(outcome)
+        }
+        redirectObserving?.logRedirectQueryItems = { [weak self] queryItems in
+            var redirectLog = "Redirect Parameters:"
+            queryItems.forEach {
+                redirectLog.append("\n\($0.name): \($0.value ?? "nil")")
+            }
+            
+            self?.button.addConnectionLog(redirectLog)
+        }
+        
+        safariDelegate = SafariDelegate { [weak self] in
+            self?.handleCancelation()
+        }
+    }
+    
+    /// Once activation is finished or canceled, tear down redirect and cancelation observing
+    private func endActivationWebFlow() {
+        redirectObserving = nil
+        safariDelegate = nil
+    }
+    
+    
 
     // MARK: - Connection activation & deactivation
 
@@ -533,26 +572,15 @@ public class ConnectButtonController {
 
         // MARK: - Initial connect button state
         case (.none, .initial), (.canceled?, .initial), (.failed?, .initial), (.disconnected?, .initial):
-            redirectObserving = RedirectObserving()
-            redirectObserving?.onRedirect = { [weak self] outcome in
-                self?.handleRedirect(outcome)
-            }
-            redirectObserving?.logRedirectQueryItems = { [weak self] queryItems in
-                var redirectLog = "Redirect Parameters:"
-                queryItems.forEach {
-                    redirectLog.append("\n\($0.name): \($0.value ?? "nil")")
-                }
-                
-                self?.button.addConnectionLog(redirectLog)
-            }
-
+            endActivationWebFlow()
+            
             button.footerInteraction.isTapEnabled = true
 
             let animated = previous != nil
 
             button.animator(for:
                 .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)
-                ).preform(animated: animated)
+            ).preform(animated: animated)
 
             button.toggleInteraction.isTapEnabled = true
             button.toggleInteraction.isDragEnabled = true
@@ -588,6 +616,8 @@ public class ConnectButtonController {
 
         // MARK: - Connected button state
         case (_, .connected):
+            endActivationWebFlow()
+            
             let animated = previous != nil
 
             button.animator(for: .buttonState(connectedButtonState,
@@ -619,6 +649,8 @@ public class ConnectButtonController {
 
         // MARK: - Check if email is an existing user
         case (.initial?, .identifyUser(let lookupMethod)):
+            prepareActivationWebFlow()
+            
             let timeout: TimeInterval = 3 // Network request timeout
 
             switch lookupMethod {
