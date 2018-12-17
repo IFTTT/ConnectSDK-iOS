@@ -135,7 +135,19 @@ public class ConnectButtonController {
                                    confirmButtonAsset: Assets.Button.emailConfirm)
         
         button.footerInteraction.onSelect = { [weak self] in
-            self?.showAboutPage()
+            guard let self = self else {
+                return
+            }
+            switch self.button.currentState {
+            case .toggle:
+                // Link to the about page when we are in the connected or initial state
+                self.showAboutPage()
+            case .email:
+                // Open terms of service / privacy policy when creating an account
+                self.showLegalTerms()
+            default:
+                break
+            }
         }
 
         switch connection.status {
@@ -167,9 +179,35 @@ public class ConnectButtonController {
 
     // MARK: - Footer
 
+    /// Presents the about page
     private func showAboutPage() {
-        let aboutViewController = AboutViewController(primaryService: connection.primaryService, secondaryService: connection.worksWithServices.first)
+        let aboutViewController = AboutViewController(primaryService: connection.primaryService,
+                                                      secondaryService: connection.worksWithServices.first)
         present(aboutViewController)
+    }
+    
+    /// Presents an action sheet to allow the user to view our terms of service or privacy policy
+    private func showLegalTerms() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let tosAction = UIAlertAction(title: LegalTermsText.termsOfService, style: .default) { (_) in
+            self.present(SFSafariViewController(url: Links.termsOfService))
+        }
+        let privacyAction = UIAlertAction(title: LegalTermsText.privacyPolicy, style: .default) { (_) in
+            self.present(SFSafariViewController(url: Links.privacyPolicy))
+        }
+        let cancelAction = UIAlertAction(title: "common.cancel".localized, style: .cancel, handler: nil)
+        [tosAction, privacyAction, cancelAction].forEach { alertController.addAction($0) }
+        
+        if let popover = alertController.popoverPresentationController {
+            // If a popover on iPad, align this to the bottom center of the button
+            popover.sourceView = button
+            popover.sourceRect = CGRect(x: button.bounds.midX,
+                                        y: button.bounds.maxY,
+                                        width: 0, height: 0)
+            popover.permittedArrowDirections = [.up, .down]
+        }
+        
+        present(alertController)
     }
 
     enum FooterMessages {
@@ -202,8 +240,8 @@ public class ConnectButtonController {
                 return text
 
             case .enterEmail:
-                let text = "button.footer.email".localized
-                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
+                let text = "button.footer.email.legal".localized
+                return LegalTermsText.string(withPrefix: text, activateLinks: false, attributes: [.font : typestyle.font])
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
