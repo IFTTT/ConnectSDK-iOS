@@ -1228,7 +1228,6 @@ private extension ConnectButton {
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
                 self.emailConfirmButton.alpha = 0
-                self.emailConfirmButton.backgroundColor = Style.Color.grey
                 
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
@@ -1239,7 +1238,6 @@ private extension ConnectButton {
                 self.backgroundView.border.opacity = 1
             }
             animator.addCompletion { (_) in
-                self.emailConfirmButton.backgroundColor = .black
                 self.emailConfirmButton.transform = .identity
             }
             
