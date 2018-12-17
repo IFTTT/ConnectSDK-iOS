@@ -1225,13 +1225,14 @@ private extension ConnectButton {
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
+            imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
+            
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
                 self.emailConfirmButton.alpha = 0
                 
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
-                self.imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
                 self.serviceIconView.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
@@ -1248,8 +1249,13 @@ private extension ConnectButton {
             primaryLabelAnimator.transition(with: .rotateDown,
                                             updatedValue: .text(message),
                                             addingTo: animator)
+            
+            imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
+            
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
+                
+                self.serviceIconView.alpha = 1
             }
             
             
@@ -1284,10 +1290,11 @@ private extension ConnectButton {
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
+            imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
+            
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
                 
-                self.imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
                 self.serviceIconView.alpha = 1
                 
                 self.checkmark.alpha = 0
