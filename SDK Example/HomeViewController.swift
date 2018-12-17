@@ -15,7 +15,8 @@ class HomeViewController: UITableViewController {
     
     var applets: [Item] {
         return [
-            ("mZRHhST7", "Copy a saved track to a playlist")
+            ("mZRHhST7", "Copy a saved track to a playlist"),
+            ("WwSFnCag", "Track charitable donations (Progammable Connection)")
         ]
     }
     
