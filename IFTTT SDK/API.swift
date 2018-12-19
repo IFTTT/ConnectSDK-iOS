@@ -10,7 +10,7 @@ import Foundation
 
 struct API {
     
-    static let sdkVersion = "2.0.0-alpha2"
+    static let sdkVersion = "2.0.0-alpha4"
     static let sdkPlatform = "ios"
     
     private struct URLConstants {
