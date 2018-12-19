@@ -82,8 +82,6 @@ public struct Connection: Equatable {
         return services.filter({ $0.isPrimary == false })
     }
     
-    let activationURL: URL
-    
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
     }
