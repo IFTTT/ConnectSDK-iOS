@@ -1,5 +1,5 @@
 //
-//  Applet_internal.swift
+//  Connection_internal.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 10/29/18.
@@ -14,8 +14,8 @@ extension Connection {
             let id = parser["id"].string,
             let name = parser["name"].string,
             let description = parser["description"].string,
-            let url = parser["url"].url,
-            let activationUrl = parser["embedded_url"].url else {
+            let url = parser["url"].url
+            else {
                 return nil
         }
         self.id = id
@@ -24,7 +24,6 @@ extension Connection {
         self.status = Status(rawValue: parser["user_status"].string ?? "") ?? .unknown
         self.services = parser["services"].compactMap { Service(parser: $0) }
         self.url = url
-        self.activationURL = activationUrl
         guard let primaryService = services.first(where: { $0.isPrimary }) else {
             return nil
         }

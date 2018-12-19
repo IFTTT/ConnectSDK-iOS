@@ -10,22 +10,31 @@ import Foundation
 
 extension Connection {
     
-    private enum URLQueryItemConstants {
-        static let sdkReturnName = "sdk_return_to"
-        static let inviteCodeName = "invite_code"
-        static let emailName = "email"
-        static let skipSDKRedirectName = "skip_sdk_redirect"
-        static let sdkCreatAccountName = "sdk_create_account"
-        static let tokenName = "code"
-        static let defaultTrueValue = "true"
-        static let sdkVersionName = "sdk_version"
-        static let sdkPlatformName = "sdk_platform"
+    struct Constants {
+        static let url = URL(string: "https://ifttt.com/access/api")!
+        
+        struct QueryItem {
+            static let sdkReturnName = "sdk_return_to"
+            static let inviteCodeName = "invite_code"
+            static let emailName = "email"
+            static let skipSDKRedirectName = "skip_sdk_redirect"
+            static let sdkCreatAccountName = "sdk_create_account"
+            static let tokenName = "code"
+            static let defaultTrueValue = "true"
+            static let sdkVersionName = "sdk_version"
+            static let sdkPlatformName = "sdk_platform"
+        }
     }
     
     enum ActivationStep {
         case
         login(User.Id),
         serviceConnection(newUserEmail: String?, token: String?)
+    }
+    
+    /// The activation url is formed by appending the Connection's ID
+    private var activationURL: URL {
+        return Constants.url.appendingPathComponent(id)
     }
     
     func activationURL(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> URL {
@@ -35,12 +44,12 @@ extension Connection {
     }
     
     private func queryItems(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
-        var queryItems = [URLQueryItem(name: URLQueryItemConstants.sdkReturnName, value: activationRedirect.absoluteString),
-                          URLQueryItem(name: URLQueryItemConstants.sdkVersionName, value: API.sdkVersion),
-                          URLQueryItem(name: URLQueryItemConstants.sdkPlatformName, value: API.sdkPlatform)]
+        var queryItems = [URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
+                          URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
+                          URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform)]
         
         if let inviteCode = tokenProvider.inviteCode {
-            queryItems.append(URLQueryItem(name: URLQueryItemConstants.inviteCodeName, value: inviteCode))
+            queryItems.append(URLQueryItem(name: Constants.QueryItem.inviteCodeName, value: inviteCode))
         }
         
         switch step {
@@ -54,19 +63,19 @@ extension Connection {
     }
     
     private func queryItemForLogin( userId: User.Id) -> URLQueryItem {
-        return URLQueryItem(name: URLQueryItemConstants.emailName, value: userId.value)
+        return URLQueryItem(name: Constants.QueryItem.emailName, value: userId.value)
     }
     
     private func queryItemsforServiceConnection(userEmail: String?, token: String?) -> [URLQueryItem] {
-        var queryItems = [URLQueryItem(name: URLQueryItemConstants.skipSDKRedirectName, value: URLQueryItemConstants.defaultTrueValue)]
+        var queryItems = [URLQueryItem(name: Constants.QueryItem.skipSDKRedirectName, value: Constants.QueryItem.defaultTrueValue)]
         
         if let email = userEmail {
-            queryItems.append(URLQueryItem(name: URLQueryItemConstants.emailName, value: email))
-            queryItems.append(URLQueryItem(name: URLQueryItemConstants.sdkCreatAccountName, value: URLQueryItemConstants.defaultTrueValue))
+            queryItems.append(URLQueryItem(name: Constants.QueryItem.emailName, value: email))
+            queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreatAccountName, value: Constants.QueryItem.defaultTrueValue))
         }
         
         if let token = token {
-            queryItems.append(URLQueryItem(name: URLQueryItemConstants.tokenName, value: token))
+            queryItems.append(URLQueryItem(name: Constants.QueryItem.tokenName, value: token))
         }
         
         return queryItems

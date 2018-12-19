@@ -53,7 +53,7 @@
 		FCD99590218277EE00F69149 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD9958F218277EE00F69149 /* LoginViewController.swift */; };
 		FCF0C4E421B0A97000DEB117 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF0C4E321B0A97000DEB117 /* NetworkError.swift */; };
 		FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC42187C7E0004B1100 /* JSON.swift */; };
-		FCF29FC72187C8C2004B1100 /* Applet_internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC62187C8C2004B1100 /* Applet_internal.swift */; };
+		FCF29FC72187C8C2004B1100 /* Connection_internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC62187C8C2004B1100 /* Connection_internal.swift */; };
 		FCF29FCB2187D0E3004B1100 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FCA2187D0E3004B1100 /* User.swift */; };
 /* End PBXBuildFile section */
 
@@ -138,7 +138,7 @@
 		FCD9958F218277EE00F69149 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		FCF0C4E321B0A97000DEB117 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		FCF29FC42187C7E0004B1100 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
-		FCF29FC62187C8C2004B1100 /* Applet_internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Applet_internal.swift; sourceTree = "<group>"; };
+		FCF29FC62187C8C2004B1100 /* Connection_internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_internal.swift; sourceTree = "<group>"; };
 		FCF29FCA2187D0E3004B1100 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -209,7 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				FCF29FC42187C7E0004B1100 /* JSON.swift */,
-				FCF29FC62187C8C2004B1100 /* Applet_internal.swift */,
+				FCF29FC62187C8C2004B1100 /* Connection_internal.swift */,
 				FCF29FCA2187D0E3004B1100 /* User.swift */,
 			);
 			name = Models;
@@ -505,7 +505,7 @@
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
 				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
-				FCF29FC72187C8C2004B1100 /* Applet_internal.swift in Sources */,
+				FCF29FC72187C8C2004B1100 /* Connection_internal.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
 				1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */,
 				FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */,
