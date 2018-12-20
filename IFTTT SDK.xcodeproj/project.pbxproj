@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
+		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
 		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
 		1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* CredentialProvider.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
@@ -91,6 +92,8 @@
 /* Begin PBXFileReference section */
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
+		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EmailDataDetectorTests.swift"; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* CredentialProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialProvider.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
@@ -269,6 +272,8 @@
 		FCBA15F721389F7500EB1BC8 /* IFTTT SDKTests */ = {
 			isa = PBXGroup;
 			children = (
+				1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */,
+				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
 			);
 			path = "IFTTT SDKTests";
@@ -423,6 +428,7 @@
 					};
 					FCBA15F221389F7500EB1BC8 = {
 						CreatedOnToolsVersion = 10.0;
+						LastSwiftMigration = 1010;
 					};
 					FCBA160D2139ACD600EB1BC8 = {
 						CreatedOnToolsVersion = 10.0;
@@ -525,6 +531,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,6 +752,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
 				INFOPLIST_FILE = "IFTTT SDKTests/Info.plist";
@@ -755,6 +763,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDKTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "IFTTT SDKTests/IFTTT SDKTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -764,6 +774,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
 				INFOPLIST_FILE = "IFTTT SDKTests/Info.plist";
@@ -774,6 +785,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDKTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "IFTTT SDKTests/IFTTT SDKTests-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
