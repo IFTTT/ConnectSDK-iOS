@@ -41,7 +41,7 @@ extension Connection {
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
         components?.queryItems = queryItems(for: step, tokenProvider: tokenProvider, activationRedirect: activationRedirect)
        
-        // We need to manually encode `+` characters in a user's e-mail because `+` is a valid character that represents a space in a url query. E-mail's wiht spaces are not valid.
+        // We need to manually encode `+` characters in a user's e-mail because `+` is a valid character that represents a space in a url query. E-mail's with spaces are not valid.
         let percentEncodedQuery = components?.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: .emailEncodingPassthrough)
         components?.percentEncodedQuery = percentEncodedQuery
         
