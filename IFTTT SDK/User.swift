@@ -46,6 +46,8 @@ extension String {
     var isValidEmail: Bool {
         let types: NSTextCheckingResult.CheckingType = [.link]
         guard let detector = try? NSDataDetector(types: types.rawValue) else {
+            
+            // Returning true because the data detectored failed to initalized and we can not validate the e-mail. Erroring on the side of the e-mail being valid in this case.
             return true
         }
         
