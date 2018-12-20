@@ -857,7 +857,6 @@ private class ServiceIconsNetworkController: ImageViewNetworkController {
     func prefetchImages(for connection: Connection) {
         connection.services.forEach {
             downloader.downloadImage(url: $0.templateIconURL, { _ in})
-            downloader.downloadImage(url: $0.standardIconURL, { _ in})
         }
     }
     
@@ -897,6 +896,6 @@ private class ServiceIconsNetworkController: ImageViewNetworkController {
 @available(iOS 10.0, *)
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
-        return ConnectButton.Service(standardIconURL: standardIconURL, brandColor: brandColor)
+        return ConnectButton.Service(iconURL: templateIconURL, brandColor: brandColor)
     }
 }

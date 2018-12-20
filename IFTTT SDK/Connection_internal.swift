@@ -52,7 +52,6 @@ extension Connection.Service {
             let id = parser["service_id"].string,
             let name = parser["service_name"].string,
             let templateIconURL = parser["monochrome_icon_url"].url,
-            let transparentBackgroundIconURL = parser["color_icon_url"].url,
             let brandColor = parser["brand_color"].color,
             let url = parser["url"].url else {
                 return nil
@@ -61,7 +60,6 @@ extension Connection.Service {
         self.name = name
         self.isPrimary = parser["is_primary"].bool ?? false
         self.templateIconURL = templateIconURL
-        self.standardIconURL = transparentBackgroundIconURL
         self.brandColor = brandColor
         self.url = url
     }
