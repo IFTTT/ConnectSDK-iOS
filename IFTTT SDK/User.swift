@@ -38,10 +38,23 @@ struct User {
 }
 
 extension String {
-    private static let emailRegex = try! NSRegularExpression(pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}",
-                                                             options: [.caseInsensitive])
     
+    /// Checks whether a string contains a e-mail address.
+    ///
+    /// - Returns: A `Bool` on whether a e-mail address is present.
+    /// - Throws: If a `NSDataDetector` can not be created.
     var isValidEmail: Bool {
-        return String.emailRegex.numberOfMatches(in: self, options: [], range: NSMakeRange(0, (self as NSString).length)) > 0
+        let types: NSTextCheckingResult.CheckingType = [.link]
+        guard let detector = try? NSDataDetector(types: types.rawValue) else {
+            
+            // Returning true because the data detectored failed to initalized and we can not validate the e-mail. Erroring on the side of the e-mail being valid in this case.
+            return true
+        }
+        
+        let range = NSRange(location: 0, length: count)
+        let matches = detector.matches(in: self, options: [], range: range)
+        
+        guard matches.count == 1, let result = matches.first, range == result.range else { return false }
+        return result.url?.scheme == "mailto"
     }
 }

@@ -69,7 +69,7 @@ extension Connection {
     private func queryItemsforServiceConnection(userEmail: String?, token: String?) -> [URLQueryItem] {
         var queryItems = [URLQueryItem(name: Constants.QueryItem.skipSDKRedirectName, value: Constants.QueryItem.defaultTrueValue)]
         
-        if let email = userEmail {
+        if let email = userEmail?.addingPercentEncoding(withAllowedCharacters: .emailURLQueryAllowed) {
             queryItems.append(URLQueryItem(name: Constants.QueryItem.emailName, value: email))
             queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreatAccountName, value: Constants.QueryItem.defaultTrueValue))
         }
@@ -79,5 +79,14 @@ extension Connection {
         }
         
         return queryItems
+    }
+}
+
+private extension CharacterSet {
+    
+    static var emailURLQueryAllowed: CharacterSet {
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove(charactersIn: "+")
+        return allowed
     }
 }
