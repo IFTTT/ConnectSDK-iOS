@@ -99,7 +99,7 @@ public class ConnectButton: UIView {
     // MARK: - Button state
     
     struct Service {
-        let standardIconURL: URL
+        let iconURL: URL
         let brandColor: UIColor
     }
     
@@ -776,7 +776,7 @@ public class ConnectButton: UIView {
         }
         
         func configure(with service: Service, networkController: ImageViewNetworkController?) {
-            networkController?.setImage(with: service.standardIconURL, for: knob.iconView)
+            networkController?.setImage(with: service.iconURL, for: knob.iconView)
             
             let color = service.brandColor
             knob.backgroundColor = color
@@ -1225,7 +1225,7 @@ private extension ConnectButton {
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
-            imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
+            imageViewNetworkController?.setImage(with: service?.iconURL, for: self.serviceIconView)
             
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
@@ -1251,7 +1251,7 @@ private extension ConnectButton {
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
-            imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
+            imageViewNetworkController?.setImage(with: service?.iconURL, for: self.serviceIconView)
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
@@ -1291,7 +1291,7 @@ private extension ConnectButton {
                                             insets: service == nil ? .standard : .avoidServiceIcon,
                                             addingTo: animator)
             
-            imageViewNetworkController?.setImage(with: service?.standardIconURL, for: self.serviceIconView)
+            imageViewNetworkController?.setImage(with: service?.iconURL, for: self.serviceIconView)
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey

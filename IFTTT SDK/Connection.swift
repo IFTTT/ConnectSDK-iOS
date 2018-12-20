@@ -39,11 +39,9 @@ public struct Connection: Equatable {
         /// Whether the service is the primary service.
         public let isPrimary: Bool
         
-        /// The `URL` to an icon that is intended to be tinted. Typically this is white or black. Also know as `Works with icon` on the IFTTT platform.
+        /// The `URL` to an icon that is intended to be tinted via `UIImageRenderingModeAlwaysTemplate`.
+        /// Typically this is white or black. Also know as `Works with icon` on the IFTTT platform. 
         public let templateIconURL: URL
-        
-        /// The `URL` of an icon that is intended to be presented on top of a background with the service's `brandColor`. Also know as `Applet logo` on the IFTTT platform.
-        public let standardIconURL: URL
         
         /// A primary color defined by the service's brand.
         public let brandColor: UIColor
