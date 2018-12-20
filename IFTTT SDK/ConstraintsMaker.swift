@@ -8,15 +8,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
-extension UIView {
-    
-    /// Returns a `ConstraintsMaker` for this view
-    var constrain: ConstraintsMaker {
-        return ConstraintsMaker(view: self)
-    }
-}
-
 /// Provides a consistent way to access layout anchors between `UIView` and `UILayoutGuide`
 @available(iOS 10.0, *)
 protocol LayoutGuide {
@@ -36,6 +27,15 @@ extension UIView: LayoutGuide { }
 @available(iOS 10.0, *)
 extension UILayoutGuide: LayoutGuide { }
 
+@available(iOS 10.0, *)
+extension LayoutGuide {
+    
+    /// Returns a `ConstraintsMaker` for this view
+    var constrain: ConstraintsMaker {
+        return ConstraintsMaker(view: self)
+    }
+}
+
 /// A factory for `NSLayoutConstraint`
 /// Creates layout regarding a single target view
 @available(iOS 10.0, *)
@@ -51,14 +51,16 @@ struct ConstraintsMaker {
     }
     
     /// The target view in layout constraints
-    let view: UIView
+    let view: LayoutGuide
     
     /// Creates a new `ConstraintsMaker`
     ///
     /// - Parameter view: The target view in layout constraints
-    init(view: UIView) {
+    init(view: LayoutGuide) {
         self.view = view
-        view.translatesAutoresizingMaskIntoConstraints = false
+        if let view = view as? UIView {
+            view.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     /// Center the `view` within a guide.
@@ -86,13 +88,6 @@ struct ConstraintsMaker {
     func square(length: CGFloat) {
         view.heightAnchor.constraint(equalToConstant: length).isActive = true
         view.widthAnchor.constraint(equalToConstant: length).isActive = true
-    }
-
-    /// Constrains the `view` to a provided height value.
-    ///
-    /// - Parameter constant: The height of the `view`.
-    func height(to constant: CGFloat) {
-        view.heightAnchor.constraint(equalToConstant: constant).isActive = true
     }
     
     /// Constrains the `view`s width to that of a layout guide
