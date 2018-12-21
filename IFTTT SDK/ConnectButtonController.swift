@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import StoreKit
 
 /// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
 public enum ConnectButtonControllerError: Error {
@@ -138,13 +139,18 @@ public class ConnectButtonController {
             guard let self = self else {
                 return
             }
-            switch self.button.currentState {
-            case .toggle:
-                // Link to the about page when we are in the connected or initial state
-                self.showAboutPage()
-            case .email:
-                // Open terms of service / privacy policy when creating an account
-                self.showLegalTerms()
+            switch self.currentActivationStep {
+            case .initial?:
+                if case .email = self.button.currentState {
+                    // Open terms of service / privacy policy when creating an account
+                    self.showLegalTerms()
+                } else {
+                    // Link to the about page when we are in the initial state
+                    self.showAboutPage()
+                }
+            case .connected?:
+                // When the Connection is made, show the app store page for IFTTT
+                self.showAppStorePage()
             default:
                 break
             }
@@ -184,6 +190,24 @@ public class ConnectButtonController {
         let aboutViewController = AboutViewController(primaryService: connection.primaryService,
                                                       secondaryService: connection.worksWithServices.first)
         present(aboutViewController)
+    }
+    
+    /// Acts as the delegate for displaying the IFTTT app store page
+    private class StoreProductViewControllerDelegate: NSObject, SKStoreProductViewControllerDelegate {
+        public func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
+            viewController.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    private var storeProductViewControllerDelegate = StoreProductViewControllerDelegate()
+    
+    /// Presents an App Store view for the IFTTT app
+    private func showAppStorePage() {
+        let viewController = SKStoreProductViewController()
+        let parameters: [String : Any] = [SKStoreProductParameterITunesItemIdentifier : API.iftttAppStoreId]
+        viewController.loadProduct(withParameters: parameters, completionBlock: nil)
+        viewController.delegate = storeProductViewControllerDelegate
+        present(viewController)
     }
     
     /// Presents an action sheet to allow the user to view our terms of service or privacy policy
