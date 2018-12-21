@@ -10,6 +10,9 @@ import Foundation
 
 struct API {
     
+    /// The unique id for IFTTT's App Store listing
+    static let iftttAppStoreId = "660944635"
+    
     static let sdkVersion = "2.0.0-alpha4"
     static let sdkPlatform = "ios"
     
