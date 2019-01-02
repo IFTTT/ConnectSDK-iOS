@@ -79,12 +79,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         IFTTTAuthenication.shared.setIftttUserToken(nil)
         
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.backgroundColor = .white
-        window.rootViewController = LoginViewController()
-        window.makeKeyAndVisible()
-        self.window = window
-        
         return true
     }
     

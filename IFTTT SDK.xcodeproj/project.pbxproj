@@ -36,6 +36,9 @@
 		FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2573122139E8CC0065AAD6 /* ConnectButton.swift */; };
 		FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FC3E4B5B21DD4BEC00CF7AB8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */; };
+		FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */; };
+		FC3E4B5F21DD613800CF7AB8 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B5E21DD613800CF7AB8 /* StoreViewController.swift */; };
 		FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44E0882162E81F0063DCA1 /* LogoView.swift */; };
 		FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */; };
 		FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */; };
@@ -118,6 +121,9 @@
 		FC22B1A321ACCDF800738023 /* PassthroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughView.swift; sourceTree = "<group>"; };
 		FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
+		FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
+		FC3E4B5E21DD613800CF7AB8 /* StoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreViewController.swift; sourceTree = "<group>"; };
 		FC44E0882162E81F0063DCA1 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButtonController.swift; sourceTree = "<group>"; };
@@ -286,6 +292,9 @@
 				FCD9958F218277EE00F69149 /* LoginViewController.swift */,
 				FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */,
 				FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */,
+				FC3E4B5E21DD613800CF7AB8 /* StoreViewController.swift */,
+				FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */,
+				FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */,
 				FCBA16172139ACD800EB1BC8 /* Assets.xcassets */,
 				FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */,
 				FCBA161C2139ACD800EB1BC8 /* Info.plist */,
@@ -476,6 +485,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC3E4B5B21DD4BEC00CF7AB8 /* Main.storyboard in Resources */,
 				FCBA161B2139ACD800EB1BC8 /* LaunchScreen.storyboard in Resources */,
 				FCBA16182139ACD800EB1BC8 /* Assets.xcassets in Resources */,
 			);
@@ -541,6 +551,8 @@
 			files = (
 				FCBA16132139ACD600EB1BC8 /* AppletViewController.swift in Sources */,
 				FCBA16112139ACD600EB1BC8 /* AppDelegate.swift in Sources */,
+				FC3E4B5F21DD613800CF7AB8 /* StoreViewController.swift in Sources */,
+				FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */,
 				FCD99590218277EE00F69149 /* LoginViewController.swift in Sources */,
 				FCBA16232139AF5E00EB1BC8 /* HomeViewController.swift in Sources */,
 			);
