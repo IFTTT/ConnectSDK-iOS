@@ -9,69 +9,16 @@
 import UIKit
 import IFTTT_SDK
 
-// Test using the SDK with an email address
-// This is a required property in `ConnectionConfiguration`
-// In a real app, this would be the email address of your signed in user
-var ExampleUserEmail = ""
-
-/// Add style. Tests connect button on light and dark apps
-enum Style {
-    case light
-    case dark
-    
-    static var currentStyle: Style = Bool.random() ? .light : .dark
-    
-    var foregroundColor: UIColor {
-        switch self {
-        case .light: return .black
-        case .dark: return .white
-        }
-    }
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .light: return .white
-        case .dark: return .black
-        }
-    }
-}
-
-class NavigationController: UINavigationController {
-    
-    override func loadView() {
-        super.loadView()
-        
-        navigationBar.barTintColor = Style.currentStyle.backgroundColor
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        switch Style.currentStyle {
-        case .light:
-            return .default
-        case .dark:
-            return .lightContent
-        }
-    }
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    static var shared: AppDelegate?
-    
     var window: UIWindow?
     
-    static let connectionRedirectURL = URL(string: "ifttt-api-example://sdk-callback")!
+    static var shared: AppDelegate?
+    
+    static let connectionRedirectURL = URL(string: "groceryexpress://connect_callback")!
+    
     private let connectionRedirectHandler = AuthenticationRedirectHandler(authorizationRedirectURL: AppDelegate.connectionRedirectURL)
-    
-    func login() {
-        window?.rootViewController = NavigationController(rootViewController: HomeViewController())
-    }
-    
-    @objc func swapStyle() {
-        Style.currentStyle = Style.currentStyle == .light ? .dark : .light
-        login()
-    }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -95,16 +42,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 /// Mock device keychain store
 class KeychainMock {
-    static let shared = KeychainMock()
-    
-    private var storage = [String : String]()
-    
     subscript(key: String) -> String? {
         get {
-            return storage[key]
+            return UserDefaults.standard.string(forKey: key)
         }
         set {
-            storage[key] = newValue
+            UserDefaults.standard.set(newValue, forKey: key)
         }
     }
 }
@@ -112,7 +55,7 @@ class KeychainMock {
 struct IFTTTAuthenication: CredentialProvider {
     static let shared = IFTTTAuthenication()
     
-    let keychain = KeychainMock.shared
+    let keychain = KeychainMock()
     
     var partnerOAuthCode: String {
         return keychain["my_user_token"] ?? ""
@@ -123,7 +66,7 @@ struct IFTTTAuthenication: CredentialProvider {
     }
     
     var inviteCode: String? {
-        return "21790-7d53f29b1eaca0bdc5bd6ad24b8f4e1c"
+        return "213621-90a10d229fbf8177a7ba0e6249847daf"
     }
     
     func apiExampleOauthToken(_ token: String) {

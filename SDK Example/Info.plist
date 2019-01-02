@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>Grocery Express</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -25,7 +25,7 @@
 			<string>com.ifttt.sdk.example</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ifttt-api-example</string>
+				<string>groceryexpress</string>
 			</array>
 		</dict>
 	</array>

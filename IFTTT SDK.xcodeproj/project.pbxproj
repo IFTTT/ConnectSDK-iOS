@@ -38,7 +38,8 @@
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC3E4B5B21DD4BEC00CF7AB8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */; };
 		FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */; };
-		FC3E4B5F21DD613800CF7AB8 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B5E21DD613800CF7AB8 /* StoreViewController.swift */; };
+		FC3E4B6121DD79EA00CF7AB8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */; };
+		FC3E4B6321DD7A0300CF7AB8 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */; };
 		FC44E0892162E81F0063DCA1 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44E0882162E81F0063DCA1 /* LogoView.swift */; };
 		FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */; };
 		FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */; };
@@ -49,12 +50,9 @@
 		FCBA15FB21389F7500EB1BC8 /* IFTTT_SDK.h in Headers */ = {isa = PBXBuildFile; fileRef = FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16042138A4EE00EB1BC8 /* Connection.swift */; };
 		FCBA16112139ACD600EB1BC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */; };
-		FCBA16132139ACD600EB1BC8 /* AppletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */; };
 		FCBA16182139ACD800EB1BC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16172139ACD800EB1BC8 /* Assets.xcassets */; };
 		FCBA161B2139ACD800EB1BC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */; };
-		FCBA16232139AF5E00EB1BC8 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */; };
 		FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCC6DEB1215D90DD008C8405 /* Assets.swift */; };
-		FCD99590218277EE00F69149 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD9958F218277EE00F69149 /* LoginViewController.swift */; };
 		FCF0C4E421B0A97000DEB117 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF0C4E321B0A97000DEB117 /* NetworkError.swift */; };
 		FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC42187C7E0004B1100 /* JSON.swift */; };
 		FCF29FC72187C8C2004B1100 /* Connection_internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC62187C8C2004B1100 /* Connection_internal.swift */; };
@@ -123,7 +121,8 @@
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
-		FC3E4B5E21DD613800CF7AB8 /* StoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreViewController.swift; sourceTree = "<group>"; };
+		FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FC44E0882162E81F0063DCA1 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButtonController.swift; sourceTree = "<group>"; };
@@ -138,13 +137,10 @@
 		FCBA16042138A4EE00EB1BC8 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		FCBA160E2139ACD600EB1BC8 /* SDK Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDK Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppletViewController.swift; sourceTree = "<group>"; };
 		FCBA16172139ACD800EB1BC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FCBA161A2139ACD800EB1BC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FCBA161C2139ACD800EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		FCC6DEB1215D90DD008C8405 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
-		FCD9958F218277EE00F69149 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		FCF0C4E321B0A97000DEB117 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		FCF29FC42187C7E0004B1100 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		FCF29FC62187C8C2004B1100 /* Connection_internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_internal.swift; sourceTree = "<group>"; };
@@ -289,10 +285,8 @@
 			isa = PBXGroup;
 			children = (
 				FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */,
-				FCD9958F218277EE00F69149 /* LoginViewController.swift */,
-				FCBA16222139AF5E00EB1BC8 /* HomeViewController.swift */,
-				FCBA16122139ACD600EB1BC8 /* AppletViewController.swift */,
-				FC3E4B5E21DD613800CF7AB8 /* StoreViewController.swift */,
+				FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */,
+				FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */,
 				FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */,
 				FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */,
 				FCBA16172139ACD800EB1BC8 /* Assets.xcassets */,
@@ -549,12 +543,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCBA16132139ACD600EB1BC8 /* AppletViewController.swift in Sources */,
 				FCBA16112139ACD600EB1BC8 /* AppDelegate.swift in Sources */,
-				FC3E4B5F21DD613800CF7AB8 /* StoreViewController.swift in Sources */,
 				FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */,
-				FCD99590218277EE00F69149 /* LoginViewController.swift in Sources */,
-				FCBA16232139AF5E00EB1BC8 /* HomeViewController.swift in Sources */,
+				FC3E4B6321DD7A0300CF7AB8 /* Settings.swift in Sources */,
+				FC3E4B6121DD79EA00CF7AB8 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
