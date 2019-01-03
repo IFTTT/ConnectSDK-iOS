@@ -73,9 +73,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="3zy-Oq-KUv">
-                                <rect key="frame" x="30" y="118" width="354" height="240"/>
+                                <rect key="frame" x="30" y="117.99999999999997" width="354" height="353.33333333333326"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="vFk-1i-1i3">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="vFk-1i-1i3" userLabel="Email">
                                         <rect key="frame" x="0.0" y="0.0" width="354" height="60.333333333333336"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hc4-9Q-7pa">
@@ -95,7 +95,7 @@
                                             </textField>
                                         </subviews>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Al9-gP-dtd">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Al9-gP-dtd" userLabel="New user flow">
                                         <rect key="frame" x="0.0" y="90.333333333333343" width="354" height="61.333333333333343"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New user flow" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JHU-rC-gju">
@@ -112,7 +112,7 @@
                                             </switch>
                                         </subviews>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="KKU-fD-FHT">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="KKU-fD-FHT" userLabel="Connect button style">
                                         <rect key="frame" x="0.0" y="181.66666666666669" width="354" height="58.333333333333343"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect button style" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4yg-7I-WpE">
@@ -131,6 +131,30 @@
                                                     <action selector="styleChanged:" destination="jya-bU-N4g" eventType="valueChanged" id="fCj-zR-mZQ"/>
                                                 </connections>
                                             </segmentedControl>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZBS-iP-tER" userLabel="Logout">
+                                        <rect key="frame" x="0.0" y="270" width="354" height="83.333333333333314"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User is logged into IFTTT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OiM-lg-0oO">
+                                                <rect key="frame" x="81.000000000000014" y="0.0" width="192.33333333333337" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Email: user@ifttt.com, Token: xyz" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="acf-Id-yR7">
+                                                <rect key="frame" x="65" y="20.333333333333314" width="224" height="33"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SvO-Zu-q0B">
+                                                <rect key="frame" x="153" y="53.333333333333314" width="48" height="30"/>
+                                                <state key="normal" title="Logout"/>
+                                                <connections>
+                                                    <action selector="logoutTapped:" destination="jya-bU-N4g" eventType="touchUpInside" id="3zk-q4-wmh"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -153,7 +177,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="connectButtonStyleControl" destination="QbF-qk-Cql" id="c46-4e-45d"/>
+                        <outlet property="credentialsTextView" destination="acf-Id-yR7" id="2Cy-St-DGg"/>
                         <outlet property="emailField" destination="mMu-Ek-NQx" id="uXA-5Z-g7P"/>
+                        <outlet property="logoutView" destination="ZBS-iP-tER" id="7E7-o7-tLp"/>
                         <outlet property="newUserSwitch" destination="MtM-dE-KSy" id="yw8-zp-Zgy"/>
                     </connections>
                 </viewController>
@@ -262,10 +288,10 @@
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="282"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="value_props" translatesAutoresizingMaskIntoConstraints="NO" id="DhP-kH-kEq">
-                                        <rect key="frame" x="0.0" y="445" width="414" height="151"/>
+                                        <rect key="frame" x="0.0" y="445.33333333333326" width="414" height="151"/>
                                     </imageView>
                                     <view contentMode="scaleToFill" placeholderIntrinsicWidth="infinite" placeholderIntrinsicHeight="103" translatesAutoresizingMaskIntoConstraints="NO" id="olx-BK-h7F" customClass="ConnectButton" customModule="IFTTT_SDK">
-                                        <rect key="frame" x="0.0" y="312" width="414" height="103"/>
+                                        <rect key="frame" x="0.0" y="312" width="414" height="103.33333333333331"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Delivered when you're at home" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K6a-ig-8eM">

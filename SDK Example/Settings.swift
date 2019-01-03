@@ -12,25 +12,14 @@ import IFTTT_SDK
 /// Access current app settings
 struct Settings {
     
-    /// The current user email
+    /// The current grocery express user email
     var email: String
     
-    /// For demoing, adds timestamp to the end of the email to trigger a new user flow
+    /// Signals that we should always use the new user connection flow
     var forcesNewUserFlow: Bool
     
     /// The style of the Connect Button (light / dark)
     var connectButtonStyle: ConnectButton.Style
-    
-    /// The email address to use when activating a Connection
-    var connectFlowEmail: String {
-        if forcesNewUserFlow, let atIndex = email.firstIndex(where: { $0 == "@" }) {
-            var newUserEmail = email
-            newUserEmail.insert(contentsOf: "+\(Date().timeIntervalSince1970)", at: atIndex)
-            return newUserEmail
-        } else {
-            return email
-        }
-    }
     
     /// Gets the current settings
     init() {

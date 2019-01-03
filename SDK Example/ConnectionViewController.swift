@@ -26,6 +26,8 @@ class ConnectionViewController: UIViewController {
     
     // MARK: - Connect flow
     
+    private let connectionCredentials = ConnectionCredentials(settings: Settings())
+    
     private var connectButtonController: ConnectButtonController?
     
     private func setupConnectButtonController(_ configuration: ConnectionConfiguration) {
@@ -48,22 +50,24 @@ class ConnectionViewController: UIViewController {
         connectButton.isHidden = true
         valuePropsView.isHidden = true
         
-        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: IFTTTAuthenication.shared)) { [weak self] response in
+        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: connectionCredentials)) { [weak self] response in
+            guard let self = self else { return }
+            
             switch response.result {
             case .success(let connection):
                 let connectionConfiguration = ConnectionConfiguration(connection: connection,
-                                                                      suggestedUserEmail: Settings().connectFlowEmail,
-                                                                      credentialProvider: IFTTTAuthenication.shared,
+                                                                      suggestedUserEmail: self.connectionCredentials.email,
+                                                                      credentialProvider: self.connectionCredentials,
                                                                       connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
-                self?.setupConnectButtonController(connectionConfiguration)
+                self.setupConnectButtonController(connectionConfiguration)
                 
             case .failure:
                 let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connect.", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: { _ in
-                    self?.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popViewController(animated: true)
                 })
                 alertController.addAction(okAction)
-                self?.present(alertController, animated: true, completion: nil)
+                self.present(alertController, animated: true, completion: nil)
             }
         }
     }
@@ -90,6 +94,21 @@ class ConnectionViewController: UIViewController {
 
 // MARK: - Connect Button Delegate
 
+private extension ConnectButtonControllerError {
+    var reason: String? {
+        switch self {
+        case .iftttAccountCreationFailed:
+            return "Failed to create IFTTT account"
+        case .networkError(let error):
+            return error?.localizedDescription ?? "Unknown network error"
+        case .unknownRedirect, .unknownResponse:
+            return "Unknown error"
+        case .canceled:
+            return nil
+        }
+    }
+}
+
 extension ConnectionViewController: ConnectButtonControllerDelegate {
     func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
         return self
@@ -100,29 +119,19 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         case .success:
             break
         case .failure(let error):
-            if let connectionError = error as? ConnectButtonControllerError {
-                switch connectionError {
-                case .iftttAccountCreationFailed:
-                    break
-                    
-                case .networkError(let networkError):
-                    break
-                    
-                case .unknownRedirect, .unknownResponse:
-                    break
-                    
-                case .canceled:
-                    break
-                }
+            if let connectionError = error as? ConnectButtonControllerError, let reason = connectionError.reason {
+                let alert = UIAlertController(title: "Connection failed", message: reason, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+                present(alert, animated: true, completion: nil)
             }
         }
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>) {
-        
+        // Received when the Connection is deactivated.
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) {
-        
+        // Likely this can be ignore, informs us that the email entered in the Connection flow was not valid.
     }
 }

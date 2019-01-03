@@ -53,6 +53,7 @@
 		FCBA16182139ACD800EB1BC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16172139ACD800EB1BC8 /* Assets.xcassets */; };
 		FCBA161B2139ACD800EB1BC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */; };
 		FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCC6DEB1215D90DD008C8405 /* Assets.swift */; };
+		FCD3AE7121DE8B1C00962673 /* ConnectionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD3AE7021DE8B1C00962673 /* ConnectionCredentials.swift */; };
 		FCF0C4E421B0A97000DEB117 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF0C4E321B0A97000DEB117 /* NetworkError.swift */; };
 		FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC42187C7E0004B1100 /* JSON.swift */; };
 		FCF29FC72187C8C2004B1100 /* Connection_internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC62187C8C2004B1100 /* Connection_internal.swift */; };
@@ -141,6 +142,7 @@
 		FCBA161A2139ACD800EB1BC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FCBA161C2139ACD800EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCC6DEB1215D90DD008C8405 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
+		FCD3AE7021DE8B1C00962673 /* ConnectionCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionCredentials.swift; sourceTree = "<group>"; };
 		FCF0C4E321B0A97000DEB117 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		FCF29FC42187C7E0004B1100 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		FCF29FC62187C8C2004B1100 /* Connection_internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_internal.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 			isa = PBXGroup;
 			children = (
 				FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */,
+				FCD3AE7021DE8B1C00962673 /* ConnectionCredentials.swift */,
 				FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */,
 				FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */,
 				FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */,
@@ -544,6 +547,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCBA16112139ACD600EB1BC8 /* AppDelegate.swift in Sources */,
+				FCD3AE7121DE8B1C00962673 /* ConnectionCredentials.swift in Sources */,
 				FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */,
 				FC3E4B6321DD7A0300CF7AB8 /* Settings.swift in Sources */,
 				FC3E4B6121DD79EA00CF7AB8 /* SettingsViewController.swift in Sources */,

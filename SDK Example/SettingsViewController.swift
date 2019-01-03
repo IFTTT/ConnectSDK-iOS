@@ -20,6 +20,8 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var newUserSwitch: UISwitch!
     @IBOutlet weak var connectButtonStyleControl: UISegmentedControl!
+    @IBOutlet weak var logoutView: UIStackView!
+    @IBOutlet weak var credentialsTextView: UITextView!
     
     @IBAction func doneTapped(_ sender: Any) {
         settings.save()
@@ -27,7 +29,7 @@ class SettingsViewController: UIViewController {
     }
     
     @IBAction func emailChanged(_ sender: Any) {
-        settings.email = emailField.text ?? ""
+        settings.email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     }
     @IBAction func newUserChanged(_ sender: Any) {
         settings.forcesNewUserFlow = newUserSwitch.isOn
@@ -35,17 +37,43 @@ class SettingsViewController: UIViewController {
     @IBAction func styleChanged(_ sender: Any) {
         settings.connectButtonStyle = connectButtonStyleControl.selectedSegmentIndex == Constants.lightStyleIndex ? .light : .dark
     }
+    @IBAction func logoutTapped(_ sender: Any) {
+        ConnectionCredentials.reset()
+        update()
+    }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    private func update() {
+        let credentials = ConnectionCredentials(settings: settings)
+        if credentials.isLoggedIn {
+            emailField.text = credentials.email
+            emailField.isEnabled = false
+            
+            newUserSwitch.isOn = false
+            newUserSwitch.isEnabled = false
+            
+            logoutView.isHidden = false
+            credentialsTextView.text = credentials.description
+        } else {
+            emailField.text = settings.email
+            emailField.isEnabled = true
+            
+            newUserSwitch.isOn = settings.forcesNewUserFlow
+            newUserSwitch.isEnabled = true
+            
+            logoutView.isHidden = true
+        }
         
-        emailField.text = settings.email
-        newUserSwitch.isOn = settings.forcesNewUserFlow
         switch settings.connectButtonStyle {
         case .light:
             connectButtonStyleControl.selectedSegmentIndex = Constants.lightStyleIndex
         case .dark:
             connectButtonStyleControl.selectedSegmentIndex = Constants.darkStyleIndex
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        update()
     }
 }
