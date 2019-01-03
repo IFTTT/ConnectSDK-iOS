@@ -62,8 +62,8 @@ class ConnectionViewController: UIViewController {
                 self.setupConnectButtonController(connectionConfiguration)
                 
             case .failure:
-                let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connect.", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: { _ in
+                let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connection.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Okay", style: .default, handler: { _ in
                     self.navigationController?.popViewController(animated: true)
                 })
                 alertController.addAction(okAction)
