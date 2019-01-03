@@ -81,18 +81,21 @@ public class ConnectButton: UIView {
         self.style = style
         super.init(frame: .zero)
         createLayout()
+        updateStyle()
     }
     public override init(frame: CGRect) {
         style = .light
         super.init(frame: frame)
         createLayout()
         setupInterfaceBuilderPreview()
+        updateStyle()
     }
     required init?(coder aDecoder: NSCoder) {
         style = .light
         super.init(coder: aDecoder)
         createLayout()
         setupInterfaceBuilderPreview()
+        updateStyle()
     }
     
     
@@ -424,6 +427,8 @@ public class ConnectButton: UIView {
     // MARK: - UI
     
     private func updateStyle() {
+        backgroundColor = .clear
+        
         switch style {
         case .light:
             emailConfirmButton.backgroundColor = .black
