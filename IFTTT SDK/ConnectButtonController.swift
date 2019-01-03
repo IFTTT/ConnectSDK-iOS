@@ -729,7 +729,9 @@ public class ConnectButtonController {
 
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
+            openActivationURL(connection.activationURL(for: .login(userId),
+                                                       credentialProvider: connectionConfiguration.credentialProvider,
+                                                       activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
 
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -750,9 +752,9 @@ public class ConnectButtonController {
 
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
 
-            let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
-            
-            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
+                                               credentialProvider: connectionConfiguration.credentialProvider,
+                                               activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
 
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
