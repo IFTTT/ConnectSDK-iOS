@@ -136,7 +136,7 @@
 		FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IFTTT SDKTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA15FA21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCBA16042138A4EE00EB1BC8 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
-		FCBA160E2139ACD600EB1BC8 /* SDK Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SDK Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FCBA160E2139ACD600EB1BC8 /* Grocery Express.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Grocery Express.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCBA16172139ACD800EB1BC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FCBA161A2139ACD800EB1BC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -245,7 +245,7 @@
 			children = (
 				FCBA15EC21389F7500EB1BC8 /* IFTTT SDK */,
 				FCBA15F721389F7500EB1BC8 /* IFTTT SDKTests */,
-				FCBA160F2139ACD600EB1BC8 /* SDK Example */,
+				FCBA160F2139ACD600EB1BC8 /* Grocery Express */,
 				FCBA15EB21389F7500EB1BC8 /* Products */,
 				FCBA16202139ACF500EB1BC8 /* Frameworks */,
 			);
@@ -256,7 +256,7 @@
 			children = (
 				FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */,
 				FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */,
-				FCBA160E2139ACD600EB1BC8 /* SDK Example.app */,
+				FCBA160E2139ACD600EB1BC8 /* Grocery Express.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -283,7 +283,7 @@
 			path = "IFTTT SDKTests";
 			sourceTree = "<group>";
 		};
-		FCBA160F2139ACD600EB1BC8 /* SDK Example */ = {
+		FCBA160F2139ACD600EB1BC8 /* Grocery Express */ = {
 			isa = PBXGroup;
 			children = (
 				FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */,
@@ -296,7 +296,7 @@
 				FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */,
 				FCBA161C2139ACD800EB1BC8 /* Info.plist */,
 			);
-			path = "SDK Example";
+			path = "Grocery Express";
 			sourceTree = "<group>";
 		};
 		FCBA16202139ACF500EB1BC8 /* Frameworks */ = {
@@ -399,9 +399,9 @@
 			productReference = FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		FCBA160D2139ACD600EB1BC8 /* SDK Example */ = {
+		FCBA160D2139ACD600EB1BC8 /* Grocery Express */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FCBA161D2139ACD800EB1BC8 /* Build configuration list for PBXNativeTarget "SDK Example" */;
+			buildConfigurationList = FCBA161D2139ACD800EB1BC8 /* Build configuration list for PBXNativeTarget "Grocery Express" */;
 			buildPhases = (
 				FCBA160A2139ACD600EB1BC8 /* Sources */,
 				FCBA160B2139ACD600EB1BC8 /* Frameworks */,
@@ -413,9 +413,9 @@
 			dependencies = (
 				FC3E307B215C42D6002326AE /* PBXTargetDependency */,
 			);
-			name = "SDK Example";
+			name = "Grocery Express";
 			productName = "SDK Example";
-			productReference = FCBA160E2139ACD600EB1BC8 /* SDK Example.app */;
+			productReference = FCBA160E2139ACD600EB1BC8 /* Grocery Express.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -456,7 +456,7 @@
 			targets = (
 				FCBA15E921389F7500EB1BC8 /* IFTTT SDK */,
 				FCBA15F221389F7500EB1BC8 /* IFTTT SDKTests */,
-				FCBA160D2139ACD600EB1BC8 /* SDK Example */,
+				FCBA160D2139ACD600EB1BC8 /* Grocery Express */,
 			);
 		};
 /* End PBXProject section */
@@ -806,7 +806,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "SDK Example/Info.plist";
+				INFOPLIST_FILE = "Grocery Express/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -828,7 +828,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "SDK Example/Info.plist";
+				INFOPLIST_FILE = "Grocery Express/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -872,7 +872,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FCBA161D2139ACD800EB1BC8 /* Build configuration list for PBXNativeTarget "SDK Example" */ = {
+		FCBA161D2139ACD800EB1BC8 /* Build configuration list for PBXNativeTarget "Grocery Express" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FCBA161E2139ACD800EB1BC8 /* Debug */,

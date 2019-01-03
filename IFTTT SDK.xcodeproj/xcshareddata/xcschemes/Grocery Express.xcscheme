@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FCBA160D2139ACD600EB1BC8"
-               BuildableName = "SDK Example.app"
-               BlueprintName = "SDK Example"
+               BuildableName = "Grocery Express.app"
+               BlueprintName = "Grocery Express"
                ReferencedContainer = "container:IFTTT SDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCBA160D2139ACD600EB1BC8"
-            BuildableName = "SDK Example.app"
-            BlueprintName = "SDK Example"
+            BuildableName = "Grocery Express.app"
+            BlueprintName = "Grocery Express"
             ReferencedContainer = "container:IFTTT SDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,8 +66,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCBA160D2139ACD600EB1BC8"
-            BuildableName = "SDK Example.app"
-            BlueprintName = "SDK Example"
+            BuildableName = "Grocery Express.app"
+            BlueprintName = "Grocery Express"
             ReferencedContainer = "container:IFTTT SDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -85,8 +85,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCBA160D2139ACD600EB1BC8"
-            BuildableName = "SDK Example.app"
-            BlueprintName = "SDK Example"
+            BuildableName = "Grocery Express.app"
+            BlueprintName = "Grocery Express"
             ReferencedContainer = "container:IFTTT SDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
