@@ -751,7 +751,7 @@ public class ConnectButtonController {
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
 
             let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
-
+            
             let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
 
             button.stepInteraction.isTapEnabled = true

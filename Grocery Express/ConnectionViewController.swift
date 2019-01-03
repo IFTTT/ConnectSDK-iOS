@@ -117,7 +117,12 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>) {
         switch result {
         case .success:
-            break
+            // Get the an IFTTT service token for this user
+            TokenRequest.getIFTTTServiceToken(for: connectionCredentials.email) { (token) in
+                if let token = token {
+                    self.connectionCredentials.loginUser(with: token)
+                }
+            }
         case .failure(let error):
             if let connectionError = error as? ConnectButtonControllerError, let reason = connectionError.reason {
                 let alert = UIAlertController(title: "Connection failed", message: reason, preferredStyle: .alert)
