@@ -9,6 +9,7 @@
 import Foundation
 
 struct TokenRequest {
+    /// Requests the IFTTT service token for Grocery Express from a Grocery Express API which using a combination of its service key and oauth code to identify the linked IFTTT account
     static func getIFTTTServiceToken(for oauthCode: String, _ completion: @escaping (String?) -> Void) {
         var request = URLRequest(url: URL(string: "https://grocery-express.ifttt.com/api/user_token?code=\(oauthCode)")!)
         request.httpMethod = "POST"
