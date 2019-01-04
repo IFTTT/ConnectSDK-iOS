@@ -67,7 +67,7 @@
         <!--Settings-->
         <scene sceneID="r5F-an-gBo">
             <objects>
-                <viewController id="jya-bU-N4g" customClass="SettingsViewController" customModule="SDK_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="jya-bU-N4g" customClass="SettingsViewController" customModule="Grocery_Express" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cao-Rl-GT9">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -276,7 +276,7 @@
         <!--Connection View Controller-->
         <scene sceneID="rfm-fa-t9w">
             <objects>
-                <viewController id="Qpl-UT-38S" customClass="ConnectionViewController" customModule="SDK_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Qpl-UT-38S" customClass="ConnectionViewController" customModule="Grocery_Express" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7ib-Uw-mvM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
