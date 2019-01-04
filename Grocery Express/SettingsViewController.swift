@@ -38,7 +38,7 @@ class SettingsViewController: UIViewController {
         settings.connectButtonStyle = connectButtonStyleControl.selectedSegmentIndex == Constants.lightStyleIndex ? .light : .dark
     }
     @IBAction func logoutTapped(_ sender: Any) {
-        ConnectionCredentials.reset()
+        ConnectionCredentials(settings: settings).logout()
         update()
     }
     

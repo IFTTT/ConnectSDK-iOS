@@ -61,8 +61,9 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
         UserDefaults.standard.set(user, forKey: Keys.user)
     }
     
-    /// Reset the Grocery service state
-    static func reset () {
+    /// Clears the active IFTTT session
+    func logout() {
+        iftttServiceToken = nil
         UserDefaults.standard.set(nil, forKey: Keys.user)
     }
     
