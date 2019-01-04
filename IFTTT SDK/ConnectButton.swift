@@ -762,7 +762,7 @@ public class ConnectButton: UIView {
                 super.init()
                 
                 layer.shadowColor = UIColor.black.cgColor
-                layer.shadowOpacity = 0.4
+                layer.shadowOpacity = 0.25
                 layer.shadowRadius = 2
                 layer.shadowOffset = CGSize(width: 2, height: 8)
                 
