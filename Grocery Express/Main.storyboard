@@ -198,56 +198,65 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DK9-UE-fEY">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cart_ui" translatesAutoresizingMaskIntoConstraints="NO" id="iA1-3k-GH1">
-                                        <rect key="frame" x="0.0" y="20" width="414" height="392"/>
-                                    </imageView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5rT-0Z-KpB">
-                                        <rect key="frame" x="0.0" y="412" width="414" height="282"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qrA-ee-8My">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="494.66666666666669"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="connection_image" translatesAutoresizingMaskIntoConstraints="NO" id="01R-cr-4gK">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="282"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5rT-0Z-KpB">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="82.666666666666671"/>
+                                                <subviews>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="250" image="connection_image" translatesAutoresizingMaskIntoConstraints="NO" id="01R-cr-4gK">
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="82.666666666666671"/>
+                                                    </imageView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="We'll deliver when you're at home" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O2e-et-cae">
+                                                        <rect key="frame" x="16" y="15.999999999999998" width="356" height="27.333333333333329"/>
+                                                        <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="20"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Simply share your calendar" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hhn-K6-Kdn">
+                                                        <rect key="frame" x="16" y="47.333333333333336" width="356" height="19.333333333333336"/>
+                                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="14"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="251" image="chevron_right" translatesAutoresizingMaskIntoConstraints="NO" id="Dad-km-eAz">
+                                                        <rect key="frame" x="380" y="26" width="18" height="31"/>
+                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </imageView>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <gestureRecognizers/>
+                                                <constraints>
+                                                    <constraint firstItem="Dad-km-eAz" firstAttribute="leading" secondItem="Hhn-K6-Kdn" secondAttribute="trailing" constant="8" id="7Ln-AD-PCz"/>
+                                                    <constraint firstItem="01R-cr-4gK" firstAttribute="leading" secondItem="5rT-0Z-KpB" secondAttribute="leading" id="BBy-7k-whC"/>
+                                                    <constraint firstAttribute="bottom" secondItem="01R-cr-4gK" secondAttribute="bottom" id="HXl-hQ-A2D"/>
+                                                    <constraint firstItem="O2e-et-cae" firstAttribute="leading" secondItem="5rT-0Z-KpB" secondAttribute="leading" constant="16" id="Lvd-DD-KH9"/>
+                                                    <constraint firstAttribute="trailing" secondItem="01R-cr-4gK" secondAttribute="trailing" id="eRI-mE-hYG"/>
+                                                    <constraint firstAttribute="trailing" secondItem="Dad-km-eAz" secondAttribute="trailing" constant="16" id="eXq-yy-fKS"/>
+                                                    <constraint firstAttribute="bottom" secondItem="Hhn-K6-Kdn" secondAttribute="bottom" constant="16" id="eaa-de-1Tp"/>
+                                                    <constraint firstItem="Dad-km-eAz" firstAttribute="centerY" secondItem="5rT-0Z-KpB" secondAttribute="centerY" id="hbV-OU-DMc"/>
+                                                    <constraint firstItem="O2e-et-cae" firstAttribute="top" secondItem="5rT-0Z-KpB" secondAttribute="top" constant="16" id="l8u-lo-VJS"/>
+                                                    <constraint firstItem="Hhn-K6-Kdn" firstAttribute="top" secondItem="O2e-et-cae" secondAttribute="bottom" constant="4" id="mb2-Pp-gqd"/>
+                                                    <constraint firstItem="01R-cr-4gK" firstAttribute="top" secondItem="5rT-0Z-KpB" secondAttribute="top" id="mvA-f6-8w6"/>
+                                                    <constraint firstItem="Hhn-K6-Kdn" firstAttribute="leading" secondItem="5rT-0Z-KpB" secondAttribute="leading" constant="16" id="nii-iV-RKz"/>
+                                                    <constraint firstItem="Dad-km-eAz" firstAttribute="leading" secondItem="O2e-et-cae" secondAttribute="trailing" constant="8" id="ucb-hz-zpj"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="NFV-0T-NRH" appends="YES" id="CUy-im-AR1"/>
+                                                </connections>
+                                            </view>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cart_ui" translatesAutoresizingMaskIntoConstraints="NO" id="iA1-3k-GH1">
+                                                <rect key="frame" x="0.0" y="102.66666666666669" width="414" height="392"/>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Delivered when you're at home" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="msB-Ek-53D">
-                                                <rect key="frame" x="16" y="8" width="382" height="98.666666666666671"/>
-                                                <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="36"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect your calendar to help us find the best time to deliver your groceries and add the delivery time to your calendar. " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D8x-tD-7GD">
-                                                <rect key="frame" x="16" y="216.33333333333337" width="382" height="57.666666666666686"/>
-                                                <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="14"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <gestureRecognizers/>
-                                        <constraints>
-                                            <constraint firstItem="D8x-tD-7GD" firstAttribute="leading" secondItem="5rT-0Z-KpB" secondAttribute="leading" constant="16" id="5Ym-Ud-gVb"/>
-                                            <constraint firstAttribute="trailing" secondItem="msB-Ek-53D" secondAttribute="trailing" constant="16" id="7DB-lc-qcr"/>
-                                            <constraint firstItem="msB-Ek-53D" firstAttribute="leading" secondItem="5rT-0Z-KpB" secondAttribute="leading" constant="16" id="9lg-Be-NwT"/>
-                                            <constraint firstItem="01R-cr-4gK" firstAttribute="leading" secondItem="5rT-0Z-KpB" secondAttribute="leading" id="BBy-7k-whC"/>
-                                            <constraint firstAttribute="bottom" secondItem="01R-cr-4gK" secondAttribute="bottom" id="HXl-hQ-A2D"/>
-                                            <constraint firstAttribute="bottom" secondItem="D8x-tD-7GD" secondAttribute="bottom" constant="8" id="SmA-wj-obT"/>
-                                            <constraint firstAttribute="trailing" secondItem="01R-cr-4gK" secondAttribute="trailing" id="eRI-mE-hYG"/>
-                                            <constraint firstAttribute="trailing" secondItem="D8x-tD-7GD" secondAttribute="trailing" constant="16" id="mXu-eH-Q5k"/>
-                                            <constraint firstItem="01R-cr-4gK" firstAttribute="top" secondItem="5rT-0Z-KpB" secondAttribute="top" id="mvA-f6-8w6"/>
-                                            <constraint firstItem="msB-Ek-53D" firstAttribute="top" secondItem="5rT-0Z-KpB" secondAttribute="top" constant="8" id="zpp-ME-Wee"/>
-                                        </constraints>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="NFV-0T-NRH" appends="YES" id="CUy-im-AR1"/>
-                                        </connections>
-                                    </view>
+                                    </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="iA1-3k-GH1" secondAttribute="trailing" id="7K2-9a-yr9"/>
-                                    <constraint firstItem="5rT-0Z-KpB" firstAttribute="leading" secondItem="DK9-UE-fEY" secondAttribute="leading" id="8Pa-ta-xcr"/>
-                                    <constraint firstAttribute="trailing" secondItem="5rT-0Z-KpB" secondAttribute="trailing" id="FzL-de-qji"/>
-                                    <constraint firstItem="5rT-0Z-KpB" firstAttribute="top" secondItem="iA1-3k-GH1" secondAttribute="bottom" id="Pty-8U-d6N"/>
-                                    <constraint firstItem="iA1-3k-GH1" firstAttribute="top" secondItem="DK9-UE-fEY" secondAttribute="top" constant="20" id="Tb3-Gc-xaS"/>
-                                    <constraint firstItem="iA1-3k-GH1" firstAttribute="width" secondItem="DK9-UE-fEY" secondAttribute="width" id="ZI9-4i-dcM"/>
-                                    <constraint firstAttribute="bottom" secondItem="5rT-0Z-KpB" secondAttribute="bottom" id="kX6-mt-Q2W"/>
-                                    <constraint firstItem="iA1-3k-GH1" firstAttribute="leading" secondItem="DK9-UE-fEY" secondAttribute="leading" id="nre-Ck-B5d"/>
+                                    <constraint firstItem="qrA-ee-8My" firstAttribute="leading" secondItem="DK9-UE-fEY" secondAttribute="leading" id="KIy-6I-K1s"/>
+                                    <constraint firstItem="qrA-ee-8My" firstAttribute="top" secondItem="DK9-UE-fEY" secondAttribute="top" id="VL1-LS-oNH"/>
+                                    <constraint firstAttribute="trailing" secondItem="qrA-ee-8My" secondAttribute="trailing" id="XrC-RP-4Ye"/>
+                                    <constraint firstItem="qrA-ee-8My" firstAttribute="width" secondItem="DK9-UE-fEY" secondAttribute="width" id="l6o-PM-3Kq"/>
+                                    <constraint firstAttribute="bottom" secondItem="qrA-ee-8My" secondAttribute="bottom" id="rid-X0-K6l"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
@@ -384,6 +393,7 @@
     <resources>
         <image name="cart" width="30" height="25"/>
         <image name="cart_ui" width="375" height="392"/>
+        <image name="chevron_right" width="18" height="31"/>
         <image name="connection_image" width="375" height="282"/>
         <image name="menu" width="17" height="16"/>
         <image name="store_ui" width="375" height="645"/>
