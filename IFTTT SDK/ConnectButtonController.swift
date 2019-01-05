@@ -132,6 +132,8 @@ public class ConnectButtonController {
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
         
+        button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
+        
         button.configureEmailField(placeholderText: "button.email.placeholder".localized,
                                    confirmButtonAsset: Assets.Button.emailConfirm)
         
@@ -244,11 +246,17 @@ public class ConnectButtonController {
         manage,
         disconnect
 
-        private var typestyle: Typestyle { return .footnote }
+        /// Our best guess of the maximum height of the footer label
+        fileprivate static var estimatedMaximumTextHeight: CGFloat {
+            // We are estimating that the text will never exceed 2 lines (plus some line spacing)
+            return 2.1 * typestyle.font.lineHeight
+        }
+        
+        fileprivate static var typestyle: Typestyle { return .footnote }
 
         private var iftttText: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : typestyle.adjusting(weight: .heavy).font])
+                                      attributes: [.font : FooterMessages.typestyle.adjusting(weight: .heavy).font])
         }
 
         var value: ConnectButton.LabelValue {
@@ -256,6 +264,8 @@ public class ConnectButtonController {
         }
 
         var attributedString: NSAttributedString {
+            let typestyle = FooterMessages.typestyle
+            
             switch self {
             case .poweredBy:
                 let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,

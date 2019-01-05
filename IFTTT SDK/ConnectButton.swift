@@ -74,6 +74,22 @@ public class ConnectButton: UIView {
     /// This controller is responsible for serving service icons
     var imageViewNetworkController: ImageViewNetworkController?
     
+    private var minimumFooterHeightConstraint: NSLayoutConstraint?
+    
+    /// Ensures that the button's footer is always a minimum height
+    /// This debounces layout changes if the number of lines in the footer changes
+    var minimumFooterLabelHeight: CGFloat? {
+        didSet {
+            if let oldConstraint = minimumFooterHeightConstraint {
+                footerLabelAnimator.primary.view.removeConstraint(oldConstraint)
+            }
+            if let height = minimumFooterLabelHeight {
+                minimumFooterHeightConstraint = footerLabelAnimator.primary.view.heightAnchor.constraint(greaterThanOrEqualToConstant: height)
+                minimumFooterHeightConstraint?.isActive = true
+            }
+        }
+    }
+    
     /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.
     ///
     /// - Parameter style: Adjust the buttons background for light and dark backgrounds. Defaults to a light style.
@@ -948,7 +964,7 @@ public class ConnectButton: UIView {
         // By defaut, the ConnectButton contents are the full width of the button's view
         // But set a maximum width
         // Set the left anchor to break its constraint if the max width is exceeded
-        let leftConstraint = stackView.leftAnchor.constraint(equalTo: leftAnchor)
+        let leftConstraint = stackView.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor)
         leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 2)
         leftConstraint.isActive = true
         
