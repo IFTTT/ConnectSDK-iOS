@@ -923,7 +923,17 @@ public class ConnectButton: UIView {
     // MARK: Layout
     
     private func createLayout() {
-        let stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+        
+        let shouldShowFooter = UserDefaults.standard.object(forKey: "IFTTT-App-Should-Hide-ConnectButton-Footer") == nil
+        
+        let stackView: UIStackView
+        
+        if shouldShowFooter {
+            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+        } else {
+            stackView = UIStackView(arrangedSubviews: [backgroundView])
+        }
+
         stackView.axis = .vertical
         stackView.spacing = 20
         
@@ -956,8 +966,10 @@ public class ConnectButton: UIView {
         // Finally set the max width
         stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
         
-        addSubview(footerLabelAnimator.transition.view)
-        footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
+        if shouldShowFooter {
+            addSubview(footerLabelAnimator.transition.view)
+            footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
+        }
         
         backgroundView.addSubview(progressBar)
         backgroundView.addSubview(primaryLabelAnimator.primary.view)
