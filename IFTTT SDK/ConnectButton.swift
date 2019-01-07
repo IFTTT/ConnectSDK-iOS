@@ -922,9 +922,13 @@ public class ConnectButton: UIView {
     
     // MARK: Layout
     
+    /// A key used by the IFTTT app to determine if it should hide the footer on the Connect Button.
+    static let shouldShowFooterUserDefaultsKey = "IFTTT-App-Should-Hide-ConnectButton-Footer"
+    
     private func createLayout() {
         
-        let shouldShowFooter = UserDefaults.standard.object(forKey: "IFTTT-App-Should-Hide-ConnectButton-Footer") == nil
+        // In the IFTTT app we need to hide the footer on the Connect Button SDK. Introducing a key check to determine if the footer should be added. Thsi should only be set by the IFTTT app in order to hide the footer. 
+        let shouldShowFooter = UserDefaults.standard.object(forKey: ConnectButton.shouldShowFooterUserDefaultsKey) == nil
         
         let stackView: UIStackView
         
