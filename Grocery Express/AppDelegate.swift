@@ -19,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let connectionRedirectHandler = AuthenticationRedirectHandler(authorizationRedirectURL: AppDelegate.connectionRedirectURL)
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        ConnectionCredentials.attempLogin()
+        
         return true
     }
     

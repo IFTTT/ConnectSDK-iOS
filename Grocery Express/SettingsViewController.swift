@@ -25,6 +25,7 @@ class SettingsViewController: UIViewController {
     
     @IBAction func doneTapped(_ sender: Any) {
         settings.save()
+        ConnectionCredentials.attempLogin()
         dismiss(animated: true, completion: nil)
     }
     

@@ -134,7 +134,6 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>) {
         // Received when the Connection is deactivated.
-        connectionCredentials.logout()
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) {
