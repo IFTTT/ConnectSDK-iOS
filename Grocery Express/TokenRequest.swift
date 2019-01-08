@@ -24,9 +24,13 @@ struct TokenRequest {
         
         URLSession.shared.dataTask(with: request) { (data, _, _) in
             if let data = data, let response = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any], let token = response?["user_token"] as? String {
-                completion(token)
+                DispatchQueue.main.async {
+                    completion(token)
+                }
             } else {
-                completion(nil)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
         }.resume()
     }
