@@ -159,10 +159,11 @@ public class ConnectButtonController {
         }
 
         switch connection.status {
-        case .initial, .unknown:
+        case .initial, .unknown, .disabled:
+            // Disabled Connections are presented in the "Connect" state
             transition(to: .initial)
 
-        case .enabled, .disabled:
+        case .enabled:
             transition(to: .connected)
         }
     }
