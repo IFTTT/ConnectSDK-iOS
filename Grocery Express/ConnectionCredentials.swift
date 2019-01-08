@@ -50,6 +50,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     
     /// After making a Connection, store the IFTTT service token
     /// In a real app, this should be kept in a secure location
+    /// See `ConnectionCredentials.requestToken`
     ///
     /// - Parameter token: The IFTTT service token
     func loginUser(with token: String) {
@@ -59,26 +60,6 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
             Keys.token : token
         ]
         UserDefaults.standard.set(user, forKey: Keys.user)
-    }
-    
-    /// Attemps to get the IFTTT service token
-    /// Login attemp will fail if the user hasn't made a Connection with Grocery Express
-    /// Returns immediately if the user is already logged in
-    ///
-    /// - Parameter completion: Returns the updated ConnectionCredentials
-    static func attempLogin(_ completion: ((ConnectionCredentials) -> Void)? = nil) {
-        // Attempt to get the IFTTT service token if we don't already have one.
-        let credentials = ConnectionCredentials(settings: Settings())
-        if credentials.iftttServiceToken == nil {
-            TokenRequest.getIFTTTServiceToken(for: credentials.email) { (token) in
-                if let token = token {
-                    credentials.loginUser(with: token)
-                }
-                completion?(credentials)
-            }
-        } else {
-            completion?(credentials)
-        }
     }
     
     /// Clears the active IFTTT session

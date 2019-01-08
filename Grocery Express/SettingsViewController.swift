@@ -17,6 +17,10 @@ class SettingsViewController: UIViewController {
     
     private var settings = Settings()
     
+    private var connectionCredentials: ConnectionCredentials {
+        return ConnectionCredentials(settings: settings)
+    }
+    
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var newUserSwitch: UISwitch!
     @IBOutlet weak var connectButtonStyleControl: UISegmentedControl!
@@ -50,14 +54,16 @@ class SettingsViewController: UIViewController {
     private func attemptLogin() {
         loginView.isHidden = true
         activityIndicator.startAnimating()
-        ConnectionCredentials.attempLogin { [weak self] (_) in
+        
+        let request = connectionCredentials.tokenRequest()
+        request.start { [weak self] (_) in
             self?.activityIndicator.stopAnimating()
             self?.update()
         }
     }
     
     private func update() {
-        let credentials = ConnectionCredentials(settings: settings)
+        let credentials = connectionCredentials
         if credentials.isLoggedIn {
             emailField.text = credentials.email
             emailField.isEnabled = false
