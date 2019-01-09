@@ -46,7 +46,7 @@
 		FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */; };
 		FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC84B84B21C4321F00BAF7ED /* Links.swift */; };
 		FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC84B85221C43A3000BAF7ED /* LegalTermsText.swift */; };
-		FC8540E421DECA610052A339 /* TokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8540E321DECA610052A339 /* TokenRequest.swift */; };
+		FC8540E421DECA610052A339 /* ConnectionCredentials+TokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8540E321DECA610052A339 /* ConnectionCredentials+TokenRequest.swift */; };
 		FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FCBA15FB21389F7500EB1BC8 /* IFTTT_SDK.h in Headers */ = {isa = PBXBuildFile; fileRef = FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16042138A4EE00EB1BC8 /* Connection.swift */; };
@@ -131,7 +131,7 @@
 		FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewNetworkController.swift; sourceTree = "<group>"; };
 		FC84B84B21C4321F00BAF7ED /* Links.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Links.swift; sourceTree = "<group>"; };
 		FC84B85221C43A3000BAF7ED /* LegalTermsText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalTermsText.swift; sourceTree = "<group>"; };
-		FC8540E321DECA610052A339 /* TokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRequest.swift; sourceTree = "<group>"; };
+		FC8540E321DECA610052A339 /* ConnectionCredentials+TokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectionCredentials+TokenRequest.swift"; sourceTree = "<group>"; };
 		FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IFTTT_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IFTTT_SDK.h; sourceTree = "<group>"; };
 		FCBA15EE21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -290,7 +290,7 @@
 			children = (
 				FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */,
 				FCD3AE7021DE8B1C00962673 /* ConnectionCredentials.swift */,
-				FC8540E321DECA610052A339 /* TokenRequest.swift */,
+				FC8540E321DECA610052A339 /* ConnectionCredentials+TokenRequest.swift */,
 				FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */,
 				FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */,
 				FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */,
@@ -554,7 +554,7 @@
 				FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */,
 				FC3E4B6321DD7A0300CF7AB8 /* Settings.swift in Sources */,
 				FC3E4B6121DD79EA00CF7AB8 /* SettingsViewController.swift in Sources */,
-				FC8540E421DECA610052A339 /* TokenRequest.swift in Sources */,
+				FC8540E421DECA610052A339 /* ConnectionCredentials+TokenRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

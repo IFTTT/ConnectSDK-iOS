@@ -17,10 +17,16 @@ class SettingsViewController: UIViewController {
     
     private var settings = Settings()
     
+    private var connectionCredentials: ConnectionCredentials {
+        return ConnectionCredentials(settings: settings)
+    }
+    
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var newUserSwitch: UISwitch!
     @IBOutlet weak var connectButtonStyleControl: UISegmentedControl!
+    @IBOutlet weak var loginView: UIStackView!
     @IBOutlet weak var logoutView: UIStackView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var credentialsTextView: UITextView!
     
     @IBAction func doneTapped(_ sender: Any) {
@@ -37,13 +43,27 @@ class SettingsViewController: UIViewController {
     @IBAction func styleChanged(_ sender: Any) {
         settings.connectButtonStyle = connectButtonStyleControl.selectedSegmentIndex == Constants.lightStyleIndex ? .light : .dark
     }
+    @IBAction func loginTapped(_ sender: Any) {
+        attemptLogin()
+    }
     @IBAction func logoutTapped(_ sender: Any) {
         ConnectionCredentials(settings: settings).logout()
         update()
     }
     
+    private func attemptLogin() {
+        loginView.isHidden = true
+        activityIndicator.startAnimating()
+        
+        let request = connectionCredentials.tokenRequest()
+        request.start { [weak self] (_) in
+            self?.activityIndicator.stopAnimating()
+            self?.update()
+        }
+    }
+    
     private func update() {
-        let credentials = ConnectionCredentials(settings: settings)
+        let credentials = connectionCredentials
         if credentials.isLoggedIn {
             emailField.text = credentials.email
             emailField.isEnabled = false
@@ -51,6 +71,7 @@ class SettingsViewController: UIViewController {
             newUserSwitch.isOn = false
             newUserSwitch.isEnabled = false
             
+            loginView.isHidden = true
             logoutView.isHidden = false
             credentialsTextView.text = credentials.description
         } else {
@@ -60,6 +81,7 @@ class SettingsViewController: UIViewController {
             newUserSwitch.isOn = settings.forcesNewUserFlow
             newUserSwitch.isEnabled = true
             
+            loginView.isHidden = false
             logoutView.isHidden = true
         }
         
