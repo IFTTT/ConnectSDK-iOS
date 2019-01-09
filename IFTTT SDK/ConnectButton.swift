@@ -78,15 +78,9 @@ public class ConnectButton: UIView {
     
     /// Ensures that the button's footer is always a minimum height
     /// This debounces layout changes if the number of lines in the footer changes
-    var minimumFooterLabelHeight: CGFloat? {
+    var minimumFooterLabelHeight: CGFloat = 0 {
         didSet {
-            if let oldConstraint = minimumFooterHeightConstraint {
-                footerLabelAnimator.primary.view.removeConstraint(oldConstraint)
-            }
-            if let height = minimumFooterLabelHeight {
-                minimumFooterHeightConstraint = footerLabelAnimator.primary.view.heightAnchor.constraint(greaterThanOrEqualToConstant: height)
-                minimumFooterHeightConstraint?.isActive = true
-            }
+            minimumFooterHeightConstraint?.constant = minimumFooterLabelHeight
         }
     }
     
@@ -957,6 +951,9 @@ public class ConnectButton: UIView {
             stackView = UIStackView(arrangedSubviews: [backgroundView])
         } else {
             stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+            
+            footerLabelAnimator.primary.view.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumFooterLabelHeight)
+            minimumFooterHeightConstraint?.isActive = true
         }
 
         stackView.axis = .vertical
