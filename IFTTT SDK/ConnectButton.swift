@@ -944,19 +944,19 @@ public class ConnectButton: UIView {
     // MARK: Layout
     
     /// A key used by an app to determine if it should hide the footer on the Connect Button.
-    static let shouldShowFooterUserDefaultsKey = "appShouldHideConnectButtonFooter"
+    static let shouldHideFooterUserDefaultsKey = "appShouldHideConnectButtonFooter"
     
     private func createLayout() {
         
         // In some cases, we need to hide the footer on the Connect Button SDK. Introducing a key check to determine if the footer should be shown.
-        let shouldShowFooter = UserDefaults.standard.bool(forKey: ConnectButton.shouldShowFooterUserDefaultsKey)
+        let shouldHideFooter = UserDefaults.standard.bool(forKey: ConnectButton.shouldHideFooterUserDefaultsKey)
         
         let stackView: UIStackView
         
-        if shouldShowFooter {
-            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
-        } else {
+        if shouldHideFooter {
             stackView = UIStackView(arrangedSubviews: [backgroundView])
+        } else {
+            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
         }
 
         stackView.axis = .vertical
@@ -991,10 +991,10 @@ public class ConnectButton: UIView {
         // Finally set the max width
         stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
         
-        if shouldShowFooter {
+        if !shouldHideFooter {
             addSubview(footerLabelAnimator.transition.view)
             footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
-        }
+        } 
         
         backgroundView.addSubview(progressBar)
         backgroundView.addSubview(primaryLabelAnimator.primary.view)
