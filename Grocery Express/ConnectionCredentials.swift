@@ -50,6 +50,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     
     /// After making a Connection, store the IFTTT service token
     /// In a real app, this should be kept in a secure location
+    /// See `ConnectionCredentials.requestToken`
     ///
     /// - Parameter token: The IFTTT service token
     func loginUser(with token: String) {
