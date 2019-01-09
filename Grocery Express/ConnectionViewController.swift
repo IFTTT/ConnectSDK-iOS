@@ -12,7 +12,7 @@ import IFTTT_SDK
 class ConnectionViewController: UIViewController {
     
     struct Constants {
-        static let connectionId = "dngPHVFe"
+        static let connectionId = "fWj4fxYg"
     }
     
     // MARK: - UI
