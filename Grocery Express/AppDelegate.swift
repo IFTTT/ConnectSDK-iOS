@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        ConnectionCredentials(settings: Settings()).tokenRequest().start(nil)
+        TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         
         return true
     }

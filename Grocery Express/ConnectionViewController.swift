@@ -118,7 +118,7 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         switch result {
         case .success:
             // Get the an IFTTT service token for this user
-            connectionCredentials.tokenRequest().start(nil)
+            TokenRequest(credentials: connectionCredentials).start()
             
         case .failure(let error):
             if let connectionError = error as? ConnectButtonControllerError, let reason = connectionError.reason {
