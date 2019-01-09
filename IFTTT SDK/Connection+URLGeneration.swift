@@ -96,7 +96,7 @@ extension Connection {
     }
     
     private func queryItemForPartnerOauthCode(code: String) -> URLQueryItem? {
-        guard code.isEmpty == false else {
+        guard !code.isEmpty else {
             return nil
         }
         return URLQueryItem(name: Constants.QueryItem.oauthCodeName, value: code)

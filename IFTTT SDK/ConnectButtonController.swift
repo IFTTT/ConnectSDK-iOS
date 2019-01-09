@@ -253,7 +253,7 @@ public class ConnectButtonController {
             return 2.1 * typestyle.font.lineHeight
         }
         
-        fileprivate static var typestyle: Typestyle { return .footnote }
+        fileprivate static let typestyle: Typestyle = .footnote
 
         private var iftttText: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
