@@ -26,6 +26,7 @@
 "button.footer.powered_by" = "POWERED BY ";
 "button.footer.email.legal" = "You are creating or using your IFTTT account subject to ";
 "button.footer.email.invalid" = "Enter valid email";
+"button.footer.email.sign_in" = "Using %@.";
 "button.footer.signed_in" = " sign in to ";
 "button.footer.connect" = "Sign in to connect %@ with %@";
 "button.footer.manage" = "You're all set. Manage connection with ";

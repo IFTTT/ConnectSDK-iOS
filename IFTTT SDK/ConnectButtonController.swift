@@ -242,6 +242,7 @@ public class ConnectButtonController {
         poweredBy,
         enterEmail,
         emailInvalid,
+        signingInto(email: String),
         signedIn(username: String),
         connect(Connection.Service, to: Connection.Service),
         manage,
@@ -282,6 +283,10 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : typestyle.font])
 
+            case .signingInto(let email):
+                let text = "button.footer.email.sign_in".localized(arguments: email)
+                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
+                
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
                                                      attributes: [.font: typestyle.adjusting(weight: .bold).font])
@@ -699,7 +704,7 @@ public class ConnectButtonController {
             case .token:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.accessing_existing_account".localized),
-                                                  footerValue: FooterMessages.poweredBy.value)
+                                                  footerValue: FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail).value)
             ).preform()
             }
 
