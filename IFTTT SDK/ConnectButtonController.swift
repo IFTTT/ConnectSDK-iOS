@@ -662,14 +662,8 @@ public class ConnectButtonController {
                     assertionFailure("It is expected that `self` is not nil here.")
                     return
                 }
-
-                if email.isValidEmail {
-                    self.transition(to: .identifyUser(.email(email)))
-                } else {
-                    self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
-                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
-                    self.button.performInvalidEmailAnimation()
-                }
+                
+                self.emailInteractionConfirmation(email: email)
             }
 
 
@@ -760,13 +754,8 @@ public class ConnectButtonController {
                     progress.onComplete { position in
                         self.accessAccountTask = nil
                         
-                        switch position {
-                        case .start:
-                            self.currentActivationStep = .initial
-                        case .end:
-                            self.transition(to: .logInExistingUser(user.id))
-                        case .current:
-                            break
+                        if position == .end {
+                           self.transition(to: .logInExistingUser(user.id))
                         }
                     }
                 }
@@ -780,13 +769,8 @@ public class ConnectButtonController {
                     return
                 }
                 
-                if email.isValidEmail {
-                    self.transition(to: .identifyUser(.email(email)))
-                } else {
-                    self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
-                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
-                    self.button.performInvalidEmailAnimation()
-                }
+                self.currentActivationStep = .initial
+                self.emailInteractionConfirmation(email: email)
             }
 
 
@@ -909,6 +893,16 @@ public class ConnectButtonController {
 
         default:
             assertionFailure("Unexpected activation step transition from \(previous?.description ?? "nil") to \(step.description).")
+        }
+    }
+    
+    private func emailInteractionConfirmation(email: String) {
+        if email.isValidEmail {
+            self.transition(to: .identifyUser(.email(email)))
+        } else {
+            self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
+            self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
+            self.button.performInvalidEmailAnimation()
         }
     }
 
