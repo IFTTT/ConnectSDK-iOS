@@ -17,7 +17,7 @@ public enum ConnectButtonControllerError: Error {
     case iftttAccountCreationFailed
 
     /// Some generic networking error occurred.
-    case networkError(Error?)
+    case networkError(NetworkError)
 
     /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
@@ -52,7 +52,7 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>)
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>)
 
     /// Connection deactivation is finished.
     ///
@@ -63,7 +63,7 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection deactivation request.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>)
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
 
     /// The controller recieved an invalid email from the user. The default implementation of this function is to do nothing.
     ///
@@ -695,34 +695,35 @@ public class ConnectButtonController {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
 
-            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { user, error in
-                guard let user = user else {
-                    self.transition(to: .failed(.networkError(error)))
-                    return
-                }
-
-                if case .email(let email) = user.id, user.isExistingUser == false {
-                    // There is no account for this user
-                    // Show a fake message that we are creating an account
-                    // Then move to the first step of the service connection flow
-                    self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
-
-                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
-                    progress.onComplete {
-                        // Show "fake" success
-                        self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
-
-                        // After a short delay, show first service connection
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            // We know that this is a new user so we must connect the primary service first and create an account
-                            self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
+            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { result in
+                switch result {
+                case .success(let user):
+                    if case .email(let email) = user.id, user.isExistingUser == false {
+                        // There is no account for this user
+                        // Show a fake message that we are creating an account
+                        // Then move to the first step of the service connection flow
+                        self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
+                        
+                        progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
+                        progress.onComplete {
+                            // Show "fake" success
+                            self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
+                            
+                            // After a short delay, show first service connection
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                // We know that this is a new user so we must connect the primary service first and create an account
+                                self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
+                            }
+                        }
+                    } else { // Existing IFTTT user
+                        progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
+                        progress.onComplete {
+                            self.transition(to: .logInExistingUser(user.id))
                         }
                     }
-                } else { // Existing IFTTT user
-                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
-                    progress.onComplete {
-                        self.transition(to: .logInExistingUser(user.id))
-                    }
+                    
+                case .failure(let error):
+                    self.transition(to: .failed(.networkError(error)))
                 }
             }
 
@@ -827,7 +828,7 @@ public class ConnectButtonController {
                     case .success:
                         self.transition(to: .disconnected)
                     case .failure(let error):
-                        self.delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
+                        self.delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(.networkError(error)))
                         self.transition(to: .connected)
                     }
                 }

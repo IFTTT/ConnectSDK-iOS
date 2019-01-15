@@ -20,7 +20,7 @@ struct ImageDownloader {
     }
     
     @discardableResult
-    func downloadImage(url: URL, _ completion: @escaping (Result<UIImage>) -> Void) -> URLSessionDataTask? {
+    func downloadImage(url: URL, _ completion: @escaping (Result<UIImage, NetworkError>) -> Void) -> URLSessionDataTask? {
         if let image = cache.image(for: url) {
             completion(.success(image))
             return nil
@@ -33,7 +33,11 @@ struct ImageDownloader {
                 }
             } else {
                 DispatchQueue.main.async {
-                    completion(.failure(error ?? NetworkError.invalidImageData))
+                    if let networkError = error {
+                        completion(.failure(.genericError(networkError)))
+                    } else {
+                        completion(.failure(.invalidImageData))
+                    }
                 }
             }
         }

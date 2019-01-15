@@ -1,5 +1,5 @@
 //
-//  ResultType.swift
+//  Result<ValueType,ErrorType>.swift
 //  IFTTT SDK
 //
 //  Created by Michael Amundsen on 11/6/18.
