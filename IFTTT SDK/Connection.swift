@@ -63,6 +63,9 @@ public struct Connection: Equatable {
     /// Information about the `Connection`.
     public let description: String
     
+    /// The number of times this `Connection` has been installed.
+    public let installCount: Int
+    
     /// The `Status` of the `Connection`.
     public internal(set) var status: Status
     
