@@ -295,8 +295,11 @@ public class ConnectButtonController {
                 return NSAttributedString(string: text, attributes: [.font : typestyle.font])
 
             case .signingInto(let email):
-                let text = "button.footer.email.sign_in".localized(arguments: email)
-                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
+                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : typestyle.font])
+                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : typestyle.adjusting(weight: .bold).font,
+                                                                                                                            .underlineStyle : NSUnderlineStyle.single.rawValue])
+                text.append(changeEmailText)
+                return text
                 
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
