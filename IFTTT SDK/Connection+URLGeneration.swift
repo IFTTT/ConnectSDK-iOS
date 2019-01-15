@@ -19,7 +19,7 @@ extension Connection {
             static let emailName = "email"
             static let skipSDKRedirectName = "skip_sdk_redirect"
             static let sdkCreatAccountName = "sdk_create_account"
-            static let tokenName = "code"
+            static let oauthCodeName = "code"
             static let defaultTrueValue = "true"
             static let sdkVersionName = "sdk_version"
             static let sdkPlatformName = "sdk_platform"
@@ -29,7 +29,16 @@ extension Connection {
     enum ActivationStep {
         case
         login(User.Id),
-        serviceConnection(newUserEmail: String?, token: String?)
+        serviceConnection(newUserEmail: String?)
+        
+        fileprivate var shouldAppendOAuthCode: Bool {
+            switch self {
+            case .login:
+                return true
+            case .serviceConnection(let newUserEmail):
+                return newUserEmail?.isEmpty == false
+            }
+        }
     }
     
     /// The activation url is formed by appending the Connection's ID
@@ -37,9 +46,9 @@ extension Connection {
         return Constants.url.appendingPathComponent(id)
     }
     
-    func activationURL(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> URL {
+    func activationURL(for step: ActivationStep, credentialProvider: CredentialProvider, activationRedirect: URL) -> URL {
         var components = URLComponents(url: activationURL, resolvingAgainstBaseURL: false)
-        components?.queryItems = queryItems(for: step, tokenProvider: tokenProvider, activationRedirect: activationRedirect)
+        components?.queryItems = queryItems(for: step, credentialProvider: credentialProvider, activationRedirect: activationRedirect)
        
         // We need to manually encode `+` characters in a user's e-mail because `+` is a valid character that represents a space in a url query. E-mail's with spaces are not valid.
         let percentEncodedQuery = components?.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: .emailEncodingPassthrough)
@@ -48,20 +57,24 @@ extension Connection {
         return components?.url ?? activationURL
     }
     
-    private func queryItems(for step: ActivationStep, tokenProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
+    private func queryItems(for step: ActivationStep, credentialProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
         var queryItems = [URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
                           URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
                           URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform)]
         
-        if let inviteCode = tokenProvider.inviteCode {
+        if let inviteCode = credentialProvider.inviteCode {
             queryItems.append(URLQueryItem(name: Constants.QueryItem.inviteCodeName, value: inviteCode))
         }
         
         switch step {
         case let .login(userId):
             queryItems.append(queryItemForLogin(userId: userId))
-        case let .serviceConnection(userEmail, token):
-            queryItems.append(contentsOf: queryItemsforServiceConnection(userEmail: userEmail, token: token))
+        case let .serviceConnection(userEmail):
+            queryItems.append(contentsOf: queryItemsforServiceConnection(userEmail: userEmail))
+        }
+        
+        if step.shouldAppendOAuthCode, let item = queryItemForPartnerOauthCode(code: credentialProvider.partnerOAuthCode) {
+            queryItems.append(item)
         }
         
         return queryItems
@@ -71,7 +84,7 @@ extension Connection {
         return URLQueryItem(name: Constants.QueryItem.emailName, value: userId.value)
     }
     
-    private func queryItemsforServiceConnection(userEmail: String?, token: String?) -> [URLQueryItem] {
+    private func queryItemsforServiceConnection(userEmail: String?) -> [URLQueryItem] {
         var queryItems = [URLQueryItem(name: Constants.QueryItem.skipSDKRedirectName, value: Constants.QueryItem.defaultTrueValue)]
         
         if let email = userEmail {
@@ -79,11 +92,14 @@ extension Connection {
             queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreatAccountName, value: Constants.QueryItem.defaultTrueValue))
         }
         
-        if let token = token {
-            queryItems.append(URLQueryItem(name: Constants.QueryItem.tokenName, value: token))
-        }
-        
         return queryItems
+    }
+    
+    private func queryItemForPartnerOauthCode(code: String) -> URLQueryItem? {
+        guard !code.isEmpty else {
+            return nil
+        }
+        return URLQueryItem(name: Constants.QueryItem.oauthCodeName, value: code)
     }
 }
 

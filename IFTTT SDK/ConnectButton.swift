@@ -74,6 +74,16 @@ public class ConnectButton: UIView {
     /// This controller is responsible for serving service icons
     var imageViewNetworkController: ImageViewNetworkController?
     
+    private var minimumFooterHeightConstraint: NSLayoutConstraint?
+    
+    /// Ensures that the button's footer is always a minimum height
+    /// This debounces layout changes if the number of lines in the footer changes
+    var minimumFooterLabelHeight: CGFloat = 0 {
+        didSet {
+            minimumFooterHeightConstraint?.constant = minimumFooterLabelHeight
+        }
+    }
+    
     /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.
     ///
     /// - Parameter style: Adjust the buttons background for light and dark backgrounds. Defaults to a light style.
@@ -81,18 +91,21 @@ public class ConnectButton: UIView {
         self.style = style
         super.init(frame: .zero)
         createLayout()
+        updateStyle()
     }
     public override init(frame: CGRect) {
         style = .light
         super.init(frame: frame)
         createLayout()
         setupInterfaceBuilderPreview()
+        updateStyle()
     }
     required init?(coder aDecoder: NSCoder) {
         style = .light
         super.init(coder: aDecoder)
         createLayout()
         setupInterfaceBuilderPreview()
+        updateStyle()
     }
     
     
@@ -424,6 +437,8 @@ public class ConnectButton: UIView {
     // MARK: - UI
     
     private func updateStyle() {
+        backgroundColor = .clear
+        
         switch style {
         case .light:
             emailConfirmButton.backgroundColor = .black
@@ -757,7 +772,7 @@ public class ConnectButton: UIView {
                 super.init()
                 
                 layer.shadowColor = UIColor.black.cgColor
-                layer.shadowOpacity = 0.4
+                layer.shadowOpacity = 0.25
                 layer.shadowRadius = 2
                 layer.shadowOffset = CGSize(width: 2, height: 8)
                 
@@ -922,8 +937,25 @@ public class ConnectButton: UIView {
     
     // MARK: Layout
     
+    /// A key used by an app to determine if it should hide the footer on the Connect Button.
+    static let shouldHideFooterUserDefaultsKey = "appShouldHideConnectButtonFooter"
+    
     private func createLayout() {
-        let stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+        
+        // In some cases, we need to hide the footer on the Connect Button SDK. Introducing a key check to determine if the footer should be shown.
+        let shouldHideFooter = UserDefaults.standard.bool(forKey: ConnectButton.shouldHideFooterUserDefaultsKey)
+        
+        let stackView: UIStackView
+        
+        if shouldHideFooter {
+            stackView = UIStackView(arrangedSubviews: [backgroundView])
+        } else {
+            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+            
+            footerLabelAnimator.primary.view.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumFooterLabelHeight)
+            minimumFooterHeightConstraint?.isActive = true
+        }
+
         stackView.axis = .vertical
         stackView.spacing = 20
         
@@ -943,7 +975,7 @@ public class ConnectButton: UIView {
         // By defaut, the ConnectButton contents are the full width of the button's view
         // But set a maximum width
         // Set the left anchor to break its constraint if the max width is exceeded
-        let leftConstraint = stackView.leftAnchor.constraint(equalTo: leftAnchor)
+        let leftConstraint = stackView.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor)
         leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 2)
         leftConstraint.isActive = true
         
@@ -956,8 +988,10 @@ public class ConnectButton: UIView {
         // Finally set the max width
         stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
         
-        addSubview(footerLabelAnimator.transition.view)
-        footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
+        if !shouldHideFooter {
+            addSubview(footerLabelAnimator.transition.view)
+            footerLabelAnimator.transition.view.constrain.edges(to: footerLabelAnimator.primary.view, edges: [.left, .top, .right])
+        } 
         
         backgroundView.addSubview(progressBar)
         backgroundView.addSubview(primaryLabelAnimator.primary.view)

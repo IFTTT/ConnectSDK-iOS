@@ -132,6 +132,8 @@ public class ConnectButtonController {
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
         
+        button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
+        
         button.configureEmailField(placeholderText: "button.email.placeholder".localized,
                                    confirmButtonAsset: Assets.Button.emailConfirm)
         
@@ -157,10 +159,11 @@ public class ConnectButtonController {
         }
 
         switch connection.status {
-        case .initial, .unknown:
+        case .initial, .unknown, .disabled:
+            // Disabled Connections are presented in the "Connect" state
             transition(to: .initial)
 
-        case .enabled, .disabled:
+        case .enabled:
             transition(to: .connected)
         }
     }
@@ -244,11 +247,17 @@ public class ConnectButtonController {
         manage,
         disconnect
 
-        private var typestyle: Typestyle { return .footnote }
+        /// Our best guess of the maximum height of the footer label
+        fileprivate static var estimatedMaximumTextHeight: CGFloat {
+            // We are estimating that the text will never exceed 2 lines (plus some line spacing)
+            return 2.1 * typestyle.font.lineHeight
+        }
+        
+        fileprivate static let typestyle: Typestyle = .footnote
 
         private var iftttText: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : typestyle.adjusting(weight: .heavy).font])
+                                      attributes: [.font : FooterMessages.typestyle.adjusting(weight: .heavy).font])
         }
 
         var value: ConnectButton.LabelValue {
@@ -256,6 +265,8 @@ public class ConnectButtonController {
         }
 
         var attributedString: NSAttributedString {
+            let typestyle = FooterMessages.typestyle
+            
             switch self {
             case .poweredBy:
                 let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
@@ -730,7 +741,9 @@ public class ConnectButtonController {
 
         // MARK: - Log in an exisiting user
         case (_, .logInExistingUser(let userId)):
-            openActivationURL(connection.activationURL(for: .login(userId), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
+            openActivationURL(connection.activationURL(for: .login(userId),
+                                                       credentialProvider: connectionConfiguration.credentialProvider,
+                                                       activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
 
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
@@ -751,9 +764,9 @@ public class ConnectButtonController {
 
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
 
-            let token = service.id == connection.primaryService.id ? tokenProvider.partnerOAuthCode : nil
-
-            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail, token: token), tokenProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+            let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
+                                               credentialProvider: connectionConfiguration.credentialProvider,
+                                               activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
 
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
