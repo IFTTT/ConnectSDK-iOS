@@ -758,16 +758,36 @@ public class ConnectButtonController {
                 } else { // Existing IFTTT user
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                     progress.onComplete { position in
-                        if position == .end {
-                            self.transition(to: .logInExistingUser(user.id))
-                        }
-                        
                         self.accessAccountTask = nil
+                        
+                        switch position {
+                        case .start:
+                            self.currentActivationStep = .initial
+                        case .end:
+                            self.transition(to: .logInExistingUser(user.id))
+                        case .current:
+                            break
+                        }
                     }
                 }
             }
             
             accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: dataTask)
+            
+            button.emailInteraction.onConfirm = { [weak self] email in
+                guard let self = self else {
+                    assertionFailure("It is expected that `self` is not nil here.")
+                    return
+                }
+                
+                if email.isValidEmail {
+                    self.transition(to: .identifyUser(.email(email)))
+                } else {
+                    self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
+                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
+                    self.button.performInvalidEmailAnimation()
+                }
+            }
 
 
         // MARK: - Log in an exisiting user
