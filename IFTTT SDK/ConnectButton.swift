@@ -1182,62 +1182,12 @@ private extension ConnectButton {
             
             
         // Connect to enter email
-        case (.toggle(_, _, let isOn), .email(let suggested)) where isOn == false:
-            let scaleFactor = Layout.height / Layout.knobDiameter
+        case (.toggle(_, _, let isOn), .email(let suggestedEmail)) where isOn == false:
+            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
-            emailEntryField.text = suggested
-            
-            emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
-            emailConfirmButton.maskedEndCaps = .all // Match the switch knob at the start of the animation
-            
-            primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedValue: .none,
-                                            addingTo: animator)
-            
-            progressBar.configure(with: nil)
-            
-            emailEntryField.alpha = 0
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = Style.Color.lightGrey
-                
-                self.switchControl.isOn = true
-                self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-                self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
-                self.switchControl.alpha = 0
-                
-                self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
-                
-                self.emailConfirmButton.transform = .identity
-                self.emailConfirmButton.maskedEndCaps = .right
-                self.emailConfirmButton.alpha = 1
-                
-                // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.border.opacity = 0
-            }
-            animator.addCompletion { position in
-                // Keep the knob is a "clean" state since we don't animate backwards from this step
-                self.switchControl.knob.transform = .identity
-                self.switchControl.knob.maskedEndCaps = .all // reset
-                
-                switch position {
-                case .start:
-                    self.switchControl.isOn = false
-                case .end:
-                    // Fade in the email once the first animation completes
-                    let a = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
-                        self.emailEntryField.alpha = 1
-                    }
-                    a.addCompletion { _ in
-                        if suggested == nil {
-                            self.emailEntryField.becomeFirstResponder()
-                        }
-                    }
-                    a.startAnimation()
-                default:
-                    break
-                }
-            }
-        
+        // Step (when email is skipped) to enter email.
+        case (.step, .email(let suggestedEmail)):
+            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
         // Toggle to step (When email is skipped)
         case (.toggle(_, _, let isOn), .step(_, let message)) where isOn == true:
@@ -1393,6 +1343,63 @@ private extension ConnectButton {
             
         default:
             assertionFailure("Unexpected animation transition state from \(previousState.description) to \(state.description) with history \(connectionDiary.description).")
+        }
+    }
+    
+    private func transitionToEmail(suggestedEmail: String?, animator: UIViewPropertyAnimator) {
+        let scaleFactor = Layout.height / Layout.knobDiameter
+        
+        emailEntryField.text = suggestedEmail
+        
+        emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
+        emailConfirmButton.maskedEndCaps = .all // Match the switch knob at the start of the animation
+        
+        primaryLabelAnimator.transition(with: .crossfade,
+                                        updatedValue: .none,
+                                        addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        
+        emailEntryField.alpha = 0
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = Style.Color.lightGrey
+            
+            self.switchControl.isOn = true
+            self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+            self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
+            self.switchControl.alpha = 0
+            
+            self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
+            
+            self.emailConfirmButton.transform = .identity
+            self.emailConfirmButton.maskedEndCaps = .right
+            self.emailConfirmButton.alpha = 1
+            
+            // This is only relevent for dark mode when we draw a border around the switch
+            self.backgroundView.border.opacity = 0
+        }
+        animator.addCompletion { position in
+            // Keep the knob is a "clean" state since we don't animate backwards from this step
+            self.switchControl.knob.transform = .identity
+            self.switchControl.knob.maskedEndCaps = .all // reset
+            
+            switch position {
+            case .start:
+                self.switchControl.isOn = false
+            case .end:
+                // Fade in the email once the first animation completes
+                let a = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
+                    self.emailEntryField.alpha = 1
+                }
+                a.addCompletion { _ in
+                    if suggestedEmail == nil {
+                        self.emailEntryField.becomeFirstResponder()
+                    }
+                }
+                a.startAnimation()
+            default:
+                break
+            }
         }
     }
 }
