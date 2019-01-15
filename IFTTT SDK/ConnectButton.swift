@@ -201,10 +201,14 @@ public class ConnectButton: UIView {
             }
             animator.continueAnimation(withTimingParameters: timing, durationFactor: durationFactor)
         }
-        func onComplete(_ body: @escaping (() -> Void)) {
-            animator.addCompletion { (_) in
-                body()
+        func onComplete(_ body: @escaping ((UIViewAnimatingPosition) -> Void)) {
+            animator.addCompletion { position in
+                body(position)
             }
+        }
+        func finish(at finalPosition: UIViewAnimatingPosition) {
+            animator.stopAnimation(false)
+            animator.finishAnimation(at: finalPosition)
         }
     }
     

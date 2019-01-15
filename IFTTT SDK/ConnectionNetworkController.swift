@@ -91,23 +91,27 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) {
-        checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { configuration, error in
+    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) -> URLSessionDataTask {
+        return checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { configuration, error in
             DispatchQueue.main.async {
                 completion(configuration, error)
             }
         }
     }
     
-    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) {
+    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) -> URLSessionDataTask {
         switch user {
         case .email(let email):
-            urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
+            let dataTask = urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
                 let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
                 completion(configuration, error)
-                }.resume()
+                
+            }
+            dataTask.resume()
+        
+            return dataTask
         case .token(let token):
-            urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
+            let dataTask = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
                 guard let username = parser[APIConstants.userLoginKey].string else {
                     completion(nil, error)
                     return
@@ -115,7 +119,10 @@ public final class ConnectionNetworkController {
                 
                 let configuration = User(id: .username(username), isExistingUser: false)
                 completion(configuration, error)
-                }.resume()
+            }
+            dataTask.resume()
+            
+            return dataTask
         }
     }
     

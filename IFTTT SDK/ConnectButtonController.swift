@@ -138,11 +138,12 @@ public class ConnectButtonController {
                                    confirmButtonAsset: Assets.Button.emailConfirm)
         
         button.footerInteraction.onSelect = { [weak self] in
-            guard let self = self else {
+            guard let self = self, let activationStep = self.currentActivationStep else {
                 return
             }
-            switch self.currentActivationStep {
-            case .initial?:
+            
+            switch activationStep {
+            case .initial:
                 if case .email = self.button.currentState {
                     // Open terms of service / privacy policy when creating an account
                     self.showLegalTerms()
@@ -150,9 +151,19 @@ public class ConnectButtonController {
                     // Link to the about page when we are in the initial state
                     self.showAboutPage()
                 }
-            case .connected?:
+            case .connected:
                 // When the Connection is made, show the app store page for IFTTT
                 self.showAppStorePage()
+            case .identifyUser(let lookupMethod):
+                switch lookupMethod {
+                case .email:
+                    break
+                case .token:
+                    self.accessAccountTask?.progressAnimation.finish(at: .start)
+                    self.accessAccountTask?.dataTask.cancel()
+                    self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
+                                                          footerValue: FooterMessages.enterEmail.value)).preform()
+                }
             default:
                 break
             }
@@ -593,6 +604,14 @@ public class ConnectButtonController {
         }
     }
     
+    /// Wraps various tasks associated with accessing an account so they can be tracked or interrupted.
+    private struct AccessAccountTask {
+        let progressAnimation: ConnectButton.Animator
+        let dataTask: URLSessionDataTask
+    }
+    
+    private var accessAccountTask: AccessAccountTask?
+    
     /// State machine state
     private var currentActivationStep: ActivationStep?
 
@@ -707,11 +726,13 @@ public class ConnectButtonController {
                                                   footerValue: FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail).value)
             ).preform()
             }
+            
+            button.footerInteraction.isTapEnabled = true
 
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
 
-            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { user, error in
+            let dataTask = connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { user, error in
                 guard let user = user else {
                     self.transition(to: .failed(.networkError(error)))
                     return
@@ -724,7 +745,7 @@ public class ConnectButtonController {
                     self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
 
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
-                    progress.onComplete {
+                    progress.onComplete { _ in
                         // Show "fake" success
                         self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
 
@@ -736,11 +757,17 @@ public class ConnectButtonController {
                     }
                 } else { // Existing IFTTT user
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
-                    progress.onComplete {
-                        self.transition(to: .logInExistingUser(user.id))
+                    progress.onComplete { position in
+                        if position == .end {
+                            self.transition(to: .logInExistingUser(user.id))
+                        }
+                        
+                        self.accessAccountTask = nil
                     }
                 }
             }
+            
+            accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: dataTask)
 
 
         // MARK: - Log in an exisiting user
@@ -751,7 +778,7 @@ public class ConnectButtonController {
 
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
-            animation.onComplete {
+            animation.onComplete { _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.transition(to: nextStep)
                 }
@@ -782,7 +809,7 @@ public class ConnectButtonController {
 
             let progressBar = button.progressBar(timeout: 2)
             progressBar.preform()
-            progressBar.onComplete {
+            progressBar.onComplete { _ in
                 self.button.animator(for: .buttonState(.stepComplete(for: service.connectButtonService))).preform()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.transition(to: nextStep)
@@ -840,7 +867,7 @@ public class ConnectButtonController {
             let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: connectionConfiguration.credentialProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
-                progress.onComplete {
+                progress.onComplete { _ in
                     switch response.result {
                     case .success:
                         self.transition(to: .disconnected)
@@ -879,7 +906,7 @@ public class ConnectButtonController {
 
         let progressBar = button.progressBar(timeout: 2)
         progressBar.preform()
-        progressBar.onComplete {
+        progressBar.onComplete { _ in
             self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: .connected)
