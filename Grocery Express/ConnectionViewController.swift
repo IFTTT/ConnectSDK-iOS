@@ -100,7 +100,7 @@ private extension ConnectButtonControllerError {
         case .iftttAccountCreationFailed:
             return "Failed to create IFTTT account"
         case .networkError(let error):
-            return error?.localizedDescription ?? "Unknown network error"
+            return error.localizedDescription 
         case .unknownRedirect, .unknownResponse:
             return "Unknown error"
         case .canceled:
@@ -114,14 +114,14 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         return self
     }
     
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection>) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
         switch result {
         case .success:
             // Get the an IFTTT service token for this user
             connectionCredentials.tokenRequest().start(nil)
             
         case .failure(let error):
-            if let connectionError = error as? ConnectButtonControllerError, let reason = connectionError.reason {
+            if let reason = error.reason {
                 let alert = UIAlertController(title: "Connection failed", message: reason, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
                 present(alert, animated: true, completion: nil)
@@ -129,7 +129,7 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         }
     }
     
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection>) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
         // Received when the Connection is deactivated.
     }
     
