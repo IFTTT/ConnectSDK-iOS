@@ -22,13 +22,6 @@ public final class ConnectionNetworkController {
         self.urlSession = urlSession
     }
     
-    /// An error occurred, preventing the network controller from completing `Connection` network requests.
-    public enum ConnectionNetworkControllerError: Error {
-        
-        /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
-        case unknownResponse
-    }
-    
     /// A structure encapsulating responses from the `Connection` activation service network requests.
     public struct Response {
         
@@ -39,7 +32,7 @@ public final class ConnectionNetworkController {
         public let statusCode: Int?
         
         /// The `Result<Connection>` of the network request.
-        public let result: Result<Connection>
+        public let result: Result<Connection, NetworkError>
     }
     
     /// A handler that is used when a `Response` is recieved from a network request.
@@ -77,7 +70,14 @@ public final class ConnectionNetworkController {
             if let applet = Connection.parseAppletsResponse(parser)?.first {
                 completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
             } else {
-                completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(error ?? ConnectionNetworkControllerError.unknownResponse)))
+                let networkError: NetworkError = {
+                    if let error = error {
+                        return .genericError(error)
+                    } else {
+                        return .unknownResponse
+                    }
+                }()
+                completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(networkError)))
             }
         }
         if let minimumDuration = minimumDuration {
@@ -91,31 +91,37 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) {
-        checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { configuration, error in
+    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) {
+        checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { result in
             DispatchQueue.main.async {
-                completion(configuration, error)
+                completion(result)
             }
         }
     }
     
-    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (User?, Error?) -> Void) {
+    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) {
         switch user {
         case .email(let email):
-            urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
+            let task = urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
                 let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
-                completion(configuration, error)
-                }.resume()
+                completion(.success(configuration))
+            }
+            task.resume()
         case .token(let token):
-            urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
+            let task = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
                 guard let username = parser[APIConstants.userLoginKey].string else {
-                    completion(nil, error)
+                    if let networkError = error {
+                        completion(.failure(.genericError(networkError)))
+                    } else {
+                        completion(.failure(.unknownResponse))
+                    }
                     return
                 }
                 
                 let configuration = User(id: .username(username), isExistingUser: false)
-                completion(configuration, error)
-                }.resume()
+                completion(.success(configuration))
+            }
+            task.resume()
         }
     }
     
