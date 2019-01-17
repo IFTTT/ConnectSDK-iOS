@@ -725,10 +725,10 @@ public class ConnectButtonController {
             let timeout: TimeInterval = 3 // Network request timeout
 
             switch lookupMethod {
-            case .email:
+            case let .email(userEmail):
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
-                                                  footerValue: FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail).value)
+                                                  footerValue: FooterMessages.signingInto(email: userEmail).value)
             ).preform()
 
 
@@ -818,7 +818,7 @@ public class ConnectButtonController {
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
-            let footer = FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail)
+            let footer = FooterMessages.signingInto(email: newUserEmail ?? connectionConfiguration.suggestedUserEmail)
 
             button.footerInteraction.isTapEnabled = true
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()

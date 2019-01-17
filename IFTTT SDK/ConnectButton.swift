@@ -1185,7 +1185,7 @@ private extension ConnectButton {
         case (.toggle(_, _, let isOn), .email(let suggestedEmail)) where isOn == false:
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
-        // Step (when email is skipped) to enter email.
+        // Step to enter email.
         case (.step, .email(let suggestedEmail)):
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
@@ -1347,9 +1347,10 @@ private extension ConnectButton {
     }
     
     private func transitionToEmail(suggestedEmail: String?, animator: UIViewPropertyAnimator) {
+        let email = emailEntryField.text?.isEmpty != true ? emailEntryField.text : suggestedEmail
         let scaleFactor = Layout.height / Layout.knobDiameter
         
-        emailEntryField.text = suggestedEmail
+        emailEntryField.text = email
         
         emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
         emailConfirmButton.maskedEndCaps = .all // Match the switch knob at the start of the animation
