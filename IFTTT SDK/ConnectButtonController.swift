@@ -268,7 +268,7 @@ public class ConnectButtonController {
         poweredBy,
         enterEmail,
         emailInvalid,
-        signingInto(email: String),
+        verifying(email: String),
         signedIn(username: String),
         connect(Connection.Service, to: Connection.Service),
         manage,
@@ -309,7 +309,7 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : typestyle.font])
 
-            case .signingInto(let email):
+            case .verifying(let email):
                 let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : typestyle.font])
                 let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : typestyle.adjusting(weight: .bold).font,
                                                                                                                             .underlineStyle : NSUnderlineStyle.single.rawValue])
@@ -728,7 +728,7 @@ public class ConnectButtonController {
             case let .email(userEmail):
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
-                                                  footerValue: FooterMessages.signingInto(email: userEmail).value)
+                                                  footerValue: FooterMessages.verifying(email: userEmail).value)
             ).preform()
 
 
@@ -818,7 +818,7 @@ public class ConnectButtonController {
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
-            let footer = FooterMessages.signingInto(email: newUserEmail ?? connectionConfiguration.suggestedUserEmail)
+            let footer = FooterMessages.verifying(email: newUserEmail ?? connectionConfiguration.suggestedUserEmail)
 
             button.footerInteraction.isTapEnabled = true
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
