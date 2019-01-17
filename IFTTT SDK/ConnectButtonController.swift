@@ -151,20 +151,33 @@ public class ConnectButtonController {
                     // Link to the about page when we are in the initial state
                     self.showAboutPage()
                 }
+                
             case .connected:
                 // When the Connection is made, show the app store page for IFTTT
                 self.showAppStorePage()
+                
             case .identifyUser(let lookupMethod):
                 switch lookupMethod {
                 case .email:
                     self.accessAccountTask?.progressAnimation.finish(at: .start)
                     self.accessAccountTask?.dataTask.cancel()
-                    self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
-                                                           footerValue: FooterMessages.enterEmail.value)).preform()
+                    self.transition(to: .initial)
+                    self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 case .token:
                     break
                 }
-            default:
+                
+            case let .serviceAuthentication(_, newUserEmail):
+                
+                // The footer is only selectable if the user is a new user.
+                guard newUserEmail != nil else {
+                    return
+                }
+                
+                self.transition(to: .initial)
+                self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
+                
+            case .logInExistingUser, .serviceAuthenticationComplete, .connectionConfigurationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
                 break
             }
         }
@@ -633,7 +646,7 @@ public class ConnectButtonController {
         switch (previous, step) {
 
         // MARK: - Initial connect button state
-        case (.none, .initial), (.canceled?, .initial), (.failed?, .initial), (.disconnected?, .initial):
+        case (.none, .initial), (.canceled?, .initial), (.failed?, .initial), (.disconnected?, .initial), (.serviceAuthentication?, .initial), (.identifyUser?, .initial):
             endActivationWebFlow()
             
             button.footerInteraction.isTapEnabled = true
@@ -773,7 +786,6 @@ public class ConnectButtonController {
                     return
                 }
                 
-                self.currentActivationStep = .initial
                 self.emailInteractionConfirmation(email: email)
             }
 
@@ -798,9 +810,9 @@ public class ConnectButtonController {
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
-            let footer = service == connection.primaryService ?
-                FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
+            let footer = FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail)
 
+            button.footerInteraction.isTapEnabled = true
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
 
             let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
