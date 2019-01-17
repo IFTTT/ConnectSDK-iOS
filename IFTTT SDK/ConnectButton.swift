@@ -1187,7 +1187,7 @@ private extension ConnectButton {
             
         // Step to enter email.
         case (.step, .email(let suggestedEmail)):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
+            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
             
         // Toggle to step (When email is skipped)
         case (.toggle(_, _, let isOn), .step(_, let message)) where isOn == true:
@@ -1346,7 +1346,7 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToEmail(suggestedEmail: String?, animator: UIViewPropertyAnimator) {
+    private func transitionToEmail(suggestedEmail: String?, animator: UIViewPropertyAnimator, shouldBecomeFirstResponder: Bool = false) {
         let email = emailEntryField.text?.isEmpty != true ? emailEntryField.text : suggestedEmail
         let scaleFactor = Layout.height / Layout.knobDiameter
         
@@ -1393,7 +1393,7 @@ private extension ConnectButton {
                     self.emailEntryField.alpha = 1
                 }
                 a.addCompletion { _ in
-                    if suggestedEmail == nil {
+                    if suggestedEmail == nil || shouldBecomeFirstResponder {
                         self.emailEntryField.becomeFirstResponder()
                     }
                 }
