@@ -161,6 +161,7 @@ public class ConnectButtonController {
                 case .email:
                     self.accessAccountTask?.progressAnimation.finish(at: .start)
                     self.accessAccountTask?.dataTask.cancel()
+                    self.accessAccountTask = nil
                     self.transition(to: .initial)
                     self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 case .token:
@@ -174,6 +175,7 @@ public class ConnectButtonController {
                     return
                 }
                 
+                self.accessAccountTask = nil
                 self.transition(to: .initial)
                 self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 
@@ -742,18 +744,24 @@ public class ConnectButtonController {
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
 
-            let dataTask = connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { result in
+            let dataTask = connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+                
                 switch result {
                 case .success(let user):
                     if case .email(let email) = user.id, user.isExistingUser == false {
-                        // There is no account for this user
-                        // Show a fake message that we are creating an account
-                        // Then move to the first step of the service connection flow
-                        self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
+                        
+                        if self.accessAccountTask != nil {
+                            // There is no account for this user
+                            // Show a fake message that we are creating an account
+                            // Then move to the first step of the service connection flow
+                            self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
+                        }
                         
                         progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                         progress.onComplete { position in
-                            self.accessAccountTask = nil
                             
                             if position == .end {
                                 // Show "fake" success
