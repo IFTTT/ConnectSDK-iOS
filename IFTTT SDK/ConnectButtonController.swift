@@ -157,12 +157,12 @@ public class ConnectButtonController {
             case .identifyUser(let lookupMethod):
                 switch lookupMethod {
                 case .email:
-                    break
-                case .token:
                     self.accessAccountTask?.progressAnimation.finish(at: .start)
                     self.accessAccountTask?.dataTask.cancel()
                     self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail),
-                                                          footerValue: FooterMessages.enterEmail.value)).preform()
+                                                           footerValue: FooterMessages.enterEmail.value)).preform()
+                case .token:
+                    break
                 }
             default:
                 break
@@ -713,14 +713,14 @@ public class ConnectButtonController {
             case .email:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
-                                                  footerValue: FooterMessages.poweredBy.value)
+                                                  footerValue: FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail).value)
             ).preform()
 
 
             case .token:
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.accessing_existing_account".localized),
-                                                  footerValue: FooterMessages.signingInto(email: connectionConfiguration.suggestedUserEmail).value)
+                                                  footerValue: FooterMessages.poweredBy.value)
             ).preform()
             }
             
@@ -742,24 +742,24 @@ public class ConnectButtonController {
                     self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
 
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
-                    progress.onComplete { _ in
-                        // Show "fake" success
-                        self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
-
-                        // After a short delay, show first service connection
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            // We know that this is a new user so we must connect the primary service first and create an account
-                            self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
-                        }
-                    }
-                } else { // Existing IFTTT user
-                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                     progress.onComplete { position in
                         self.accessAccountTask = nil
                         
                         if position == .end {
-                           self.transition(to: .logInExistingUser(user.id))
+                            // Show "fake" success
+                            self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
+                            
+                            // After a short delay, show first service connection
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                // We know that this is a new user so we must connect the primary service first and create an account
+                                self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
+                            }
                         }
+                    }
+                } else { // Existing IFTTT user
+                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
+                    progress.onComplete { _ in
+                        self.transition(to: .logInExistingUser(user.id))
                     }
                 }
             }
