@@ -818,7 +818,13 @@ public class ConnectButtonController {
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
-            let footer = FooterMessages.verifying(email: newUserEmail ?? connectionConfiguration.suggestedUserEmail)
+            let footer: ConnectButtonController.FooterMessages
+            
+            if let newUserEmail = newUserEmail {
+                footer = FooterMessages.verifying(email: newUserEmail)
+            } else {
+                footer = service == connection.primaryService ? FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
+            }
 
             button.footerInteraction.isTapEnabled = true
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
