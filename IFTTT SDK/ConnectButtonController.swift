@@ -138,11 +138,12 @@ public class ConnectButtonController {
                                    confirmButtonAsset: Assets.Button.emailConfirm)
         
         button.footerInteraction.onSelect = { [weak self] in
-            guard let self = self else {
+            guard let self = self, let activationStep = self.currentActivationStep else {
                 return
             }
-            switch self.currentActivationStep {
-            case .initial?:
+            
+            switch activationStep {
+            case .initial:
                 if case .email = self.button.currentState {
                     // Open terms of service / privacy policy when creating an account
                     self.showLegalTerms()
@@ -150,10 +151,35 @@ public class ConnectButtonController {
                     // Link to the about page when we are in the initial state
                     self.showAboutPage()
                 }
-            case .connected?:
+                
+            case .connected:
                 // When the Connection is made, show the app store page for IFTTT
                 self.showAppStorePage()
-            default:
+                
+            case .identifyUser(let lookupMethod):
+                switch lookupMethod {
+                case .email:
+                    self.accessAccountTask?.progressAnimation.finish(at: .start)
+                    self.accessAccountTask?.dataTask.cancel()
+                    self.accessAccountTask = nil
+                    self.transition(to: .initial)
+                    self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
+                case .token:
+                    break
+                }
+                
+            case let .serviceAuthentication(_, newUserEmail):
+                
+                // The footer is only selectable if the user is a new user.
+                guard newUserEmail != nil else {
+                    return
+                }
+                
+                self.accessAccountTask = nil
+                self.transition(to: .initial)
+                self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
+                
+            case .logInExistingUser, .serviceAuthenticationComplete, .connectionConfigurationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
                 break
             }
         }
@@ -242,6 +268,7 @@ public class ConnectButtonController {
         poweredBy,
         enterEmail,
         emailInvalid,
+        verifying(email: String),
         signedIn(username: String),
         connect(Connection.Service, to: Connection.Service),
         manage,
@@ -282,6 +309,13 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : typestyle.font])
 
+            case .verifying(let email):
+                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : typestyle.font])
+                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : typestyle.adjusting(weight: .bold).font,
+                                                                                                                            .underlineStyle : NSUnderlineStyle.single.rawValue])
+                text.append(changeEmailText)
+                return text
+                
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
                                                      attributes: [.font: typestyle.adjusting(weight: .bold).font])
@@ -588,6 +622,14 @@ public class ConnectButtonController {
         }
     }
     
+    /// Wraps various tasks associated with accessing an account so they can be tracked or interrupted.
+    private struct AccessAccountTask {
+        let progressAnimation: ConnectButton.Animator
+        let dataTask: URLSessionDataTask
+    }
+    
+    private var accessAccountTask: AccessAccountTask?
+    
     /// State machine state
     private var currentActivationStep: ActivationStep?
 
@@ -606,7 +648,7 @@ public class ConnectButtonController {
         switch (previous, step) {
 
         // MARK: - Initial connect button state
-        case (.none, .initial), (.canceled?, .initial), (.failed?, .initial), (.disconnected?, .initial):
+        case (.none, .initial), (.canceled?, .initial), (.failed?, .initial), (.disconnected?, .initial), (.serviceAuthentication?, .initial), (.identifyUser?, .initial):
             endActivationWebFlow()
             
             button.footerInteraction.isTapEnabled = true
@@ -638,14 +680,8 @@ public class ConnectButtonController {
                     assertionFailure("It is expected that `self` is not nil here.")
                     return
                 }
-
-                if email.isValidEmail {
-                    self.transition(to: .identifyUser(.email(email)))
-                } else {
-                    self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
-                    self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
-                    self.button.performInvalidEmailAnimation()
-                }
+                
+                self.emailInteractionConfirmation(email: email)
             }
 
 
@@ -689,10 +725,10 @@ public class ConnectButtonController {
             let timeout: TimeInterval = 3 // Network request timeout
 
             switch lookupMethod {
-            case .email:
+            case let .email(userEmail):
                 button.animator(for: .buttonState(.step(for: nil,
                                                         message: "button.state.checking_account".localized),
-                                                  footerValue: FooterMessages.poweredBy.value)
+                                                  footerValue: FooterMessages.verifying(email: userEmail).value)
             ).preform()
 
 
@@ -702,33 +738,45 @@ public class ConnectButtonController {
                                                   footerValue: FooterMessages.poweredBy.value)
             ).preform()
             }
+            
+            button.footerInteraction.isTapEnabled = true
 
             let progress = button.progressBar(timeout: timeout)
             progress.preform()
 
-            connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { result in
+            let dataTask = connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+                
                 switch result {
                 case .success(let user):
                     if case .email(let email) = user.id, user.isExistingUser == false {
-                        // There is no account for this user
-                        // Show a fake message that we are creating an account
-                        // Then move to the first step of the service connection flow
-                        self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
+                        
+                        if self.accessAccountTask != nil {
+                            // There is no account for this user
+                            // Show a fake message that we are creating an account
+                            // Then move to the first step of the service connection flow
+                            self.button.animator(for: .buttonState(.step(for: nil, message: "button.state.creating_account".localized))).preform()
+                        }
                         
                         progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
-                        progress.onComplete {
-                            // Show "fake" success
-                            self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
+                        progress.onComplete { position in
                             
-                            // After a short delay, show first service connection
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                // We know that this is a new user so we must connect the primary service first and create an account
-                                self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
+                            if position == .end {
+                                // Show "fake" success
+                                self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
+                                
+                                // After a short delay, show first service connection
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    // We know that this is a new user so we must connect the primary service first and create an account
+                                    self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
+                                }
                             }
                         }
                     } else { // Existing IFTTT user
                         progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
-                        progress.onComplete {
+                        progress.onComplete { _ in
                             self.transition(to: .logInExistingUser(user.id))
                         }
                     }
@@ -736,6 +784,17 @@ public class ConnectButtonController {
                 case .failure(let error):
                     self.transition(to: .failed(.networkError(error)))
                 }
+            }
+            
+            accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: dataTask)
+            
+            button.emailInteraction.onConfirm = { [weak self] email in
+                guard let self = self else {
+                    assertionFailure("It is expected that `self` is not nil here.")
+                    return
+                }
+                
+                self.emailInteractionConfirmation(email: email)
             }
 
 
@@ -747,7 +806,7 @@ public class ConnectButtonController {
 
         case (.logInExistingUser?, .logInComplete(let nextStep)):
             let animation = button.animator(for: .buttonState(.stepComplete(for: nil)))
-            animation.onComplete {
+            animation.onComplete { _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.transition(to: nextStep)
                 }
@@ -759,9 +818,15 @@ public class ConnectButtonController {
 
         // MARK: - Service connection
         case (_, .serviceAuthentication(let service, let newUserEmail)):
-            let footer = service == connection.primaryService ?
-                FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
+            let footer: ConnectButtonController.FooterMessages
+            
+            if let newUserEmail = newUserEmail {
+                footer = FooterMessages.verifying(email: newUserEmail)
+            } else {
+                footer = service == connection.primaryService ? FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
+            }
 
+            button.footerInteraction.isTapEnabled = true
             button.animator(for: .buttonState(.step(for: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
 
             let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
@@ -778,7 +843,7 @@ public class ConnectButtonController {
 
             let progressBar = button.progressBar(timeout: 2)
             progressBar.preform()
-            progressBar.onComplete {
+            progressBar.onComplete { _ in
                 self.button.animator(for: .buttonState(.stepComplete(for: service.connectButtonService))).preform()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.transition(to: nextStep)
@@ -836,7 +901,7 @@ public class ConnectButtonController {
             let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: connectionConfiguration.credentialProvider)
             connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
                 progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
-                progress.onComplete {
+                progress.onComplete { _ in
                     switch response.result {
                     case .success:
                         self.transition(to: .disconnected)
@@ -860,6 +925,16 @@ public class ConnectButtonController {
             assertionFailure("Unexpected activation step transition from \(previous?.description ?? "nil") to \(step.description).")
         }
     }
+    
+    private func emailInteractionConfirmation(email: String) {
+        if email.isValidEmail {
+            self.transition(to: .identifyUser(.email(email)))
+        } else {
+            self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
+            self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
+            self.button.performInvalidEmailAnimation()
+        }
+    }
 
 
     /// Show confirmation that `Connection` configuration was successfully saved.
@@ -875,7 +950,7 @@ public class ConnectButtonController {
 
         let progressBar = button.progressBar(timeout: 2)
         progressBar.preform()
-        progressBar.onComplete {
+        progressBar.onComplete { _ in
             self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: .connected)

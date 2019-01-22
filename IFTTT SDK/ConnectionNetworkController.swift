@@ -91,24 +91,27 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) {
-        checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { result in
+    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask {
+        return checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { result in
             DispatchQueue.main.async {
                 completion(result)
             }
         }
     }
     
-    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) {
+    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask {
         switch user {
         case .email(let email):
-            let task = urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
+            let dataTask = urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
                 let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
                 completion(.success(configuration))
+                
             }
-            task.resume()
+            dataTask.resume()
+        
+            return dataTask
         case .token(let token):
-            let task = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
+            let dataTask = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
                 guard let username = parser[APIConstants.userLoginKey].string else {
                     if let networkError = error {
                         completion(.failure(.genericError(networkError)))
@@ -121,7 +124,9 @@ public final class ConnectionNetworkController {
                 let configuration = User(id: .username(username), isExistingUser: false)
                 completion(.success(configuration))
             }
-            task.resume()
+            dataTask.resume()
+            
+            return dataTask
         }
     }
     
