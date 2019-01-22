@@ -11,8 +11,8 @@ import Foundation
 /// Request the IFTTT service token for the current user
 /// If the user has already connected Grocery Token, this will grant the service token
 struct TokenRequest {
-    let credentials: ConnectionCredentials
-    let urlRequest: URLRequest
+    private let credentials: ConnectionCredentials
+    private let urlRequest: URLRequest
     
     /// Make the request
     ///
@@ -33,7 +33,9 @@ struct TokenRequest {
         task.resume()
     }
     
-    /// Build a token request for `ConnectionCredentials`
+    /// Creates a `TokenRequest`
+    ///
+    /// - Parameter credentials: The credentials used to fetch the token
     init(credentials: ConnectionCredentials) {
         self.credentials = credentials
         self.urlRequest = TokenRequest.tokenURLRequest(for: credentials)
