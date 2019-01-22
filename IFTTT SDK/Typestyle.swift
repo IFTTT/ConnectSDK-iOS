@@ -61,38 +61,21 @@ public struct Typestyle {
         return Typestyle(weight: weight, size: size, isDynamic: isDynamic, style: .callout)
     }
     
-    static var h1: Typestyle {
+    static let h1: Typestyle = {
         if #available(iOS 11, *) {
             return Typestyle(weight: .bold, size: 36, isDynamic: true, style: .largeTitle)
         } else {
             return Typestyle(weight: .bold, size: 36, isDynamic: true, style: .title1)
         }
-    }
-    static var h2: Typestyle {
-        return Typestyle(weight: .bold, size: 30, isDynamic: true, style: .title1)
-    }
-    static var h3: Typestyle {
-        return Typestyle(weight: .bold, size: 28, isDynamic: true, style: .title2)
-    }
-    static var h4: Typestyle {
-        return Typestyle(weight: .bold, size: 24, isDynamic: true, style: .title3)
-    }
-    static var h5: Typestyle {
-        return Typestyle(weight: .bold, size: 20, isDynamic: true, style: .headline)
-    }
-    static var h6: Typestyle {
-        return Typestyle(weight: .bold, size: 18, isDynamic: true, style: .subheadline)
-    }
-    static var body: Typestyle {
-        return Typestyle(weight: .medium, size: 16, isDynamic: true, style: .body)
-    }
-    static var footnote: Typestyle {
-        return Typestyle(weight: .medium, size: 14, isDynamic: true, style: .footnote)
-    }
-    static var caption: Typestyle {
-        return Typestyle(weight: .medium, size: 12, isDynamic: true, style: .caption1)
-    }
-    static var small: Typestyle {
-        return Typestyle(weight: .bold, size: 10, isDynamic: true, style: .caption2)
-    }
+    }()
+    static var h2 = Typestyle(weight: .bold, size: 30, isDynamic: true, style: .title1)
+    static var h3 = Typestyle(weight: .bold, size: 28, isDynamic: true, style: .title2)
+    static var h4 = Typestyle(weight: .bold, size: 24, isDynamic: true, style: .title3)
+    static let h5 = Typestyle(weight: .bold, size: 20, isDynamic: true, style: .headline)
+    static let h6 = Typestyle(weight: .bold, size: 18, isDynamic: true, style: .subheadline)
+    static let body = Typestyle(weight: .medium, size: 16, isDynamic: true, style: .body)
+    static let footnote = Typestyle(weight: .medium, size: 14, isDynamic: true, style: .footnote)
+    static let caption = Typestyle(weight: .medium, size: 12, isDynamic: true, style: .caption1)
+    static let small = Typestyle(weight: .bold, size: 10, isDynamic: true, style: .caption2)
+    static let navigationBarButtonText = Typestyle(weight: .demiBold, size: 14, isDynamic: true, style: .callout)
 }
