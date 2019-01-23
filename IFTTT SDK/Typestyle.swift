@@ -14,7 +14,7 @@ extension UIFont {
         return typestyle.font
     }
     static func iftttCallout(_ typestyle: Typestyle) -> UIFont {
-        return typestyle.callout().font
+        return typestyle.callout.font
     }
 }
 
@@ -22,10 +22,10 @@ extension UIFont {
 public struct Typestyle {
     public static var dynamicTypeIsEnabled: Bool = true
     
-    public static var dynamicTypeIsSupported: Bool {
+    public static let dynamicTypeIsSupported: Bool = {
         if #available(iOS 11, *) { return true }
         else { return false }
-    }
+    }()
     
     enum Weight: String {
         case
@@ -57,7 +57,7 @@ public struct Typestyle {
     func adjusting(weight: Weight) -> Typestyle {
         return Typestyle(weight: weight, size: size, isDynamic: isDynamic, style: style)
     }
-    func callout() -> Typestyle {
+    var callout: Typestyle {
         return Typestyle(weight: weight, size: size, isDynamic: isDynamic, style: .callout)
     }
     
@@ -68,9 +68,9 @@ public struct Typestyle {
             return Typestyle(weight: .bold, size: 36, isDynamic: true, style: .title1)
         }
     }()
-    static var h2 = Typestyle(weight: .bold, size: 30, isDynamic: true, style: .title1)
-    static var h3 = Typestyle(weight: .bold, size: 28, isDynamic: true, style: .title2)
-    static var h4 = Typestyle(weight: .bold, size: 24, isDynamic: true, style: .title3)
+    static let h2 = Typestyle(weight: .bold, size: 30, isDynamic: true, style: .title1)
+    static let h3 = Typestyle(weight: .bold, size: 28, isDynamic: true, style: .title2)
+    static let h4 = Typestyle(weight: .bold, size: 24, isDynamic: true, style: .title3)
     static let h5 = Typestyle(weight: .bold, size: 20, isDynamic: true, style: .headline)
     static let h6 = Typestyle(weight: .bold, size: 18, isDynamic: true, style: .subheadline)
     static let body = Typestyle(weight: .medium, size: 16, isDynamic: true, style: .body)

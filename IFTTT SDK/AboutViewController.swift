@@ -184,7 +184,7 @@ class AboutViewController: UIViewController {
     private lazy var moreButton = PillButton("about.more.button".localized) {
         $0.backgroundColor = Constants.Color.learnMoreButton
         $0.label.numberOfLines = 0
-        $0.label.font = .ifttt(Typestyle.h5.callout())
+        $0.label.font = .ifttt(Typestyle.h5.callout)
         $0.label.textColor = .white
         $0.onSelect { [weak self] in
             // FIXME: Typically this would point to the about page but it is not ready yet
