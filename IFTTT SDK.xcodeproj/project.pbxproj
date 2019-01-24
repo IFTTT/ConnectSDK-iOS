@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
-		1D55334921FA1822000E8EC4 /* TypeStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D55334821FA1822000E8EC4 /* TypeStyleTests.swift */; };
 		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
 		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
 		1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* CredentialProvider.swift */; };
@@ -23,7 +22,7 @@
 		FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */; };
 		FC04FE1D21502968008AC8A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC04FE1C21502968008AC8A5 /* Assets.xcassets */; };
 		FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC094BA2215D9E2D008B35F6 /* Localizable.strings */; };
-		FC094BA5215ED6F5008B35F6 /* TypeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* TypeStyle.swift */; };
+		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
@@ -96,7 +95,6 @@
 /* Begin PBXFileReference section */
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
-		1D55334821FA1822000E8EC4 /* TypeStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeStyleTests.swift; sourceTree = "<group>"; };
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EmailDataDetectorTests.swift"; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
@@ -111,7 +109,7 @@
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		FC04FE1C21502968008AC8A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC094BA2215D9E2D008B35F6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		FC094BA4215ED6F5008B35F6 /* TypeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeStyle.swift; sourceTree = "<group>"; };
+		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		FC22B19321ACA54000738023 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		FC22B19521ACA54A00738023 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
@@ -281,7 +279,6 @@
 			isa = PBXGroup;
 			children = (
 				1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */,
-				1D55334821FA1822000E8EC4 /* TypeStyleTests.swift */,
 				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
 			);
@@ -319,7 +316,7 @@
 				FC84B85021C437E900BAF7ED /* Images */,
 				FC84B84E21C437D500BAF7ED /* Models */,
 				FC84B84D21C437B400BAF7ED /* Views */,
-				FC094BA4215ED6F5008B35F6 /* TypeStyle.swift */,
+				FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */,
 				FC094BA6215ED72F008B35F6 /* Color.swift */,
 				FCC6DEB1215D90DD008C8405 /* Assets.swift */,
 				FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */,
@@ -532,7 +529,7 @@
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */,
-				FC094BA5215ED6F5008B35F6 /* TypeStyle.swift in Sources */,
+				FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				1DFE02152190E54200856ABC /* Connection+URLGeneration.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
@@ -545,7 +542,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */,
-				1D55334921FA1822000E8EC4 /* TypeStyleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
