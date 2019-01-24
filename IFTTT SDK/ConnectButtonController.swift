@@ -275,8 +275,13 @@ public class ConnectButtonController {
         disconnect
         
         private struct Constants {
-            static let footnoteFont: UIFont = .footnote()
-            static let footnoteBoldFont: UIFont = .footnote(weight: .bold)
+            static var footnoteFont: UIFont {
+                return .footnote()
+            }
+            
+            static var footnoteBoldFont: UIFont {
+                return .footnote(weight: .bold)
+            }
         }
 
         /// Our best guess of the maximum height of the footer label
@@ -312,8 +317,8 @@ public class ConnectButtonController {
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
 
             case .verifying(let email):
-                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : typestyle.font])
-                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : typestyle.adjusting(weight: .bold).font,
+                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : Constants.footnoteFont])
+                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont,
                                                                                                                             .underlineStyle : NSUnderlineStyle.single.rawValue])
                 text.append(changeEmailText)
                 return text

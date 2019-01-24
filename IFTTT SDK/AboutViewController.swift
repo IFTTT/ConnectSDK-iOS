@@ -62,16 +62,18 @@ class AboutViewController: UIViewController {
         
         struct Text {
             /// The about page title
-            static let titleText: NSAttributedString = {
+            static var titleText: NSAttributedString {
                 let text = NSMutableAttributedString(string: "about.title".localized, attributes: [.font : UIFont.h3()])
                 let ifttt = NSAttributedString(string: "IFTTT", attributes: [.font : UIFont.h3(weight: .heavy)])
                 text.append(ifttt)
                 return text
-            }()
+            }
             
             /// The text for legal terms
-            static let legalTermsText = LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
+            static var legalTermsText: NSAttributedString {
+                return LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
                                                               attributes: [.foregroundColor : UIColor.white, .font : UIFont.body()])
+            }
         }
     }
     
