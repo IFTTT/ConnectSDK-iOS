@@ -18,6 +18,8 @@ class SettingsViewController: UIViewController {
     private var settings = Settings()
     
     private var connectionCredentials: ConnectionCredentials {
+        // We may mutate `settings`
+        // Rather than keeping the credentials state, let's generate it dynamically.
         return ConnectionCredentials(settings: settings)
     }
     
@@ -55,7 +57,7 @@ class SettingsViewController: UIViewController {
         loginView.isHidden = true
         activityIndicator.startAnimating()
         
-        let request = connectionCredentials.tokenRequest()
+        let request = TokenRequest(credentials: connectionCredentials)
         request.start { [weak self] (_) in
             self?.activityIndicator.stopAnimating()
             self?.update()
