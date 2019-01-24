@@ -14,6 +14,7 @@ extension Connection {
             let id = parser["id"].string,
             let name = parser["name"].string,
             let description = parser["description"].string,
+            let enabledCount = parser["enabled_count"].int,
             let url = parser["url"].url
             else {
                 return nil
@@ -21,6 +22,7 @@ extension Connection {
         self.id = id
         self.name = name
         self.description = description
+        self.enabledCount = enabledCount
         self.status = Status(rawValue: parser["user_status"].string ?? "") ?? .unknown
         self.services = parser["services"].compactMap { Service(parser: $0) }
         self.url = url
