@@ -248,8 +248,8 @@ public class ConnectButtonController {
         disconnect
         
         private struct Constants {
-            static let footnoteFont: UIFont = Typestyle.footnote().font
-            static let footnoteBoldFont: UIFont = Typestyle.footnote(weight: .bold).font
+            static let footnoteFont: UIFont = TypeStyle.footnote().font
+            static let footnoteBoldFont: UIFont = TypeStyle.footnote(weight: .bold).font
         }
 
         /// Our best guess of the maximum height of the footer label

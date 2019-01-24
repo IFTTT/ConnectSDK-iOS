@@ -11,9 +11,9 @@ import UIKit
 @available(iOS 10.0, *)
 
 /// A structure that handles `UIFont` configuration for the application.
-struct Typestyle {
+struct TypeStyle {
     
-    /// The weight options available to `Typestyle` fonts.
+    /// The weight options available to `TypeStyle` fonts.
     enum Weight: String {
         
         /// A font with the heavy weight.
@@ -55,20 +55,20 @@ struct Typestyle {
         return font
     }
     
-    /// Creates the h1 `Typestyle`.
+    /// Creates the header 1 `Typestyle`.
     ///
     /// - Parameters:
     ///   - weight: The thickness of the font. Defaults to bold.
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func h1(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func h1(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         if #available(iOS 11, *) {
             let style: UIFont.TextStyle = isCallout == true ? .callout : .largeTitle
-            return Typestyle(weight: weight, size: 36, isDynamic: isDynamic, style: style)
+            return TypeStyle(weight: weight, size: 36, isDynamic: isDynamic, style: style)
         } else {
             let style: UIFont.TextStyle = isCallout == true ? .callout : .title1
-            return Typestyle(weight: weight, size: 36, isDynamic: isDynamic, style: style)
+            return TypeStyle(weight: weight, size: 36, isDynamic: isDynamic, style: style)
         }
     }
     
@@ -79,9 +79,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func h2(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func h2(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .title1
-        return Typestyle(weight: weight, size: 30, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 30, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the header 3 `Typestyle`.
@@ -91,9 +91,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func h3(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func h3(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .title2
-        return Typestyle(weight: weight, size: 28, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 28, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the header 4 `Typestyle`.
@@ -103,9 +103,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func h4(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func h4(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .title3
-        return Typestyle(weight: weight, size: 24, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 24, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the header 5 `Typestyle`.
@@ -115,9 +115,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func h5(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func h5(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .headline
-        return Typestyle(weight: weight, size: 20, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 20, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the header 6 `Typestyle`.
@@ -127,9 +127,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func h6(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func h6(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .subheadline
-        return Typestyle(weight: weight, size: 18, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 18, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the body `Typestyle`.
@@ -139,9 +139,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func body(weight: Weight = .medium, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func body(weight: Weight = .medium, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .body
-        return Typestyle(weight: weight, size: 16, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 16, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the footnote `Typestyle`.
@@ -151,9 +151,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func footnote(weight: Weight = .medium, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func footnote(weight: Weight = .medium, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .footnote
-        return Typestyle(weight: weight, size: 14, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 14, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the caption `Typestyle`.
@@ -163,9 +163,9 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func caption(weight: Weight = .medium, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func caption(weight: Weight = .medium, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .caption1
-        return Typestyle(weight: weight, size: 12, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 12, isDynamic: isDynamic, style: style)
     }
     
     /// Creates the small `Typestyle`.
@@ -175,8 +175,8 @@ struct Typestyle {
     ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
     ///   - isCallout: Whether the font style should be set to `.callout`. Defaults to false.
     /// - Returns: The `Typestyle` configured.
-    static func small(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> Typestyle {
+    static func small(weight: Weight = .bold, isDynamic: Bool = true, isCallout: Bool = false) -> TypeStyle {
         let style: UIFont.TextStyle = isCallout == true ? .callout : .caption2
-        return Typestyle(weight: weight, size: 10, isDynamic: isDynamic, style: style)
+        return TypeStyle(weight: weight, size: 10, isDynamic: isDynamic, style: style)
     }
 }
