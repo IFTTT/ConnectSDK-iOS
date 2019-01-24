@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
+		1D55334921FA1822000E8EC4 /* TypeStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D55334821FA1822000E8EC4 /* TypeStyleTests.swift */; };
 		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
 		1D981C33219210D7001784C4 /* Result<ResultType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ResultType>.swift */; };
 		1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* CredentialProvider.swift */; };
@@ -95,6 +96,7 @@
 /* Begin PBXFileReference section */
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
+		1D55334821FA1822000E8EC4 /* TypeStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeStyleTests.swift; sourceTree = "<group>"; };
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EmailDataDetectorTests.swift"; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ResultType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ResultType>.swift"; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */,
+				1D55334821FA1822000E8EC4 /* TypeStyleTests.swift */,
 				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
 			);
@@ -542,6 +545,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */,
+				1D55334921FA1822000E8EC4 /* TypeStyleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,7 +11,7 @@ import UIKit
 @available(iOS 10.0, *)
 
 /// A structure that handles `UIFont` configuration for the application.
-struct TypeStyle {
+struct TypeStyle: Equatable {
     
     /// The weight options available to `TypeStyle` fonts.
     enum Weight: String {
