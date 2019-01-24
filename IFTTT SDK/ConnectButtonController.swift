@@ -273,18 +273,26 @@ public class ConnectButtonController {
         connect(Connection.Service, to: Connection.Service),
         manage,
         disconnect
+        
+        private struct Constants {
+            static var footnoteFont: UIFont {
+                return .footnote()
+            }
+            
+            static var footnoteBoldFont: UIFont {
+                return .footnote(weight: .bold)
+            }
+        }
 
         /// Our best guess of the maximum height of the footer label
         fileprivate static var estimatedMaximumTextHeight: CGFloat {
             // We are estimating that the text will never exceed 2 lines (plus some line spacing)
-            return 2.1 * typestyle.font.lineHeight
+            return 2.1 * Constants.footnoteFont.lineHeight
         }
-        
-        fileprivate static let typestyle: Typestyle = .footnote
 
         private var iftttText: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : FooterMessages.typestyle.adjusting(weight: .heavy).font])
+                                      attributes: [.font : Constants.footnoteBoldFont])
         }
 
         var value: ConnectButton.LabelValue {
@@ -292,51 +300,50 @@ public class ConnectButtonController {
         }
 
         var attributedString: NSAttributedString {
-            let typestyle = FooterMessages.typestyle
             
             switch self {
             case .poweredBy:
                 let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
-                                                     attributes: [.font : typestyle.adjusting(weight: .bold).font])
+                                                     attributes: [.font : Constants.footnoteBoldFont])
                 text.append(iftttText)
                 return text
 
             case .enterEmail:
                 let text = "button.footer.email.legal".localized
-                return LegalTermsText.string(withPrefix: text, activateLinks: false, attributes: [.font : typestyle.font])
+                return LegalTermsText.string(withPrefix: text, activateLinks: false, attributes: [.font : Constants.footnoteFont])
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
+                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
 
             case .verifying(let email):
-                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : typestyle.font])
-                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : typestyle.adjusting(weight: .bold).font,
+                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : Constants.footnoteFont])
+                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont,
                                                                                                                             .underlineStyle : NSUnderlineStyle.single.rawValue])
                 text.append(changeEmailText)
                 return text
                 
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
-                                                     attributes: [.font: typestyle.adjusting(weight: .bold).font])
+                                                     attributes: [.font: Constants.footnoteBoldFont])
                 text.append(NSAttributedString(string: "button.footer.signed_in".localized,
-                                               attributes: [.font : typestyle.font]))
+                                               attributes: [.font : Constants.footnoteFont]))
                 text.append(iftttText)
                 return text
 
             case .connect(let fromService, let toService):
                 let text = String(format: "button.footer.connect".localized, fromService.name, toService.name)
-                return NSAttributedString(string: text, attributes: [.font : typestyle.font])
+                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
 
             case .manage:
                 let text = NSMutableAttributedString(string: "button.footer.manage".localized,
-                                                     attributes: [.font : typestyle.font])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttText)
                 return text
 
             case .disconnect:
                 return NSAttributedString(string: "button.footer.disconnect".localized,
-                                          attributes: [.font : typestyle.font])
+                                          attributes: [.font : Constants.footnoteFont])
             }
         }
     }

@@ -62,16 +62,18 @@ class AboutViewController: UIViewController {
         
         struct Text {
             /// The about page title
-            static let titleText: NSAttributedString = {
-                let text = NSMutableAttributedString(string: "about.title".localized, attributes: [.font : Typestyle.h3.font])
-                let ifttt = NSAttributedString(string: "IFTTT", attributes: [.font : Typestyle.h3.adjusting(weight: .heavy).font])
+            static var titleText: NSAttributedString {
+                let text = NSMutableAttributedString(string: "about.title".localized, attributes: [.font : UIFont.h3()])
+                let ifttt = NSAttributedString(string: "IFTTT", attributes: [.font : UIFont.h3(weight: .heavy)])
                 text.append(ifttt)
                 return text
-            }()
+            }
             
             /// The text for legal terms
-            static let legalTermsText = LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
-                                                              attributes: [.foregroundColor : UIColor.white, .font : Typestyle.body.font])
+            static var legalTermsText: NSAttributedString {
+                return LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
+                                                              attributes: [.foregroundColor : UIColor.white, .font : UIFont.body()])
+            }
         }
     }
     
@@ -138,7 +140,7 @@ class AboutViewController: UIViewController {
             iconView.constrain.square(length: Constants.Layout.bodyItemIconSise)
             
             let label = UILabel(text) {
-                $0.font = .ifttt(Typestyle.body.adjusting(weight: .demiBold))
+                $0.font = .body(weight: .demiBold)
                 $0.textColor = .white
                 $0.textAlignment = .left
                 $0.numberOfLines = 0
@@ -184,7 +186,7 @@ class AboutViewController: UIViewController {
     private lazy var moreButton = PillButton("about.more.button".localized) {
         $0.backgroundColor = Constants.Color.learnMoreButton
         $0.label.numberOfLines = 0
-        $0.label.font = .ifttt(Typestyle.h5.callout())
+        $0.label.font = .h5(isCallout: true)
         $0.label.textColor = .white
         $0.onSelect { [weak self] in
             // FIXME: Typically this would point to the about page but it is not ready yet
