@@ -121,6 +121,7 @@ let connectButtonController = ConnectButtonController(connectButton: connectButt
 * Use the `AuthenticationRedirectHandler` to process these redirects.
 	* **Note:** the `authorizationRedirectURL` provide must be the same url provided to the `ConnectionConfiguration` used by `ConnectButtonController`.
 
+```
 func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
 	if connectionRedirectHandler.handleApplicationRedirect(url: url, options: options) {
 	    // This is an IFTTT SDK redirect, it will take over from here
@@ -130,6 +131,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
 	    return false
 	}
 }
+```
 
 ### Connect Button Controller Delegate
 `ConnectButtonControllerDelegate` communicates important information back to you. Only one of its methods are required:
