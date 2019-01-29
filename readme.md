@@ -49,13 +49,55 @@ Once IFTTT SDK  is installed, it’s simple to use.
 
 You will use the `ConnectButtonController` to interact and handle authenticating your service to IFTTT.
 
+### Setup redirectURL in your app's PLIST
+During Connection activation, your app may receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the URL configured on platform.ifttt.com
+```
+<key>CFBundleURLTypes</key>
+<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Viewer</string>
+		<key>CFBundleURLName</key>
+		<string>com.ifttt.sdk.example</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>groceryexpress</string>
+		</array>
+	</dict>
+</array>
+```
+
 ### Setup CredentialProvider
 * There are various codes and tokens you will need to provide the IFTTT SDK when authenticating your services to IFTTT
 * Conform an object to `CredentialProvider` to handle these requirements.
 
+```
+struct Credentials: CredentialProvider {
+    
+    /// Provides the partner's OAuth code for a service during authentication with a `Connection`.
+    var partnerOAuthCode: String { 
+    	return theOAuthCodeForYourService
+    }
+    
+    /// Provides the service's token associated with the IFTTT platform.
+    var iftttServiceToken: String? { 
+    	return yourAppsKeychain["key_for_ifttt_token"]
+    }
+    
+    /// Provides the invite code for testing an unpublished `Connection`'s services with the IFTTT platform.
+    var inviteCode: String? { 
+    	return "the invite code from platform.ifttt.com or nil if your service is published"
+    }
+}
+```
+
 ### Fetch A Connection
-* You will want to use `ConnectionNetworkController` to fetch your service’s `Connection`.
+* Use `ConnectionNetworkController` to fetch your service’s `Connection`.
 * `Connection.Request` handles creating the necessary `URLRequest`s.
+
+```
+connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: yourCredentialProvider))
+```
 
 ### Using the Connect Button
 * You will need to provide the `ConnectButtonController` a `ConnectButton`.
@@ -63,9 +105,37 @@ You will use the `ConnectButtonController` to interact and handle authenticating
 	* You will also want this view controller to conform to `ConnectButtonControllerDelegate`.
 * Also provide the `ConnectButtonController ` a `ConnectionConfiguration` which includes key information for the authentication process.
 
+```
+let config = ConnectionConfiguration(connection: theFetchedConnection,
+                                     suggestedUserEmail: yourUsersEmail,
+                                     credentialProvider: yourCredentialProvider,
+                                     connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService)
+				     
+let connectButtonController = ConnectButtonController(connectButton: connectButton,
+		 				      connectionConfiguration: config,
+		  				      delegate: self)
+```
+
 ### Handling Redirects
 * During the authentication process, your app will receive redirect urls to open.
 * Use the `AuthenticationRedirectHandler` to process these redirects.
 	* **Note:** the `authorizationRedirectURL` provide must be the same url provided to the `ConnectionConfiguration` used by `ConnectButtonController`.
 
-From here, the user can interact with the `ConnectButton` and the SDK will communicate important information back to you through the `ConnectButtonControllerDelegate`.
+func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+	if connectionRedirectHandler.handleApplicationRedirect(url: url, options: options) {
+	    // This is an IFTTT SDK redirect, it will take over from here
+	    return true
+	} else {
+	    // This is unrelated to the IFTTT SDK
+	    return false
+	}
+}
+
+### Connect Button Controller Delegate
+`ConnectButtonControllerDelegate` communicates important information back to you. Only one of its methods are required:
+```
+func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
+	return theViewControllerContainingTheConnectButton
+}
+```
+We need access to the current view controller periodically to open instances of Safari for OAuth flows.
