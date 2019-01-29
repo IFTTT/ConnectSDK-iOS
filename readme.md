@@ -141,3 +141,16 @@ func presentingViewController(for connectButtonController: ConnectButtonControll
 }
 ```
 We need access to the current view controller periodically to open instances of Safari for OAuth flows.
+
+### The IFTTT user token
+Once the user completes a Connection, it is important to update the IFTTT user token used with your service. 
+```
+func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
+	switch result {
+	case .success(let connection):
+	// The user succesfully enabled the Connection
+	case .failure(let error):
+	// There was a problem enabling the Connetion
+	}
+}
+```
