@@ -49,8 +49,9 @@ Once IFTTT SDK  is installed, it’s simple to use.
 
 You will use the `ConnectButtonController` to interact and handle authenticating your service to IFTTT.
 
-### Setup redirectURL in your app's PLIST
-During Connection activation, your app may receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the URL configured on platform.ifttt.com
+### Setup 
+#### Configure redirect
+During Connection activation, your app will receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the same URL configured on platform.ifttt.com
 ```
 <key>CFBundleURLTypes</key>
 <array>
@@ -67,7 +68,30 @@ During Connection activation, your app may receive redirects intended for the Co
 </array>
 ```
 
-### Setup CredentialProvider
+#### Forward redirects to the Connect Button SDK
+Use the `AuthenticationRedirectHandler` to process these redirects.
+
+**Note:** the `authorizationRedirectURL` provide must be the same url provided to the `ConnectionConfiguration` used by `ConnectButtonController`.
+
+```
+func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+	if connectionRedirectHandler.handleApplicationRedirect(url: url, options: options) {
+	    // This is an IFTTT SDK redirect, it will take over from here
+	    return true
+	} else {
+	    // This is unrelated to the IFTTT SDK
+	    return false
+	}
+}
+```
+
+**Justification**
+These steps are absolutely required to maintain the current user experience. There is no change we can make to avoid them. However there is a tradeoff but I don't think we will be willing to make it.
+We could avoid the redirect setup by:
+* Drop support for iOS 10 
+* Use an "Authentication Session" for web views but this has a big downside. When we present the session, the system shows a popover alert with copy that we cannot control. Even worse the copy is very confusing to the connect flow. It will always say "Grocery Express wants to use ifttt.com to sign in". 
+
+#### CredentialProvider
 * There are various codes and tokens you will need to provide the IFTTT SDK when authenticating your services to IFTTT
 * Conform an object to `CredentialProvider` to handle these requirements.
 
@@ -90,50 +114,43 @@ struct Credentials: CredentialProvider {
     }
 }
 ```
+**Justification** 
+The partner must provide these values. The `CredentialProvider` defines a way for them to do this without coming up with their own solution to manage these values. 
 
-### Fetch A Connection
+
+### The Connect Button
+#### Initialization
+* Add a `ConnectButton` to your view controller
+* `ConnectButton` supports `@IBDesignable` allowing you to add it directly in a Storyboard.
+* Alternatively you can create it manually `let connectButton = ConnectButton()`
+
+#### Fetching a Connection
 * Use `ConnectionNetworkController` to fetch your service’s `Connection`.
 * `Connection.Request` handles creating the necessary `URLRequest`s.
 
 ```
-connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: yourCredentialProvider))
-```
-
-### Using the Connect Button
-* You will need to provide the `ConnectButtonController` a `ConnectButton`.
-* The `ConnectButton` should be presented in one of the views on your view controller. 
-	* You will also want this view controller to conform to `ConnectButtonControllerDelegate`.
-* Also provide the `ConnectButtonController ` a `ConnectionConfiguration` which includes key information for the authentication process.
-
-```
-let config = ConnectionConfiguration(connection: theFetchedConnection,
+connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: yourCredentialProvider)) { response
+	switch response.result {
+	case .success(let connection):
+		let config = ConnectionConfiguration(connection: connection,
                                      suggestedUserEmail: yourUsersEmail,
                                      credentialProvider: yourCredentialProvider,
                                      connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService)
 				     
-let connectButtonController = ConnectButtonController(connectButton: connectButton,
-		 				      connectionConfiguration: config,
-		  				      delegate: self)
-```
-
-### Handling Redirects
-* During the authentication process, your app will receive redirect urls to open.
-* Use the `AuthenticationRedirectHandler` to process these redirects.
-	* **Note:** the `authorizationRedirectURL` provide must be the same url provided to the `ConnectionConfiguration` used by `ConnectButtonController`.
-
-```
-func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-	if connectionRedirectHandler.handleApplicationRedirect(url: url, options: options) {
-	    // This is an IFTTT SDK redirect, it will take over from here
-	    return true
-	} else {
-	    // This is unrelated to the IFTTT SDK
-	    return false
+		self.connectButtonController = ConnectButtonController(connectButton: self.connectButton,
+								       connectionConfiguration: config,
+								       delegate: self)
+	case .failure(let error):
+		break
 	}
 }
 ```
+**Justification**
+* The `ConnectionConfiguration` encapsulates information we need from the `ConnectButton`. We could move the extra fields to the `CredentialProvider` but that just shuffles it from one place to another. It would also violate single responsibility. For example, I would worry that developers would make mistakes if we move `suggestedUserEmail` to the `CredentialProvider`. It makes it seem like it's the user's IFTTT email when it may not be. 
+* The other thing we could change is moving the network call inside the controller. I'm not sure it gains us much. This structure is really common and should be straightforward and painless to any iOS developer. Moving this inside the button increases the complexity of the `ConnectButtonController` and also may make it more awkward for developers who are building their own UI. 
 
-### Connect Button Controller Delegate
+
+#### Connect Button Controller Delegate
 `ConnectButtonControllerDelegate` communicates important information back to you. Only one of its methods are required:
 ```
 func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
@@ -142,7 +159,10 @@ func presentingViewController(for connectButtonController: ConnectButtonControll
 ```
 We need access to the current view controller periodically to open instances of Safari for OAuth flows.
 
-### The IFTTT user token
+**Justification**
+There's nothing stopping us from requiring that developers pass in the view controller instance on initialization however it would definitely be bad practice and it's easy to make memory management mistakes this way. They will have to implement the delegate anyway for getting the IFTTT user token and this part is so simple anyway. 
+
+#### The IFTTT user token
 Once the user completes a Connection, it is important to update the IFTTT user token used with your service. 
 ```
 func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
@@ -154,3 +174,6 @@ func connectButtonController(_ connectButtonController: ConnectButtonController,
 	}
 }
 ```
+
+**Justification**
+For security reasons we can't include the partner's service key on the app. So they will have to make their own network request on their server to get the IFTTT token from a server to server communication. Since we don't know how they will build their API we can't help out much. 
