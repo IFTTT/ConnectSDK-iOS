@@ -30,7 +30,7 @@ IFTTT SDK is a iOS library in Swift that lets your users authenticate your servi
 
 #### Embedded Framework
 
-- Download the projects  `IFTTT-SDK-iOS-Sandbox-` folder, and drag the `IFTTT SDK.xcodeproj` into the Project Navigator of your application’s Xcode project.
+- Download the project's folder, and drag the `IFTTT SDK.xcodeproj` into the Project Navigator of your application’s Xcode project.
 
     > It should appear nested underneath your application’s blue project icon. Whether it is above or below all the other Xcode groups does not matter.
 
@@ -51,7 +51,7 @@ You will use the `ConnectButtonController` to interact and handle authenticating
 
 ### Setup 
 #### Configure redirect
-During Connection activation, your app will receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the same URL configured on https://platform.ifttt.com/services/<your_service>/embedded_redirects
+During Connection activation, your app will receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the same URL configured on the service tab in Redirects on https://platform.ifttt.com
 ```
 <key>CFBundleURLTypes</key>
 <array>
@@ -91,7 +91,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
 
 * **partnerOAuthCode**: The OAuth code for your user on your service. This is used to skip a step for connecting to your own service during the Connect Button activation flow. We require this value to provide the best possible user experience. 
 * **iftttServiceToken**: This is the token for your user on IFTTT for your service. This token allows you to get IFTTT user data related to only your service. For example, include this token to get the enabled status of Connections for your user. It is also the same token that is used to make trigger, query, and action requests for Connections on behave of the user. You should get this token from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create on endpoint on your own server to access the user's IFTTT service token.
-* **inviteCode**: This value is only required if your service is not published. You can find it on https://platform.ifttt.com/services/<your_service>/general under invite URL.
+* **inviteCode**: This value is only required if your service is not published. You can find it on https://platform.ifttt.com on the Service tab in General under invite URL.
 
 ```
 struct Credentials: CredentialProvider {
