@@ -63,9 +63,6 @@ public struct Connection: Equatable {
     /// Information about the `Connection`.
     public let description: String
     
-    /// The number of user who have ever enabled this `Connection`.
-    public let enabledCount: Int
-    
     /// The `Status` of the `Connection`.
     public internal(set) var status: Status
     
