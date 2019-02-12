@@ -839,10 +839,16 @@ public class ConnectButtonController {
             let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
                                                credentialProvider: connectionConfiguration.credentialProvider,
                                                activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+            
+            let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] timer in
+                self?.openActivationURL(url)
+                timer.invalidate()
+            }
 
             button.stepInteraction.isTapEnabled = true
             button.stepInteraction.onSelect = { [weak self] in
                 self?.openActivationURL(url)
+                timer.invalidate()
             }
 
         case (.serviceAuthentication?, .serviceAuthenticationComplete(let service, let nextStep)):
