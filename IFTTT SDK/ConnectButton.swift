@@ -1204,7 +1204,7 @@ private extension ConnectButton {
             
             primaryLabelAnimator.transition(with: .crossfade,
                                             updatedValue: .text(message),
-                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            insets: .standard,
                                             addingTo: animator)
             
             animator.addAnimations {
@@ -1226,7 +1226,7 @@ private extension ConnectButton {
             progressBar.configure(with: service)
             primaryLabelAnimator.transition(with: .rotateDown,
                                             updatedValue: .text(message),
-                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            insets: .standard,
                                             addingTo: animator)
             
             animator.addAnimations {
