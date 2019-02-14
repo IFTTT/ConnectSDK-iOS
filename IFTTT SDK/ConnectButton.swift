@@ -1290,19 +1290,13 @@ private extension ConnectButton {
             
             primaryLabelAnimator.transition(with: .slideInFromRight,
                                             updatedValue: .text(message),
-                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            insets: .standard,
                                             addingTo: animator)
-            
-            imageViewNetworkController?.setImage(with: service?.iconURL, for: self.serviceIconView)
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                
-                self.serviceIconView.alpha = 1
-                
                 self.checkmark.alpha = 0
             }
-            
             
         // Transition back to toggle after completing a flow
         case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true:
