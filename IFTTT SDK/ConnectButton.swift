@@ -112,7 +112,7 @@ public class ConnectButton: UIView {
     // MARK: - Button state
     
     struct Service {
-        let iconURL: URL
+        let iconURL: URL?
         let brandColor: UIColor
     }
     
@@ -160,6 +160,19 @@ public class ConnectButton: UIView {
     struct Transition {
         let state: State?
         let footerValue: LabelValue?
+        
+        init(state: State) {
+            self.state = state
+            self.footerValue = nil
+        }
+        init(footerValue: LabelValue) {
+            self.state = nil
+            self.footerValue = footerValue
+        }
+        init(state: State?, footerValue: LabelValue?) {
+            self.state = state
+            self.footerValue = footerValue
+        }
         
         static func buttonState(_ state: State) -> Transition {
             return Transition(state: state, footerValue: nil)
