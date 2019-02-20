@@ -854,7 +854,7 @@ public class ConnectButtonController {
         }
         
         button.toggleInteraction.toggleTransition = {
-            return .buttonState(.stepToToggle(service: self.connectingService.connectButtonService, message: "button.state.disconnecting".localized, isOn: false), footerValue: .none)
+            return .buttonState(.toggleToToggle(message: "button.state.disconnecting".localized, isOn: false), footerValue: .none)
         }
         
         button.toggleInteraction.onToggle = { [weak self] isOn in
