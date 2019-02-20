@@ -179,7 +179,7 @@ public class ConnectButtonController {
                 self.transition(to: .initial)
                 self.button.animator(for: .buttonState(.email(suggested: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 
-            case .logInExistingUser, .serviceAuthenticationComplete, .connectionConfigurationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
+            case .logInExistingUser, .serviceAuthenticationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
                 break
             }
         }
@@ -468,9 +468,6 @@ public class ConnectButtonController {
             return
         }
 
-        // Did the Connection on web include a configuration step
-        var didConfiguration = false
-
         // Determine the next step based on the redirect result
         let nextStep: ActivationStep = {
             switch outcome {
@@ -487,8 +484,7 @@ public class ConnectButtonController {
                     // If this ever happens, it is due to a bug on web
                     return .failed(.unknownRedirect)
                 }
-            case .complete(let _didConfiguration):
-                didConfiguration = _didConfiguration
+            case .complete:
                 return .connected
             }
         }()
