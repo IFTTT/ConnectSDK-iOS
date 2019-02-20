@@ -500,22 +500,12 @@ public class ConnectButtonController {
         default:
             switch currentActivationStep {
             case .logInExistingUser?:
-                if didConfiguration {
-                    transition(to: .connectionConfigurationComplete(connectingService))
-                } else {
-                    // Show the animation for log in complete before moving on to the next step
-                    transition(to: .logInComplete(nextStep: nextStep))
-                }
-
+                // Show the animation for log in complete before moving on to the next step
+                transition(to: .logInComplete(nextStep: nextStep))
             case .serviceAuthentication(let previousService, _)?:
-                if didConfiguration {
-                    transition(to: .connectionConfigurationComplete(previousService))
-                } else {
-                    // Show the animation for service connection before moving on to the next step
-                    transition(to: .serviceAuthenticationComplete(previousService,
-                                                                  nextStep: nextStep))
-                }
-
+                // Show the animation for service connection before moving on to the next step
+                transition(to: .serviceAuthenticationComplete(previousService,
+                                                              nextStep: nextStep))
             default:
                 transition(to: nextStep)
             }
@@ -589,7 +579,6 @@ public class ConnectButtonController {
         case logInComplete(nextStep: ActivationStep)
         case serviceAuthentication(Connection.Service, newUserEmail: String?)
         case serviceAuthenticationComplete(Connection.Service, nextStep: ActivationStep)
-        case connectionConfigurationComplete(Connection.Service)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected
@@ -611,8 +600,6 @@ public class ConnectButtonController {
                 return "serviceAuthentication"
             case .serviceAuthenticationComplete:
                 return "serviceAuthenticationComplete"
-            case .connectionConfigurationComplete:
-                return "connectionConfigurationComplete"
             case .failed:
                 return "failed"
             case .canceled:
@@ -664,8 +651,6 @@ public class ConnectButtonController {
             transitionToServiceAuthentication(service: service, newUserEmail: newUserEmail)
         case .serviceAuthenticationComplete(let service, let nextStep):
             transitionToServiceAuthenticationComplete(service: service, nextStep: nextStep)
-        case .connectionConfigurationComplete(let service):
-            connectionConfigurationCompleted(service: service.connectButtonService)
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -941,28 +926,6 @@ public class ConnectButtonController {
             self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
             self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
             self.button.performInvalidEmailAnimation()
-        }
-    }
-
-
-    /// Show confirmation that `Connection` configuration was successfully saved.
-    /// This is something that happens on web if the `Connection` required some configuration.
-    /// It is not neccessarily preceeded by a `Service` authentication. It is possible that all `Service`s were
-    /// already authenticated. In that case this will be preceeded by identify user and IFTTT log in for Safari VC.
-    ///
-    /// This will automatically transition to the `connected` state.
-    ///
-    /// - Parameter service: The service that was configured.
-    func connectionConfigurationCompleted(service: ConnectButton.Service) {
-        button.animator(for: .buttonState(.step(for: service, message: "button.state.saving_configuration".localized), footerValue: FooterMessages.poweredBy.value)).preform()
-
-        let progressBar = button.progressBar(timeout: 2)
-        progressBar.preform()
-        progressBar.onComplete { _ in
-            self.button.animator(for: .buttonState(.stepComplete(for: service))).preform()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.transition(to: .connected)
-            }
         }
     }
 }
