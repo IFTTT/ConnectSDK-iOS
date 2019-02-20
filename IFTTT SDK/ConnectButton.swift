@@ -112,7 +112,7 @@ public class ConnectButton: UIView {
     // MARK: - Button state
     
     struct Service {
-        let iconURL: URL
+        let iconURL: URL?
         let brandColor: UIColor
     }
     
@@ -160,6 +160,19 @@ public class ConnectButton: UIView {
     struct Transition {
         let state: State?
         let footerValue: LabelValue?
+        
+        init(state: State) {
+            self.state = state
+            self.footerValue = nil
+        }
+        init(footerValue: LabelValue) {
+            self.state = nil
+            self.footerValue = footerValue
+        }
+        init(state: State?, footerValue: LabelValue?) {
+            self.state = state
+            self.footerValue = footerValue
+        }
         
         static func buttonState(_ state: State) -> Transition {
             return Transition(state: state, footerValue: nil)
@@ -493,8 +506,6 @@ public class ConnectButton: UIView {
     }
     
     fileprivate let backgroundView = PillView()
-    
-    fileprivate let serviceIconView = UIImageView()
     
     // MARK: Email view
     
@@ -1013,7 +1024,6 @@ public class ConnectButton: UIView {
         backgroundView.addSubview(switchControl)
         backgroundView.addSubview(emailConfirmButtonTrack)
         emailConfirmButtonTrack.addSubview(emailConfirmButton)
-        backgroundView.addSubview(serviceIconView)
         
         backgroundView.heightAnchor.constraint(equalToConstant: Layout.height).isActive = true
         
@@ -1035,11 +1045,7 @@ public class ConnectButton: UIView {
         
         checkmark.constrain.center(in: backgroundView)
         
-        serviceIconView.constrain.square(length: Layout.serviceIconDiameter)
-        serviceIconView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
-        serviceIconView.centerXAnchor.constraint(equalTo: backgroundView.leftAnchor, constant: 0.5 * Layout.height).isActive = true
-        
-        [switchControl, emailEntryField, emailConfirmButton, checkmark, serviceIconView].forEach {
+        [switchControl, emailEntryField, emailConfirmButton, checkmark].forEach {
             $0.alpha = 0
         }
         
@@ -1218,18 +1224,14 @@ private extension ConnectButton {
             
             primaryLabelAnimator.transition(with: .crossfade,
                                             updatedValue: .text(message),
-                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            insets: .standard,
                                             addingTo: animator)
-            
-            imageViewNetworkController?.setImage(with: service?.iconURL, for: self.serviceIconView)
             
             animator.addAnimations {
                 self.emailEntryField.alpha = 0
                 self.emailConfirmButton.alpha = 0
                 
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                
-                self.serviceIconView.alpha = 1
                 
                 // This is only relevent for dark mode when we draw a border around the switch
                 self.backgroundView.border.opacity = 1
@@ -1244,15 +1246,11 @@ private extension ConnectButton {
             progressBar.configure(with: service)
             primaryLabelAnimator.transition(with: .rotateDown,
                                             updatedValue: .text(message),
-                                            insets: service == nil ? .standard : .avoidServiceIcon,
+                                            insets: .standard,
                                             addingTo: animator)
-            
-            imageViewNetworkController?.setImage(with: service?.iconURL, for: self.serviceIconView)
             
             animator.addAnimations {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                
-                self.serviceIconView.alpha = 1
             }
             
             
@@ -1267,7 +1265,6 @@ private extension ConnectButton {
             checkmark.alpha = 1
             checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
             animator.addAnimations {
-                self.serviceIconView.alpha = 0
                 self.progressBar.alpha = 0
                 self.checkmark.outline.transform = .identity
             }
@@ -1303,8 +1300,6 @@ private extension ConnectButton {
             progressBar.fractionComplete = 0
             
             animator.addAnimations {
-                self.serviceIconView.alpha = 0
-                
                 self.backgroundView.backgroundColor = .black
                 
                 self.switchControl.configure(with: service,
@@ -1339,8 +1334,6 @@ private extension ConnectButton {
                 self.switchControl.isOn = isOn
                 self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1
-                
-                self.serviceIconView.alpha = 0
             }
             
         default:
