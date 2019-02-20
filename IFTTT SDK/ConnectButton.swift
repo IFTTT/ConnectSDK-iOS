@@ -116,25 +116,6 @@ public class ConnectButton: UIView {
         let brandColor: UIColor
     }
     
-    enum State: CustomStringConvertible {
-        case
-        initialization,
-        toggle(for: Service, message: String, isOn: Bool),
-        email(suggested: String?),
-        step(for: Service?, message: String),
-        stepComplete(for: Service?)
-        
-        var description: String {
-            switch self {
-            case .initialization: return "initialization"
-            case .toggle: return "toggle"
-            case .email: return "email"
-            case .step: return "step"
-            case .stepComplete: return "stepComplete"
-            }
-        }
-    }
-    
     enum AnimationState {
         case initialization
         case initializationToToggle(service: Service, message: String, isOn: Bool)
