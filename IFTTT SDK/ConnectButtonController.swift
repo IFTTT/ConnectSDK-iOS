@@ -769,16 +769,8 @@ public class ConnectButtonController {
                         
                         progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                         progress.onComplete { position in
-                            
                             if position == .end {
-                                // Show "fake" success
-                                self.button.animator(for: .buttonState(.stepComplete(for: nil))).preform()
-                                
-                                // After a short delay, show first service connection
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    // We know that this is a new user so we must connect the primary service first and create an account
-                                    self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
-                                }
+                                self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
                             }
                         }
                     } else { // Existing IFTTT user
