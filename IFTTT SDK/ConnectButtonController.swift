@@ -162,7 +162,7 @@ public class ConnectButtonController {
                     self.accessAccountTask?.progressAnimation.finish(at: .start)
                     self.accessAccountTask?.dataTask.cancel()
                     self.accessAccountTask = nil
-                    self.transition(to: .initial)
+                    self.transition(to: .initial(animated: false))
                     self.button.animator(for: .buttonState(.toggleToEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 case .token:
                     break
@@ -176,7 +176,7 @@ public class ConnectButtonController {
                 }
                 
                 self.accessAccountTask = nil
-                self.transition(to: .initial)
+                self.transition(to: .initial(animated: false))
                 self.button.animator(for: .buttonState(.toggleToEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 
             case .logInExistingUser, .serviceAuthenticationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
@@ -187,10 +187,10 @@ public class ConnectButtonController {
         switch connection.status {
         case .initial, .unknown, .disabled:
             // Disabled Connections are presented in the "Connect" state
-            transition(to: .initial)
+            transition(to: .initial(animated: false))
 
         case .enabled:
-            transition(to: .connected)
+            transition(to: .connected(animated: false))
         }
     }
 
@@ -481,7 +481,7 @@ public class ConnectButtonController {
                     return .failed(.unknownRedirect)
                 }
             case .complete:
-                return .connected
+                return .connected(animated: true)
             }
         }()
 
@@ -565,7 +565,7 @@ public class ConnectButtonController {
     /// - processDisconnect: Disable the `Connection`.
     /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
-        case initial
+        case initial(animated: Bool)
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
         case logInComplete(nextStep: ActivationStep)
@@ -573,7 +573,7 @@ public class ConnectButtonController {
         case serviceAuthenticationComplete(Connection.Service, nextStep: ActivationStep)
         case failed(ConnectButtonControllerError)
         case canceled
-        case connected
+        case connected(animated: Bool)
         case confirmDisconnect
         case processDisconnect
         case disconnected
@@ -631,8 +631,8 @@ public class ConnectButtonController {
         button.addConnectionLog("\(step.description)")
         
         switch step {
-        case .initial:
-            transitionToInitalization(animated: false)
+        case .initial(let animated):
+            transitionToInitalization(animated: animated)
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
@@ -647,8 +647,8 @@ public class ConnectButtonController {
             transitionToFailed(error: error)
         case .canceled:
             transitionToCanceled()
-        case .connected:
-            transitionToConnected(animated: true)
+        case .connected(let animated):
+            transitionToConnected(animated: animated)
         case .confirmDisconnect:
             transitionToConfirmDisconnect()
         case .processDisconnect:
@@ -811,7 +811,7 @@ public class ConnectButtonController {
     
     private func transitionToFailed(error: Error) {
         delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.networkError(.genericError(error))))
-        transition(to: .initial)
+        transition(to: .initial(animated: false))
     }
     
     private func transitionToCanceled() {
@@ -849,7 +849,7 @@ public class ConnectButtonController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             if case .confirmDisconnect? = self.currentActivationStep {
                 // Revert state if user doesn't follow through
-                self.transition(to: .connected)
+                self.transition(to: .connected(animated: false))
             }
         }
         
@@ -859,7 +859,7 @@ public class ConnectButtonController {
         
         button.toggleInteraction.onToggle = { [weak self] isOn in
             if isOn {
-                self?.transition(to: .connected)
+                self?.transition(to: .connected(animated: true))
             } else {
                 self?.transition(to: .processDisconnect)
             }
@@ -881,7 +881,7 @@ public class ConnectButtonController {
                     self.transition(to: .disconnected)
                 case .failure(let error):
                     self.delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(.networkError(error)))
-                    self.transition(to: .connected)
+                    self.transition(to: .connected(animated: true))
                 }
             }
         }
@@ -892,7 +892,7 @@ public class ConnectButtonController {
         button.animator(for: .buttonState(.stepToToggle(service: connectingService.connectButtonService, message: "button.state.disconnected".localized, isOn: false))).preform()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.transition(to: .initial)
+            self.transition(to: .initial(animated: true))
         }
     }
     
