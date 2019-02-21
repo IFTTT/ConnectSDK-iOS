@@ -117,19 +117,19 @@ public class ConnectButton: UIView {
     }
     
     enum AnimationState {
-        case initialization
-        case initializationToToggle(service: Service, message: String, isOn: Bool)
-        case changeToggleText(message: String)
-        case toggleToToggle(message: String, isOn: Bool)
-        case toggleToEmail(suggestedEmail: String)
-        case toggleToStep(message: String)
-        case emailToStep(service: Service?, message: String)
+        case loading
+        case connect(service: Service, message: String, isOn: Bool)
+        case changeText(message: String)
+        case slideToConnectAndSlideToDisconnect(message: String, isOn: Bool)
+        case enterEmail(suggestedEmail: String)
+        case accessingAccount(message: String)
+        case verifyingEmail(service: Service?, message: String)
         case stepToEmail(suggestedEmail: String)
-        case stepToStep(service: Service?, message: String)
-        case stepToStepComplete(service: Service?)
+        case continueToServiceAndConnectingAccount(service: Service?, message: String)
+        case checkmark(service: Service?)
         case stepCompleteToStep(service: Service?, message: String)
-        case stepCompleteToToggle(service: Service, message: String)
-        case stepToToggle(service: Service, message: String, isOn: Bool)
+        case connected(service: Service, message: String)
+        case disconnected(service: Service, message: String, isOn: Bool)
     }
     
     // MARK: ConnectionDiary
@@ -222,7 +222,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: AnimationState = .initialization
+    private(set) var currentState: AnimationState = .loading
     
     func progressBar(timeout: TimeInterval) -> Animator {
         return Animator(animator: progressBar.animator(duration: timeout))
@@ -368,12 +368,12 @@ public class ConnectButton: UIView {
         var nextState: ConnectButton.Transition?
         var buttonIsOn: Bool!
         
-        if case .initializationToToggle(_, _, let isOn) = currentState {
+        if case .connect(_, _, let isOn) = currentState {
             nextState = toggleInteraction.toggleTransition?()
             buttonIsOn = isOn
         }
         
-        if case .stepCompleteToToggle = currentState {
+        if case .connected = currentState {
             nextState = toggleInteraction.toggleTransition?()
             buttonIsOn = true
         }
@@ -1152,9 +1152,9 @@ private extension ConnectButton {
     
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
-        case .initialization:
+        case .loading:
             break
-        case let .initializationToToggle(service, message, isOn):
+        case let .connect(service, message, isOn):
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
@@ -1167,10 +1167,10 @@ private extension ConnectButton {
                 self.backgroundView.border.opacity = 1
             }
             
-        case let .changeToggleText(message):
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        case let .changeText(message):
+            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
-        case let .toggleToToggle(message, isOn):
+        case let .slideToConnectAndSlideToDisconnect(message, isOn):
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
             
             progressBar.configure(with: nil)
@@ -1187,10 +1187,10 @@ private extension ConnectButton {
                 }
             }
             
-        case let .toggleToEmail(suggestedEmail):
+        case let .enterEmail(suggestedEmail):
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
-        case let .toggleToStep(message):
+        case let .accessingAccount(message):
             progressBar.configure(with: nil)
             
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
@@ -1200,7 +1200,7 @@ private extension ConnectButton {
                 self.backgroundView.backgroundColor = Style.Color.grey
             }
             
-        case let .emailToStep(service, message):
+        case let .verifyingEmail(service, message):
             progressBar.configure(with: service)
             
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
@@ -1221,7 +1221,7 @@ private extension ConnectButton {
         case let .stepToEmail(suggestedEmail):
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
             
-        case let .stepToStep(service, message):
+        case let .continueToServiceAndConnectingAccount(service, message):
             progressBar.configure(with: service)
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
@@ -1229,7 +1229,7 @@ private extension ConnectButton {
                 self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
             }
             
-        case let .stepToStepComplete(service):
+        case let .checkmark(service):
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
             
             backgroundView.backgroundColor = service?.brandColor ?? .black
@@ -1259,7 +1259,7 @@ private extension ConnectButton {
                 self.checkmark.alpha = 0
             }
             
-        case let .stepCompleteToToggle(service, message):
+        case let .connected(service, message):
             switchControl.primeAnimation_centerKnob()
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
             
@@ -1284,7 +1284,7 @@ private extension ConnectButton {
                 self.checkmark.transform = .identity
             }
             
-        case let .stepToToggle(service, message, isOn):
+        case let .disconnected(service, message, isOn):
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
             
             progressBar.configure(with: service)
