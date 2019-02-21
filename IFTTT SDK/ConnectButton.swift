@@ -119,7 +119,7 @@ public class ConnectButton: UIView {
     enum AnimationState {
         case loading
         case connect(service: Service, message: String, isOn: Bool)
-        case changeText(message: String)
+        case createAccount(message: String)
         case slideToConnectWithTokenAndSlideToDisconnect(message: String, isOn: Bool)
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
@@ -1165,7 +1165,7 @@ private extension ConnectButton {
                 self.backgroundView.border.opacity = 1
             }
             
-        case let .changeText(message):
+        case let .createAccount(message):
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToConnectWithTokenAndSlideToDisconnect(message, isOn):
