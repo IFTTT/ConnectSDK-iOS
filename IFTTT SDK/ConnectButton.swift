@@ -120,7 +120,7 @@ public class ConnectButton: UIView {
         case loading
         case connect(service: Service, message: String, isOn: Bool)
         case changeText(message: String)
-        case slideToConnectAndSlideToDisconnect(message: String, isOn: Bool)
+        case slideToConnectWithTokenAndSlideToDisconnect(message: String, isOn: Bool)
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(service: Service?, message: String)
@@ -1170,7 +1170,7 @@ private extension ConnectButton {
         case let .changeText(message):
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
-        case let .slideToConnectAndSlideToDisconnect(message, isOn):
+        case let .slideToConnectWithTokenAndSlideToDisconnect(message, isOn):
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
             
             progressBar.configure(with: nil)

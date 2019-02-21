@@ -669,7 +669,7 @@ public class ConnectButtonController {
         
         button.toggleInteraction.toggleTransition = {
             if self.tokenProvider.iftttServiceToken != nil {
-                return .buttonState(.slideToConnectAndSlideToDisconnect(message: "", isOn: true))
+                return .buttonState(.slideToConnectWithTokenAndSlideToDisconnect(message: "", isOn: true))
             } else {
                 return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)
             }
@@ -854,7 +854,7 @@ public class ConnectButtonController {
         }
         
         button.toggleInteraction.toggleTransition = {
-            return .buttonState(.slideToConnectAndSlideToDisconnect(message: "button.state.disconnecting".localized, isOn: false), footerValue: .none)
+            return .buttonState(.slideToConnectWithTokenAndSlideToDisconnect(message: "button.state.disconnecting".localized, isOn: false), footerValue: .none)
         }
         
         button.toggleInteraction.onToggle = { [weak self] isOn in
