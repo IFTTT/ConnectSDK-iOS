@@ -116,23 +116,20 @@ public class ConnectButton: UIView {
         let brandColor: UIColor
     }
     
-    enum State: CustomStringConvertible {
-        case
-        initialization,
-        toggle(for: Service, message: String, isOn: Bool),
-        email(suggested: String?),
-        step(for: Service?, message: String),
-        stepComplete(for: Service?)
-        
-        var description: String {
-            switch self {
-            case .initialization: return "initialization"
-            case .toggle: return "toggle"
-            case .email: return "email"
-            case .step: return "step"
-            case .stepComplete: return "stepComplete"
-            }
-        }
+    enum AnimationState {
+        case loading
+        case connect(service: Service, message: String)
+        case createAccount(message: String)
+        case slideToConnectWithToken
+        case slideToDisconnect(message: String)
+        case enterEmail(suggestedEmail: String)
+        case accessingAccount(message: String)
+        case verifyingEmail(message: String)
+        case continueToService(service: Service, message: String)
+        case connecting(message: String)
+        case checkmark
+        case connected(service: Service, message: String)
+        case disconnected(service: Service, message: String)
     }
     
     // MARK: ConnectionDiary
@@ -158,10 +155,10 @@ public class ConnectButton: UIView {
     
     /// Groups button State and footer value into a single state transition
     struct Transition {
-        let state: State?
+        let state: AnimationState?
         let footerValue: LabelValue?
         
-        init(state: State) {
+        init(state: AnimationState) {
             self.state = state
             self.footerValue = nil
         }
@@ -169,15 +166,15 @@ public class ConnectButton: UIView {
             self.state = nil
             self.footerValue = footerValue
         }
-        init(state: State?, footerValue: LabelValue?) {
+        init(state: AnimationState?, footerValue: LabelValue?) {
             self.state = state
             self.footerValue = footerValue
         }
         
-        static func buttonState(_ state: State) -> Transition {
+        static func buttonState(_ state: AnimationState) -> Transition {
             return Transition(state: state, footerValue: nil)
         }
-        static func buttonState(_ state: State, footerValue: LabelValue) -> Transition {
+        static func buttonState(_ state: AnimationState, footerValue: LabelValue) -> Transition {
             return Transition(state: state, footerValue: footerValue)
         }
         static func footerValue(_ value: LabelValue) -> Transition {
@@ -225,7 +222,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: State = .initialization
+    private(set) var currentState: AnimationState = .loading
     
     func progressBar(timeout: TimeInterval) -> Animator {
         return Animator(animator: progressBar.animator(duration: timeout))
@@ -246,13 +243,15 @@ public class ConnectButton: UIView {
                     self.currentState = state
                 }
             }
-            animation(forTransitionTo: state, from: currentState, with: animator.animator)
+            animation(for: state, with: animator.animator)
         }
+        
         if let footerValue = transition.footerValue {
             footerLabelAnimator.transition(with: .rotateDown,
                                            updatedValue: footerValue,
                                            addingTo: animator.animator)
         }
+        
         return animator
     }
     
@@ -295,7 +294,7 @@ public class ConnectButton: UIView {
         
         /// Callback when switch is toggled
         /// Sends true if switch has been toggled to the on position
-        var onToggle: ((Bool) -> Void)?
+        var onToggle: (() -> Void)?
     }
     
     struct EmailInteraction {
@@ -365,16 +364,25 @@ public class ConnectButton: UIView {
         if currentToggleAnimation != nil {
             return currentToggleAnimation
         }
-        guard
-            case .toggle(_, _, let isOn) = currentState,
-            let nextState = toggleInteraction.toggleTransition?()
-        else {
+        
+        var nextState: ConnectButton.Transition?
+        
+        if case .connect = currentState {
+            nextState = toggleInteraction.toggleTransition?()
+        }
+        
+        if case .connected = currentState {
+            nextState = toggleInteraction.toggleTransition?()
+        }
+        
+        guard let transition = nextState else {
             return nil
         }
-        let a = animator(for: nextState)
+        
+        let a = animator(for: transition)
         a.animator.addCompletion { position in
             if position == .end {
-                self.toggleInteraction.onToggle?(!isOn)
+                self.toggleInteraction.onToggle?()
             }
         }
         return a
@@ -1138,206 +1146,73 @@ private extension ConnectButton.ProgressBar {
 
 @available(iOS 10.0, *)
 private extension ConnectButton {
-    func animation(forTransitionTo state: State, from previousState: State, with animator: UIViewPropertyAnimator) {
-        
-        // FIXME: Let's avoid repitition here to make sure it's consistent between states
-        
-        switch (previousState, state) {
+    
+    func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
+        switch animationState {
+        case .loading:
+            break
+        case let .connect(service, message):
+            transitionToConnect(service: service, message: message, animator: animator)
             
-        // Setup switch
-        case (.initialization, .toggle(let service, let message, let isOn)):
-            primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob,
-                                            addingTo: animator)
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                self.switchControl.configure(with: service,
-                                             networkController: self.imageViewNetworkController)
-                self.switchControl.isOn = isOn
-                self.switchControl.knob.maskedEndCaps = .all
-                self.switchControl.alpha = 1
-                
-                // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.border.opacity = 1
-            }
+        case let .createAccount(message):
+            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
+        case let .slideToDisconnect(message):
+            transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
             
-        // Change toggle text
-        case (.toggle(_, let lastMessage, let wasOn), .toggle(_, let message, let isOn)) where wasOn == isOn:
-            if lastMessage != message {
-                primaryLabelAnimator.transition(with: .rotateDown,
-                                                updatedValue: .text(message),
-                                                insets: .avoidSwitchKnob,
-                                                addingTo: animator)
-            }
-            animator.addAnimations { }
-            
-            
-        // Toggle
-        case (.toggle, .toggle(_, let message, let isOn)):
-            primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob,
-                                            addingTo: animator)
-            
-            progressBar.configure(with: nil)
-            progressBar.alpha = 1
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = isOn ? .black : Style.Color.grey
-                self.switchControl.isOn = isOn
-            }
-            animator.addCompletion { position in
-                if position == .start {
-                    self.switchControl.isOn = !isOn
-                }
-            }
-            
-            
-        // Connect to enter email
-        case (.toggle(_, _, let isOn), .email(let suggestedEmail)) where isOn == false:
+        case .slideToConnectWithToken:
+            transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
+
+        case let .enterEmail(suggestedEmail):
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
-        // Step to enter email.
-        case (.step, .email(let suggestedEmail)):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
-            
-        // Toggle to step (When email is skipped)
-        case (.toggle(_, _, let isOn), .step(_, let message)) where isOn == true:
-            progressBar.configure(with: nil)
-            
-            primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedValue: .text(message),
-                                            insets: .standard,
-                                            addingTo: animator)
-            
-            animator.addAnimations {
-                self.switchControl.alpha = 0
-                self.backgroundView.backgroundColor = Style.Color.grey
-            }
-            
-            
-        // Email to step progress
-        case (.email, .step(let service, let message)):
-            progressBar.configure(with: service)
-            
-            primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedValue: .text(message),
-                                            insets: .standard,
-                                            addingTo: animator)
-            
-            animator.addAnimations {
-                self.emailEntryField.alpha = 0
-                self.emailConfirmButton.alpha = 0
-                
-                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                
-                // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.border.opacity = 1
-            }
-            animator.addCompletion { (_) in
-                self.emailConfirmButton.transform = .identity
-            }
-            
-            
-        // Changing the message during a step
-        case (.step, .step(let service, let message)):
-            progressBar.configure(with: service)
-            primaryLabelAnimator.transition(with: .rotateDown,
-                                            updatedValue: .text(message),
-                                            insets: .standard,
-                                            addingTo: animator)
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-            }
-            
-            
-        // Completing a step
-        case (.step, .stepComplete(let service)):
-            primaryLabelAnimator.transition(with: .rotateDown,
-                                            updatedValue: .none,
-                                            addingTo: animator)
-            
-            backgroundView.backgroundColor = service?.brandColor ?? .black
-            
-            checkmark.alpha = 1
-            checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
-            animator.addAnimations {
-                self.progressBar.alpha = 0
-                self.checkmark.outline.transform = .identity
-            }
-            animator.addCompletion { (_) in
-                self.progressBar.alpha = 1
-                self.progressBar.fractionComplete = 0
-            }
-            checkmark.drawCheckmark(duration: 1.25)
-            
+        case let .accessingAccount(message):
+            transitionToAccessingAccount(message: message, animator: animator)
         
-        // Starting next step
-        case (.stepComplete, .step(let service, let message)):
-            progressBar.configure(with: service)
+        case let .verifyingEmail(message):
+            transitionToVerifyingAccount(message: message, animator: animator)
             
-            primaryLabelAnimator.transition(with: .slideInFromRight,
-                                            updatedValue: .text(message),
-                                            insets: .standard,
-                                            addingTo: animator)
+        case let .continueToService(service, message):
+            transitionToContinueToService(service: service, message: message, animator: animator)
             
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                self.checkmark.alpha = 0
-            }
+        case let .connecting(message):
+            transitionToConnecting(message: message, animator: animator)
             
-        // Transition back to toggle after completing a flow
-        case (.stepComplete, .toggle(let service, let message, let isOn)) where isOn == true:
-            switchControl.primeAnimation_centerKnob()
-            primaryLabelAnimator.transition(with: .crossfade,
-                                            updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob,
-                                            addingTo: animator)
-            progressBar.configure(with: service)
-            progressBar.fractionComplete = 0
+        case .checkmark:
+            transitionToCheckmark(animator: animator)
             
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                
-                self.switchControl.configure(with: service,
-                                             networkController: self.imageViewNetworkController)
-                self.switchControl.alpha = 1
-                self.switchControl.isOn = true
-                
-                self.checkmark.alpha = 0
-                
-                // Animate the checkmark along with the knob from the center position to the knob's final position
-                let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
-                self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
-            }
-            animator.addCompletion { _ in
-                self.checkmark.transform = .identity
-            }
+        case let .connected(service, message):
+            transitionToConnected(service: service, message: message, animator: animator)
             
+        case let .disconnected(service, message):
+            transitionToDisconnected(service: service, message: message, animator: animator)
+        }
+    }
+    
+    private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.isOn = false
+            self.switchControl.knob.maskedEndCaps = .all
+            self.switchControl.alpha = 1
             
-        // Abort a flow
-        case (.step, .toggle(let service, let message, let isOn)) where isOn == false:
-            primaryLabelAnimator.transition(with: .rotateDown,
-                                            updatedValue: .text(message),
-                                            insets: .avoidSwitchKnob,
-                                            addingTo: animator)
-            progressBar.configure(with: service)
-            progressBar.fractionComplete = 0
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                self.switchControl.configure(with: service,
-                                             networkController: self.imageViewNetworkController)
-                self.switchControl.isOn = isOn
-                self.switchControl.knob.maskedEndCaps = .all
-                self.switchControl.alpha = 1
-            }
-            
-        default:
-            assertionFailure("Unexpected animation transition state from \(previousState.description) to \(state.description) with history \(connectionDiary.description).")
+            // This is only relevent for dark mode when we draw a border around the switch
+            self.backgroundView.border.opacity = 1
+        }
+    }
+    
+    private func transitionToButtonState(isOn: Bool, labelValue: LabelValue, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: labelValue, insets: .avoidSwitchKnob, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = Style.Color.grey
+            self.switchControl.isOn = isOn
         }
     }
     
@@ -1396,6 +1271,123 @@ private extension ConnectButton {
             default:
                 break
             }
+        }
+    }
+    
+    private func transitionToAccessingAccount(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.switchControl.alpha = 0
+            self.backgroundView.backgroundColor = Style.Color.grey
+        }
+    }
+    
+    private func transitionToVerifyingAccount(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.emailEntryField.alpha = 0
+            self.emailConfirmButton.alpha = 0
+            
+            self.backgroundView.backgroundColor = Style.Color.grey
+            
+            // This is only relevent for dark mode when we draw a border around the switch
+            self.backgroundView.border.opacity = 1
+        }
+        
+        animator.addCompletion { _ in
+            self.emailConfirmButton.transform = .identity
+        }
+    }
+    
+    private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: service)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = service.brandColor
+        }
+    }
+    
+    private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
+        
+        backgroundView.backgroundColor = .black
+        
+        checkmark.alpha = 1
+        checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
+        
+        animator.addAnimations {
+            self.progressBar.alpha = 0
+            self.checkmark.outline.transform = .identity
+        }
+        
+        animator.addCompletion { _ in
+            self.progressBar.alpha = 1
+            self.progressBar.fractionComplete = 0
+        }
+        
+        checkmark.drawCheckmark(duration: 1.25)
+    }
+    
+    private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = Style.Color.grey
+        }
+    }
+    
+    private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        switchControl.primeAnimation_centerKnob()
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        
+        progressBar.configure(with: service)
+        progressBar.fractionComplete = 0
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+            
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.alpha = 1
+            self.switchControl.isOn = true
+            
+            self.checkmark.alpha = 0
+            
+            // Animate the checkmark along with the knob from the center position to the knob's final position
+            let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
+            self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
+        }
+        
+        animator.addCompletion { _ in
+            self.checkmark.transform = .identity
+        }
+    }
+    
+    private func transitionToDisconnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        
+        progressBar.configure(with: service)
+        progressBar.fractionComplete = 0
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.isOn = false
+            self.switchControl.knob.maskedEndCaps = .all
+            self.switchControl.alpha = 1
         }
     }
 }
