@@ -494,10 +494,9 @@ public class ConnectButtonController {
             case .logInExistingUser?:
                 // Show the animation for log in complete before moving on to the next step
                 transition(to: .logInComplete(nextStep: nextStep))
-            case .serviceAuthentication(let previousService, _)?:
+            case .serviceAuthentication(_, _)?:
                 // Show the animation for service connection before moving on to the next step
-                transition(to: .serviceAuthenticationComplete(previousService,
-                                                              nextStep: nextStep))
+                transition(to: .serviceAuthenticationComplete(nextStep: nextStep))
             default:
                 transition(to: nextStep)
             }
@@ -570,7 +569,7 @@ public class ConnectButtonController {
         case logInExistingUser(User.Id)
         case logInComplete(nextStep: ActivationStep)
         case serviceAuthentication(Connection.Service, newUserEmail: String?)
-        case serviceAuthenticationComplete(Connection.Service, nextStep: ActivationStep)
+        case serviceAuthenticationComplete(nextStep: ActivationStep)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
@@ -641,8 +640,8 @@ public class ConnectButtonController {
             transitionToLogInComplete(nextStep: nextStep)
         case .serviceAuthentication(let service, let newUserEmail):
             transitionToServiceAuthentication(service: service, newUserEmail: newUserEmail)
-        case .serviceAuthenticationComplete(let service, let nextStep):
-            transitionToServiceAuthenticationComplete(service: service, nextStep: nextStep)
+        case .serviceAuthenticationComplete(let nextStep):
+            transitionToServiceAuthenticationComplete(nextStep: nextStep)
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -796,7 +795,7 @@ public class ConnectButtonController {
         }
     }
     
-    private func transitionToServiceAuthenticationComplete(service: Connection.Service, nextStep: ActivationStep) {
+    private func transitionToServiceAuthenticationComplete(nextStep: ActivationStep) {
         button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value)).preform()
         
         let progressBar = button.progressBar(timeout: 2)
