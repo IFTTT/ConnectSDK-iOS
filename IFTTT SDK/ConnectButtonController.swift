@@ -136,53 +136,6 @@ public class ConnectButtonController {
         
         button.configureEmailField(placeholderText: "button.email.placeholder".localized,
                                    confirmButtonAsset: Assets.Button.emailConfirm)
-        
-        button.footerInteraction.onSelect = { [weak self] in
-            guard let self = self, let activationStep = self.currentActivationStep else {
-                return
-            }
-            
-            switch activationStep {
-            case .initial:
-                if case .enterEmail = self.button.currentState {
-                    // Open terms of service / privacy policy when creating an account
-                    self.showLegalTerms()
-                } else {
-                    // Link to the about page when we are in the initial state
-                    self.showAboutPage()
-                }
-                
-            case .connected:
-                // When the Connection is made, show the app store page for IFTTT
-                self.showAppStorePage()
-                
-            case .identifyUser(let lookupMethod):
-                switch lookupMethod {
-                case .email:
-                    self.accessAccountTask?.progressAnimation.finish(at: .start)
-                    self.accessAccountTask?.dataTask.cancel()
-                    self.accessAccountTask = nil
-                    self.transition(to: .initial(animated: false))
-                    self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
-                case .token:
-                    break
-                }
-                
-            case let .serviceAuthentication(_, newUserEmail):
-                
-                // The footer is only selectable if the user is a new user.
-                guard newUserEmail != nil else {
-                    return
-                }
-                
-                self.accessAccountTask = nil
-                self.transition(to: .initial(animated: false))
-                self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
-                
-            case .logInExistingUser, .authenticationComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
-                break
-            }
-        }
 
         switch connection.status {
         case .initial, .unknown, .disabled:
@@ -369,7 +322,7 @@ public class ConnectButtonController {
     /// This objects acts as the Safari VC delegate
     private var safariDelegate: SafariDelegate?
     
-    private func handleCancelation() {
+    private func handleCancelation(lookupMethod: User.LookupMethod) {
         transition(to: .canceled)
     }
     
@@ -505,7 +458,7 @@ public class ConnectButtonController {
     }
     
     /// Creates a `RedirectObserving` and a `SafariDelegate` to track interaction in the web portion of the activation flow
-    private func prepareActivationWebFlow() {
+    private func prepareActivationWebFlow(lookupMethod: User.LookupMethod) {
         redirectObserving = RedirectObserving()
         redirectObserving?.onRedirect = { [weak self] outcome in
             self?.handleRedirect(outcome)
@@ -520,7 +473,7 @@ public class ConnectButtonController {
         }
         
         safariDelegate = SafariDelegate { [weak self] in
-            self?.handleCancelation()
+            self?.handleCancelation(lookupMethod: lookupMethod)
         }
     }
     
@@ -597,9 +550,6 @@ public class ConnectButtonController {
     }
     
     private var accessAccountTask: AccessAccountTask?
-    
-    /// State machine state
-    private var currentActivationStep: ActivationStep?
 
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
@@ -608,9 +558,6 @@ public class ConnectButtonController {
         button.emailInteraction = .init()
         button.stepInteraction = .init()
         button.footerInteraction.isTapEnabled = false // Don't clear the select block
-        
-        self.currentActivationStep = step
-        button.addConnectionLog("\(step.description)")
         
         switch step {
         case .initial(let animated):
@@ -642,6 +589,20 @@ public class ConnectButtonController {
         endActivationWebFlow()
         
         button.footerInteraction.isTapEnabled = true
+        button.footerInteraction.onSelect = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            if case .enterEmail = self.button.currentState {
+                // Open terms of service / privacy policy when creating an account
+                self.showLegalTerms()
+            } else {
+                // Link to the about page when we are in the initial state
+                self.showAboutPage()
+            }
+        }
+        
         button.animator(for: .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
         
         button.toggleInteraction.isTapEnabled = true
@@ -672,7 +633,7 @@ public class ConnectButtonController {
     }
     
     private func transitionToIdentifyUser(lookupMethod: User.LookupMethod) {
-        prepareActivationWebFlow()
+        prepareActivationWebFlow(lookupMethod: lookupMethod)
         
         let timeout: TimeInterval = 3 // Network request timeout
         
@@ -815,11 +776,11 @@ public class ConnectButtonController {
         button.toggleInteraction.isDragEnabled = true
         button.toggleInteraction.resistance = .heavy
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            if case .confirmDisconnect? = self.currentActivationStep {
-                // Revert state if user doesn't follow through
-                self.transition(to: .connected(animated: false))
-            }
+        
+        let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
+            // Revert state if user doesn't follow through
+            self?.transition(to: .connected(animated: false))
+            timer.invalidate()
         }
         
         button.toggleInteraction.toggleTransition = {
@@ -828,6 +789,7 @@ public class ConnectButtonController {
         
         button.toggleInteraction.onToggle = { [weak self] in
             self?.transition(to: .processDisconnect)
+            timer.invalidate()
         }
     }
     
