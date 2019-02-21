@@ -1173,8 +1173,9 @@ private extension ConnectButton {
         case .slideToConnectWithToken:
             slideButtonToState(isOn: true, labelValue:  .none, animator: animator)
 
+
         case let .enterEmail(suggestedEmail):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
+            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
         case let .accessingAccount(message):
             progressBar.configure(with: nil)
