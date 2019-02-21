@@ -179,7 +179,7 @@ public class ConnectButtonController {
                 self.transition(to: .initial(animated: false))
                 self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 
-            case .logInExistingUser, .authenticationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
+            case .logInExistingUser, .authenticationComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
                 break
             }
         }
@@ -553,7 +553,6 @@ public class ConnectButtonController {
         case initial(animated: Bool)
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
-        case logInComplete(nextStep: ActivationStep)
         case serviceAuthentication(Connection.Service, newUserEmail: String?)
         case authenticationComplete
         case failed(ConnectButtonControllerError)
@@ -571,8 +570,6 @@ public class ConnectButtonController {
                 return "identifyUser"
             case .logInExistingUser:
                 return "logInExistingUser"
-            case .logInComplete:
-                return "logInComplete"
             case .serviceAuthentication:
                 return "serviceAuthentication"
             case .authenticationComplete:
@@ -622,8 +619,6 @@ public class ConnectButtonController {
             transitionToIdentifyUser(lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
             transitionToLogInExistingUser(userId: userId)
-        case .logInComplete(let nextStep):
-            transitionToLogInComplete(nextStep: nextStep)
         case .serviceAuthentication(let service, let newUserEmail):
             transitionToServiceAuthentication(service: service, newUserEmail: newUserEmail)
         case .authenticationComplete:
@@ -742,17 +737,6 @@ public class ConnectButtonController {
     
     private func transitionToLogInExistingUser(userId: User.Id) {
         openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
-    }
-    
-    private func transitionToLogInComplete(nextStep: ConnectButtonController.ActivationStep) {
-        let animation = button.animator(for: .buttonState(.checkmark))
-        animation.onComplete { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.transition(to: nextStep)
-            }
-        }
-        
-        animation.preform()
     }
     
     private func transitionToServiceAuthentication(service: Connection.Service, newUserEmail: String?) {
