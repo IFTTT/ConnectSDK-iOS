@@ -124,7 +124,6 @@ public class ConnectButton: UIView {
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(service: Service?, message: String)
-        case stepToEmail(suggestedEmail: String)
         case continueToServiceAndConnectingAccount(service: Service?, message: String)
         case checkmark(service: Service?)
         case stepCompleteToStep(service: Service?, message: String)
@@ -1188,7 +1187,7 @@ private extension ConnectButton {
             }
             
         case let .enterEmail(suggestedEmail):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
+            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
             
         case let .accessingAccount(message):
             progressBar.configure(with: nil)
@@ -1217,9 +1216,6 @@ private extension ConnectButton {
             animator.addCompletion { (_) in
                 self.emailConfirmButton.transform = .identity
             }
-            
-        case let .stepToEmail(suggestedEmail):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
             
         case let .continueToServiceAndConnectingAccount(service, message):
             progressBar.configure(with: service)
