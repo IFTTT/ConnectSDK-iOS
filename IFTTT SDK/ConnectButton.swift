@@ -126,7 +126,6 @@ public class ConnectButton: UIView {
         case verifyingEmail(service: Service?, message: String)
         case continueToServiceAndConnectingAccount(service: Service?, message: String)
         case checkmark(service: Service?)
-        case stepCompleteToStep(service: Service?, message: String)
         case connected(service: Service, message: String)
         case disconnected(service: Service, message: String, isOn: Bool)
     }
@@ -1244,16 +1243,6 @@ private extension ConnectButton {
             }
             
             checkmark.drawCheckmark(duration: 1.25)
-            
-        case let .stepCompleteToStep(service, message):
-            progressBar.configure(with: service)
-            
-            primaryLabelAnimator.transition(with: .slideInFromRight, updatedValue: .text(message), insets: .standard, addingTo: animator)
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                self.checkmark.alpha = 0
-            }
             
         case let .connected(service, message):
             switchControl.primeAnimation_centerKnob()
