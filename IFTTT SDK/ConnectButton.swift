@@ -118,9 +118,10 @@ public class ConnectButton: UIView {
     
     enum AnimationState {
         case loading
-        case connect(service: Service, message: String, isOn: Bool)
+        case connect(service: Service, message: String)
         case createAccount(message: String)
-        case slideToConnectWithTokenAndSlideToDisconnect(message: String, isOn: Bool)
+        case slideToConnectWithToken
+        case slideToDisconnect(message: String)
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(service: Service?, message: String)
@@ -292,7 +293,7 @@ public class ConnectButton: UIView {
         
         /// Callback when switch is toggled
         /// Sends true if switch has been toggled to the on position
-        var onToggle: ((Bool) -> Void)?
+        var onToggle: (() -> Void)?
     }
     
     struct EmailInteraction {
@@ -364,16 +365,13 @@ public class ConnectButton: UIView {
         }
         
         var nextState: ConnectButton.Transition?
-        var buttonIsOn: Bool!
         
-        if case .connect(_, _, let isOn) = currentState {
+        if case .connect = currentState {
             nextState = toggleInteraction.toggleTransition?()
-            buttonIsOn = isOn
         }
         
         if case .connected = currentState {
             nextState = toggleInteraction.toggleTransition?()
-            buttonIsOn = true
         }
         
         guard let transition = nextState else {
@@ -383,7 +381,7 @@ public class ConnectButton: UIView {
         let a = animator(for: transition)
         a.animator.addCompletion { position in
             if position == .end {
-                self.toggleInteraction.onToggle?(!buttonIsOn)
+                self.toggleInteraction.onToggle?()
             }
         }
         return a
@@ -1152,12 +1150,13 @@ private extension ConnectButton {
         switch animationState {
         case .loading:
             break
-        case let .connect(service, message, isOn):
+        case let .connect(service, message):
             primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+            
             animator.addAnimations {
                 self.backgroundView.backgroundColor = .black
                 self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-                self.switchControl.isOn = isOn
+                self.switchControl.isOn = false
                 self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1
                 
@@ -1168,23 +1167,12 @@ private extension ConnectButton {
         case let .createAccount(message):
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
-        case let .slideToConnectWithTokenAndSlideToDisconnect(message, isOn):
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        case let .slideToDisconnect(message):
+            slideButtonToState(isOn: false, labelValue:  .text(message), animator: animator)
             
-            progressBar.configure(with: nil)
-            progressBar.alpha = 1
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = isOn ? .black : Style.Color.grey
-                self.switchControl.isOn = isOn
-            }
-            
-            animator.addCompletion { position in
-                if position == .start {
-                    self.switchControl.isOn = !isOn
-                }
-            }
-            
+        case .slideToConnectWithToken:
+            slideButtonToState(isOn: true, labelValue:  .none, animator: animator)
+
         case let .enterEmail(suggestedEmail):
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator, shouldBecomeFirstResponder: true)
             
@@ -1282,6 +1270,18 @@ private extension ConnectButton {
                 self.switchControl.knob.maskedEndCaps = .all
                 self.switchControl.alpha = 1
             }
+        }
+    }
+    
+    private func slideButtonToState(isOn: Bool, labelValue: LabelValue, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: labelValue, insets: .avoidSwitchKnob, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = Style.Color.grey
+            self.switchControl.isOn = isOn
         }
     }
     

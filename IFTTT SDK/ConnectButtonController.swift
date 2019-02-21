@@ -195,7 +195,7 @@ public class ConnectButtonController {
     }
 
     private var initialButtonState: ConnectButton.AnimationState {
-        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name), isOn: false)
+        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name))
     }
 
     private var connectedButtonState: ConnectButton.AnimationState {
@@ -669,13 +669,13 @@ public class ConnectButtonController {
         
         button.toggleInteraction.toggleTransition = {
             if self.tokenProvider.iftttServiceToken != nil {
-                return .buttonState(.slideToConnectWithTokenAndSlideToDisconnect(message: "", isOn: true))
+                return .buttonState(.slideToConnectWithToken)
             } else {
                 return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)
             }
         }
         
-        button.toggleInteraction.onToggle = { [weak self] isOn in
+        button.toggleInteraction.onToggle = { [weak self] in
             if let token = self?.tokenProvider.iftttServiceToken {
                 self?.transition(to: .identifyUser(.token(token)))
             }
@@ -835,7 +835,7 @@ public class ConnectButtonController {
             return .footerValue(FooterMessages.disconnect.value)
         }
         
-        button.toggleInteraction.onToggle = { [weak self] _ in
+        button.toggleInteraction.onToggle = { [weak self] in
             self?.transition(to: .confirmDisconnect)
         }
     }
@@ -854,15 +854,11 @@ public class ConnectButtonController {
         }
         
         button.toggleInteraction.toggleTransition = {
-            return .buttonState(.slideToConnectWithTokenAndSlideToDisconnect(message: "button.state.disconnecting".localized, isOn: false), footerValue: .none)
+            return .buttonState(.slideToDisconnect(message: "button.state.disconnecting".localized), footerValue: .none)
         }
         
-        button.toggleInteraction.onToggle = { [weak self] isOn in
-            if isOn {
-                self?.transition(to: .connected(animated: true))
-            } else {
-                self?.transition(to: .processDisconnect)
-            }
+        button.toggleInteraction.onToggle = { [weak self] in
+            self?.transition(to: .processDisconnect)
         }
     }
     
