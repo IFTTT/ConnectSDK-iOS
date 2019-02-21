@@ -124,11 +124,12 @@ public class ConnectButton: UIView {
         case slideToDisconnect(message: String)
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
-        case verifyingEmail(service: Service?, message: String)
-        case continueToServiceAndConnectingAccount(service: Service?, message: String)
-        case checkmark(service: Service?)
+        case verifyingEmail(message: String)
+        case continueToService(service: Service, message: String)
+        case connecting(message: String)
+        case checkmark
         case connected(service: Service, message: String)
-        case disconnected(service: Service, message: String, isOn: Bool)
+        case disconnected(service: Service, message: String)
     }
     
     // MARK: ConnectionDiary
@@ -1151,130 +1152,59 @@ private extension ConnectButton {
         case .loading:
             break
         case let .connect(service, message):
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-                self.switchControl.isOn = false
-                self.switchControl.knob.maskedEndCaps = .all
-                self.switchControl.alpha = 1
-                
-                // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.border.opacity = 1
-            }
+            transitionToConnect(service: service, message: message, animator: animator)
             
         case let .createAccount(message):
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
-            slideButtonToState(isOn: false, labelValue:  .text(message), animator: animator)
+            transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
             
         case .slideToConnectWithToken:
-            slideButtonToState(isOn: true, labelValue:  .none, animator: animator)
-
+            transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
 
         case let .enterEmail(suggestedEmail):
             transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
             
         case let .accessingAccount(message):
-            progressBar.configure(with: nil)
+            transitionToAccessingAccount(message: message, animator: animator)
+        
+        case let .verifyingEmail(message):
+            transitionToVerifyingAccount(message: message, animator: animator)
             
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        case let .continueToService(service, message):
+            transitionToContinueToService(service: service, message: message, animator: animator)
             
-            animator.addAnimations {
-                self.switchControl.alpha = 0
-                self.backgroundView.backgroundColor = Style.Color.grey
-            }
+        case let .connecting(message):
+            transitionToConnecting(message: message, animator: animator)
             
-        case let .verifyingEmail(service, message):
-            progressBar.configure(with: service)
-            
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
-            
-            animator.addAnimations {
-                self.emailEntryField.alpha = 0
-                self.emailConfirmButton.alpha = 0
-                
-                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-                
-                // This is only relevent for dark mode when we draw a border around the switch
-                self.backgroundView.border.opacity = 1
-            }
-            animator.addCompletion { (_) in
-                self.emailConfirmButton.transform = .identity
-            }
-            
-        case let .continueToServiceAndConnectingAccount(service, message):
-            progressBar.configure(with: service)
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = service?.brandColor ?? Style.Color.grey
-            }
-            
-        case let .checkmark(service):
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
-            
-            backgroundView.backgroundColor = service?.brandColor ?? .black
-            
-            checkmark.alpha = 1
-            checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
-            
-            animator.addAnimations {
-                self.progressBar.alpha = 0
-                self.checkmark.outline.transform = .identity
-            }
-            
-            animator.addCompletion { _ in
-                self.progressBar.alpha = 1
-                self.progressBar.fractionComplete = 0
-            }
-            
-            checkmark.drawCheckmark(duration: 1.25)
+        case .checkmark:
+            transitionToCheckmark(animator: animator)
             
         case let .connected(service, message):
-            switchControl.primeAnimation_centerKnob()
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+            transitionToConnected(service: service, message: message, animator: animator)
             
-            progressBar.configure(with: service)
-            progressBar.fractionComplete = 0
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                
-                self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-                self.switchControl.alpha = 1
-                self.switchControl.isOn = true
-                
-                self.checkmark.alpha = 0
-                
-                // Animate the checkmark along with the knob from the center position to the knob's final position
-                let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
-                self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
-            }
-            
-            animator.addCompletion { _ in
-                self.checkmark.transform = .identity
-            }
-            
-        case let .disconnected(service, message, isOn):
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
-            
-            progressBar.configure(with: service)
-            progressBar.fractionComplete = 0
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-                self.switchControl.isOn = isOn
-                self.switchControl.knob.maskedEndCaps = .all
-                self.switchControl.alpha = 1
-            }
+        case let .disconnected(service, message):
+            transitionToDisconnected(service: service, message: message, animator: animator)
         }
     }
     
-    private func slideButtonToState(isOn: Bool, labelValue: LabelValue, animator: UIViewPropertyAnimator) {
+    private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.isOn = false
+            self.switchControl.knob.maskedEndCaps = .all
+            self.switchControl.alpha = 1
+            
+            // This is only relevent for dark mode when we draw a border around the switch
+            self.backgroundView.border.opacity = 1
+        }
+    }
+    
+    private func transitionToButtonState(isOn: Bool, labelValue: LabelValue, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: labelValue, insets: .avoidSwitchKnob, addingTo: animator)
         
         progressBar.configure(with: nil)
@@ -1341,6 +1271,123 @@ private extension ConnectButton {
             default:
                 break
             }
+        }
+    }
+    
+    private func transitionToAccessingAccount(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.switchControl.alpha = 0
+            self.backgroundView.backgroundColor = Style.Color.grey
+        }
+    }
+    
+    private func transitionToVerifyingAccount(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.emailEntryField.alpha = 0
+            self.emailConfirmButton.alpha = 0
+            
+            self.backgroundView.backgroundColor = Style.Color.grey
+            
+            // This is only relevent for dark mode when we draw a border around the switch
+            self.backgroundView.border.opacity = 1
+        }
+        
+        animator.addCompletion { _ in
+            self.emailConfirmButton.transform = .identity
+        }
+    }
+    
+    private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: service)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = service.brandColor
+        }
+    }
+    
+    private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
+        
+        backgroundView.backgroundColor = .black
+        
+        checkmark.alpha = 1
+        checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
+        
+        animator.addAnimations {
+            self.progressBar.alpha = 0
+            self.checkmark.outline.transform = .identity
+        }
+        
+        animator.addCompletion { _ in
+            self.progressBar.alpha = 1
+            self.progressBar.fractionComplete = 0
+        }
+        
+        checkmark.drawCheckmark(duration: 1.25)
+    }
+    
+    private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        
+        progressBar.configure(with: nil)
+        progressBar.alpha = 1
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = Style.Color.grey
+        }
+    }
+    
+    private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        switchControl.primeAnimation_centerKnob()
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        
+        progressBar.configure(with: service)
+        progressBar.fractionComplete = 0
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+            
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.alpha = 1
+            self.switchControl.isOn = true
+            
+            self.checkmark.alpha = 0
+            
+            // Animate the checkmark along with the knob from the center position to the knob's final position
+            let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
+            self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
+        }
+        
+        animator.addCompletion { _ in
+            self.checkmark.transform = .identity
+        }
+    }
+    
+    private func transitionToDisconnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        
+        progressBar.configure(with: service)
+        progressBar.fractionComplete = 0
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.isOn = false
+            self.switchControl.knob.maskedEndCaps = .all
+            self.switchControl.alpha = 1
         }
     }
 }

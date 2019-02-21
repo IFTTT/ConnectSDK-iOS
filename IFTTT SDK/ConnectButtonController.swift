@@ -698,7 +698,7 @@ public class ConnectButtonController {
         
         switch lookupMethod {
         case let .email(userEmail):
-            button.animator(for: .buttonState(.verifyingEmail(service: nil, message: "button.state.checking_account".localized), footerValue: FooterMessages.verifying(email: userEmail).value)).preform()
+            button.animator(for: .buttonState(.verifyingEmail(message: "button.state.checking_account".localized), footerValue: FooterMessages.verifying(email: userEmail).value)).preform()
             
         case .token:
             button.animator(for: .buttonState(.accessingAccount(message: "button.state.accessing_existing_account".localized), footerValue: FooterMessages.poweredBy.value)).preform()
@@ -760,7 +760,7 @@ public class ConnectButtonController {
     }
     
     private func transitionToLogInComplete(nextStep: ConnectButtonController.ActivationStep) {
-        let animation = button.animator(for: .buttonState(.checkmark(service: nil)))
+        let animation = button.animator(for: .buttonState(.checkmark))
         animation.onComplete { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.transition(to: nextStep)
@@ -780,7 +780,7 @@ public class ConnectButtonController {
         }
         
         button.footerInteraction.isTapEnabled = true
-        button.animator(for: .buttonState(.continueToServiceAndConnectingAccount(service: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
+        button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
         
         let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
         
@@ -797,12 +797,12 @@ public class ConnectButtonController {
     }
     
     private func transitionToServiceAuthenticationComplete(service: Connection.Service, nextStep: ActivationStep) {
-        button.animator(for: .buttonState(.continueToServiceAndConnectingAccount(service: service.connectButtonService, message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value)).preform()
+        button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value)).preform()
         
         let progressBar = button.progressBar(timeout: 2)
         progressBar.preform()
         progressBar.onComplete { _ in
-            self.button.animator(for: .buttonState(.checkmark(service: service.connectButtonService))).preform()
+            self.button.animator(for: .buttonState(.checkmark)).preform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: nextStep)
             }
@@ -885,7 +885,7 @@ public class ConnectButtonController {
     
     private func transitionToDisconnected() {
         appletChangedStatus(isOn: false)
-        button.animator(for: .buttonState(.disconnected(service: connectingService.connectButtonService, message: "button.state.disconnected".localized, isOn: false))).preform()
+        button.animator(for: .buttonState(.disconnected(service: connectingService.connectButtonService, message: "button.state.disconnected".localized))).preform()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.transition(to: .initial(animated: true))
