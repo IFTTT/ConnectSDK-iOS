@@ -91,7 +91,7 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask {
+    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
         return checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { result in
             DispatchQueue.main.async {
                 completion(result)
@@ -99,10 +99,14 @@ public final class ConnectionNetworkController {
         }
     }
     
-    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask {
+    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
         switch user {
         case .email(let email):
-            let dataTask = urlSession.jsonTask(with: makeFindUserByEmailRequest(with: email, timeout: timeout), waitUntil: waitUntil) { _, response, error in
+            guard let request = makeFindUserByEmailRequest(with: email, timeout: timeout) else {
+                return nil
+            }
+            
+            let dataTask = urlSession.jsonTask(with: request, waitUntil: waitUntil) { _, response, error in
                 let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
                 completion(.success(configuration))
                 
@@ -130,8 +134,12 @@ public final class ConnectionNetworkController {
         }
     }
     
-    private func makeFindUserByEmailRequest(with email: String, timeout: TimeInterval) -> URLRequest {
-        var request = URLRequest(url: API.findUserBy(email: email))
+    private func makeFindUserByEmailRequest(with email: String, timeout: TimeInterval) -> URLRequest? {
+        guard let url = API.findUserBy(email: email) else {
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
         request.timeoutInterval = timeout
         request.addVersionTracking()
         return request

@@ -323,7 +323,12 @@ public class ConnectButtonController {
     private var safariDelegate: SafariDelegate?
     
     private func handleCancelation(lookupMethod: User.LookupMethod) {
-        transition(to: .canceled)
+        switch lookupMethod {
+        case .email:
+            transition(to: .enterEmail)
+        case .token:
+            transition(to: .canceled)
+        }
     }
     
     
@@ -504,6 +509,7 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
         case initial(animated: Bool)
+        case enterEmail
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
         case serviceAuthentication(Connection.Service, newUserEmail: String?)
@@ -514,33 +520,6 @@ public class ConnectButtonController {
         case confirmDisconnect
         case processDisconnect
         case disconnected
-        
-        var description: String {
-            switch self {
-            case .initial:
-                return "initial"
-            case .identifyUser:
-                return "identifyUser"
-            case .logInExistingUser:
-                return "logInExistingUser"
-            case .serviceAuthentication:
-                return "serviceAuthentication"
-            case .authenticationComplete:
-                return "authenticationComplete"
-            case .failed:
-                return "failed"
-            case .canceled:
-                return "canceled"
-            case .connected:
-                return "connected"
-            case .confirmDisconnect:
-                return "confirmDisconnect"
-            case .processDisconnect:
-                return "processDisconnect"
-            case .disconnected:
-                return "disconnected"
-            }
-        }
     }
     
     /// Wraps various tasks associated with accessing an account so they can be tracked or interrupted.
@@ -562,6 +541,9 @@ public class ConnectButtonController {
         switch step {
         case .initial(let animated):
             transitionToInitalization(animated: animated)
+        case .enterEmail:
+            self.transition(to: .initial(animated: false))
+            self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
@@ -684,7 +666,12 @@ public class ConnectButtonController {
             }
         }
         
-        accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: dataTask)
+        guard let accountLookupDataTask = dataTask else {
+            assertionFailure("It is expected that you get a non nil data task.")
+            return
+        }
+        
+        accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: accountLookupDataTask)
         
         button.emailInteraction.onConfirm = { [weak self] email in
             guard let self = self else {
