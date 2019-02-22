@@ -16,7 +16,7 @@
 "button.state.sign_in" = "Continue to %@";
 "button.state.sign_in.brief" = "Sign in";
 "button.state.saving_configuration" = "Saving settings…";
-"button.state.connecting" = "Connecting account…";
+"button.state.connecting" = "Connecting…";
 "button.state.connected" = "Connected";
 "button.state.disconnecting" = "Disconnecting…";
 "button.state.disconnected" = "Disconnected";

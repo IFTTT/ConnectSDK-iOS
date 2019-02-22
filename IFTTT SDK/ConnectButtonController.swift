@@ -179,7 +179,7 @@ public class ConnectButtonController {
                 self.transition(to: .initial(animated: false))
                 self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
                 
-            case .logInExistingUser, .serviceAuthenticationComplete, .logInComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
+            case .logInExistingUser, .authenticationComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
                 break
             }
         }
@@ -453,6 +453,7 @@ public class ConnectButtonController {
     private var redirectObserving: RedirectObserving?
 
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
+        
         // Before we continue and handle this redirect, we must dismiss the active Safari VC
         guard currentSafariViewController == nil else {
             // Redirect doesn't automatically dismiss Safari VC
@@ -481,26 +482,11 @@ public class ConnectButtonController {
                     return .failed(.unknownRedirect)
                 }
             case .complete:
-                return .connected(animated: true)
+                return .authenticationComplete
             }
         }()
-
-        switch nextStep {
-        case .failed:
-            transition(to: nextStep)
-
-        default:
-            switch currentActivationStep {
-            case .logInExistingUser?:
-                // Show the animation for log in complete before moving on to the next step
-                transition(to: .logInComplete(nextStep: nextStep))
-            case .serviceAuthentication(_, _)?:
-                // Show the animation for service connection before moving on to the next step
-                transition(to: .serviceAuthenticationComplete(nextStep: nextStep))
-            default:
-                transition(to: nextStep)
-            }
-        }
+        
+        transition(to: nextStep)
     }
 
     
@@ -567,9 +553,8 @@ public class ConnectButtonController {
         case initial(animated: Bool)
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
-        case logInComplete(nextStep: ActivationStep)
         case serviceAuthentication(Connection.Service, newUserEmail: String?)
-        case serviceAuthenticationComplete(nextStep: ActivationStep)
+        case authenticationComplete
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
@@ -585,12 +570,10 @@ public class ConnectButtonController {
                 return "identifyUser"
             case .logInExistingUser:
                 return "logInExistingUser"
-            case .logInComplete:
-                return "logInComplete"
             case .serviceAuthentication:
                 return "serviceAuthentication"
-            case .serviceAuthenticationComplete:
-                return "serviceAuthenticationComplete"
+            case .authenticationComplete:
+                return "authenticationComplete"
             case .failed:
                 return "failed"
             case .canceled:
@@ -636,12 +619,10 @@ public class ConnectButtonController {
             transitionToIdentifyUser(lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
             transitionToLogInExistingUser(userId: userId)
-        case .logInComplete(let nextStep):
-            transitionToLogInComplete(nextStep: nextStep)
         case .serviceAuthentication(let service, let newUserEmail):
             transitionToServiceAuthentication(service: service, newUserEmail: newUserEmail)
-        case .serviceAuthenticationComplete(let nextStep):
-            transitionToServiceAuthenticationComplete(nextStep: nextStep)
+        case .authenticationComplete:
+            transitionToAuthenticationComplete()
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -758,17 +739,6 @@ public class ConnectButtonController {
         openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
     }
     
-    private func transitionToLogInComplete(nextStep: ConnectButtonController.ActivationStep) {
-        let animation = button.animator(for: .buttonState(.checkmark))
-        animation.onComplete { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.transition(to: nextStep)
-            }
-        }
-        
-        animation.preform()
-    }
-    
     private func transitionToServiceAuthentication(service: Connection.Service, newUserEmail: String?) {
         let footer: ConnectButtonController.FooterMessages
         
@@ -795,7 +765,7 @@ public class ConnectButtonController {
         }
     }
     
-    private func transitionToServiceAuthenticationComplete(nextStep: ActivationStep) {
+    private func transitionToAuthenticationComplete() {
         button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value)).preform()
         
         let progressBar = button.progressBar(timeout: 2)
@@ -803,7 +773,7 @@ public class ConnectButtonController {
         progressBar.onComplete { _ in
             self.button.animator(for: .buttonState(.checkmark)).preform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.transition(to: nextStep)
+                self.transition(to: .connected(animated: true))
             }
         }
     }
