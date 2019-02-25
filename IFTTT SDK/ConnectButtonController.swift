@@ -139,7 +139,7 @@ public class ConnectButtonController {
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
         guard let connection = connection else {
-            fetchConnection(for: connectionConfiguration.connectionId, numberOfRetries: 2)
+            fetchConnection(for: connectionConfiguration.connectionId, numberOfRetries: 0)
             return
         }
         
@@ -174,8 +174,10 @@ public class ConnectButtonController {
                 self.setupConnection(for: connection, animated: true)
                 
             case .failure:
-                if numberOfRetries > 0 {
-                    self.fetchConnection(for: id, numberOfRetries: numberOfRetries - 1)
+                if numberOfRetries < 2 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(numberOfRetries)) {
+                        self.fetchConnection(for: id, numberOfRetries: numberOfRetries + 1)
+                    }
                 } else {
                     self.transition(to: .loading(didFail: true))
                 }
