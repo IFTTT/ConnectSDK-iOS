@@ -133,10 +133,10 @@ public class ConnectButtonController {
         self.connectionConfiguration = connectionConfiguration
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
-        setupConnection(for: connection)
+        setupConnection(for: connection, animated: false)
     }
 
-    private func setupConnection(for connection: Connection?) {
+    private func setupConnection(for connection: Connection?, animated: Bool) {
         guard let connection = connection else {
             fetchConnection(for: connectionConfiguration.connectionId)
             return
@@ -152,13 +152,6 @@ public class ConnectButtonController {
 
         switch connection.status {
         case .initial, .unknown, .disabled:
-            
-            let animated: Bool
-            if case .loading = button.currentState {
-                animated = true
-            } else {
-                animated = false
-            }
             
             // Disabled Connections are presented in the "Connect" state
             transition(to: .initial(animated: animated))
@@ -177,7 +170,7 @@ public class ConnectButtonController {
             switch response.result {
             case .success(let connection):
                 self.connection = connection
-                self.setupConnection(for: connection)
+                self.setupConnection(for: connection, animated: true)
                 
             case .failure:
                 break
