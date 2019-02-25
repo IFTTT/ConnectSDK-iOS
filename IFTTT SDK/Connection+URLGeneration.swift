@@ -23,6 +23,7 @@ extension Connection {
             static let defaultTrueValue = "true"
             static let sdkVersionName = "sdk_version"
             static let sdkPlatformName = "sdk_platform"
+            static let sdkAnonymousId = "sdk_anonymous_id"
         }
     }
     
@@ -60,7 +61,8 @@ extension Connection {
     private func queryItems(for step: ActivationStep, credentialProvider: CredentialProvider, activationRedirect: URL) -> [URLQueryItem] {
         var queryItems = [URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
                           URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
-                          URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform)]
+                          URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform),
+                          URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
         
         if let inviteCode = credentialProvider.inviteCode {
             queryItems.append(URLQueryItem(name: Constants.QueryItem.inviteCodeName, value: inviteCode))
