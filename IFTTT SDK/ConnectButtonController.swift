@@ -577,16 +577,7 @@ public class ConnectButtonController {
         
         switch step {
         case let .loading(didFail):
-            let footerValue = didFail ? FooterMessages.loadingFailed.value : nil
-            button.animator(for: ConnectButton.Transition(state: .loading(didFail: didFail), footerValue: footerValue)).preform(animated: true)
-            button.footerInteraction.isTapEnabled = true
-            button.footerInteraction.onSelect = { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                self.setupConnection(for: self.connection, animated: true)
-            }
+            transitionToLoading(didFail: didFail)
         case .initial(let animated):
             transitionToInitalization(animated: animated)
         case .enterEmail:
@@ -612,6 +603,19 @@ public class ConnectButtonController {
             transitionToProccessDisconnect()
         case .disconnected:
             transitionToDisconnected()
+        }
+    }
+    
+    private func transitionToLoading(didFail: Bool) {
+        let footerValue = didFail ? FooterMessages.loadingFailed.value : nil
+        button.animator(for: ConnectButton.Transition(state: .loading(didFail: didFail), footerValue: footerValue)).preform(animated: true)
+        button.footerInteraction.isTapEnabled = true
+        button.footerInteraction.onSelect = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.setupConnection(for: self.connection, animated: true)
         }
     }
     
