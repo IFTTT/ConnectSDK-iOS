@@ -153,7 +153,7 @@ public class ConnectButtonController {
         switch connection.status {
         case .initial, .unknown, .disabled:
             // Disabled Connections are presented in the "Connect" state
-            transition(to: .initial(animated: false))
+            transition(to: .initial(animated: true))
 
         case .enabled:
             transition(to: .connected(animated: false))
@@ -161,6 +161,7 @@ public class ConnectButtonController {
     }
     
     private func fetchConnection(for id: String) {
+        transition(to: .loading)
         
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else { return }
@@ -543,6 +544,7 @@ public class ConnectButtonController {
     /// - processDisconnect: Disable the `Connection`.
     /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
+        case loading
         case initial(animated: Bool)
         case enterEmail
         case identifyUser(User.LookupMethod)
@@ -574,6 +576,8 @@ public class ConnectButtonController {
         button.footerInteraction.isTapEnabled = false // Don't clear the select block
         
         switch step {
+        case .loading:
+            button.animator(for: .buttonState(.loading)).preform(animated: true)
         case .initial(let animated):
             transitionToInitalization(animated: animated)
         case .enterEmail:
@@ -625,7 +629,7 @@ public class ConnectButtonController {
             return
         }
         
-        button.animator(for: .buttonState(.connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name)), footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
+        button.animator(for: .buttonState(.connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name)))).preform(animated: animated)
         
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true

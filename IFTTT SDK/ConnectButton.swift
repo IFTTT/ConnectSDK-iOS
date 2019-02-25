@@ -503,14 +503,15 @@ public class ConnectButton: UIView {
     
     /// When this button is configured in a Storyboard / NIB, this defines the preview state
     private func setupInterfaceBuilderPreview() {
-        backgroundView.backgroundColor = .black
-        switchControl.alpha = 1
-        switchControl.isOn = false
-        switchControl.knob.backgroundColor = Style.Color.blue
-        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
-        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT",
-                                                          attributes: [.font : UIFont.footnote(weight: .bold)])
-        footerLabelAnimator.configure(.attributed(initialFooterText))
+        #if TARGET_INTERFACE_BUILDER
+            backgroundView.backgroundColor = .black
+            switchControl.alpha = 1
+            switchControl.isOn = false
+            switchControl.knob.backgroundColor = Style.Color.blue
+            primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
+            let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
+            footerLabelAnimator.configure(.attributed(initialFooterText))
+        #endif
     }
     
     fileprivate let backgroundView = PillView()
@@ -1150,7 +1151,9 @@ private extension ConnectButton {
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
         case .loading:
-            break
+            primaryLabelAnimator.configure(.text("Loading..."), insets: .standard)
+            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+            
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
             
