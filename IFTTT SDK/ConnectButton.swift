@@ -1056,6 +1056,18 @@ public class ConnectButton: UIView {
         
         setupInteraction()
     }
+    
+    // MARK: - Loading Animation
+    
+    private var pulseAnimation: UIViewPropertyAnimator?
+    
+    private func pulseAnimateLabel(isReverse: Bool) {
+        self.pulseAnimation = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1.2, delay: 0.0, options: [.curveLinear, .repeat], animations: {
+            self.primaryLabelAnimator.primary.label.alpha = isReverse ? 1.0 : 0.4
+        }) { _ in
+            self.pulseAnimateLabel(isReverse: !isReverse)
+        }
+    }
 }
 
 // MARK: Gesture recognizer delegate (Toggle interaction)
@@ -1150,6 +1162,12 @@ private extension ConnectButton {
             primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
             footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
             
+            animator.addAnimations {
+                self.backgroundView.backgroundColor = .black
+            }
+            
+            pulseAnimateLabel(isReverse: false)
+            
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
             
@@ -1189,6 +1207,9 @@ private extension ConnectButton {
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        pulseAnimation?.stopAnimation(true)
+        pulseAnimation = nil
+        
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
         animator.addAnimations {
