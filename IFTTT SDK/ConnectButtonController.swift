@@ -194,12 +194,18 @@ public class ConnectButtonController {
         }
     }
 
-    private var initialButtonState: ConnectButton.AnimationState {
-        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name))
-    }
-
-    private var connectedButtonState: ConnectButton.AnimationState {
-        return .connected(service: connectingService.connectButtonService, message: "button.state.connected".localized)
+    private func buttonState(for connectionStatus: Connection.Status) -> ConnectButton.AnimationState {
+        switch connectionStatus {
+        case .initial, .unknown:
+            return .connect(service: connectingService.connectButtonService,
+                            message: "button.state.connect".localized(arguments: connectingService.name))
+        case .disabled:
+            return .connect(service: connectingService.connectButtonService,
+                            message: "button.state.reconnect".localized(arguments: connectingService.name))
+        case .enabled:
+            return .connected(service: connectingService.connectButtonService,
+                              message: "button.state.connected".localized)
+        }
     }
 
     private func present(_ viewController: UIViewController) {
@@ -642,7 +648,8 @@ public class ConnectButtonController {
         endActivationWebFlow()
         
         button.footerInteraction.isTapEnabled = true
-        button.animator(for: .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
+        button.animator(for: .buttonState(buttonState(for: connection.status),
+                                          footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
         
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
@@ -789,7 +796,8 @@ public class ConnectButtonController {
     }
     
     private func transitionToConnected(animated: Bool) {
-        button.animator(for: .buttonState(connectedButtonState, footerValue: FooterMessages.manage.value)).preform(animated: animated)
+        button.animator(for: .buttonState(buttonState(for: .enabled),
+                                          footerValue: FooterMessages.manage.value)).preform(animated: animated)
         
         button.footerInteraction.isTapEnabled = true
         
