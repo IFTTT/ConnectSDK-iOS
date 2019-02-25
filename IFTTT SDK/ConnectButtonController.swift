@@ -153,7 +153,7 @@ public class ConnectButtonController {
         switch connection.status {
         case .initial, .unknown, .disabled:
             // Disabled Connections are presented in the "Connect" state
-            transition(to: .initial(animated: true))
+            transition(to: .initial(animated: false))
 
         case .enabled:
             transition(to: .connected(animated: false))
@@ -172,12 +172,6 @@ public class ConnectButtonController {
                 self.setupConnection(for: connection)
                 
             case .failure:
-//                let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connection.", preferredStyle: .alert)
-//                let okAction = UIAlertAction(title: "Okay", style: .default, handler: { _ in
-//                    self.navigationController?.popViewController(animated: true)
-//                })
-//                alertController.addAction(okAction)
-//                self.present(alertController, animated: true, completion: nil)
                 break
             }
         }
