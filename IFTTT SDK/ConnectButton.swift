@@ -115,7 +115,7 @@ public class ConnectButton: UIView {
     }
     
     enum AnimationState {
-        case loading
+        case loading(didFail: Bool)
         case connect(service: Service, message: String)
         case createAccount(message: String)
         case slideToConnectWithToken
@@ -199,7 +199,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: AnimationState = .loading
+    private(set) var currentState: AnimationState = .loading(didFail: false)
     
     func progressBar(timeout: TimeInterval) -> Animator {
         return Animator(animator: progressBar.animator(duration: timeout))
@@ -1137,8 +1137,8 @@ private extension ConnectButton {
     
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
-        case .loading:
-            transitionToLoading(animator: animator)
+        case let .loading(didFail):
+            transitionToLoading(animator: animator, didFail: didFail)
             
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
@@ -1178,15 +1178,22 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToLoading(animator: UIViewPropertyAnimator) {
+    private func transitionToLoading(animator: UIViewPropertyAnimator, didFail: Bool) {
         primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
         footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = .black
+            self.primaryLabelAnimator.primary.label.alpha = 1
         }
         
-        pulseAnimateLabel(isReverse: false)
+        
+        pulseAnimation?.stopAnimation(true)
+        pulseAnimation = nil
+        
+        if !didFail {
+            pulseAnimateLabel(isReverse: false)
+        }
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {

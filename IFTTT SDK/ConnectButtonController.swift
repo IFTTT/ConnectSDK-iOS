@@ -139,7 +139,7 @@ public class ConnectButtonController {
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
         guard let connection = connection else {
-            fetchConnection(for: connectionConfiguration.connectionId)
+            fetchConnection(for: connectionConfiguration.connectionId, numberOfRetries: 2)
             return
         }
         
@@ -162,8 +162,8 @@ public class ConnectButtonController {
         }
     }
     
-    private func fetchConnection(for id: String) {
-        transition(to: .loading)
+    private func fetchConnection(for id: String, numberOfRetries: Int) {
+        transition(to: .loading(didFail: false))
         
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else { return }
@@ -174,7 +174,11 @@ public class ConnectButtonController {
                 self.setupConnection(for: connection, animated: true)
                 
             case .failure:
-                break
+                if numberOfRetries > 0 {
+                    self.fetchConnection(for: id, numberOfRetries: numberOfRetries - 1)
+                } else {
+                    self.transition(to: .loading(didFail: true))
+                }
             }
         }
     }
@@ -246,6 +250,7 @@ public class ConnectButtonController {
         poweredBy,
         enterEmail,
         emailInvalid,
+        loadingFailed,
         verifying(email: String),
         signedIn(username: String),
         connect(Connection.Service, to: Connection.Service),
@@ -293,6 +298,12 @@ public class ConnectButtonController {
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
+                
+            case .loadingFailed:
+                let text = NSMutableAttributedString(string: "button.footer.loading.failed".localized, attributes: [.font : Constants.footnoteFont])
+                let retryText = NSAttributedString(string: "button.footer.loading.retry".localized, attributes: [.font : Constants.footnoteBoldFont, .underlineStyle : NSUnderlineStyle.single.rawValue])
+                text.append(retryText)
+                return text
 
             case .verifying(let email):
                 let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : Constants.footnoteFont])
@@ -531,7 +542,7 @@ public class ConnectButtonController {
     /// - processDisconnect: Disable the `Connection`.
     /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
-        case loading
+        case loading(didFail: Bool)
         case initial(animated: Bool)
         case enterEmail
         case identifyUser(User.LookupMethod)
@@ -563,8 +574,17 @@ public class ConnectButtonController {
         button.footerInteraction.isTapEnabled = false // Don't clear the select block
         
         switch step {
-        case .loading:
-            button.animator(for: .buttonState(.loading)).preform(animated: true)
+        case let .loading(didFail):
+            let footerValue = didFail ? FooterMessages.loadingFailed.value : nil
+            button.animator(for: ConnectButton.Transition(state: .loading(didFail: didFail), footerValue: footerValue)).preform(animated: true)
+            button.footerInteraction.isTapEnabled = true
+            button.footerInteraction.onSelect = { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                self.setupConnection(for: self.connection, animated: true)
+            }
         case .initial(let animated):
             transitionToInitalization(animated: animated)
         case .enterEmail:
@@ -612,7 +632,7 @@ public class ConnectButtonController {
         }
         
         guard let connectingService = connectingService else {
-            assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
+             assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
             return
         }
         
