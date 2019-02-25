@@ -8,6 +8,7 @@
 
 "common.cancel" = "Cancel";
 
+"button.state.loading" = "Loading...";
 "button.state.connect" = "Connect %@";
 "button.state.connect.brief" = "Connect";
 "button.state.checking_account" = "Checking for IFTTT account…";

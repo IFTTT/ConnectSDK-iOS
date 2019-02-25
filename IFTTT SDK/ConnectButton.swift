@@ -97,14 +97,12 @@ public class ConnectButton: UIView {
         style = .light
         super.init(frame: frame)
         createLayout()
-        setupInterfaceBuilderPreview()
         updateStyle()
     }
     required init?(coder aDecoder: NSCoder) {
         style = .light
         super.init(coder: aDecoder)
         createLayout()
-        setupInterfaceBuilderPreview()
         updateStyle()
     }
     
@@ -502,16 +500,14 @@ public class ConnectButton: UIView {
     }
     
     /// When this button is configured in a Storyboard / NIB, this defines the preview state
-    private func setupInterfaceBuilderPreview() {
-        #if TARGET_INTERFACE_BUILDER
-            backgroundView.backgroundColor = .black
-            switchControl.alpha = 1
-            switchControl.isOn = false
-            switchControl.knob.backgroundColor = Style.Color.blue
-            primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
-            let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
-            footerLabelAnimator.configure(.attributed(initialFooterText))
-        #endif
+    public override func prepareForInterfaceBuilder() {
+        backgroundView.backgroundColor = .black
+        switchControl.alpha = 1
+        switchControl.isOn = false
+        switchControl.knob.backgroundColor = Style.Color.blue
+        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
+        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
+        footerLabelAnimator.configure(.attributed(initialFooterText))
     }
     
     fileprivate let backgroundView = PillView()
@@ -1151,7 +1147,7 @@ private extension ConnectButton {
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
         case .loading:
-            primaryLabelAnimator.configure(.text("Loading..."), insets: .standard)
+            primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
             footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
             
         case let .connect(service, message):
