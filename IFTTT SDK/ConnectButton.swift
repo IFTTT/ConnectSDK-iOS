@@ -1159,14 +1159,7 @@ private extension ConnectButton {
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
         case .loading:
-            primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
-            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-            }
-            
-            pulseAnimateLabel(isReverse: false)
+            transitionToLoading(animator: animator)
             
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
@@ -1204,6 +1197,17 @@ private extension ConnectButton {
         case let .disconnected(service, message):
             transitionToDisconnected(service: service, message: message, animator: animator)
         }
+    }
+    
+    private func transitionToLoading(animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
+        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+        }
+        
+        pulseAnimateLabel(isReverse: false)
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
