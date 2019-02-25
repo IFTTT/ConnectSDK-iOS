@@ -11,8 +11,10 @@ import Foundation
 /// Encapsulates the information needed to authenticate a `Connection`'s services.
 public struct ConnectionConfiguration {
     
+    public let connectionId: String
+    
     /// The `Connection` for authentication.
-    public let connection: Connection
+    public let connection: Connection?
     
     /// A `String` provided as the suggested user's email address.
     public let suggestedUserEmail: String
@@ -30,11 +32,11 @@ public struct ConnectionConfiguration {
     ///   - suggestedUserEmail: A `String` with a an email for the user.
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
     ///   - connectAuthorizationRedirectURL: The `URL` that is used for authentication redirects.
-    public init(connection: Connection, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
+    public init(connectionId: String, connection: Connection?, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
+        self.connectionId = connectionId
         self.connection = connection
         self.suggestedUserEmail = suggestedUserEmail
         self.credentialProvider = credentialProvider
         self.connectAuthorizationRedirectURL = connectAuthorizationRedirectURL
-
     }
 }

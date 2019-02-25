@@ -27,6 +27,8 @@ public enum ConnectButtonControllerError: Error {
 
     /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownResponse
+    
+    case nilConnection
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
@@ -86,10 +88,14 @@ public class ConnectButtonController {
     public let button: ConnectButton
 
     /// The `Connection` the controller is handling. The controller may change the `Connection.Status` of the `Connection`.
-    public private(set) var connection: Connection
+    public private(set) var connection: Connection?
 
     private func appletChangedStatus(isOn: Bool) {
-        self.connection.status = isOn ? .enabled : .disabled
+        guard let connection = connection else {
+            return
+        }
+        
+        self.connection?.status = isOn ? .enabled : .disabled
 
         if isOn {
             delegate?.connectButtonController(self, didFinishActivationWithResult: .success(connection))
@@ -101,8 +107,8 @@ public class ConnectButtonController {
     /// The service that is being connected to the primary (owner) service
     /// This defines the service icon & brand color of the button in its initial and final (activated) states
     /// It is always the first service connected
-    public var connectingService: Connection.Service {
-        return connection.worksWithServices.first ?? connection.primaryService
+    public var connectingService: Connection.Service? {
+        return connection?.worksWithServices.first ?? connection?.primaryService
     }
 
     /// An `ConnectButtonControllerDelegate` object that will recieved messages about events that happen on the `ConnectButtonController`.
@@ -128,7 +134,11 @@ public class ConnectButtonController {
         setupConnection(for: connection)
     }
 
-    private func setupConnection(for connection: Connection) {
+    private func setupConnection(for connection: Connection?) {
+        guard let connection = connection else {
+            return
+        }
+        
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
         
@@ -147,14 +157,6 @@ public class ConnectButtonController {
         }
     }
 
-    private var initialButtonState: ConnectButton.AnimationState {
-        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name))
-    }
-
-    private var connectedButtonState: ConnectButton.AnimationState {
-        return .connected(service: connectingService.connectButtonService, message: "button.state.connected".localized)
-    }
-
     private func present(_ viewController: UIViewController) {
         let presentingViewController = delegate?.presentingViewController(for: self)
         presentingViewController?.present(viewController, animated: true, completion: nil)
@@ -165,6 +167,10 @@ public class ConnectButtonController {
 
     /// Presents the about page
     private func showAboutPage() {
+        guard let connection = connection else {
+            return
+        }
+        
         let aboutViewController = AboutViewController(primaryService: connection.primaryService,
                                                       secondaryService: connection.worksWithServices.first)
         present(aboutViewController)
@@ -430,6 +436,10 @@ public class ConnectButtonController {
                 return .failed(error)
 
             case .serviceAuthorization(let id):
+                guard let connection = connection else {
+                    return .failed(.nilConnection)
+                }
+                
                 if let service = connection.services.first(where: { $0.id == id }) {
                     // If service connection comes after a redirect we must have already completed user log in or account creation
                     // Therefore newUserEmail is always nil here
@@ -585,7 +595,12 @@ public class ConnectButtonController {
             }
         }
         
-        button.animator(for: .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
+        guard let connectingService = connectingService else {
+            assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
+            return
+        }
+        
+        button.animator(for: .buttonState(.connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name)), footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
         
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
@@ -650,8 +665,13 @@ public class ConnectButtonController {
                     
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete { position in
+                        guard let connectingService = self.connectingService else {
+                            assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
+                            return
+                        }
+                        
                         if position == .end {
-                            self.transition(to: .serviceAuthentication(self.connectingService, newUserEmail: email))
+                            self.transition(to: .serviceAuthentication(connectingService, newUserEmail: email))
                         }
                     }
                 } else { // Existing IFTTT user
@@ -684,10 +704,20 @@ public class ConnectButtonController {
     }
     
     private func transitionToLogInExistingUser(userId: User.Id) {
+        guard let connection = connection else {
+            assertionFailure("It is expected and required that we have a non nil connection in this state.")
+            return
+        }
+        
         openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
     }
     
     private func transitionToServiceAuthentication(service: Connection.Service, newUserEmail: String?) {
+        guard let connection = connection else {
+            assertionFailure("It is expected and required that we have a non nil connection in this state.")
+            return
+        }
+        
         let footer: ConnectButtonController.FooterMessages
         
         if let newUserEmail = newUserEmail {
@@ -737,7 +767,12 @@ public class ConnectButtonController {
     }
     
     private func transitionToConnected(animated: Bool) {
-        button.animator(for: .buttonState(connectedButtonState, footerValue: FooterMessages.manage.value)).preform(animated: animated)
+        guard let connectingService = connectingService else {
+            assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
+            return
+        }
+        
+        button.animator(for: .buttonState(.connected(service: connectingService.connectButtonService, message: "button.state.connected".localized), footerValue: FooterMessages.manage.value)).preform(animated: animated)
         
         button.footerInteraction.isTapEnabled = true
         
@@ -781,6 +816,11 @@ public class ConnectButtonController {
     }
     
     private func transitionToProccessDisconnect() {
+        guard let connection = connection else {
+            assertionFailure("It is expected and required that we have a non nil connection in this state.")
+            return
+        }
+        
         let timeout: TimeInterval = 3 // Network request timeout
         
         let progress = button.progressBar(timeout: timeout)
@@ -803,6 +843,12 @@ public class ConnectButtonController {
     
     private func transitionToDisconnected() {
         appletChangedStatus(isOn: false)
+        
+        guard let connectingService = connectingService else {
+            assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
+            return
+        }
+        
         button.animator(for: .buttonState(.disconnected(service: connectingService.connectButtonService, message: "button.state.disconnected".localized))).preform()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

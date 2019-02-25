@@ -55,7 +55,7 @@ class ConnectionViewController: UIViewController {
             
             switch response.result {
             case .success(let connection):
-                let connectionConfiguration = ConnectionConfiguration(connection: connection,
+                let connectionConfiguration = ConnectionConfiguration(connectionId: connection.id, connection: connection,
                                                                       suggestedUserEmail: self.connectionCredentials.email,
                                                                       credentialProvider: self.connectionCredentials,
                                                                       connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
@@ -105,6 +105,8 @@ private extension ConnectButtonControllerError {
             return "Unknown error"
         case .canceled:
             return nil
+        case .nilConnection:
+            return "The connection being used is nil."
         }
     }
 }
