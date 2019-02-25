@@ -167,6 +167,7 @@ public class ConnectButtonController {
             
             switch response.result {
             case .success(let connection):
+                self.connection = connection
                 self.setupConnection(for: connection)
                 
             case .failure:
