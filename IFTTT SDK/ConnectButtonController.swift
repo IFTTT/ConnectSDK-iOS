@@ -28,6 +28,7 @@ public enum ConnectButtonControllerError: Error {
     /// Response parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownResponse
     
+    /// For some reason the `Connection` used by this controller has gone nil or could not be retrieved. This should never happen.
     case nilConnection
 }
 
