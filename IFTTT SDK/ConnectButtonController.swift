@@ -152,8 +152,16 @@ public class ConnectButtonController {
 
         switch connection.status {
         case .initial, .unknown, .disabled:
+            
+            let animated: Bool
+            if case .loading = button.currentState {
+                animated = true
+            } else {
+                animated = false
+            }
+            
             // Disabled Connections are presented in the "Connect" state
-            transition(to: .initial(animated: false))
+            transition(to: .initial(animated: animated))
 
         case .enabled:
             transition(to: .connected(animated: false))
