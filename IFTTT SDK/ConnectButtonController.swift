@@ -391,7 +391,6 @@ public class ConnectButtonController {
         }
 
         var onRedirect: ((Outcome) -> Void)?
-        var logRedirectQueryItems: (([URLQueryItem]) -> Void)?
 
         init() {
             NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
@@ -413,8 +412,6 @@ public class ConnectButtonController {
                     onRedirect?(.failed(.unknownRedirect))
                     return
             }
-            
-            logRedirectQueryItems?(queryItems)
             
             switch nextStep {
             case QueryItems.serviceAuthentication:
@@ -503,14 +500,6 @@ public class ConnectButtonController {
         redirectObserving = RedirectObserving()
         redirectObserving?.onRedirect = { [weak self] outcome in
             self?.handleRedirect(outcome)
-        }
-        redirectObserving?.logRedirectQueryItems = { [weak self] queryItems in
-            var redirectLog = "Redirect Parameters:"
-            queryItems.forEach {
-                redirectLog.append("\n\($0.name): \($0.value ?? "nil")")
-            }
-            
-            self?.button.addConnectionLog(redirectLog)
         }
         
         safariDelegate = SafariDelegate { [weak self] in

@@ -130,27 +130,6 @@ public class ConnectButton: UIView {
         case disconnected(service: Service, message: String)
     }
     
-    // MARK: ConnectionDiary
-    
-    struct ConnectionDiary {
-        var activationStateLog: [String]
-        
-        var description: String {
-            var outputString = "Activation State Log:"
-            activationStateLog.forEach {
-                outputString.append("\n\($0)")
-            }
-            
-            return outputString
-        }
-    }
-    
-    private var connectionDiary = ConnectionDiary(activationStateLog: [])
-    
-    func addConnectionLog(_ log: String) {
-        connectionDiary.activationStateLog.append(log)
-    }
-    
     /// Groups button State and footer value into a single state transition
     struct Transition {
         let state: AnimationState?
