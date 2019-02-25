@@ -55,7 +55,7 @@ class ConnectionViewController: UIViewController {
             
             switch response.result {
             case .success(let connection):
-                let connectionConfiguration = ConnectionConfiguration(connectionId: connection.id, connection: connection,
+                let connectionConfiguration = ConnectionConfiguration(connection: connection,
                                                                       suggestedUserEmail: self.connectionCredentials.email,
                                                                       credentialProvider: self.connectionCredentials,
                                                                       connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
