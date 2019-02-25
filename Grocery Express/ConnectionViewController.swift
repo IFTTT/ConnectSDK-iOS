@@ -87,12 +87,7 @@ class ConnectionViewController: UIViewController {
         valuePropsView.tintColor = foregroundColor
         activityIndicator.color = foregroundColor
         
-        //fetchConnection(with: Constants.connectionId)
-        
-        
-        let connectionConfiguration = ConnectionConfiguration(connectionId: Constants.connectionId, connection: nil, suggestedUserEmail: self.connectionCredentials.email, credentialProvider: self.connectionCredentials, connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
-        
-        setupConnectButtonController(connectionConfiguration)
+        fetchConnection(with: Constants.connectionId)
     }
 }
 
