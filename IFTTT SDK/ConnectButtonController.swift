@@ -190,6 +190,7 @@ public class ConnectButtonController {
     /// Presents the about page
     private func showAboutPage() {
         guard let connection = connection else {
+            assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
         
@@ -456,6 +457,7 @@ public class ConnectButtonController {
 
             case .serviceAuthorization(let id):
                 guard let connection = connection else {
+                    assertionFailure("It is expected and required that we have a non nil connection in this state.")
                     return .failed(.nilConnection)
                 }
                 
