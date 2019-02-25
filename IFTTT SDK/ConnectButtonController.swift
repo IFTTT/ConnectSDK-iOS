@@ -110,6 +110,10 @@ public class ConnectButtonController {
     public var connectingService: Connection.Service? {
         return connection?.worksWithServices.first ?? connection?.primaryService
     }
+    
+    private var credentialProvider: CredentialProvider {
+        return connectionConfiguration.credentialProvider
+    }
 
     /// An `ConnectButtonControllerDelegate` object that will recieved messages about events that happen on the `ConnectButtonController`.
     public private(set) weak var delegate: ConnectButtonControllerDelegate?
@@ -117,7 +121,6 @@ public class ConnectButtonController {
     private let connectionConfiguration: ConnectionConfiguration
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
-    private let tokenProvider: CredentialProvider
 
     /// Creates a new `ConnectButtonController`.
     ///
@@ -129,7 +132,6 @@ public class ConnectButtonController {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
         self.connection = connectionConfiguration.connection
-        self.tokenProvider = connectionConfiguration.credentialProvider
         self.delegate = delegate
         setupConnection(for: connection)
     }
@@ -160,7 +162,7 @@ public class ConnectButtonController {
     
     private func fetchConnection(for id: String) {
         
-        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: connectionConfiguration.credentialProvider)) { [weak self] response in
+        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else { return }
             
             switch response.result {
@@ -628,7 +630,7 @@ public class ConnectButtonController {
         button.toggleInteraction.isDragEnabled = true
         
         button.toggleInteraction.toggleTransition = {
-            if self.tokenProvider.iftttServiceToken != nil {
+            if self.credentialProvider.iftttServiceToken != nil {
                 return .buttonState(.slideToConnectWithToken)
             } else {
                 return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)
@@ -636,7 +638,7 @@ public class ConnectButtonController {
         }
         
         button.toggleInteraction.onToggle = { [weak self] in
-            if let token = self?.tokenProvider.iftttServiceToken {
+            if let token = self?.credentialProvider.iftttServiceToken {
                 self?.transition(to: .identifyUser(.token(token)))
             }
         }
@@ -731,7 +733,7 @@ public class ConnectButtonController {
             return
         }
         
-        openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
+        openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
     }
     
     private func transitionToServiceAuthentication(service: Connection.Service, newUserEmail: String?) {
@@ -751,7 +753,7 @@ public class ConnectButtonController {
         button.footerInteraction.isTapEnabled = true
         button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
         
-        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
         
         let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] timer in
             self?.openActivationURL(url)
@@ -848,7 +850,7 @@ public class ConnectButtonController {
         let progress = button.progressBar(timeout: timeout)
         progress.preform()
         
-        let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: connectionConfiguration.credentialProvider)
+        let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: credentialProvider)
         connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
             progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
             progress.onComplete { _ in
