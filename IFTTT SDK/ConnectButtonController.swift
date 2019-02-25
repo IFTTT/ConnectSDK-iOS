@@ -634,7 +634,7 @@ public class ConnectButtonController {
         }
         
         guard let connectingService = connectingService else {
-             assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
+            assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
             return
         }
         
