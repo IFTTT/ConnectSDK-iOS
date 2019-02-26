@@ -25,7 +25,9 @@ struct Assets {
         static let connect = UIImage.iftttAsset(named: "about_connect")
         static let control = UIImage.iftttAsset(named: "about_control")
         static let security = UIImage.iftttAsset(named: "about_security")
+        static let manage = UIImage.iftttAsset(named: "about_unplug")
         static let close = UIImage.iftttAsset(named: "about_close")
+        static let downloadOnAppStore = UIImage.iftttAsset(named: "about_download_on_app_store")
     }
 }
 

@@ -8,14 +8,15 @@
 
 import UIKit
 import SafariServices
+import StoreKit
 
 @available(iOS 10.0, *)
 class AboutViewController: UIViewController {
     
-    let primaryService: Connection.Service
-    let secondaryService: Connection.Service?
+    private let primaryService: Connection.Service
+    private let secondaryService: Connection.Service
     
-    init(primaryService: Connection.Service, secondaryService: Connection.Service?) {
+    init(primaryService: Connection.Service, secondaryService: Connection.Service) {
         self.primaryService = primaryService
         self.secondaryService = secondaryService
         
@@ -32,14 +33,13 @@ class AboutViewController: UIViewController {
     
     private struct Constants {
         struct Color {
-            /// (IFTTT Orange) The secondary color to use when the primary service is IFTTT
-            static let iftttSecondaryBrand = UIColor(hex: 0xEE4433)
-            
-            static let learnMoreButton = UIColor(hex: 0x222222)
+            static let footerTextColor = UIColor(white: 1, alpha: 0.35)
         }
         
         struct Layout {
-            static let logoSize: CGFloat = 42
+            static let serviceIconSize: CGFloat = 44
+            
+            static let serviceIconSpacing: CGFloat = 24
             
             /// The margins around all the page content
             static let pageMargins = UIEdgeInsets(top: 40, left: 30, bottom: 40, right: 30)
@@ -58,21 +58,29 @@ class AboutViewController: UIViewController {
             
             /// The spacing between the icon and title in body items
             static let bodyItemIconTitleSpacing: CGFloat = 24
+            
+            /// The spacing between the download in app store button and the legal terms
+            static let footerSpacing: CGFloat = 24
         }
         
         struct Text {
             /// The about page title
-            static var titleText: NSAttributedString {
-                let text = NSMutableAttributedString(string: "about.title".localized, attributes: [.font : UIFont.h3()])
-                let ifttt = NSAttributedString(string: "IFTTT", attributes: [.font : UIFont.h3(weight: .heavy)])
-                text.append(ifttt)
+            static func titleText(connects primaryService: Connection.Service,
+                                  with secondaryService: Connection.Service) -> NSAttributedString {
+                let rawText = "about.title".localized(with: primaryService.name, secondaryService.name)
+                let text = NSMutableAttributedString(string: rawText,
+                                                     attributes: [.font : UIFont.body(weight: .demiBold)])
+                let ifttt = NSAttributedString(string: "IFTTT",
+                                               attributes: [.font : UIFont.body(weight: .heavy)])
+                text.insert(ifttt, at: 0)
                 return text
             }
             
             /// The text for legal terms
             static var legalTermsText: NSAttributedString {
                 return LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
-                                                              attributes: [.foregroundColor : UIColor.white, .font : UIFont.body()])
+                                                              attributes: [.foregroundColor : Color.footerTextColor,
+                                                                           .font : UIFont.body(weight: .demiBold)])
             }
         }
     }
@@ -94,38 +102,52 @@ class AboutViewController: UIViewController {
         $0.axis = .vertical
         $0.alignment = .trailing
     }
-
-    /// IFTTT color block logo, themed with the partner's colors
-    private lazy var logoView: LogoView = {
-        let secondary: UIColor = {
-            if let color = secondaryService?.brandColor {
-                return color
-            } else if primaryService.id == "ifttt" {
-                return Constants.Color.iftttSecondaryBrand
-            } else {
-                return primaryService.brandColor.contrasting()
-            }
-        }()
-        return LogoView(primary: primaryService.brandColor, secondary: secondary)
-    }()
     
-    /// Centers the logoView
-    private lazy var logoContainerView = UIStackView([logoView]) {
-        $0.axis = .vertical
-        $0.alignment = .center
+    /// Presents the primary and secondary service icons with an arrow connecting the two
+    private class ServiceIconsView: UIView {
+        
+        init(primaryIcon: URL, secondaryIcon: URL) {
+            super.init(frame: .zero)
+            
+            let primaryIconView = UIImageView()
+            let secondaryIconView = UIImageView()
+            
+            primaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
+            secondaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
+            
+            let stackView = UIStackView([primaryIconView, secondaryIconView]) { (view) in
+                view.axis = .horizontal
+                view.spacing = Constants.Layout.serviceIconSpacing
+            }
+            addSubview(stackView)
+            stackView.constrain.edges(to: self)
+            
+            let serviceIconsDownloader = ServiceIconsNetworkController()
+            serviceIconsDownloader.setImage(with: primaryIcon, for: primaryIconView)
+            serviceIconsDownloader.setImage(with: secondaryIcon, for: secondaryIconView)
+        }
+        
+        @available(*, unavailable)
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     }
     
+    private lazy var serviceIconsView = ServiceIconsView(primaryIcon: primaryService.templateIconURL,
+                                                         secondaryIcon: secondaryService.templateIconURL)
+    
     /// The page title
-    private lazy var titleLabel = UILabel(Constants.Text.titleText) {
+    private lazy var titleLabel = UILabel(Constants.Text.titleText(connects: primaryService, with: secondaryService)) {
         $0.textColor = .white
         $0.textAlignment = .center
         $0.numberOfLines = 0
     }
     
     /// Contains all the header components
-    private lazy var headerView = UIStackView([closeButtonContainer, logoContainerView, titleLabel]) {
+    private lazy var headerView = UIStackView([serviceIconsView, titleLabel]) {
         $0.spacing = Constants.Layout.headerSpacing
         $0.axis = .vertical
+        $0.alignment = .center
     }
     
     
@@ -167,7 +189,8 @@ class AboutViewController: UIViewController {
     private lazy var itemViews: [ItemView] = [
         ItemView(icon: Assets.About.connect, text: "about.connect".localized),
         ItemView(icon: Assets.About.control, text: "about.control".localized),
-        ItemView(icon: Assets.About.security, text: "about.security".localized)
+        ItemView(icon: Assets.About.security, text: "about.security".localized),
+        ItemView(icon: Assets.About.manage, text: "about.manage".localized)
     ]
     
     private lazy var itemsStackView = UIStackView(itemViews) {
@@ -183,21 +206,16 @@ class AboutViewController: UIViewController {
         self?.open(url: url)
     }
     
-    private lazy var moreButton = PillButton("about.more.button".localized) {
-        $0.backgroundColor = Constants.Color.learnMoreButton
-        $0.label.numberOfLines = 0
-        $0.label.font = .h5(isCallout: true)
-        $0.label.textColor = .white
-        $0.onSelect { [weak self] in
-            // FIXME: Typically this would point to the about page but it is not ready yet
-            self?.open(url: Links.home)
-        }
-    }
+    private lazy var downloadOnAppStoreButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(Assets.About.downloadOnAppStore, for: [])
+        return button
+    }()
     
-    private lazy var moreButtonContainer = UIStackView([legalTermsView, moreButton]) {
+    private lazy var footerView = UIStackView([downloadOnAppStoreButton, legalTermsView]) {
         $0.axis = .vertical
         $0.alignment = .center
-        $0.spacing = 10
+        $0.spacing = Constants.Layout.footerSpacing
     }
     
     private func open(url: URL) {
@@ -205,11 +223,29 @@ class AboutViewController: UIViewController {
         present(controller, animated: true, completion: nil)
     }
     
+    /// Acts as the delegate for displaying the IFTTT app store page
+    private class StoreProductViewControllerDelegate: NSObject, SKStoreProductViewControllerDelegate {
+        public func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
+            viewController.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    private var storeProductViewControllerDelegate = StoreProductViewControllerDelegate()
+    
+    /// Presents an App Store view for the IFTTT app
+    @objc private func showAppStorePage() {
+        let viewController = SKStoreProductViewController()
+        let parameters: [String : Any] = [SKStoreProductParameterITunesItemIdentifier : API.iftttAppStoreId]
+        viewController.loadProduct(withParameters: parameters, completionBlock: nil)
+        viewController.delegate = storeProductViewControllerDelegate
+        present(viewController, animated: true)
+    }
+    
     
     // MARK: - Page structure
     
     /// Aligns all page components
-    private lazy var primaryView = UIStackView([headerView, itemsStackView, moreButtonContainer]) {
+    private lazy var primaryView = UIStackView([closeButtonContainer, headerView, itemsStackView, footerView]) {
         $0.spacing = Constants.Layout.pageComponentSpacing
         $0.axis = .vertical
         $0.alignment = .fill
@@ -234,7 +270,7 @@ class AboutViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.constrain.edges(to: view)
         
-        logoView.constrain.square(length: Constants.Layout.logoSize)
+        downloadOnAppStoreButton.addTarget(self, action: #selector(showAppStorePage), for: .touchUpInside)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -263,7 +299,7 @@ private extension AboutViewController {
             
             view.attributedText = text
             view.textAlignment = .center
-            view.tintColor = .white
+            view.tintColor = Constants.Color.footerTextColor
             view.isScrollEnabled = false
             view.isEditable = false
             view.backgroundColor = .clear

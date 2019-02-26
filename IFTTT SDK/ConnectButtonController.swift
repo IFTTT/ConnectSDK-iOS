@@ -8,7 +8,6 @@
 
 import UIKit
 import SafariServices
-import StoreKit
 
 /// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
 public enum ConnectButtonControllerError: Error {
@@ -143,18 +142,8 @@ public class ConnectButtonController {
             }
             
             switch activationStep {
-            case .initial:
-                if case .enterEmail = self.button.currentState {
-                    // Open terms of service / privacy policy when creating an account
-                    self.showLegalTerms()
-                } else {
-                    // Link to the about page when we are in the initial state
-                    self.showAboutPage()
-                }
-                
-            case .connected:
-                // When the Connection is made, show the app store page for IFTTT
-                self.showAppStorePage()
+            case .initial, .connected:
+                self.showAboutPage()
                 
             case .identifyUser(let lookupMethod):
                 switch lookupMethod {
@@ -195,7 +184,7 @@ public class ConnectButtonController {
     }
 
     private var initialButtonState: ConnectButton.AnimationState {
-        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name))
+        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(with: connectingService.name))
     }
 
     private var connectedButtonState: ConnectButton.AnimationState {
@@ -212,51 +201,12 @@ public class ConnectButtonController {
 
     /// Presents the about page
     private func showAboutPage() {
+        guard let secondaryService = connection.worksWithServices.first else {
+            return
+        }
         let aboutViewController = AboutViewController(primaryService: connection.primaryService,
-                                                      secondaryService: connection.worksWithServices.first)
+                                                      secondaryService: secondaryService)
         present(aboutViewController)
-    }
-    
-    /// Acts as the delegate for displaying the IFTTT app store page
-    private class StoreProductViewControllerDelegate: NSObject, SKStoreProductViewControllerDelegate {
-        public func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
-            viewController.dismiss(animated: true, completion: nil)
-        }
-    }
-    
-    private var storeProductViewControllerDelegate = StoreProductViewControllerDelegate()
-    
-    /// Presents an App Store view for the IFTTT app
-    private func showAppStorePage() {
-        let viewController = SKStoreProductViewController()
-        let parameters: [String : Any] = [SKStoreProductParameterITunesItemIdentifier : API.iftttAppStoreId]
-        viewController.loadProduct(withParameters: parameters, completionBlock: nil)
-        viewController.delegate = storeProductViewControllerDelegate
-        present(viewController)
-    }
-    
-    /// Presents an action sheet to allow the user to view our terms of service or privacy policy
-    private func showLegalTerms() {
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let tosAction = UIAlertAction(title: LegalTermsText.termsOfService, style: .default) { (_) in
-            self.present(SFSafariViewController(url: Links.termsOfService))
-        }
-        let privacyAction = UIAlertAction(title: LegalTermsText.privacyPolicy, style: .default) { (_) in
-            self.present(SFSafariViewController(url: Links.privacyPolicy))
-        }
-        let cancelAction = UIAlertAction(title: "common.cancel".localized, style: .cancel, handler: nil)
-        [tosAction, privacyAction, cancelAction].forEach { alertController.addAction($0) }
-        
-        if let popover = alertController.popoverPresentationController {
-            // If a popover on iPad, align this to the bottom center of the button
-            popover.sourceView = button
-            popover.sourceRect = CGRect(x: button.bounds.midX,
-                                        y: button.bounds.maxY,
-                                        width: 0, height: 0)
-            popover.permittedArrowDirections = [.up, .down]
-        }
-        
-        present(alertController)
     }
 
     enum FooterMessages {
@@ -313,7 +263,7 @@ public class ConnectButtonController {
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
 
             case .verifying(let email):
-                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : Constants.footnoteFont])
+                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(with: email), attributes: [.font : Constants.footnoteFont])
                 let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont,
                                                                                                                             .underlineStyle : NSUnderlineStyle.single.rawValue])
                 text.append(changeEmailText)
@@ -749,7 +699,7 @@ public class ConnectButtonController {
         }
         
         button.footerInteraction.isTapEnabled = true
-        button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(arguments: service.name)), footerValue: footer.value)).preform()
+        button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(with: service.name)), footerValue: footer.value)).preform()
         
         let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
         
@@ -868,50 +818,6 @@ public class ConnectButtonController {
             self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
             self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
             self.button.performInvalidEmailAnimation()
-        }
-    }
-}
-
-
-// MARK: - Service icons downloader
-
-private class ServiceIconsNetworkController: ImageViewNetworkController {
-    let downloader = ImageDownloader()
-    
-    /// Prefetch and cache service icon images for this `Connection`.
-    /// This will be it very unlikely that an image is delayed and visually "pops in".
-    func prefetchImages(for connection: Connection) {
-        connection.services.forEach {
-            downloader.downloadImage(url: $0.templateIconURL, { _ in})
-        }
-    }
-    
-    var currentRequests = [UIImageView : URLSessionDataTask]()
-    
-    func setImage(with url: URL?, for imageView: UIImageView) {
-        if let existingTask = currentRequests[imageView] {
-            if existingTask.originalRequest?.url == url {
-                return // This is a duplicate request
-            } else {
-                // The image url was changed
-                existingTask.cancel()
-                currentRequests[imageView] = nil
-            }
-        }
-        
-        imageView.image = nil
-        if let url = url {
-            let task = downloader.downloadImage(url: url) { (result) in
-                switch result {
-                case .success(let image):
-                    imageView.image = image
-                case .failure:
-                    // Images that fail to load are left blank
-                    // Since we attempt to precatch images, this is actually the second try
-                    break
-                }
-            }
-            currentRequests[imageView] = task
         }
     }
 }
