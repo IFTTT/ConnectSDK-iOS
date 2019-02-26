@@ -29,7 +29,7 @@ public enum ConnectButtonControllerError: Error {
     case unknownResponse
     
     /// For some reason the `Connection` used by this controller has gone nil or could not be retrieved. This should never happen.
-    case nilConnection
+    case unableToGetConnection
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
@@ -472,7 +472,7 @@ public class ConnectButtonController {
             case .serviceAuthorization(let id):
                 guard let connection = connection else {
                     assertionFailure("It is expected and required that we have a non nil connection in this state.")
-                    return .failed(.nilConnection)
+                    return .failed(.unableToGetConnection)
                 }
                 
                 if let service = connection.services.first(where: { $0.id == id }) {
