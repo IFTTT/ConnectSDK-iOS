@@ -818,13 +818,23 @@ public class ConnectButtonController {
         }
     }
     
+    private var emailFooterTimer: Timer?
+    
     private func emailInteractionConfirmation(email: String) {
+        emailFooterTimer?.invalidate()
+        emailFooterTimer = nil
+        
         if email.isValidEmail {
             self.transition(to: .identifyUser(.email(email)))
         } else {
             self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
             self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
             self.button.performInvalidEmailAnimation()
+            
+            emailFooterTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] timer in
+                self?.button.animator(for: .footerValue(FooterMessages.enterEmail.value)).preform()
+                timer.invalidate()
+            }
         }
     }
 }
