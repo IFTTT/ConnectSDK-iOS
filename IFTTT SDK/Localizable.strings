@@ -10,7 +10,7 @@
 
 "button.state.loading" = "Loading...";
 "button.state.connect" = "Connect %@";
-"button.state.connect.brief" = "Connect";
+"button.state.reconnect" = "Reconnect %@";
 "button.state.checking_account" = "Checking for IFTTT account…";
 "button.state.creating_account" = "Creating IFTTT account…";
 "button.state.accessing_existing_account" = "Accessing IFTTT account…"; // FIXME: Need copy!

@@ -179,6 +179,20 @@ public class ConnectButtonController {
         }
     }
 
+    private func buttonState(for connectionStatus: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
+        switch connectionStatus {
+        case .initial, .unknown:
+            return .connect(service: service.connectButtonService,
+                            message: "button.state.connect".localized(arguments: service.name))
+        case .disabled:
+            return .connect(service: service.connectButtonService,
+                            message: "button.state.reconnect".localized(arguments: service.name))
+        case .enabled:
+            return .connected(service: service.connectButtonService,
+                              message: "button.state.connected".localized)
+        }
+    }
+
     private func present(_ viewController: UIViewController) {
         let presentingViewController = delegate?.presentingViewController(for: self)
         presentingViewController?.present(viewController, animated: true, completion: nil)
@@ -611,12 +625,13 @@ public class ConnectButtonController {
             }
         }
         
-        guard let connectingService = connectingService else {
+        guard let connection = connection, let service = connectingService else {
             assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
             return
         }
         
-        button.animator(for: .buttonState(.connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(arguments: connectingService.name)))).preform(animated: animated)
+        button.animator(for: .buttonState(buttonState(for: connection.status, service: service),
+                                          footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
         
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
@@ -783,12 +798,13 @@ public class ConnectButtonController {
     }
     
     private func transitionToConnected(animated: Bool) {
-        guard let connectingService = connectingService else {
+        guard let service = connectingService else {
             assertionFailure("It is expected and required that we have a non nil connection's service in this state.")
             return
         }
         
-        button.animator(for: .buttonState(.connected(service: connectingService.connectButtonService, message: "button.state.connected".localized), footerValue: FooterMessages.manage.value)).preform(animated: animated)
+        button.animator(for: .buttonState(buttonState(for: .enabled, service: service),
+                                          footerValue: FooterMessages.manage.value)).preform(animated: animated)
         
         button.footerInteraction.isTapEnabled = true
         
