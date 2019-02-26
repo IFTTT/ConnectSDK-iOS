@@ -132,6 +132,7 @@ public class ConnectButtonController {
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
         guard let connection = connection else {
+            transitionToLoading(didFail: false)
             fetchConnection(for: connectionConfiguration.connectionId)
             return
         }
@@ -156,8 +157,6 @@ public class ConnectButtonController {
     }
     
     private func fetchConnection(for id: String, numberOfRetries: Int = 2) {
-        transitionToLoading(didFail: false)
-        
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else {
                 return
@@ -311,10 +310,7 @@ public class ConnectButtonController {
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
                 
             case .loadingFailed:
-                let text = NSMutableAttributedString(string: "button.footer.loading.failed".localized, attributes: [.font : Constants.footnoteFont])
-                let retryText = NSAttributedString(string: "button.footer.loading.retry".localized, attributes: [.font : Constants.footnoteBoldFont, .underlineStyle : NSUnderlineStyle.single.rawValue])
-                text.append(retryText)
-                return text
+                return NSMutableAttributedString(string: "button.footer.loading.failed".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : UIColor.red])
 
             case .verifying(let email):
                 let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : Constants.footnoteFont])
@@ -620,8 +616,8 @@ public class ConnectButtonController {
     private func transitionToLoading(didFail: Bool) {
         let state = didFail ? ConnectButton.AnimationState.loadingFailed : ConnectButton.AnimationState.loading
         button.animator(for: .buttonState(state)).preform(animated: true)
-        button.footerInteraction.isTapEnabled = true
-        button.footerInteraction.onSelect = { [weak self] in
+        button.stepInteraction.isTapEnabled = true
+        button.stepInteraction.onSelect = { [weak self] in
             guard let self = self else {
                 return
             }

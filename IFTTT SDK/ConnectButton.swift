@@ -1141,20 +1141,20 @@ private extension ConnectButton {
         case .loading:
             primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
             footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
-            
-            animator.addAnimations {
-                self.backgroundView.backgroundColor = .black
-                self.primaryLabelAnimator.primary.label.alpha = 1
-            }
+            backgroundView.backgroundColor = .black
             
             pulseAnimateLabel(isReverse: false)
             
         case .loadingFailed:
-            primaryLabelAnimator.configure(.text("button.state.loading_failed".localized), insets: .standard)
-            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.loadingFailed.value)
-            
             pulseAnimation?.stopAnimation(true)
             pulseAnimation = nil
+            
+            animator.addAnimations {
+                self.primaryLabelAnimator.primary.label.alpha = 1
+            }
+            
+            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text("button.state.loading_failed".localized), addingTo: animator)
+            footerLabelAnimator.transition(with: .crossfade, updatedValue: ConnectButtonController.FooterMessages.loadingFailed.value, addingTo: animator)
             
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
