@@ -658,7 +658,10 @@ public class ConnectButtonController {
 
         let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
 
-        let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] timer in
+        let timeout = 2.0
+        button.progressBar(timeout: timeout).preform()
+        
+        let timer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] timer in
             self?.openActivationURL(url)
             timer.invalidate()
         }

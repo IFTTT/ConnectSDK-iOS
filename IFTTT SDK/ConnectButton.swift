@@ -1229,6 +1229,7 @@ private extension ConnectButton {
                                         addingTo: animator)
         
         progressBar.configure(with: nil)
+        progressBar.alpha = 0
         
         emailEntryField.alpha = 0
         animator.addAnimations {
@@ -1311,14 +1312,9 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
-        progressBar.alpha = 1
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = service.brandColor
-        }
-        
-        animator.addCompletion { _ in
-            self.progressBar.alpha = 0
         }
     }
     
