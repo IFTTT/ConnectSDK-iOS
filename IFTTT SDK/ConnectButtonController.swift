@@ -150,10 +150,10 @@ public class ConnectButtonController {
         switch connectionStatus {
         case .initial, .unknown:
             return .connect(service: connectingService.connectButtonService,
-                            message: "button.state.connect".localized(arguments: connectingService.name))
+                            message: "button.state.connect".localized(with: connectingService.name))
         case .disabled:
             return .connect(service: connectingService.connectButtonService,
-                            message: "button.state.reconnect".localized(arguments: connectingService.name))
+                            message: "button.state.reconnect".localized(with: connectingService.name))
         case .enabled:
             return .connected(service: connectingService.connectButtonService,
                               message: "button.state.connected".localized)
@@ -538,17 +538,7 @@ public class ConnectButtonController {
 
         button.footerInteraction.isTapEnabled = true
         button.footerInteraction.onSelect = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            if case .enterEmail = self.button.currentState {
-                // Open terms of service / privacy policy when creating an account
-                self.showLegalTerms()
-            } else {
-                // Link to the about page when we are in the initial state
-                self.showAboutPage()
-            }
+            self?.showAboutPage()
         }
 
         button.animator(for: .buttonState(buttonState(for: connection.status),
