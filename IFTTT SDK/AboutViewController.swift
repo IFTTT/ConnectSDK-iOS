@@ -115,9 +115,12 @@ class AboutViewController: UIViewController {
             primaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
             secondaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
             
-            let stackView = UIStackView([primaryIconView, secondaryIconView]) { (view) in
+            let arrowIcon = UIImageView(image: Assets.About.connectArrow)
+            
+            let stackView = UIStackView([primaryIconView, arrowIcon, secondaryIconView]) { (view) in
                 view.axis = .horizontal
                 view.spacing = Constants.Layout.serviceIconSpacing
+                view.alignment = .center
             }
             addSubview(stackView)
             stackView.constrain.edges(to: self)

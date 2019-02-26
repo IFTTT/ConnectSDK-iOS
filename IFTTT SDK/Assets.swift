@@ -21,7 +21,7 @@ struct Assets {
         static let emailConfirm = UIImage.iftttAsset(named: "email_confirm")
     }
     struct About {
-        static let ifttt = UIImage.iftttAsset(named: "about_ifttt")
+        static let connectArrow = UIImage.iftttAsset(named: "about_connect_arrow")
         static let connect = UIImage.iftttAsset(named: "about_connect")
         static let control = UIImage.iftttAsset(named: "about_control")
         static let security = UIImage.iftttAsset(named: "about_security")
