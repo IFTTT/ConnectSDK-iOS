@@ -712,27 +712,22 @@ public class ConnectButtonController {
     }
 
     private func transitionToConfirmDisconnect() {
-        // The user must slide to deactivate the Connection
-        button.toggleInteraction.isTapEnabled = false
-        button.toggleInteraction.isDragEnabled = true
-        button.toggleInteraction.resistance = .heavy
-
-
-        let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
+       let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
             // Revert state if user doesn't follow through
             self?.transition(to: .connected(animated: false))
             timer.invalidate()
         }
-
-        button.toggleInteraction.toggleTransition = {
-            return .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                footerValue: .none)
-        }
-
-        button.toggleInteraction.onToggle = { [weak self] in
-            self?.transition(to: .processDisconnect)
-            timer.invalidate()
-        }
+        
+        // The user must slide to deactivate the Connection
+        button.toggleInteraction = .init(isTapEnabled: false,
+                                         isDragEnabled: true,
+                                         resistance: .heavy,
+                                         toggleTransition: {
+                                            .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
+                                                                          footerValue: .none) },
+                                         onToggle: { [weak self] in
+                                            self?.transition(to: .processDisconnect)
+                                            timer.invalidate() })
     }
 
     private func transitionToProccessDisconnect() {

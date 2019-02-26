@@ -366,17 +366,7 @@ public class ConnectButton: UIView {
             return currentToggleAnimation
         }
         
-        var nextState: ConnectButton.Transition?
-        
-        if case .connect = currentState {
-            nextState = toggleInteraction.toggleTransition?()
-        }
-        
-        if case .connected = currentState {
-            nextState = toggleInteraction.toggleTransition?()
-        }
-        
-        guard let transition = nextState else {
+        guard let transition = toggleInteraction.toggleTransition?() else {
             return nil
         }
         
