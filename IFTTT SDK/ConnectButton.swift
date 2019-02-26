@@ -1039,11 +1039,25 @@ public class ConnectButton: UIView {
     
     private var pulseAnimation: UIViewPropertyAnimator?
     
-    private func pulseAnimateLabel(isReverse: Bool) {
+    private enum PulseAnimationAlpha: CGFloat {
+        case full = 1.0
+        case partial = 0.4
+        
+        var reverse: PulseAnimationAlpha {
+            switch self {
+            case .full:
+                return .partial
+            case .partial:
+                return .full
+            }
+        }
+    }
+    
+    private func pulseAnimateLabel(toAlpha alpha: PulseAnimationAlpha) {
         self.pulseAnimation = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1.2, delay: 0.0, options: [.curveLinear, .repeat], animations: {
-            self.primaryLabelAnimator.primary.label.alpha = isReverse ? 1.0 : 0.4
+            self.primaryLabelAnimator.primary.label.alpha = alpha.rawValue
         }) { _ in
-            self.pulseAnimateLabel(isReverse: !isReverse)
+            self.pulseAnimateLabel(toAlpha: alpha.reverse)
         }
     }
 }
@@ -1185,7 +1199,7 @@ private extension ConnectButton {
             self.backgroundView.backgroundColor = .black
         }
         
-        pulseAnimateLabel(isReverse: false)
+        pulseAnimateLabel(toAlpha: .partial)
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
