@@ -269,7 +269,7 @@ public class ConnectButtonController {
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
+                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont, .foregroundColor : UIColor.red])
 
             case .verifying(let email):
                 let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(arguments: email), attributes: [.font : Constants.footnoteFont])
