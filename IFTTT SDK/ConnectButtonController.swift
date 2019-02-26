@@ -156,7 +156,7 @@ public class ConnectButtonController {
         }
     }
     
-    private func fetchConnection(for id: String, numberOfRetries: Int = 2, retryCount: Int = 0) {
+    private func fetchConnection(for id: String, numberOfRetries: Int = 3, retryCount: Int = 0) {
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else {
                 return
