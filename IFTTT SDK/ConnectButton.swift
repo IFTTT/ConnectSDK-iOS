@@ -1249,6 +1249,7 @@ private extension ConnectButton {
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 0
         }
+        
         animator.addCompletion { position in
             // Keep the knob is a "clean" state since we don't animate backwards from this step
             self.switchControl.knob.transform = .identity
@@ -1315,6 +1316,10 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = service.brandColor
+        }
+        
+        animator.addCompletion { _ in
+            self.progressBar.alpha = 0
         }
     }
     

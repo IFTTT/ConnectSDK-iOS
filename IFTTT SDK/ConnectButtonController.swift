@@ -130,48 +130,11 @@ public class ConnectButtonController {
     private func setupConnection(for connection: Connection) {
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
-        
+
         button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
-        
+
         button.configureEmailField(placeholderText: "button.email.placeholder".localized,
                                    confirmButtonAsset: Assets.Button.emailConfirm)
-        
-        button.footerInteraction.onSelect = { [weak self] in
-            guard let self = self, let activationStep = self.currentActivationStep else {
-                return
-            }
-            
-            switch activationStep {
-            case .initial, .connected:
-                self.showAboutPage()
-                
-            case .identifyUser(let lookupMethod):
-                switch lookupMethod {
-                case .email:
-                    self.accessAccountTask?.progressAnimation.finish(at: .start)
-                    self.accessAccountTask?.dataTask.cancel()
-                    self.accessAccountTask = nil
-                    self.transition(to: .initial(animated: false))
-                    self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
-                case .token:
-                    break
-                }
-                
-            case let .serviceAuthentication(_, newUserEmail):
-                
-                // The footer is only selectable if the user is a new user.
-                guard newUserEmail != nil else {
-                    return
-                }
-                
-                self.accessAccountTask = nil
-                self.transition(to: .initial(animated: false))
-                self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
-                
-            case .logInExistingUser, .authenticationComplete, .failed, .canceled, .confirmDisconnect, .processDisconnect, .disconnected:
-                break
-            }
-        }
 
         switch connection.status {
         case .initial, .unknown, .disabled:
@@ -183,12 +146,18 @@ public class ConnectButtonController {
         }
     }
 
-    private var initialButtonState: ConnectButton.AnimationState {
-        return .connect(service: connectingService.connectButtonService, message: "button.state.connect".localized(with: connectingService.name))
-    }
-
-    private var connectedButtonState: ConnectButton.AnimationState {
-        return .connected(service: connectingService.connectButtonService, message: "button.state.connected".localized)
+    private func buttonState(for connectionStatus: Connection.Status) -> ConnectButton.AnimationState {
+        switch connectionStatus {
+        case .initial, .unknown:
+            return .connect(service: connectingService.connectButtonService,
+                            message: "button.state.connect".localized(arguments: connectingService.name))
+        case .disabled:
+            return .connect(service: connectingService.connectButtonService,
+                            message: "button.state.reconnect".localized(arguments: connectingService.name))
+        case .enabled:
+            return .connected(service: connectingService.connectButtonService,
+                              message: "button.state.connected".localized)
+        }
     }
 
     private func present(_ viewController: UIViewController) {
@@ -219,12 +188,12 @@ public class ConnectButtonController {
         connect(Connection.Service, to: Connection.Service),
         manage,
         disconnect
-        
+
         private struct Constants {
             static var footnoteFont: UIFont {
                 return .footnote()
             }
-            
+
             static var footnoteBoldFont: UIFont {
                 return .footnote(weight: .bold)
             }
@@ -246,7 +215,7 @@ public class ConnectButtonController {
         }
 
         var attributedString: NSAttributedString {
-            
+
             switch self {
             case .poweredBy:
                 let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
@@ -268,7 +237,7 @@ public class ConnectButtonController {
                                                                                                                             .underlineStyle : NSUnderlineStyle.single.rawValue])
                 text.append(changeEmailText)
                 return text
-                
+
             case .signedIn(let username):
                 let text = NSMutableAttributedString(string: username,
                                                      attributes: [.font: Constants.footnoteBoldFont])
@@ -294,36 +263,41 @@ public class ConnectButtonController {
         }
     }
 
-    
+
     // MARK: - Safari VC delegate (cancelation handling)
-    
+
     /// Delegate object for Safari VC
     /// Handles user cancelation in the web flow
     class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
         /// Callback when the Safari VC is dismissed by the user
         /// This triggers a cancelation event
         let onCancelation: () -> Void
-        
+
         /// Create a new SafariDelegate
         ///
         /// - Parameter onCancelation: The cancelation handler
         init(onCancelation: @escaping () -> Void) {
             self.onCancelation = onCancelation
         }
-        
+
         func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
             onCancelation()
         }
     }
-    
+
     /// This objects acts as the Safari VC delegate
     private var safariDelegate: SafariDelegate?
-    
-    private func handleCancelation() {
-        transition(to: .canceled)
+
+    private func handleCancelation(lookupMethod: User.LookupMethod) {
+        switch lookupMethod {
+        case .email:
+            transition(to: .enterEmail)
+        case .token:
+            transition(to: .canceled)
+        }
     }
-    
-    
+
+
     // MARK: - Safari VC redirect handling
 
     class RedirectObserving {
@@ -373,9 +347,9 @@ public class ConnectButtonController {
                     onRedirect?(.failed(.unknownRedirect))
                     return
             }
-            
+
             logRedirectQueryItems?(queryItems)
-            
+
             switch nextStep {
             case QueryItems.serviceAuthentication:
                 if let serviceId = queryItems.first(where: { $0.name == QueryItems.serviceId })?.value {
@@ -403,7 +377,7 @@ public class ConnectButtonController {
     private var redirectObserving: RedirectObserving?
 
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
-        
+
         // Before we continue and handle this redirect, we must dismiss the active Safari VC
         guard currentSafariViewController == nil else {
             // Redirect doesn't automatically dismiss Safari VC
@@ -435,15 +409,15 @@ public class ConnectButtonController {
                 return .authenticationComplete
             }
         }()
-        
+
         transition(to: nextStep)
     }
 
-    
+
     // MARK: - Web flow (IFTTT log in and service activation)
-    
+
     private var currentSafariViewController: SFSafariViewController?
-    
+
     private func openActivationURL(_ url: URL) {
         let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
         controller.delegate = safariDelegate
@@ -453,9 +427,9 @@ public class ConnectButtonController {
         currentSafariViewController = controller
         present(controller)
     }
-    
+
     /// Creates a `RedirectObserving` and a `SafariDelegate` to track interaction in the web portion of the activation flow
-    private func prepareActivationWebFlow() {
+    private func prepareActivationWebFlow(lookupMethod: User.LookupMethod) {
         redirectObserving = RedirectObserving()
         redirectObserving?.onRedirect = { [weak self] outcome in
             self?.handleRedirect(outcome)
@@ -465,22 +439,22 @@ public class ConnectButtonController {
             queryItems.forEach {
                 redirectLog.append("\n\($0.name): \($0.value ?? "nil")")
             }
-            
+
             self?.button.addConnectionLog(redirectLog)
         }
-        
+
         safariDelegate = SafariDelegate { [weak self] in
-            self?.handleCancelation()
+            self?.handleCancelation(lookupMethod: lookupMethod)
         }
     }
-    
+
     /// Once activation is finished or canceled, tear down redirect and cancelation observing
     private func endActivationWebFlow() {
         redirectObserving = nil
         safariDelegate = nil
     }
-    
-    
+
+
 
     // MARK: - Connection activation & deactivation
 
@@ -501,6 +475,7 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     indirect enum ActivationStep {
         case initial(animated: Bool)
+        case enterEmail
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
         case serviceAuthentication(Connection.Service, newUserEmail: String?)
@@ -511,45 +486,15 @@ public class ConnectButtonController {
         case confirmDisconnect
         case processDisconnect
         case disconnected
-        
-        var description: String {
-            switch self {
-            case .initial:
-                return "initial"
-            case .identifyUser:
-                return "identifyUser"
-            case .logInExistingUser:
-                return "logInExistingUser"
-            case .serviceAuthentication:
-                return "serviceAuthentication"
-            case .authenticationComplete:
-                return "authenticationComplete"
-            case .failed:
-                return "failed"
-            case .canceled:
-                return "canceled"
-            case .connected:
-                return "connected"
-            case .confirmDisconnect:
-                return "confirmDisconnect"
-            case .processDisconnect:
-                return "processDisconnect"
-            case .disconnected:
-                return "disconnected"
-            }
-        }
     }
-    
+
     /// Wraps various tasks associated with accessing an account so they can be tracked or interrupted.
     private struct AccessAccountTask {
         let progressAnimation: ConnectButton.Animator
         let dataTask: URLSessionDataTask
     }
-    
+
     private var accessAccountTask: AccessAccountTask?
-    
-    /// State machine state
-    private var currentActivationStep: ActivationStep?
 
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
@@ -558,13 +503,13 @@ public class ConnectButtonController {
         button.emailInteraction = .init()
         button.stepInteraction = .init()
         button.footerInteraction.isTapEnabled = false // Don't clear the select block
-        
-        self.currentActivationStep = step
-        button.addConnectionLog("\(step.description)")
-        
+
         switch step {
         case .initial(let animated):
             transitionToInitalization(animated: animated)
+        case .enterEmail:
+            self.transition(to: .initial(animated: false))
+            self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
@@ -587,16 +532,31 @@ public class ConnectButtonController {
             transitionToDisconnected()
         }
     }
-    
+
     private func transitionToInitalization(animated: Bool) {
         endActivationWebFlow()
-        
+
         button.footerInteraction.isTapEnabled = true
-        button.animator(for: .buttonState(initialButtonState, footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
-        
+        button.footerInteraction.onSelect = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            if case .enterEmail = self.button.currentState {
+                // Open terms of service / privacy policy when creating an account
+                self.showLegalTerms()
+            } else {
+                // Link to the about page when we are in the initial state
+                self.showAboutPage()
+            }
+        }
+
+        button.animator(for: .buttonState(buttonState(for: connection.status),
+                                          footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
+
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
-        
+
         button.toggleInteraction.toggleTransition = {
             if self.tokenProvider.iftttServiceToken != nil {
                 return .buttonState(.slideToConnectWithToken)
@@ -604,57 +564,57 @@ public class ConnectButtonController {
                 return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)
             }
         }
-        
+
         button.toggleInteraction.onToggle = { [weak self] in
             if let token = self?.tokenProvider.iftttServiceToken {
                 self?.transition(to: .identifyUser(.token(token)))
             }
         }
-        
+
         button.emailInteraction.onConfirm = { [weak self] email in
             guard let self = self else {
                 assertionFailure("It is expected that `self` is not nil here.")
                 return
             }
-            
+
             self.emailInteractionConfirmation(email: email)
         }
     }
-    
+
     private func transitionToIdentifyUser(lookupMethod: User.LookupMethod) {
-        prepareActivationWebFlow()
-        
+        prepareActivationWebFlow(lookupMethod: lookupMethod)
+
         let timeout: TimeInterval = 3 // Network request timeout
-        
+
         switch lookupMethod {
         case let .email(userEmail):
             button.animator(for: .buttonState(.verifyingEmail(message: "button.state.checking_account".localized), footerValue: FooterMessages.verifying(email: userEmail).value)).preform()
-            
+
         case .token:
             button.animator(for: .buttonState(.accessingAccount(message: "button.state.accessing_existing_account".localized), footerValue: FooterMessages.poweredBy.value)).preform()
         }
-        
+
         button.footerInteraction.isTapEnabled = true
-        
+
         let progress = button.progressBar(timeout: timeout)
         progress.preform()
-        
+
         let dataTask = connectionNetworkController.getConnectConfiguration(user: lookupMethod, waitUntil: 1, timeout: timeout) { [weak self] result in
             guard let self = self else {
                 return
             }
-            
+
             switch result {
             case .success(let user):
                 if case .email(let email) = user.id, user.isExistingUser == false {
-                    
+
                     if self.accessAccountTask != nil {
                         // There is no account for this user
                         // Show a fake message that we are creating an account
                         // Then move to the first step of the service connection flow
                         self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).preform()
                     }
-                    
+
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete { position in
                         if position == .end {
@@ -667,57 +627,62 @@ public class ConnectButtonController {
                         self.transition(to: .logInExistingUser(user.id))
                     }
                 }
-                
+
             case .failure(let error):
                 self.transition(to: .failed(.networkError(error)))
             }
         }
-        
-        accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: dataTask)
-        
+
+        guard let accountLookupDataTask = dataTask else {
+            assertionFailure("It is expected that you get a non nil data task.")
+            return
+        }
+
+        accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: accountLookupDataTask)
+
         button.emailInteraction.onConfirm = { [weak self] email in
             guard let self = self else {
                 assertionFailure("It is expected that `self` is not nil here.")
                 return
             }
-            
+
             self.emailInteractionConfirmation(email: email)
         }
     }
-    
+
     private func transitionToLogInExistingUser(userId: User.Id) {
         openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
     }
-    
+
     private func transitionToServiceAuthentication(service: Connection.Service, newUserEmail: String?) {
         let footer: ConnectButtonController.FooterMessages
-        
+
         if let newUserEmail = newUserEmail {
             footer = FooterMessages.verifying(email: newUserEmail)
         } else {
             footer = service == connection.primaryService ? FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
         }
-        
+
         button.footerInteraction.isTapEnabled = true
         button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(with: service.name)), footerValue: footer.value)).preform()
-        
+
         let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
-        
+
         let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] timer in
             self?.openActivationURL(url)
             timer.invalidate()
         }
-        
+
         button.stepInteraction.isTapEnabled = true
         button.stepInteraction.onSelect = { [weak self] in
             self?.openActivationURL(url)
             timer.invalidate()
         }
     }
-    
+
     private func transitionToAuthenticationComplete() {
         button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value)).preform()
-        
+
         let progressBar = button.progressBar(timeout: 2)
         progressBar.preform()
         progressBar.onComplete { _ in
@@ -727,66 +692,68 @@ public class ConnectButtonController {
             }
         }
     }
-    
+
     private func transitionToFailed(error: Error) {
         delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.networkError(.genericError(error))))
         transition(to: .initial(animated: false))
     }
-    
+
     private func transitionToCanceled() {
         delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.canceled))
         transitionToInitalization(animated: true)
     }
-    
+
     private func transitionToConnected(animated: Bool) {
-        button.animator(for: .buttonState(connectedButtonState, footerValue: FooterMessages.manage.value)).preform(animated: animated)
-        
+        button.animator(for: .buttonState(buttonState(for: .enabled),
+                                          footerValue: FooterMessages.manage.value)).preform(animated: animated)
+
         button.footerInteraction.isTapEnabled = true
-        
+
         // Connection was changed to this state, not initialized with it, so let the delegate know
         appletChangedStatus(isOn: true)
-        
+
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
         button.toggleInteraction.isTapEnabled = true
-        
+
         button.toggleInteraction.toggleTransition = {
             return .footerValue(FooterMessages.disconnect.value)
         }
-        
+
         button.toggleInteraction.onToggle = { [weak self] in
             self?.transition(to: .confirmDisconnect)
         }
     }
-    
+
     private func transitionToConfirmDisconnect() {
         // The user must slide to deactivate the Connection
         button.toggleInteraction.isTapEnabled = false
         button.toggleInteraction.isDragEnabled = true
         button.toggleInteraction.resistance = .heavy
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            if case .confirmDisconnect? = self.currentActivationStep {
-                // Revert state if user doesn't follow through
-                self.transition(to: .connected(animated: false))
-            }
+
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
+            // Revert state if user doesn't follow through
+            self?.transition(to: .connected(animated: false))
+            timer.invalidate()
         }
-        
+
         button.toggleInteraction.toggleTransition = {
             return .buttonState(.slideToDisconnect(message: "button.state.disconnecting".localized), footerValue: .none)
         }
-        
+
         button.toggleInteraction.onToggle = { [weak self] in
             self?.transition(to: .processDisconnect)
+            timer.invalidate()
         }
     }
-    
+
     private func transitionToProccessDisconnect() {
         let timeout: TimeInterval = 3 // Network request timeout
-        
+
         let progress = button.progressBar(timeout: timeout)
         progress.preform()
-        
+
         let request = Connection.Request.disconnectConnection(with: connection.id, credentialProvider: connectionConfiguration.credentialProvider)
         connectionNetworkController.start(urlRequest: request.urlRequest, waitUntil: 1, timeout: timeout) { response in
             progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
@@ -801,16 +768,16 @@ public class ConnectButtonController {
             }
         }
     }
-    
+
     private func transitionToDisconnected() {
         appletChangedStatus(isOn: false)
         button.animator(for: .buttonState(.disconnected(service: connectingService.connectButtonService, message: "button.state.disconnected".localized))).preform()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.transition(to: .initial(animated: true))
         }
     }
-    
+
     private func emailInteractionConfirmation(email: String) {
         if email.isValidEmail {
             self.transition(to: .identifyUser(.email(email)))
