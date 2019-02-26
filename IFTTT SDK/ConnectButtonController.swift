@@ -190,6 +190,8 @@ public class ConnectButtonController {
         disconnect
 
         private struct Constants {
+            static let errorTextColor: UIColor = .red
+            
             static var footnoteFont: UIFont {
                 return .footnote()
             }
@@ -229,12 +231,11 @@ public class ConnectButtonController {
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont, .foregroundColor : UIColor.red])
+                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont, .foregroundColor : Constants.errorTextColor])
 
             case .verifying(let email):
                 let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(with: email), attributes: [.font : Constants.footnoteFont])
-                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont,
-                                                                                                                            .underlineStyle : NSUnderlineStyle.single.rawValue])
+                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont, .underlineStyle : NSUnderlineStyle.single.rawValue])
                 text.append(changeEmailText)
                 return text
 
