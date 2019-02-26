@@ -186,8 +186,7 @@ public class ConnectButtonController {
         verifying(email: String),
         signedIn(username: String),
         connect(Connection.Service, to: Connection.Service),
-        manage,
-        disconnect
+        manage
 
         private struct Constants {
             static var footnoteFont: UIFont {
@@ -255,10 +254,6 @@ public class ConnectButtonController {
                                                      attributes: [.font : Constants.footnoteFont])
                 text.append(iftttText)
                 return text
-
-            case .disconnect:
-                return NSAttributedString(string: "button.footer.disconnect".localized,
-                                          attributes: [.font : Constants.footnoteFont])
             }
         }
     }
@@ -707,7 +702,8 @@ public class ConnectButtonController {
         button.toggleInteraction.isTapEnabled = true
 
         button.toggleInteraction.toggleTransition = {
-            return .footerValue(FooterMessages.disconnect.value)
+            return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
+                                footerValue: .none)
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
@@ -729,7 +725,8 @@ public class ConnectButtonController {
         }
 
         button.toggleInteraction.toggleTransition = {
-            return .buttonState(.slideToDisconnect(message: "button.state.disconnecting".localized), footerValue: .none)
+            return .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
+                                footerValue: .none)
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
