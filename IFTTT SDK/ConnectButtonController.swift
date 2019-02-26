@@ -172,8 +172,8 @@ public class ConnectButtonController {
         }
     }
 
-    private func buttonState(for connectionStatus: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
-        switch connectionStatus {
+    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
+        switch status {
         case .initial, .unknown:
             return .connect(service: service.connectButtonService,
                             message: "button.state.connect".localized(arguments: service.name))
@@ -620,8 +620,7 @@ public class ConnectButtonController {
             }
         }
         
-        button.animator(for: .buttonState(buttonState(for: connection.status, service: connection.connectingService),
-                                          footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: connection.status, service: connection.connectingService), footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
         
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
@@ -783,8 +782,7 @@ public class ConnectButtonController {
     }
     
     private func transitionToConnected(connection: Connection, animated: Bool) {
-        button.animator(for: .buttonState(buttonState(for: .enabled, service: connection.connectingService),
-                                          footerValue: FooterMessages.manage.value)).preform(animated: animated)
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService), footerValue: FooterMessages.manage.value)).preform(animated: animated)
         
         button.footerInteraction.isTapEnabled = true
         
