@@ -105,7 +105,7 @@ private extension ConnectButtonControllerError {
             return "Unknown error"
         case .canceled:
             return nil
-        case .nilConnection:
+        case .unableToGetConnection:
             return "The connection being used is nil."
         }
     }
