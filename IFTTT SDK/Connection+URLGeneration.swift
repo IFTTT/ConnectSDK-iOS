@@ -105,7 +105,7 @@ extension Connection {
     }
 }
 
-private extension CharacterSet {
+extension CharacterSet {
     
     /// This allows '+' character to passthrough for sending an email address as a url parameter.
     static let emailEncodingPassthrough = CharacterSet(charactersIn: "+").inverted
