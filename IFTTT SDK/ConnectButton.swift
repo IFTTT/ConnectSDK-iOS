@@ -1404,7 +1404,10 @@ private extension ConnectButton {
     }
     
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
-        transitionToButtonState(isOn: true, labelValue:  .text(message), animator: animator)
+        primaryLabelAnimator.transition(with: .crossfade,
+                                        updatedValue: .text(message),
+                                        insets: .avoidSwitchKnob,
+                                        addingTo: animator)
         pulseAnimateLabel(isReverse: false)
     }
     
