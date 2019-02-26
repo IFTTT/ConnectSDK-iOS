@@ -34,15 +34,10 @@
 "button.footer.manage" = "You're all set. Manage connection with ";
 "button.footer.disconnect" = "Slide to disconnect";
 
-"about.title" = "This connection is powered by ";
-"about.connect" = "Your favorite things work together in new ways";
-"about.control" = "Control how services access your data";
-"about.security" = "Protect and monitor your online data";
-// Gets appended to the TOS and privacy policy links on the about page
-"about.legal.prefix" = "By using this IFTTT service you agree to the ";
-"about.more.button" = "Learn more";
-
-// Link text for TOS and the privacy policy
-"legal.tos" = "Terms of Use";
-"legal.and" = " and ";
-"legal.privacy" = "Privacy Policy";
+"about.title" = " connects %@ and %@";
+"about.connect" = "Unlock new features when your favorite things work together";
+"about.control" = "Control which services access your data and how they use it";
+"about.security" = "Protect and monitor your data";
+"about.manage" = "Unplug any time";
+"about.legal.prefix" = "By using this connection you agree to our ";
+"about.legal.link" = "Privacy & Terms";

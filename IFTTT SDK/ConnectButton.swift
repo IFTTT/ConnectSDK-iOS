@@ -513,7 +513,6 @@ public class ConnectButton: UIView {
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
-        field.autocorrectionType = .no
         field.autocapitalizationType = .none
         return field
     }()

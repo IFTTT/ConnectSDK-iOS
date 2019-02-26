@@ -10,8 +10,8 @@ import Foundation
 
 @available(iOS 10.0, *)
 extension String {
-    func localized(arguments: CVarArg) -> String {
-        return String(format: self.localized, arguments)
+    func localized(with arguments: CVarArg ...) -> String {
+        return String(format: localized, locale: nil, arguments: arguments)
     }
     var localized: String {
         return NSLocalizedString(self, tableName: nil, bundle: Bundle.sdk, value: "", comment: "")
