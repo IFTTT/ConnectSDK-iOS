@@ -115,7 +115,8 @@ public class ConnectButton: UIView {
     }
     
     enum AnimationState {
-        case loading(didFail: Bool)
+        case loading
+        case loadingFailed
         case connect(service: Service, message: String)
         case createAccount(message: String)
         case slideToConnectWithToken
@@ -199,7 +200,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: AnimationState = .loading(didFail: false)
+    private(set) var currentState: AnimationState = .loading
     
     func progressBar(timeout: TimeInterval) -> Animator {
         return Animator(animator: progressBar.animator(duration: timeout))
@@ -1137,8 +1138,23 @@ private extension ConnectButton {
     
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
-        case let .loading(didFail):
-            transitionToLoading(animator: animator, didFail: didFail)
+        case .loading:
+            primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
+            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+            
+            animator.addAnimations {
+                self.backgroundView.backgroundColor = .black
+                self.primaryLabelAnimator.primary.label.alpha = 1
+            }
+            
+            pulseAnimateLabel(isReverse: false)
+            
+        case .loadingFailed:
+            primaryLabelAnimator.configure(.text("button.state.loading_failed".localized), insets: .standard)
+            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.loadingFailed.value)
+            
+            pulseAnimation?.stopAnimation(true)
+            pulseAnimation = nil
             
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
@@ -1175,24 +1191,6 @@ private extension ConnectButton {
             
         case let .disconnected(service, message):
             transitionToDisconnected(service: service, message: message, animator: animator)
-        }
-    }
-    
-    private func transitionToLoading(animator: UIViewPropertyAnimator, didFail: Bool) {
-        primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
-        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
-        
-        animator.addAnimations {
-            self.backgroundView.backgroundColor = .black
-            self.primaryLabelAnimator.primary.label.alpha = 1
-        }
-        
-        
-        pulseAnimation?.stopAnimation(true)
-        pulseAnimation = nil
-        
-        if !didFail {
-            pulseAnimateLabel(isReverse: false)
         }
     }
     

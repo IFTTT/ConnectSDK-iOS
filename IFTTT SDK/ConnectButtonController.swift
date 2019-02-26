@@ -132,7 +132,7 @@ public class ConnectButtonController {
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
         guard let connection = connection else {
-            fetchConnection(for: connectionConfiguration.connectionId, numberOfRetries: 0)
+            fetchConnection(for: connectionConfiguration.connectionId)
             return
         }
         
@@ -155,11 +155,13 @@ public class ConnectButtonController {
         }
     }
     
-    private func fetchConnection(for id: String, numberOfRetries: Int) {
+    private func fetchConnection(for id: String, numberOfRetries: Int = 2) {
         transitionToLoading(didFail: false)
         
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             
             switch response.result {
             case .success(let connection):
@@ -167,9 +169,9 @@ public class ConnectButtonController {
                 self.setupConnection(for: connection, animated: true)
                 
             case .failure:
-                if numberOfRetries < 2 {
+                if numberOfRetries > 0 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(numberOfRetries)) {
-                        self.fetchConnection(for: id, numberOfRetries: numberOfRetries + 1)
+                        self.fetchConnection(for: id, numberOfRetries: numberOfRetries - 1)
                     }
                 } else {
                     self.transitionToLoading(didFail: true)
@@ -616,8 +618,8 @@ public class ConnectButtonController {
     }
     
     private func transitionToLoading(didFail: Bool) {
-        let footerValue = didFail ? FooterMessages.loadingFailed.value : nil
-        button.animator(for: ConnectButton.Transition(state: .loading(didFail: didFail), footerValue: footerValue)).preform(animated: true)
+        let state = didFail ? ConnectButton.AnimationState.loadingFailed : ConnectButton.AnimationState.loading
+        button.animator(for: .buttonState(state)).preform(animated: true)
         button.footerInteraction.isTapEnabled = true
         button.footerInteraction.onSelect = { [weak self] in
             guard let self = self else {
