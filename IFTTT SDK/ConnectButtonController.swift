@@ -156,7 +156,7 @@ public class ConnectButtonController {
         }
     }
     
-    private func fetchConnection(for id: String, numberOfRetries: Int = 2) {
+    private func fetchConnection(for id: String, numberOfRetries: Int = 2, retryCount: Int = 0) {
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else {
                 return
@@ -168,15 +168,20 @@ public class ConnectButtonController {
                 self.setupConnection(for: connection, animated: true)
                 
             case .failure:
-                if numberOfRetries > 0 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(numberOfRetries)) {
-                        self.fetchConnection(for: id, numberOfRetries: numberOfRetries - 1)
+                if retryCount < numberOfRetries {
+                    let count = retryCount + 1
+                    DispatchQueue.main.asyncAfter(deadline: .now() + self.exponentialBackoffTiming(for: count)) {
+                        self.fetchConnection(for: id, retryCount: count)
                     }
                 } else {
                     self.transitionToLoading(didFail: true)
                 }
             }
         }
+    }
+    
+    private func exponentialBackoffTiming(for retryCount: Int) -> DispatchTimeInterval {
+        return .seconds(retryCount * 2)
     }
 
     private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
