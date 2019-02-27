@@ -67,7 +67,8 @@ class AboutViewController: UIViewController {
             /// The about page title
             static func titleText(connects primaryService: Connection.Service,
                                   with secondaryService: Connection.Service) -> NSAttributedString {
-                let rawText = "about.title".localized(with: primaryService.name, secondaryService.name)
+                let rawText = "about.title".localized(with: primaryService.shortName,
+                                                      secondaryService.shortName)
                 let text = NSMutableAttributedString(string: rawText,
                                                      attributes: [.font : UIFont.body(weight: .demiBold)])
                 let ifttt = NSAttributedString(string: "IFTTT",
