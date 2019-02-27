@@ -322,7 +322,7 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
                                                                      .foregroundColor : textColor])
-                
+
             case .loadingFailed:
                 let text = "button.footer.loading.failed".localized
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
@@ -599,9 +599,10 @@ public class ConnectButtonController {
         button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
-        
-        button.animator(for: .buttonState(buttonState(forConnectionStatus: connection.status, service: connection.connectingService), footerValue: FooterMessages.worksWithIFTTT.value)).preform(animated: animated)
-        
+
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: connection.status, service: connection.connectingService),
+                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform(animated: animated)
+
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
 
