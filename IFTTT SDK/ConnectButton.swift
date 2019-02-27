@@ -1213,6 +1213,7 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
         animator.addAnimations {
+            self.progressBar.alpha = 0
             self.backgroundView.backgroundColor = .black
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.isOn = false
@@ -1250,6 +1251,7 @@ private extension ConnectButton {
                                         addingTo: animator)
         
         progressBar.configure(with: nil)
+        progressBar.alpha = 0
         
         emailEntryField.alpha = 0
         animator.addAnimations {
@@ -1332,14 +1334,9 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
-        progressBar.alpha = 1
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = service.brandColor
-        }
-        
-        animator.addCompletion { _ in
-            self.progressBar.alpha = 0
         }
     }
     

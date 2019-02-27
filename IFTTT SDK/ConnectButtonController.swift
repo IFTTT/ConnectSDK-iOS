@@ -695,10 +695,13 @@ public class ConnectButtonController {
 
         button.footerInteraction.isTapEnabled = true
         button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(with: service.name)), footerValue: footer.value)).preform()
+
+        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+
+        let timeout = 2.0
+        button.progressBar(timeout: timeout).preform()
         
-        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
-        
-        let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] timer in
+        let timer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] timer in
             self?.openActivationURL(url)
             timer.invalidate()
         }
