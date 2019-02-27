@@ -36,6 +36,9 @@ public struct Connection: Equatable {
         /// A name for the service.
         public let name: String
         
+        /// A shorter alternative for the service's name
+        public let shortName: String
+        
         /// Whether the service is the primary service.
         public let isPrimary: Bool
         

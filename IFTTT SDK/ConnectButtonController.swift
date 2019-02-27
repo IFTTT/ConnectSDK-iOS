@@ -150,10 +150,10 @@ public class ConnectButtonController {
         switch connectionStatus {
         case .initial, .unknown:
             return .connect(service: connectingService.connectButtonService,
-                            message: "button.state.connect".localized(with: connectingService.name))
+                            message: "button.state.connect".localized(with: connectingService.shortName))
         case .disabled:
             return .connect(service: connectingService.connectButtonService,
-                            message: "button.state.reconnect".localized(with: connectingService.name))
+                            message: "button.state.reconnect".localized(with: connectingService.shortName))
         case .enabled:
             return .connected(service: connectingService.connectButtonService,
                               message: "button.state.connected".localized)
