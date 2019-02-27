@@ -120,6 +120,7 @@ public class ConnectButton: UIView {
         case createAccount(message: String)
         case slideToConnectWithToken
         case slideToDisconnect(message: String)
+        case disconnecting(message: String)
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
@@ -342,17 +343,7 @@ public class ConnectButton: UIView {
             return currentToggleAnimation
         }
         
-        var nextState: ConnectButton.Transition?
-        
-        if case .connect = currentState {
-            nextState = toggleInteraction.toggleTransition?()
-        }
-        
-        if case .connected = currentState {
-            nextState = toggleInteraction.toggleTransition?()
-        }
-        
-        guard let transition = nextState else {
+        guard let transition = toggleInteraction.toggleTransition?() else {
             return nil
         }
         
@@ -1165,7 +1156,10 @@ private extension ConnectButton {
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
-            transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
+            transitionToSlideToDisconnect(message: message, animator: animator)
+            
+        case let .disconnecting(message):
+            transitionToDisconnecting(message: message, animator: animator)
             
         case .slideToConnectWithToken:
             transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
@@ -1373,6 +1367,8 @@ private extension ConnectButton {
     }
     
     private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        stopPulseAnimateLabel() // If we canceled disconnect
+        
         switchControl.primeAnimation_centerKnob()
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
@@ -1396,6 +1392,19 @@ private extension ConnectButton {
         animator.addCompletion { _ in
             self.checkmark.transform = .identity
         }
+    }
+    
+    private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade,
+                                        updatedValue: .text(message),
+                                        insets: .avoidSwitchKnob,
+                                        addingTo: animator)
+        pulseAnimateLabel(isReverse: false)
+    }
+    
+    private func transitionToDisconnecting(message: String, animator: UIViewPropertyAnimator) {
+        transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
+        stopPulseAnimateLabel()
     }
     
     private func transitionToDisconnected(service: Service, message: String, animator: UIViewPropertyAnimator) {

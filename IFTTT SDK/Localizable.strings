@@ -19,6 +19,7 @@
 "button.state.saving_configuration" = "Saving settings…";
 "button.state.connecting" = "Connecting…";
 "button.state.connected" = "Connected";
+"button.state.disconnect" = "Slide to disconnect";
 "button.state.disconnecting" = "Disconnecting…";
 "button.state.disconnected" = "Disconnected";
 
@@ -32,7 +33,6 @@
 "button.footer.signed_in" = " sign in to ";
 "button.footer.connect" = "Sign in to connect %@ with %@";
 "button.footer.manage" = "You're all set. Manage connection with ";
-"button.footer.disconnect" = "Slide to disconnect";
 
 "about.title" = " connects %@ and %@";
 "about.connect" = "Unlock new features when your favorite things work together";
