@@ -173,20 +173,27 @@ public class ConnectButtonController {
                         self.fetchConnection(for: id, retryCount: count)
                     }
                 } else {
-                    self.reachability?.whenReachable = { _ in
-                        self.fetchConnection(for: id)
-                        self.reachability?.stopNotifier()
-                    }
-                    
-                    do {
-                        try self.reachability?.startNotifier()
-                    } catch {
-                        
-                    }
-                    
                     self.button.animator(for: .buttonState(.loadingFailed)).preform(animated: true)
+                    self.setupReachabilityForConnectionLoading(id: id)
                 }
             }
+        }
+    }
+    
+    private func setupReachabilityForConnectionLoading(id: String) {
+        reachability?.whenReachable = { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            
+            self.fetchConnection(for: id)
+            self.reachability?.stopNotifier()
+        }
+        
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            assertionFailure("Reachability was unable to start notifications due to error: \(error).")
         }
     }
     
