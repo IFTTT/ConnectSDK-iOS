@@ -83,6 +83,13 @@ public struct Connection: Equatable {
         return services.filter({ $0.isPrimary == false })
     }
     
+    /// The service that is being connected to the primary (owner) service
+    /// This defines the service icon & brand color of the button in its initial and final (activated) states
+    /// It is always the first service connected
+    public var connectingService: Service {
+        return worksWithServices.first ?? primaryService
+    }
+    
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
     }
