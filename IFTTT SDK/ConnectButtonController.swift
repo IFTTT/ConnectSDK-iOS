@@ -555,8 +555,8 @@ public class ConnectButtonController {
             transitionToIdentifyUser(connection: connection, lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
             transitionToLogInExistingUser(connection: connection, userId: userId)
-        case .serviceAuthentication(_, let newUserEmail):
-            transitionToServiceAuthentication(connection: connection, newUserEmail: newUserEmail)
+        case .serviceAuthentication(let service, let newUserEmail):
+            transitionToServiceAuthentication(connection: connection, service: service, newUserEmail: newUserEmail)
         case .authenticationComplete:
             transitionToAuthenticationComplete()
         case .failed(let error):
@@ -694,10 +694,10 @@ public class ConnectButtonController {
                                                    activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
     }
 
-    private func transitionToServiceAuthentication(connection: Connection, newUserEmail: String?) {
+    private func transitionToServiceAuthentication(connection: Connection, service: Connection.Service, newUserEmail: String?) {
         button.footerInteraction.isTapEnabled = true
-        button.animator(for: .buttonState(.continueToService(service: connection.connectingService.connectButtonService,
-                                                             message: "button.state.sign_in".localized(with: connection.connectingService.name)),
+        button.animator(for: .buttonState(.continueToService(service: service.connectButtonService,
+                                                             message: "button.state.sign_in".localized(with: service.name)),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
         let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
