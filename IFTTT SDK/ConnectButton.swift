@@ -514,7 +514,6 @@ public class ConnectButton: UIView {
     fileprivate let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
-        field.autocorrectionType = .no
         field.autocapitalizationType = .none
         return field
     }()
@@ -1041,12 +1040,31 @@ public class ConnectButton: UIView {
     
     private var pulseAnimation: UIViewPropertyAnimator?
     
-    private func pulseAnimateLabel(isReverse: Bool) {
-        self.pulseAnimation = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1.2, delay: 0.0, options: [.curveLinear, .repeat], animations: {
-            self.primaryLabelAnimator.primary.label.alpha = isReverse ? 1.0 : 0.4
-        }) { _ in
-            self.pulseAnimateLabel(isReverse: !isReverse)
+    private enum PulseAnimationAlpha: CGFloat {
+        case full = 1.0
+        case partial = 0.4
+        
+        var reverse: PulseAnimationAlpha {
+            switch self {
+            case .full:
+                return .partial
+            case .partial:
+                return .full
+            }
         }
+    }
+    
+    private func pulseAnimateLabel(toAlpha alpha: PulseAnimationAlpha) {
+        self.pulseAnimation = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1.2, delay: 0.0, options: [.curveLinear, .repeat], animations: {
+            self.primaryLabelAnimator.primary.label.alpha = alpha.rawValue
+        }) { _ in
+            self.pulseAnimateLabel(toAlpha: alpha.reverse)
+        }
+    }
+    
+    private func stopPulseAnimation() {
+        pulseAnimation?.stopAnimation(true)
+        pulseAnimation = nil
     }
 }
 
@@ -1143,7 +1161,7 @@ private extension ConnectButton {
             footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
             backgroundView.backgroundColor = .black
             
-            pulseAnimateLabel(isReverse: false)
+            pulseAnimateLabel(toAlpha: .partial)
             
         case .loadingFailed:
             pulseAnimation?.stopAnimation(true)
@@ -1194,13 +1212,24 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        pulseAnimation?.stopAnimation(true)
-        pulseAnimation = nil
+    private func transitionToLoading(animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
+        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
         
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+        }
+        
+        pulseAnimateLabel(toAlpha: .partial)
+    }
+    
+    private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        stopPulseAnimation()
+       
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
         animator.addAnimations {
+            self.progressBar.alpha = 0
             self.backgroundView.backgroundColor = .black
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.isOn = false
@@ -1238,6 +1267,7 @@ private extension ConnectButton {
                                         addingTo: animator)
         
         progressBar.configure(with: nil)
+        progressBar.alpha = 0
         
         emailEntryField.alpha = 0
         animator.addAnimations {
@@ -1320,14 +1350,9 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
-        progressBar.alpha = 1
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = service.brandColor
-        }
-        
-        animator.addCompletion { _ in
-            self.progressBar.alpha = 0
         }
     }
     
