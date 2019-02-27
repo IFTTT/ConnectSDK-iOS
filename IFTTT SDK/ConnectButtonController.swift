@@ -114,6 +114,7 @@ public class ConnectButtonController {
     private let connectionConfiguration: ConnectionConfiguration
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
+    private let reachability = Reachability()
 
     /// Creates a new `ConnectButtonController`.
     ///
@@ -172,6 +173,17 @@ public class ConnectButtonController {
                         self.fetchConnection(for: id, retryCount: count)
                     }
                 } else {
+                    self.reachability?.whenReachable = { _ in
+                        self.fetchConnection(for: id)
+                        self.reachability?.stopNotifier()
+                    }
+                    
+                    do {
+                        try self.reachability?.startNotifier()
+                    } catch {
+                        
+                    }
+                    
                     self.button.animator(for: .buttonState(.loadingFailed)).preform(animated: true)
                 }
             }
