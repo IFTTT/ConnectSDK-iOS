@@ -1170,14 +1170,7 @@ private extension ConnectButton {
             transitionToLoading(animator: animator)
             
         case .loadingFailed:
-            stopPulseAnimation()
-            
-            animator.addAnimations {
-                self.primaryLabelAnimator.primary.label.alpha = 1
-            }
-            
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text("button.state.loading_failed".localized), addingTo: animator)
-            footerLabelAnimator.transition(with: .crossfade, updatedValue: ConnectButtonController.FooterMessages.loadingFailed.value, addingTo: animator)
+            footerLabelAnimator.transition(with: .rotateDown, updatedValue: ConnectButtonController.FooterMessages.loadingFailed.value, addingTo: animator)
             
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
@@ -1221,6 +1214,8 @@ private extension ConnectButton {
     }
     
     private func transitionToLoading(animator: UIViewPropertyAnimator) {
+        stopPulseAnimation()
+        
         primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
         footerLabelAnimator.configure(ConnectButtonController.FooterMessages.worksWithIFTTT.value)
         
