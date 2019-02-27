@@ -221,6 +221,8 @@ public class ConnectButtonController {
         disconnect
 
         private struct Constants {
+            static let errorTextColor: UIColor = .red
+            
             static var footnoteFont: UIFont {
                 return .footnote()
             }
@@ -260,12 +262,11 @@ public class ConnectButtonController {
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
+                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont, .foregroundColor : Constants.errorTextColor])
 
             case .verifying(let email):
                 let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(with: email), attributes: [.font : Constants.footnoteFont])
-                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont,
-                                                                                                                            .underlineStyle : NSUnderlineStyle.single.rawValue])
+                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont, .underlineStyle : NSUnderlineStyle.single.rawValue])
                 text.append(changeEmailText)
                 return text
 
@@ -810,14 +811,24 @@ public class ConnectButtonController {
             self.transition(to: .initial(animated: true))
         }
     }
-
+    
+    private var emailFooterTimer: Timer?
+  
     private func emailInteractionConfirmation(email: String) {
+        emailFooterTimer?.invalidate()
+        emailFooterTimer = nil
+        
         if email.isValidEmail {
             self.transition(to: .identifyUser(.email(email)))
         } else {
             self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
             self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).preform()
             self.button.performInvalidEmailAnimation()
+            
+            emailFooterTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] timer in
+                self?.button.animator(for: .footerValue(FooterMessages.enterEmail.value)).preform()
+                timer.invalidate()
+            }
         }
     }
 }
