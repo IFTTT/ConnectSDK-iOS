@@ -1213,6 +1213,7 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
         animator.addAnimations {
+            self.progressBar.alpha = 0
             self.backgroundView.backgroundColor = .black
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.isOn = false
