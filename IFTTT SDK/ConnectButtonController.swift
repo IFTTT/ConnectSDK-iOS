@@ -174,10 +174,10 @@ public class ConnectButtonController {
     private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
         switch status {
         case .initial, .unknown:
-            return .connect(service: connectingService.connectButtonService,
+            return .connect(service: service.connectButtonService,
                             message: "button.state.connect".localized(with: service.shortName))
         case .disabled:
-            return .connect(service: connectingService.connectButtonService,
+            return .connect(service: service.connectButtonService,
                             message: "button.state.reconnect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
