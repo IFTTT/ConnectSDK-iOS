@@ -615,14 +615,14 @@ public class ConnectButtonController {
 
         let timeout: TimeInterval = 3 // Network request timeout
 
-        let message: String
+        let state: ConnectButton.AnimationState
         switch lookupMethod {
         case .email:
-            message = "button.state.checking_account".localized
+            state = .verifyingEmail(message: "button.state.checking_account".localized)
         case .token:
-            message = "button.state.accessing_existing_account".localized
+            state = .accessingAccount(message: "button.state.accessing_existing_account".localized)
         }
-        button.animator(for: .buttonState(.verifyingEmail(message: message),
+        button.animator(for: .buttonState(state,
                                           footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
         button.footerInteraction.isTapEnabled = true
