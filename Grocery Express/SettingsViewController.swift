@@ -25,6 +25,7 @@ class SettingsViewController: UIViewController {
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var newUserSwitch: UISwitch!
+    @IBOutlet weak var fetchConnectionSwitch: UISwitch!
     @IBOutlet weak var connectButtonStyleControl: UISegmentedControl!
     @IBOutlet weak var loginView: UIStackView!
     @IBOutlet weak var logoutView: UIStackView!
@@ -41,6 +42,9 @@ class SettingsViewController: UIViewController {
     }
     @IBAction func newUserChanged(_ sender: Any) {
         settings.forcesNewUserFlow = newUserSwitch.isOn
+    }
+    @IBAction func fetchConnectionChanged(_ sender: Any) {
+        settings.fetchConnectionFlow = fetchConnectionSwitch.isOn
     }
     @IBAction func styleChanged(_ sender: Any) {
         settings.connectButtonStyle = connectButtonStyleControl.selectedSegmentIndex == Constants.lightStyleIndex ? .light : .dark
@@ -73,6 +77,9 @@ class SettingsViewController: UIViewController {
             newUserSwitch.isOn = false
             newUserSwitch.isEnabled = false
             
+            fetchConnectionSwitch.isOn = settings.fetchConnectionFlow
+            fetchConnectionSwitch.isEnabled = true
+            
             loginView.isHidden = true
             logoutView.isHidden = false
             credentialsTextView.text = credentials.description
@@ -82,6 +89,9 @@ class SettingsViewController: UIViewController {
             
             newUserSwitch.isOn = settings.forcesNewUserFlow
             newUserSwitch.isEnabled = true
+            
+            fetchConnectionSwitch.isOn = settings.fetchConnectionFlow
+            fetchConnectionSwitch.isEnabled = true
             
             loginView.isHidden = false
             logoutView.isHidden = true
