@@ -1167,11 +1167,7 @@ private extension ConnectButton {
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
         case .loading:
-            primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
-            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.worksWithIFTTT.value)
-            backgroundView.backgroundColor = .black
-            
-            pulseAnimateLabel(toAlpha: .partial)
+            transitionToLoading(animator: animator)
             
         case .loadingFailed:
             pulseAnimation?.stopAnimation(true)

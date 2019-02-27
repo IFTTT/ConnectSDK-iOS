@@ -131,7 +131,6 @@ public class ConnectButtonController {
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
         guard let connection = connection else {
-            transitionToLoading(didFail: false)
             fetchConnection(for: connectionConfiguration.connectionId)
             return
         }
@@ -173,7 +172,7 @@ public class ConnectButtonController {
                         self.fetchConnection(for: id, retryCount: count)
                     }
                 } else {
-                    self.transitionToLoading(didFail: true)
+                    self.button.animator(for: .buttonState(.loadingFailed)).preform(animated: true)
                 }
             }
         }
@@ -571,19 +570,6 @@ public class ConnectButtonController {
             transitionToProccessDisconnect()
         case .disconnected:
             transitionToDisconnected(connection: connection)
-        }
-    }
-    
-    private func transitionToLoading(didFail: Bool) {
-        let state = didFail ? ConnectButton.AnimationState.loadingFailed : ConnectButton.AnimationState.loading
-        button.animator(for: .buttonState(state)).preform(animated: true)
-        button.stepInteraction.isTapEnabled = true
-        button.stepInteraction.onSelect = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.setupConnection(for: self.connection, animated: true)
         }
     }
     
