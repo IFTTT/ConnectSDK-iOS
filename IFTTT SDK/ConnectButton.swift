@@ -19,6 +19,7 @@ fileprivate struct Layout {
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2
+    static let buttonFooterSpacing: CGFloat = 20
 }
 
 
@@ -121,6 +122,7 @@ public class ConnectButton: UIView {
         case createAccount(message: String)
         case slideToConnectWithToken
         case slideToDisconnect(message: String)
+        case disconnecting(message: String)
         case enterEmail(suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
@@ -343,17 +345,7 @@ public class ConnectButton: UIView {
             return currentToggleAnimation
         }
         
-        var nextState: ConnectButton.Transition?
-        
-        if case .connect = currentState {
-            nextState = toggleInteraction.toggleTransition?()
-        }
-        
-        if case .connected = currentState {
-            nextState = toggleInteraction.toggleTransition?()
-        }
-        
-        guard let transition = nextState else {
+        guard let transition = toggleInteraction.toggleTransition?() else {
             return nil
         }
         
@@ -957,14 +949,32 @@ public class ConnectButton: UIView {
         if shouldHideFooter {
             stackView = UIStackView(arrangedSubviews: [backgroundView])
         } else {
-            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+            let footerLabel = footerLabelAnimator.primary.view
             
-            footerLabelAnimator.primary.view.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumFooterLabelHeight)
+            // Supports minimum footer height
+            let footerLabelContainer = UIView()
+            footerLabelContainer.addSubview(footerLabel)
+            
+            // Lock it in place below the button
+            footerLabel.constrain.edges(to: footerLabelContainer, edges: [.left, .top, .right])
+            
+            // But allow it to be shorter than its container
+            footerLabel.bottomAnchor.constraint(lessThanOrEqualTo: footerLabelContainer.bottomAnchor)
+            let breakableBottomConstraint = footerLabel.bottomAnchor.constraint(equalTo: footerLabelContainer.bottomAnchor)
+            breakableBottomConstraint.priority = .defaultHigh
+            
+            // Ask the label to keep its intrinsic height
+            footerLabel.setContentHuggingPriority(.required, for: .vertical)
+            
+            // Finally ensure the container never goes below the minimum height
+            minimumFooterHeightConstraint = footerLabelContainer.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumFooterLabelHeight)
             minimumFooterHeightConstraint?.isActive = true
+            
+            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelContainer])
         }
 
         stackView.axis = .vertical
-        stackView.spacing = 20
+        stackView.spacing = Layout.buttonFooterSpacing
         
         addSubview(stackView)
         stackView.constrain.edges(to: self, edges: [.top])
@@ -1158,7 +1168,7 @@ private extension ConnectButton {
         switch animationState {
         case .loading:
             primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
-            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+            footerLabelAnimator.configure(ConnectButtonController.FooterMessages.worksWithIFTTT.value)
             backgroundView.backgroundColor = .black
             
             pulseAnimateLabel(toAlpha: .partial)
@@ -1181,7 +1191,10 @@ private extension ConnectButton {
             primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
-            transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
+            transitionToSlideToDisconnect(message: message, animator: animator)
+            
+        case let .disconnecting(message):
+            transitionToDisconnecting(message: message, animator: animator)
             
         case .slideToConnectWithToken:
             transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
@@ -1214,7 +1227,7 @@ private extension ConnectButton {
     
     private func transitionToLoading(animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
-        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.worksWithIFTTT.value)
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = .black
@@ -1389,6 +1402,8 @@ private extension ConnectButton {
     }
     
     private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        stopPulseAnimation() // If we canceled disconnect
+        
         switchControl.primeAnimation_centerKnob()
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
@@ -1412,6 +1427,19 @@ private extension ConnectButton {
         animator.addCompletion { _ in
             self.checkmark.transform = .identity
         }
+    }
+    
+    private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade,
+                                        updatedValue: .text(message),
+                                        insets: .avoidSwitchKnob,
+                                        addingTo: animator)
+        pulseAnimateLabel(toAlpha: .partial)
+    }
+    
+    private func transitionToDisconnecting(message: String, animator: UIViewPropertyAnimator) {
+        transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
+        stopPulseAnimation()
     }
     
     private func transitionToDisconnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
