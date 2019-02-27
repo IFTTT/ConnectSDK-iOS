@@ -18,6 +18,9 @@ struct Settings {
     /// Signals that we should always use the new user connection flow
     var forcesNewUserFlow: Bool
     
+    /// Signals that we should always use the connection fetching flow
+    var fetchConnectionFlow: Bool
+    
     /// The style of the Connect Button (light / dark)
     var connectButtonStyle: ConnectButton.Style
     
@@ -28,6 +31,7 @@ struct Settings {
         if let settings = defaults.dictionary(forKey: Keys.settings) {
             email = settings[Keys.email] as? String ?? ""
             forcesNewUserFlow = settings[Keys.forcesNewUserFlow] as? Bool ?? false
+            fetchConnectionFlow = settings[Keys.fetchConnectionFlow] as? Bool ?? false
             if settings[Keys.isDarkStyle] as? Bool == true {
                 connectButtonStyle = .dark
             } else {
@@ -36,6 +40,7 @@ struct Settings {
         } else {
             email = ""
             forcesNewUserFlow = false
+            fetchConnectionFlow = false
             connectButtonStyle = .light
         }
     }
@@ -45,6 +50,7 @@ struct Settings {
         let settings: [String : Any] = [
             Keys.email : email,
             Keys.forcesNewUserFlow : forcesNewUserFlow,
+            Keys.fetchConnectionFlow : fetchConnectionFlow,
             Keys.isDarkStyle : connectButtonStyle == .dark
         ]
         UserDefaults.standard.set(settings, forKey: Keys.settings)
@@ -54,6 +60,7 @@ struct Settings {
         static let settings = "settings"
         static let email = "email"
         static let forcesNewUserFlow = "forces_new_user_flow"
+        static let fetchConnectionFlow = "fetch_connection_flow"
         static let isDarkStyle = "is_dark_style"
     }
 }

@@ -8,12 +8,13 @@
 
 "common.cancel" = "Cancel";
 
+"button.state.loading" = "Loading...";
 "button.state.connect" = "Connect %@";
 "button.state.reconnect" = "Reconnect %@";
 "button.state.checking_account" = "Checking for IFTTT account…";
 "button.state.creating_account" = "Creating IFTTT account…";
 "button.state.accessing_existing_account" = "Accessing IFTTT account…"; // FIXME: Need copy!
-"button.state.sign_in" = "Continue to %@";
+"button.state.sign_in" = "Continue to %@...";
 "button.state.sign_in.brief" = "Sign in";
 "button.state.saving_configuration" = "Saving settings…";
 "button.state.connecting" = "Connecting…";

@@ -97,14 +97,12 @@ public class ConnectButton: UIView {
         style = .light
         super.init(frame: frame)
         createLayout()
-        setupInterfaceBuilderPreview()
         updateStyle()
     }
     required init?(coder aDecoder: NSCoder) {
         style = .light
         super.init(coder: aDecoder)
         createLayout()
-        setupInterfaceBuilderPreview()
         updateStyle()
     }
     
@@ -131,27 +129,6 @@ public class ConnectButton: UIView {
         case checkmark
         case connected(service: Service, message: String)
         case disconnected(service: Service, message: String)
-    }
-    
-    // MARK: ConnectionDiary
-    
-    struct ConnectionDiary {
-        var activationStateLog: [String]
-        
-        var description: String {
-            var outputString = "Activation State Log:"
-            activationStateLog.forEach {
-                outputString.append("\n\($0)")
-            }
-            
-            return outputString
-        }
-    }
-    
-    private var connectionDiary = ConnectionDiary(activationStateLog: [])
-    
-    func addConnectionLog(_ log: String) {
-        connectionDiary.activationStateLog.append(log)
     }
     
     /// Groups button State and footer value into a single state transition
@@ -493,14 +470,13 @@ public class ConnectButton: UIView {
     }
     
     /// When this button is configured in a Storyboard / NIB, this defines the preview state
-    private func setupInterfaceBuilderPreview() {
+    public override func prepareForInterfaceBuilder() {
         backgroundView.backgroundColor = .black
         switchControl.alpha = 1
         switchControl.isOn = false
         switchControl.knob.backgroundColor = Style.Color.blue
         primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
-        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT",
-                                                          attributes: [.font : UIFont.footnote(weight: .bold)])
+        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
         footerLabelAnimator.configure(.attributed(initialFooterText))
     }
     
@@ -1054,15 +1030,29 @@ public class ConnectButton: UIView {
     
     private var pulseAnimation: UIViewPropertyAnimator?
     
-    private func pulseAnimateLabel(isReverse: Bool) {
-        self.pulseAnimation = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1.2, delay: 0.0, options: [.curveLinear, .repeat], animations: {
-            self.primaryLabelAnimator.primary.label.alpha = isReverse ? 1.0 : 0.4
-        }) { _ in
-            self.pulseAnimateLabel(isReverse: !isReverse)
+    private enum PulseAnimationAlpha: CGFloat {
+        case full = 1.0
+        case partial = 0.4
+        
+        var reverse: PulseAnimationAlpha {
+            switch self {
+            case .full:
+                return .partial
+            case .partial:
+                return .full
+            }
         }
     }
     
-    private func stopPulseAnimateLabel() {
+    private func pulseAnimateLabel(toAlpha alpha: PulseAnimationAlpha) {
+        self.pulseAnimation = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 1.2, delay: 0.0, options: [.curveLinear, .repeat], animations: {
+            self.primaryLabelAnimator.primary.label.alpha = alpha.rawValue
+        }) { _ in
+            self.pulseAnimateLabel(toAlpha: alpha.reverse)
+        }
+    }
+    
+    private func stopPulseAnimation() {
         pulseAnimation?.stopAnimation(true)
         pulseAnimation = nil
     }
@@ -1157,7 +1147,8 @@ private extension ConnectButton {
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
         case .loading:
-            break
+            transitionToLoading(animator: animator)
+            
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
             
@@ -1199,10 +1190,24 @@ private extension ConnectButton {
         }
     }
     
+    private func transitionToLoading(animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
+        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.poweredBy.value)
+        
+        animator.addAnimations {
+            self.backgroundView.backgroundColor = .black
+        }
+        
+        pulseAnimateLabel(toAlpha: .partial)
+    }
+    
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        stopPulseAnimation()
+       
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
         animator.addAnimations {
+            self.progressBar.alpha = 0
             self.backgroundView.backgroundColor = .black
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.isOn = false
@@ -1240,6 +1245,7 @@ private extension ConnectButton {
                                         addingTo: animator)
         
         progressBar.configure(with: nil)
+        progressBar.alpha = 0
         
         emailEntryField.alpha = 0
         animator.addAnimations {
@@ -1322,14 +1328,9 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
-        progressBar.alpha = 1
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = service.brandColor
-        }
-        
-        animator.addCompletion { _ in
-            self.progressBar.alpha = 0
         }
     }
     

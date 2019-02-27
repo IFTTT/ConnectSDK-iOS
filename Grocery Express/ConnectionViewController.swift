@@ -26,7 +26,9 @@ class ConnectionViewController: UIViewController {
     
     // MARK: - Connect flow
     
-    private let connectionCredentials = ConnectionCredentials(settings: Settings())
+    private let settings = Settings()
+    
+    private lazy var connectionCredentials = ConnectionCredentials(settings: settings)
     
     private var connectButtonController: ConnectButtonController?
     
@@ -46,29 +48,38 @@ class ConnectionViewController: UIViewController {
     private let connectionNetworkController = ConnectionNetworkController()
  
     private func fetchConnection(with id: String) {
-        activityIndicator.startAnimating()
-        connectButton.isHidden = true
-        valuePropsView.isHidden = true
-        
-        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: connectionCredentials)) { [weak self] response in
-            guard let self = self else { return }
+        if settings.fetchConnectionFlow {
+            let connectionConfiguration = ConnectionConfiguration(connectionId: id,
+                                                                  suggestedUserEmail: self.connectionCredentials.email,
+                                                                  credentialProvider: self.connectionCredentials,
+                                                                  connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+            self.setupConnectButtonController(connectionConfiguration)
+        } else {
+            activityIndicator.startAnimating()
+            connectButton.isHidden = true
+            valuePropsView.isHidden = true
             
-            switch response.result {
-            case .success(let connection):
-                let connectionConfiguration = ConnectionConfiguration(connection: connection,
-                                                                      suggestedUserEmail: self.connectionCredentials.email,
-                                                                      credentialProvider: self.connectionCredentials,
-                                                                      connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
-                self.setupConnectButtonController(connectionConfiguration)
+            connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: connectionCredentials)) { [weak self] response in
+                guard let self = self else { return }
                 
-            case .failure:
-                let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connection.", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "Okay", style: .default, handler: { _ in
-                    self.navigationController?.popViewController(animated: true)
-                })
-                alertController.addAction(okAction)
-                self.present(alertController, animated: true, completion: nil)
+                switch response.result {
+                case .success(let connection):
+                    let connectionConfiguration = ConnectionConfiguration(connection: connection,
+                                                                          suggestedUserEmail: self.connectionCredentials.email,
+                                                                          credentialProvider: self.connectionCredentials,
+                                                                          connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                    self.setupConnectButtonController(connectionConfiguration)
+                    
+                case .failure:
+                    let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connection.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "Okay", style: .default, handler: { _ in
+                        self.navigationController?.popViewController(animated: true)
+                    })
+                    alertController.addAction(okAction)
+                    self.present(alertController, animated: true, completion: nil)
+                }
             }
+            
         }
     }
     
@@ -105,6 +116,8 @@ private extension ConnectButtonControllerError {
             return "Unknown error"
         case .canceled:
             return nil
+        case .unableToGetConnection:
+            return "The connection being used is nil."
         }
     }
 }
