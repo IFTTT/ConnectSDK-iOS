@@ -1060,6 +1060,11 @@ public class ConnectButton: UIView {
             self.pulseAnimateLabel(toAlpha: alpha.reverse)
         }
     }
+    
+    private func stopPulseAnimation() {
+        pulseAnimation?.stopAnimation(true)
+        pulseAnimation = nil
+    }
 }
 
 // MARK: Gesture recognizer delegate (Toggle interaction)
@@ -1203,9 +1208,8 @@ private extension ConnectButton {
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        pulseAnimation?.stopAnimation(true)
-        pulseAnimation = nil
-        
+        stopPulseAnimation()
+       
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
         animator.addAnimations {
