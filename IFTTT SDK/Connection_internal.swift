@@ -51,6 +51,7 @@ extension Connection.Service {
         guard
             let id = parser["service_id"].string,
             let name = parser["service_name"].string,
+            let shortName = parser["service_short_name"].string,
             let templateIconURL = parser["monochrome_icon_url"].url,
             let brandColor = parser["brand_color"].color,
             let url = parser["url"].url else {
@@ -58,6 +59,7 @@ extension Connection.Service {
         }
         self.id = id
         self.name = name
+        self.shortName = shortName
         self.isPrimary = parser["is_primary"].bool ?? false
         self.templateIconURL = templateIconURL
         self.brandColor = brandColor

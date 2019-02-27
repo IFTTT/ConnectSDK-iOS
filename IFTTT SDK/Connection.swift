@@ -36,6 +36,9 @@ public struct Connection: Equatable {
         /// A name for the service.
         public let name: String
         
+        /// A shorter alternative for the service's name
+        public let shortName: String
+        
         /// Whether the service is the primary service.
         public let isPrimary: Bool
         
@@ -78,6 +81,13 @@ public struct Connection: Equatable {
     /// An array of the `Service`s that work with this `Connection`.
     public var worksWithServices: [Service] {
         return services.filter({ $0.isPrimary == false })
+    }
+    
+    /// The service that is being connected to the primary (owner) service
+    /// This defines the service icon & brand color of the button in its initial and final (activated) states
+    /// It is always the first service connected
+    public var connectingService: Service {
+        return worksWithServices.first ?? primaryService
     }
     
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
