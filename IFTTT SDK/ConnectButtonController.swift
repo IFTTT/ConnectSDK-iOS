@@ -178,23 +178,26 @@ public class ConnectButtonController {
         present(aboutViewController)
     }
 
+    /// A comprehensive list of copy for the Connect Button's footer
+    ///
+    /// - worksWithIFTTT: Default message used for most button states
+    /// - enterEmail: Message for the enter email step
+    /// - emailInvalid: Message when the entered email is invalid
     enum FooterMessages {
-        case
-        poweredBy,
-        enterEmail,
-        emailInvalid,
-        verifying(email: String),
-        signedIn(username: String),
-        connect(Connection.Service, to: Connection.Service),
-        manage
+        case worksWithIFTTT
+        case enterEmail
+        case emailInvalid
 
         private struct Constants {
+            static let textColor = UIColor(white: 0.68, alpha: 1)
+            
+            static let errorTextColor = UIColor.red
+            
             static var footnoteFont: UIFont {
-                return .footnote()
+                return .footnote(weight: .demiBold)
             }
-
-            static var footnoteBoldFont: UIFont {
-                return .footnote(weight: .bold)
+            static var iftttWordmarkFont: UIFont {
+                return .footnote(weight: .heavy)
             }
         }
 
@@ -204,56 +207,59 @@ public class ConnectButtonController {
             return 2.1 * Constants.footnoteFont.lineHeight
         }
 
-        private var iftttText: NSAttributedString {
+        private var iftttWordmark: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : Constants.footnoteBoldFont])
+                                      attributes: [.font : Constants.iftttWordmarkFont,
+                                                   .foregroundColor : Constants.textColor])
         }
 
         var value: ConnectButton.LabelValue {
             return .attributed(attributedString)
         }
+        
+        var isErrorMessage: Bool {
+            switch self {
+            case .worksWithIFTTT, .enterEmail:
+                return false
+            case .emailInvalid:
+                return true
+            }
+        }
 
+        private var textColor: UIColor {
+            if isErrorMessage {
+                return Constants.errorTextColor
+            } else {
+                return Constants.textColor
+            }
+        }
+        
         var attributedString: NSAttributedString {
 
             switch self {
-            case .poweredBy:
-                let text = NSMutableAttributedString(string: "button.footer.powered_by".localized,
-                                                     attributes: [.font : Constants.footnoteBoldFont])
-                text.append(iftttText)
+            case .worksWithIFTTT:
+                let text = NSMutableAttributedString(string: "button.footer.works_with".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : textColor])
+                text.append(iftttWordmark)
                 return text
-
+                
             case .enterEmail:
-                let text = "button.footer.email.legal".localized
-                return LegalTermsText.string(withPrefix: text, activateLinks: false, attributes: [.font : Constants.footnoteFont])
+                let text = NSMutableAttributedString(string: "button.footer.email.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : textColor])
+                text.append(iftttWordmark)
+                text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
+                text.append(NSAttributedString(string: "button.footer.email.postfix".localized,
+                                               attributes: [.font : Constants.footnoteFont,
+                                                            .foregroundColor : textColor,
+                                                            .underlineStyle : NSUnderlineStyle.single.rawValue]))
+                return text
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
-
-            case .verifying(let email):
-                let text = NSMutableAttributedString(string: "button.footer.email.sign_in".localized(with: email), attributes: [.font : Constants.footnoteFont])
-                let changeEmailText = NSAttributedString(string: "button.footer.email.change_email".localized, attributes: [.font : Constants.footnoteBoldFont,
-                                                                                                                            .underlineStyle : NSUnderlineStyle.single.rawValue])
-                text.append(changeEmailText)
-                return text
-
-            case .signedIn(let username):
-                let text = NSMutableAttributedString(string: username,
-                                                     attributes: [.font: Constants.footnoteBoldFont])
-                text.append(NSAttributedString(string: "button.footer.signed_in".localized,
-                                               attributes: [.font : Constants.footnoteFont]))
-                text.append(iftttText)
-                return text
-
-            case .connect(let fromService, let toService):
-                let text = String(format: "button.footer.connect".localized, fromService.name, toService.name)
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont])
-
-            case .manage:
-                let text = NSMutableAttributedString(string: "button.footer.manage".localized,
-                                                     attributes: [.font : Constants.footnoteFont])
-                text.append(iftttText)
-                return text
+                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
+                                                                     .foregroundColor : textColor])
             }
         }
     }
@@ -483,14 +489,6 @@ public class ConnectButtonController {
         case disconnected
     }
 
-    /// Wraps various tasks associated with accessing an account so they can be tracked or interrupted.
-    private struct AccessAccountTask {
-        let progressAnimation: ConnectButton.Animator
-        let dataTask: URLSessionDataTask
-    }
-
-    private var accessAccountTask: AccessAccountTask?
-
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
         // Cleanup
@@ -537,7 +535,7 @@ public class ConnectButtonController {
         }
 
         button.animator(for: .buttonState(buttonState(for: connection.status),
-                                          footerValue: FooterMessages.poweredBy.value)).preform(animated: animated)
+                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform(animated: animated)
 
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
@@ -571,13 +569,15 @@ public class ConnectButtonController {
 
         let timeout: TimeInterval = 3 // Network request timeout
 
+        let message: String
         switch lookupMethod {
-        case let .email(userEmail):
-            button.animator(for: .buttonState(.verifyingEmail(message: "button.state.checking_account".localized), footerValue: FooterMessages.verifying(email: userEmail).value)).preform()
-
+        case .email:
+            message = "button.state.checking_account".localized
         case .token:
-            button.animator(for: .buttonState(.accessingAccount(message: "button.state.accessing_existing_account".localized), footerValue: FooterMessages.poweredBy.value)).preform()
+            message = "button.state.accessing_existing_account".localized
         }
+        button.animator(for: .buttonState(.verifyingEmail(message: message),
+                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
         button.footerInteraction.isTapEnabled = true
 
@@ -593,12 +593,10 @@ public class ConnectButtonController {
             case .success(let user):
                 if case .email(let email) = user.id, user.isExistingUser == false {
 
-                    if self.accessAccountTask != nil {
-                        // There is no account for this user
-                        // Show a fake message that we are creating an account
-                        // Then move to the first step of the service connection flow
-                        self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).preform()
-                    }
+                    // There is no account for this user
+                    // Show a fake message that we are creating an account
+                    // Then move to the first step of the service connection flow
+                    self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).preform()
 
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
                     progress.onComplete { position in
@@ -617,13 +615,7 @@ public class ConnectButtonController {
                 self.transition(to: .failed(.networkError(error)))
             }
         }
-
-        guard let accountLookupDataTask = dataTask else {
-            assertionFailure("It is expected that you get a non nil data task.")
-            return
-        }
-
-        accessAccountTask = AccessAccountTask(progressAnimation: progress, dataTask: accountLookupDataTask)
+        dataTask?.resume()
 
         button.emailInteraction.onConfirm = { [weak self] email in
             guard let self = self else {
@@ -636,22 +628,20 @@ public class ConnectButtonController {
     }
 
     private func transitionToLogInExistingUser(userId: User.Id) {
-        openActivationURL(connection.activationURL(for: .login(userId), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
+        openActivationURL(connection.activationURL(for: .login(userId),
+                                                   credentialProvider: connectionConfiguration.credentialProvider,
+                                                   activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
     }
 
     private func transitionToServiceAuthentication(service: Connection.Service, newUserEmail: String?) {
-        let footer: ConnectButtonController.FooterMessages
-
-        if let newUserEmail = newUserEmail {
-            footer = FooterMessages.verifying(email: newUserEmail)
-        } else {
-            footer = service == connection.primaryService ? FooterMessages.poweredBy : FooterMessages.connect(service, to: connection.primaryService)
-        }
-
         button.footerInteraction.isTapEnabled = true
-        button.animator(for: .buttonState(.continueToService(service: service.connectButtonService, message: "button.state.sign_in".localized(with: service.name)), footerValue: footer.value)).preform()
+        button.animator(for: .buttonState(.continueToService(service: service.connectButtonService,
+                                                             message: "button.state.sign_in".localized(with: service.name)),
+                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
-        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail), credentialProvider: connectionConfiguration.credentialProvider, activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
+                                           credentialProvider: connectionConfiguration.credentialProvider,
+                                           activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
 
         let timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] timer in
             self?.openActivationURL(url)
@@ -666,7 +656,8 @@ public class ConnectButtonController {
     }
 
     private func transitionToAuthenticationComplete() {
-        button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized), footerValue: FooterMessages.poweredBy.value)).preform()
+        button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized),
+                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
         let progressBar = button.progressBar(timeout: 2)
         progressBar.preform()
@@ -690,7 +681,7 @@ public class ConnectButtonController {
 
     private func transitionToConnected(animated: Bool) {
         button.animator(for: .buttonState(buttonState(for: .enabled),
-                                          footerValue: FooterMessages.manage.value)).preform(animated: animated)
+                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform(animated: animated)
 
         button.footerInteraction.isTapEnabled = true
 

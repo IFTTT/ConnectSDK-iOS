@@ -24,14 +24,10 @@
 
 "button.email.placeholder" = "Your email";
 
-"button.footer.powered_by" = "POWERED BY ";
-"button.footer.email.legal" = "You are creating or using your IFTTT account subject to ";
+"button.footer.works_with" = "WORKS WITH ";
 "button.footer.email.invalid" = "Enter valid email";
-"button.footer.email.sign_in" = "Using %@. ";
-"button.footer.email.change_email" = "Change.";
-"button.footer.signed_in" = " sign in to ";
-"button.footer.connect" = "Sign in to connect %@ with %@";
-"button.footer.manage" = "You're all set. Manage connection with ";
+"button.footer.email.prefix" = "Secure connections with ";
+"button.footer.email.postfix" = "Learn more";
 
 "about.title" = " connects %@ and %@";
 "about.connect" = "Unlock new features when your favorite things work together";

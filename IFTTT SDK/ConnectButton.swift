@@ -19,6 +19,7 @@ fileprivate struct Layout {
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2
+    static let buttonFooterSpacing: CGFloat = 20
 }
 
 
@@ -971,14 +972,32 @@ public class ConnectButton: UIView {
         if shouldHideFooter {
             stackView = UIStackView(arrangedSubviews: [backgroundView])
         } else {
-            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelAnimator.primary.view])
+            let footerLabel = footerLabelAnimator.primary.view
             
-            footerLabelAnimator.primary.view.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumFooterLabelHeight)
+            // Supports minimum footer height
+            let footerLabelContainer = UIView()
+            footerLabelContainer.addSubview(footerLabel)
+            
+            // Lock it in place below the button
+            footerLabel.constrain.edges(to: footerLabelContainer, edges: [.left, .top, .right])
+            
+            // But allow it to be shorter than its container
+            footerLabel.bottomAnchor.constraint(lessThanOrEqualTo: footerLabelContainer.bottomAnchor)
+            let breakableBottomConstraint = footerLabel.bottomAnchor.constraint(equalTo: footerLabelContainer.bottomAnchor)
+            breakableBottomConstraint.priority = .defaultHigh
+            
+            // Ask the label to keep its intrinsic height
+            footerLabel.setContentHuggingPriority(.required, for: .vertical)
+            
+            // Finally ensure the container never goes below the minimum height
+            minimumFooterHeightConstraint = footerLabelContainer.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumFooterLabelHeight)
             minimumFooterHeightConstraint?.isActive = true
+            
+            stackView = UIStackView(arrangedSubviews: [backgroundView, footerLabelContainer])
         }
 
         stackView.axis = .vertical
-        stackView.spacing = 20
+        stackView.spacing = Layout.buttonFooterSpacing
         
         addSubview(stackView)
         stackView.constrain.edges(to: self, edges: [.top])
