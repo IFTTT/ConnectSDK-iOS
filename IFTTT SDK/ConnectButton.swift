@@ -1170,8 +1170,7 @@ private extension ConnectButton {
             transitionToLoading(animator: animator)
             
         case .loadingFailed:
-            pulseAnimation?.stopAnimation(true)
-            pulseAnimation = nil
+            stopPulseAnimation()
             
             animator.addAnimations {
                 self.primaryLabelAnimator.primary.label.alpha = 1
