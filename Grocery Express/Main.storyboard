@@ -99,16 +99,16 @@
                                         <rect key="frame" x="0.0" y="90.333333333333343" width="354" height="61.333333333333343"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Al9-gP-dtd" userLabel="New user flow">
-                                                <rect key="frame" x="0.0" y="0.0" width="188.33333333333334" height="61.333333333333336"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="191" height="61.333333333333336"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="New user flow" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JHU-rC-gju">
-                                                        <rect key="frame" x="0.0" y="0.0" width="188.33333333333334" height="20.333333333333332"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="191" height="20.333333333333332"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MtM-dE-KSy">
-                                                        <rect key="frame" x="0.0" y="30.333333333333314" width="190.33333333333334" height="31"/>
+                                                        <rect key="frame" x="0.0" y="30.333333333333314" width="193" height="31"/>
                                                         <connections>
                                                             <action selector="newUserChanged:" destination="jya-bU-N4g" eventType="valueChanged" id="ZQs-vk-PLU"/>
                                                         </connections>
@@ -116,16 +116,16 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="atH-Q8-9fu" userLabel="Fetch Connection">
-                                                <rect key="frame" x="218.33333333333337" y="0.0" width="135.66666666666663" height="61.333333333333336"/>
+                                                <rect key="frame" x="221" y="0.0" width="133" height="61.333333333333336"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Fetch Connection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf3-1N-7mu" userLabel="Fetch Connection">
-                                                        <rect key="frame" x="0.0" y="0.0" width="135.66666666666666" height="20.333333333333332"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Fetch connection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf3-1N-7mu" userLabel="Fetch Connection">
+                                                        <rect key="frame" x="0.0" y="0.0" width="133" height="20.333333333333332"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ecF-b0-XYN">
-                                                        <rect key="frame" x="0.0" y="30.333333333333314" width="137.66666666666666" height="31"/>
+                                                        <rect key="frame" x="0.0" y="30.333333333333314" width="135" height="31"/>
                                                         <connections>
                                                             <action selector="fetchConnectionChanged:" destination="jya-bU-N4g" eventType="valueChanged" id="BZq-lh-NVi"/>
                                                         </connections>
