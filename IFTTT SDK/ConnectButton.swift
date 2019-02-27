@@ -1272,14 +1272,6 @@ private extension ConnectButton {
             
             self.switchControl.isOn = true
             self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-            self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
-            self.switchControl.alpha = 0
-            
-            self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
-            
-            self.emailConfirmButton.transform = .identity
-            self.emailConfirmButton.maskedEndCaps = .right
-            self.emailConfirmButton.alpha = 1
             
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 0
@@ -1294,6 +1286,18 @@ private extension ConnectButton {
             case .start:
                 self.switchControl.isOn = false
             case .end:
+                let emailButtonAnimator = UIViewPropertyAnimator(duration: 0.3, curve: .easeIn) {
+                    self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
+                    self.switchControl.alpha = 0
+                    
+                    self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
+                    
+                    self.emailConfirmButton.transform = .identity
+                    self.emailConfirmButton.maskedEndCaps = .right
+                    self.emailConfirmButton.alpha = 1
+                }
+                emailButtonAnimator.startAnimation()
+                
                 // Fade in the email once the first animation completes
                 let a = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
                     self.emailEntryField.alpha = 1
