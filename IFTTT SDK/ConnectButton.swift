@@ -411,7 +411,6 @@ public class ConnectButton: UIView {
         switchControl.addGestureRecognizer(toggleTapGesture)
         toggleTapGesture.delaysTouchesBegan = true
         toggleTapGesture.delegate = self
-        toggleTapGesture.performHighlight = nil
         
         switchControl.addGestureRecognizer(toggleDragGesture)
         toggleDragGesture.delegate = self
