@@ -198,7 +198,8 @@ public class ConnectButtonController {
     }
     
     private func exponentialBackoffTiming(for retryCount: Int) -> DispatchTimeInterval {
-        return .seconds(retryCount * 2)
+        let seconds = Int(pow(2, Double(retryCount)))
+        return .seconds(seconds)
     }
 
     private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
