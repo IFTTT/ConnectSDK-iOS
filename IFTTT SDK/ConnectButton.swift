@@ -1210,7 +1210,6 @@ private extension ConnectButton {
     
     private func transitionToLoading(animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
-        footerLabelAnimator.configure(ConnectButtonController.FooterMessages.worksWithIFTTT.value)
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = .black
