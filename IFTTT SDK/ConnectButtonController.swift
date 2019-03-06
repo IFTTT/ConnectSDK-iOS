@@ -155,6 +155,7 @@ public class ConnectButtonController {
     }
 
     private func fetchConnection(for id: String) {
+        button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).preform(animated: false)
         button.animator(for: .buttonState(.loading)).preform(animated: true)
 
         connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
