@@ -574,7 +574,7 @@ public class ConnectButtonController {
             if self.credentialProvider.iftttServiceToken != nil {
                 return .buttonState(.slideToConnectWithToken)
             } else {
-                return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)
+                return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
             }
         }
 

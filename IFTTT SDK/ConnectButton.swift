@@ -136,28 +136,32 @@ public class ConnectButton: UIView {
     struct Transition {
         let state: AnimationState?
         let footerValue: LabelValue?
+        let duration: TimeInterval
         
-        init(state: AnimationState) {
+        init(state: AnimationState, duration: TimeInterval) {
             self.state = state
             self.footerValue = nil
+            self.duration = duration
         }
-        init(footerValue: LabelValue) {
+        init(footerValue: LabelValue, duration: TimeInterval) {
             self.state = nil
             self.footerValue = footerValue
+            self.duration = duration
         }
-        init(state: AnimationState?, footerValue: LabelValue?) {
+        init(state: AnimationState?, footerValue: LabelValue?, duration: TimeInterval) {
             self.state = state
             self.footerValue = footerValue
+            self.duration = duration
         }
         
-        static func buttonState(_ state: AnimationState) -> Transition {
-            return Transition(state: state, footerValue: nil)
+        static func buttonState(_ state: AnimationState, duration: TimeInterval = 0.5) -> Transition {
+            return Transition(state: state, footerValue: nil, duration: duration)
         }
-        static func buttonState(_ state: AnimationState, footerValue: LabelValue) -> Transition {
-            return Transition(state: state, footerValue: footerValue)
+        static func buttonState(_ state: AnimationState, footerValue: LabelValue, duration: TimeInterval = 0.5) -> Transition {
+            return Transition(state: state, footerValue: footerValue, duration: duration)
         }
-        static func footerValue(_ value: LabelValue) -> Transition {
-            return Transition(state: nil, footerValue: value)
+        static func footerValue(_ value: LabelValue, duration: TimeInterval = 0.5) -> Transition {
+            return Transition(state: nil, footerValue: value, duration: duration)
         }
     }
     
@@ -208,7 +212,7 @@ public class ConnectButton: UIView {
     }
     
     func animator(for transition: Transition) -> Animator {
-        let animator = Animator(animator: UIViewPropertyAnimator(duration: 0.5,
+        let animator = Animator(animator: UIViewPropertyAnimator(duration: transition.duration,
                                                                  timingParameters: UISpringTimingParameters(dampingRatio: 1)))
         if let state = transition.state {
             // We currently can't support interrupting animations with other touch events
@@ -1265,48 +1269,52 @@ private extension ConnectButton {
         progressBar.configure(with: nil)
         progressBar.alpha = 0
         
+        self.emailConfirmButton.transform = .identity
+        self.emailConfirmButton.maskedEndCaps = .right
+        
         emailEntryField.alpha = 0
         animator.addAnimations {
             self.backgroundView.backgroundColor = Style.Color.lightGrey
-            
             self.switchControl.isOn = true
-            self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-            
+            self.switchControl.knob.layer.shadowOpacity = 0.0
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 0
+            self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
         }
         
+        animator.addAnimations({
+            self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
+            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.iconView.alpha = 0
+            self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+        }, delayFactor: 0.25)
+        
+        animator.addAnimations({
+            self.emailConfirmButton.alpha = 1
+            self.emailEntryField.alpha = 1
+        }, delayFactor: 0.7)
+        
         animator.addCompletion { position in
-            // Keep the knob is a "clean" state since we don't animate backwards from this step
-            self.switchControl.knob.transform = .identity
-            self.switchControl.knob.maskedEndCaps = .all // reset
-            
             switch position {
             case .start:
                 self.switchControl.isOn = false
+                // Keep the knob is a "clean" state since we don't animate backwards from this step
+                self.switchControl.knob.transform = .identity
+                self.switchControl.knob.maskedEndCaps = .all // reset
             case .end:
-                let emailButtonAnimator = UIViewPropertyAnimator(duration: 0.3, curve: .easeIn) {
-                    self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
-                    self.switchControl.alpha = 0
-                    
-                    self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
-                    
-                    self.emailConfirmButton.transform = .identity
-                    self.emailConfirmButton.maskedEndCaps = .right
-                    self.emailConfirmButton.alpha = 1
-                }
-                emailButtonAnimator.startAnimation()
+                let endAnimator = UIViewPropertyAnimator(duration: 0.25, timingParameters: UISpringTimingParameters(dampingRatio: 1))
                 
-                // Fade in the email once the first animation completes
-                let a = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
-                    self.emailEntryField.alpha = 1
-                }
-                a.addCompletion { _ in
+                endAnimator.addAnimations({
+                    self.switchControl.alpha = 0
+                }, delayFactor: 0.2)
+                
+                endAnimator.addCompletion { _ in
                     if suggestedEmail == nil || shouldBecomeFirstResponder {
                         self.emailEntryField.becomeFirstResponder()
                     }
                 }
-                a.startAnimation()
+                
+                endAnimator.startAnimation()
             default:
                 break
             }
