@@ -1295,18 +1295,17 @@ private extension ConnectButton {
         }, delayFactor: 0.7)
         
         animator.addCompletion { position in
+            // Keep the knob is a "clean" state since we don't animate backwards from this step
+            self.switchControl.knob.transform = .identity
+            self.switchControl.knob.maskedEndCaps = .all // reset
+            
             switch position {
             case .start:
                 self.switchControl.isOn = false
-                // Keep the knob is a "clean" state since we don't animate backwards from this step
-                self.switchControl.knob.transform = .identity
-                self.switchControl.knob.maskedEndCaps = .all // reset
             case .end:
-                let endAnimator = UIViewPropertyAnimator(duration: 0.25, timingParameters: UISpringTimingParameters(dampingRatio: 1))
-                
-                endAnimator.addAnimations({
+                let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
                     self.switchControl.alpha = 0
-                }, delayFactor: 0.2)
+                }
                 
                 endAnimator.addCompletion { _ in
                     if suggestedEmail == nil || shouldBecomeFirstResponder {
