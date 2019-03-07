@@ -1251,6 +1251,22 @@ private extension ConnectButton {
             self.backgroundView.backgroundColor = Style.Color.grey
             self.switchControl.isOn = isOn
         }
+        
+        animator.addCompletion { position in
+            switch position {
+            case .start:
+                self.backgroundView.backgroundColor = .black
+                self.switchControl.isOn = !isOn
+            case .end:
+                let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
+                    self.switchControl.alpha = 0
+                }
+                
+                endAnimator.startAnimation()
+            case .current:
+                break
+            }
+        }
     }
     
     private func transitionToEmail(service: Service, suggestedEmail: String?, animator: UIViewPropertyAnimator, shouldBecomeFirstResponder: Bool = false) {
