@@ -182,6 +182,13 @@ public class ConnectButton: UIView {
             // The animation will automatically finish if it hits 0 or 1
             animator.fractionComplete = max(0.001, min(0.999, progress))
         }
+        
+        /// The progress of the animation represented as a TimeInterval
+        /// Returns the time elapsed based on the fractionComplete of the animation
+        var timeElasped: TimeInterval {
+            return TimeInterval(1 - animator.fractionComplete) * animator.duration
+        }
+        
         func resume(with timing: UITimingCurveProvider, duration: TimeInterval? = nil) {
             var durationFactor: CGFloat = 1
             if let continueDuration = duration {
