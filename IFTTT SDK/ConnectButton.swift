@@ -122,7 +122,7 @@ public class ConnectButton: UIView {
         case slideToConnectWithToken
         case slideToDisconnect(message: String)
         case disconnecting(message: String)
-        case enterEmail(suggestedEmail: String)
+        case enterEmail(service: Service, suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
         case continueToService(service: Service, message: String)
@@ -1186,8 +1186,8 @@ private extension ConnectButton {
         case .slideToConnectWithToken:
             transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
 
-        case let .enterEmail(suggestedEmail):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
+        case let .enterEmail(service, suggestedEmail):
+            transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
             
         case let .accessingAccount(message):
             transitionToAccessingAccount(message: message, animator: animator)
@@ -1253,7 +1253,7 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToEmail(suggestedEmail: String?, animator: UIViewPropertyAnimator, shouldBecomeFirstResponder: Bool = false) {
+    private func transitionToEmail(service: Service, suggestedEmail: String?, animator: UIViewPropertyAnimator, shouldBecomeFirstResponder: Bool = false) {
         let email = emailEntryField.text?.isEmpty != true ? emailEntryField.text : suggestedEmail
         let scaleFactor = Layout.height / Layout.knobDiameter
         
@@ -1269,9 +1269,6 @@ private extension ConnectButton {
         progressBar.configure(with: nil)
         progressBar.alpha = 0
         
-        self.emailConfirmButton.transform = .identity
-        self.emailConfirmButton.maskedEndCaps = .right
-        
         emailEntryField.alpha = 0
         animator.addAnimations {
             self.backgroundView.backgroundColor = Style.Color.lightGrey
@@ -1280,6 +1277,8 @@ private extension ConnectButton {
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 0
             self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
+            self.emailConfirmButton.transform = .identity
+            self.emailConfirmButton.maskedEndCaps = .right
         }
         
         animator.addAnimations({
@@ -1295,13 +1294,29 @@ private extension ConnectButton {
         }, delayFactor: 0.7)
         
         animator.addCompletion { position in
-            // Keep the knob is a "clean" state since we don't animate backwards from this step
-            self.switchControl.knob.transform = .identity
-            self.switchControl.knob.maskedEndCaps = .all // reset
             
             switch position {
             case .start:
+                // Keep the knob is a "clean" state since we don't animate backwards from this step
+                self.switchControl.knob.transform = .identity
+                self.switchControl.knob.maskedEndCaps = .all // reset
+                self.switchControl.knob.layer.shadowOpacity = 0.25
+                self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+                self.switchControl.knob.iconView.alpha = 1.0
+                self.emailEntryField.alpha = 0.0
+                
                 self.switchControl.isOn = false
+                self.switchControl.alpha = 1
+                
+                self.progressBar.alpha = 0
+                self.backgroundView.backgroundColor = .black
+                
+                self.emailConfirmButton.transform = .identity
+                self.emailConfirmButton.maskedEndCaps = .all
+                self.emailConfirmButton.alpha = 0
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.border.opacity = 1
             case .end:
                 let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
                     self.switchControl.alpha = 0
@@ -1314,6 +1329,7 @@ private extension ConnectButton {
                 }
                 
                 endAnimator.startAnimation()
+                
             default:
                 break
             }
