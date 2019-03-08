@@ -122,7 +122,7 @@ public class ConnectButton: UIView {
         case slideToConnectWithToken
         case slideToDisconnect(message: String)
         case disconnecting(message: String)
-        case enterEmail(suggestedEmail: String)
+        case enterEmail(service: Service, suggestedEmail: String)
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
         case continueToService(service: Service, message: String)
@@ -136,28 +136,32 @@ public class ConnectButton: UIView {
     struct Transition {
         let state: AnimationState?
         let footerValue: LabelValue?
+        let duration: TimeInterval
         
-        init(state: AnimationState) {
+        init(state: AnimationState, duration: TimeInterval) {
             self.state = state
             self.footerValue = nil
+            self.duration = duration
         }
-        init(footerValue: LabelValue) {
+        init(footerValue: LabelValue, duration: TimeInterval) {
             self.state = nil
             self.footerValue = footerValue
+            self.duration = duration
         }
-        init(state: AnimationState?, footerValue: LabelValue?) {
+        init(state: AnimationState?, footerValue: LabelValue?, duration: TimeInterval) {
             self.state = state
             self.footerValue = footerValue
+            self.duration = duration
         }
         
-        static func buttonState(_ state: AnimationState) -> Transition {
-            return Transition(state: state, footerValue: nil)
+        static func buttonState(_ state: AnimationState, duration: TimeInterval = 0.5) -> Transition {
+            return Transition(state: state, footerValue: nil, duration: duration)
         }
-        static func buttonState(_ state: AnimationState, footerValue: LabelValue) -> Transition {
-            return Transition(state: state, footerValue: footerValue)
+        static func buttonState(_ state: AnimationState, footerValue: LabelValue, duration: TimeInterval = 0.5) -> Transition {
+            return Transition(state: state, footerValue: footerValue, duration: duration)
         }
-        static func footerValue(_ value: LabelValue) -> Transition {
-            return Transition(state: nil, footerValue: value)
+        static func footerValue(_ value: LabelValue, duration: TimeInterval = 0.5) -> Transition {
+            return Transition(state: nil, footerValue: value, duration: duration)
         }
     }
     
@@ -215,7 +219,7 @@ public class ConnectButton: UIView {
     }
     
     func animator(for transition: Transition) -> Animator {
-        let animator = Animator(animator: UIViewPropertyAnimator(duration: 0.5,
+        let animator = Animator(animator: UIViewPropertyAnimator(duration: transition.duration,
                                                                  timingParameters: UISpringTimingParameters(dampingRatio: 1)))
         if let state = transition.state {
             // We currently can't support interrupting animations with other touch events
@@ -1189,8 +1193,8 @@ private extension ConnectButton {
         case .slideToConnectWithToken:
             transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
 
-        case let .enterEmail(suggestedEmail):
-            transitionToEmail(suggestedEmail: suggestedEmail, animator: animator)
+        case let .enterEmail(service, suggestedEmail):
+            transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
             
         case let .accessingAccount(message):
             transitionToAccessingAccount(message: message, animator: animator)
@@ -1253,9 +1257,25 @@ private extension ConnectButton {
             self.backgroundView.backgroundColor = Style.Color.grey
             self.switchControl.isOn = isOn
         }
+        
+        animator.addCompletion { position in
+            switch position {
+            case .start:
+                self.backgroundView.backgroundColor = .black
+                self.switchControl.isOn = !isOn
+            case .end:
+                let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
+                    self.switchControl.alpha = 0
+                }
+                
+                endAnimator.startAnimation()
+            case .current:
+                break
+            }
+        }
     }
     
-    private func transitionToEmail(suggestedEmail: String?, animator: UIViewPropertyAnimator, shouldBecomeFirstResponder: Bool = false) {
+    private func transitionToEmail(service: Service, suggestedEmail: String?, animator: UIViewPropertyAnimator, shouldBecomeFirstResponder: Bool = false) {
         let email = emailEntryField.text?.isEmpty != true ? emailEntryField.text : suggestedEmail
         let scaleFactor = Layout.height / Layout.knobDiameter
         
@@ -1274,41 +1294,64 @@ private extension ConnectButton {
         emailEntryField.alpha = 0
         animator.addAnimations {
             self.backgroundView.backgroundColor = Style.Color.lightGrey
-            
             self.switchControl.isOn = true
-            self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-            self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
-            self.switchControl.alpha = 0
-            
-            self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
-            
-            self.emailConfirmButton.transform = .identity
-            self.emailConfirmButton.maskedEndCaps = .right
-            self.emailConfirmButton.alpha = 1
-            
+            self.switchControl.knob.layer.shadowOpacity = 0.0
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 0
+            self.emailConfirmButtonTrack.layoutIfNeeded() // Move the emailConfirmButton along with the switch
+            self.emailConfirmButton.transform = .identity
+            self.emailConfirmButton.maskedEndCaps = .right
         }
         
+        animator.addAnimations({
+            self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
+            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.iconView.alpha = 0
+            self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+        }, delayFactor: 0.25)
+        
+        animator.addAnimations({
+            self.emailConfirmButton.alpha = 1
+            self.emailEntryField.alpha = 1
+        }, delayFactor: 0.7)
+        
         animator.addCompletion { position in
-            // Keep the knob is a "clean" state since we don't animate backwards from this step
-            self.switchControl.knob.transform = .identity
-            self.switchControl.knob.maskedEndCaps = .all // reset
             
             switch position {
             case .start:
+                // Keep the knob is a "clean" state since we don't animate backwards from this step
+                self.switchControl.knob.transform = .identity
+                self.switchControl.knob.maskedEndCaps = .all // reset
+                self.switchControl.knob.layer.shadowOpacity = 0.25
+                self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+                self.switchControl.knob.iconView.alpha = 1.0
+                self.emailEntryField.alpha = 0.0
+                
                 self.switchControl.isOn = false
+                self.switchControl.alpha = 1
+                
+                self.progressBar.alpha = 0
+                self.backgroundView.backgroundColor = .black
+                
+                self.emailConfirmButton.transform = .identity
+                self.emailConfirmButton.maskedEndCaps = .all
+                self.emailConfirmButton.alpha = 0
+                
+                // This is only relevent for dark mode when we draw a border around the switch
+                self.backgroundView.border.opacity = 1
             case .end:
-                // Fade in the email once the first animation completes
-                let a = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
-                    self.emailEntryField.alpha = 1
+                let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
+                    self.switchControl.alpha = 0
                 }
-                a.addCompletion { _ in
+                
+                endAnimator.addCompletion { _ in
                     if suggestedEmail == nil || shouldBecomeFirstResponder {
                         self.emailEntryField.becomeFirstResponder()
                     }
                 }
-                a.startAnimation()
+                
+                endAnimator.startAnimation()
+                
             default:
                 break
             }
