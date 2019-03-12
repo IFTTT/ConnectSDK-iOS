@@ -112,6 +112,7 @@ public class ConnectButtonController {
     public private(set) weak var delegate: ConnectButtonControllerDelegate?
 
     private let connectionConfiguration: ConnectionConfiguration
+    private let connectionActivationFlow: ConnectionActivationFlow
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
 
@@ -124,6 +125,9 @@ public class ConnectButtonController {
     public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate) {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
+        self.connectionActivationFlow = ConnectionActivationFlow(connectionId: connectionConfiguration.connectionId,
+                                                                 credentialProvider: connectionConfiguration.credentialProvider,
+                                                                 activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         setupConnection(for: connection, animated: false)
@@ -502,6 +506,7 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     enum ActivationStep {
         case initial(animated: Bool)
+        case appHandoff
         case enterEmail
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User.Id)
@@ -531,6 +536,8 @@ public class ConnectButtonController {
         switch step {
         case .initial(let animated):
             transitionToInitalization(connection: connection, animated: animated)
+        case .appHandoff:
+            transitionToAppHandoff()
         case .enterEmail:
             self.transition(to: .initial(animated: false))
             self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
@@ -565,14 +572,19 @@ public class ConnectButtonController {
             self?.showAboutPage()
         }
 
-        button.animator(for: .buttonState(buttonState(forConnectionStatus: connection.status, service: connection.connectingService),
-                                          footerValue: FooterMessages.worksWithIFTTT.value)).preform(animated: animated)
+        let initialButtonState = ConnectButton.Transition.buttonState(buttonState(forConnectionStatus: connection.status,
+                                                                                  service: connection.connectingService),
+                                                                      footerValue: FooterMessages.worksWithIFTTT.value)
+        button.animator(for: initialButtonState).preform(animated: animated)
 
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
 
-        button.toggleInteraction.toggleTransition = {
-            if self.credentialProvider.iftttServiceToken != nil {
+        button.toggleInteraction.toggleTransition = { [weak self] in
+            guard let self = self else {
+                return initialButtonState
+            }
+            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.iftttServiceToken != nil {
                 return .buttonState(.slideToConnectWithToken)
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
@@ -580,8 +592,11 @@ public class ConnectButtonController {
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
-            if let token = self?.credentialProvider.iftttServiceToken {
-                self?.transition(to: .identifyUser(.token(token)))
+            guard let self = self else { return }
+            if self.connectionActivationFlow.isAppHandoffAvailable {
+                self.transition(to: .appHandoff)
+            } else if let token = self.credentialProvider.iftttServiceToken {
+                self.transition(to: .identifyUser(.token(token)))
             }
         }
 
@@ -595,6 +610,10 @@ public class ConnectButtonController {
         }
     }
 
+    private func transitionToAppHandoff() {
+        connectionActivationFlow.performAppHandoff()
+    }
+    
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
         prepareActivationWebFlow(lookupMethod: lookupMethod)
 
@@ -659,9 +678,8 @@ public class ConnectButtonController {
     }
 
     private func transitionToLogInExistingUser(connection: Connection, userId: User.Id) {
-        openActivationURL(connection.activationURL(for: .login(userId),
-                                                   credentialProvider: connectionConfiguration.credentialProvider,
-                                                   activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL))
+        let url = connectionActivationFlow.loginUrl(userId: userId)
+        openActivationURL(url)
     }
 
     private func transitionToServiceAuthentication(connection: Connection, service: Connection.Service, newUserEmail: String?) {
@@ -670,9 +688,7 @@ public class ConnectButtonController {
                                                              message: "button.state.sign_in".localized(with: service.name)),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
-        let url = connection.activationURL(for: .serviceConnection(newUserEmail: newUserEmail),
-                                           credentialProvider: connectionConfiguration.credentialProvider,
-                                           activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+        let url = connectionActivationFlow.serviceConnectionUrl(newUserEmail: newUserEmail)
 
         let timeout = 2.0
         button.progressBar(timeout: timeout).preform()
