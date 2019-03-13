@@ -119,7 +119,7 @@ struct ConnectionActivationFlow {
     }
     
     struct Constants {
-        static let appHandoffURL = URL(string: "ifttt_handoff_v1://")!
+        static let appHandoffURL = URL(string: "ifttt-handoff-v1://connections")!
         static let url = URL(string: "https://ifttt.com/access/api")!
         
         struct QueryItem {
