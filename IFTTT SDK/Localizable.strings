@@ -27,6 +27,8 @@
 
 "button.footer.works_with" = "WORKS WITH ";
 "button.footer.email.invalid" = "Enter valid email";
+"button.footer.loading.failed.prefix" = "Make sure your phone has internet connection.";
+"button.footer.loading.failed.postfix" = "Retry";
 "button.footer.email.prefix" = "Secure connections with ";
 "button.footer.email.postfix" = "Learn more";
 

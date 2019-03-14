@@ -117,6 +117,7 @@ public class ConnectButton: UIView {
     
     enum AnimationState {
         case loading
+        case loadingFailed
         case connect(service: Service, message: String)
         case createAccount(message: String)
         case slideToConnectWithToken
@@ -1178,6 +1179,9 @@ private extension ConnectButton {
         case .loading:
             transitionToLoading(animator: animator)
             
+        case .loadingFailed:
+            footerLabelAnimator.transition(with: .rotateDown, updatedValue: ConnectButtonController.FooterMessages.loadingFailed.value, addingTo: animator)
+            
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
             
@@ -1220,6 +1224,8 @@ private extension ConnectButton {
     }
     
     private func transitionToLoading(animator: UIViewPropertyAnimator) {
+        stopPulseAnimation()
+        
         primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
         
         animator.addAnimations {

@@ -114,6 +114,7 @@ public class ConnectButtonController {
     private let connectionConfiguration: ConnectionConfiguration
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
+    private let reachability = Reachability()
 
     /// Creates a new `ConnectButtonController`.
     ///
@@ -130,6 +131,8 @@ public class ConnectButtonController {
     }
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
+        button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
+       
         guard let connection = connection else {
             fetchConnection(for: connectionConfiguration.connectionId)
             return
@@ -137,8 +140,6 @@ public class ConnectButtonController {
 
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
-
-        button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
 
         button.configureEmailField(placeholderText: "button.email.placeholder".localized,
                                    confirmButtonAsset: Assets.Button.emailConfirm)
@@ -153,23 +154,62 @@ public class ConnectButtonController {
             transition(to: .connected(animated: false))
         }
     }
-
-    private func fetchConnection(for id: String) {
-        button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).preform(animated: false)
+    
+    private var connectionFetchingDataTask: URLSessionDataTask?
+    
+    private func fetchConnection(for id: String, numberOfRetries: Int = 3, retryCount: Int = 0) {
         button.animator(for: .buttonState(.loading)).preform(animated: true)
+        button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).preform(animated: false)
+        connectionFetchingDataTask?.cancel()
+        connectionFetchingDataTask = nil
 
-        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
+        connectionFetchingDataTask = connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else { return }
-
+            
             switch response.result {
             case .success(let connection):
                 self.connection = connection
                 self.setupConnection(for: connection, animated: true)
 
             case .failure:
-                break
+                if retryCount < numberOfRetries {
+                    let count = retryCount + 1
+                    DispatchQueue.main.asyncAfter(deadline: .now() + self.exponentialBackoffTiming(for: count)) {
+                        self.fetchConnection(for: id, retryCount: count)
+                    }
+                } else {
+                    self.button.animator(for: .buttonState(.loadingFailed)).preform(animated: true)
+                    self.button.footerInteraction.isTapEnabled = true
+                    self.button.footerInteraction.onSelect = { [weak self] in
+                        self?.fetchConnection(for: id)
+                        self?.reachability?.stopNotifier()
+                    }
+                    self.setupReachabilityForConnectionLoading(id: id)
+                }
             }
         }
+    }
+    
+    private func setupReachabilityForConnectionLoading(id: String) {
+        reachability?.whenReachable = { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            
+            self.fetchConnection(for: id)
+            self.reachability?.stopNotifier()
+        }
+        
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            assertionFailure("Reachability was unable to start notifications due to error: \(error).")
+        }
+    }
+    
+    private func exponentialBackoffTiming(for retryCount: Int) -> DispatchTimeInterval {
+        let seconds = Int(pow(2, Double(retryCount)))
+        return .seconds(seconds)
     }
 
     private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
@@ -219,6 +259,7 @@ public class ConnectButtonController {
         case worksWithIFTTT
         case enterEmail
         case emailInvalid
+        case loadingFailed
 
         private struct Constants {
             static let textColor = UIColor(white: 0.68, alpha: 1)
@@ -253,7 +294,7 @@ public class ConnectButtonController {
             switch self {
             case .worksWithIFTTT, .enterEmail:
                 return false
-            case .emailInvalid:
+            case .emailInvalid, .loadingFailed:
                 return true
             }
         }
@@ -292,6 +333,16 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
                                                                      .foregroundColor : textColor])
+
+            case .loadingFailed:
+                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
+                
+                text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
+                text.append(NSAttributedString(string: "button.footer.loading.failed.postfix".localized,
+                                               attributes: [.font : Constants.footnoteFont,
+                                                            .foregroundColor : textColor,
+                                                            .underlineStyle : NSUnderlineStyle.single.rawValue]))
+                return text
             }
         }
     }
@@ -556,7 +607,7 @@ public class ConnectButtonController {
             transitionToDisconnected(connection: connection)
         }
     }
-
+    
     private func transitionToInitalization(connection: Connection, animated: Bool) {
         endActivationWebFlow()
 
@@ -600,14 +651,14 @@ public class ConnectButtonController {
 
         let timeout: TimeInterval = 3 // Network request timeout
 
-        let message: String
+        let state: ConnectButton.AnimationState
         switch lookupMethod {
         case .email:
-            message = "button.state.checking_account".localized
+            state = .verifyingEmail(message: "button.state.checking_account".localized)
         case .token:
-            message = "button.state.accessing_existing_account".localized
+            state = .accessingAccount(message: "button.state.accessing_existing_account".localized)
         }
-        button.animator(for: .buttonState(.verifyingEmail(message: message),
+        button.animator(for: .buttonState(state,
                                           footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
         button.footerInteraction.isTapEnabled = true

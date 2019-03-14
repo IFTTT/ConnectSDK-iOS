@@ -45,8 +45,10 @@ public final class ConnectionNetworkController {
     /// - Parameters:
     ///   - request: A `Connection.Request` to complete the network request on.
     ///   - completion: A `CompletionHandler` for providing a response of the data recieved from the request or an error that occured.
-    public func start(request: Connection.Request, completion: @escaping CompletionHandler) {
-        start(urlRequest: request.urlRequest, completion: completion)
+    /// - Returns: The `URLSessionDataTask` for the request.
+    @discardableResult
+    public func start(request: Connection.Request, completion: @escaping CompletionHandler) -> URLSessionDataTask {
+        return start(urlRequest: request.urlRequest, completion: completion)
     }
     
     /// Starts a task to fetch information from the network for the provided request.
@@ -54,8 +56,12 @@ public final class ConnectionNetworkController {
     /// - Parameters:
     ///   - urlRequest: A `URLRequest` to complete the network request on.
     ///   - completion: A `CompletionHandler` for providing a response of the data recieved from the request or an error that occured.
-    public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) {
-        task(urlRequest: urlRequest, minimumDuration: nil, completion: completion).resume()
+    /// - Returns: The `URLSessionDataTask` for the request.
+    @discardableResult
+    public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) -> URLSessionDataTask {
+        let dataTask = task(urlRequest: urlRequest, minimumDuration: nil, completion: completion)
+        dataTask.resume()
+        return dataTask
     }
     
     func start(urlRequest: URLRequest, waitUntil minimumDuration: TimeInterval, timeout: TimeInterval, completion: @escaping CompletionHandler) {
