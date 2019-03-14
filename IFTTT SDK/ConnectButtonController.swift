@@ -131,6 +131,8 @@ public class ConnectButtonController {
     }
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
+        button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
+       
         guard let connection = connection else {
             fetchConnection(for: connectionConfiguration.connectionId)
             return
@@ -138,8 +140,6 @@ public class ConnectButtonController {
 
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
-
-        button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
 
         button.configureEmailField(placeholderText: "button.email.placeholder".localized,
                                    confirmButtonAsset: Assets.Button.emailConfirm)
@@ -174,6 +174,11 @@ public class ConnectButtonController {
                     }
                 } else {
                     self.button.animator(for: .buttonState(.loadingFailed)).preform(animated: true)
+                    self.button.footerInteraction.isTapEnabled = true
+                    self.button.footerInteraction.onSelect = { [weak self] in
+                        self?.fetchConnection(for: id)
+                        self?.reachability?.stopNotifier()
+                    }
                     self.setupReachabilityForConnectionLoading(id: id)
                 }
             }
