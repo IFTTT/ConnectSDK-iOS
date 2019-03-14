@@ -158,6 +158,7 @@ public class ConnectButtonController {
     private var connectionFetchingDataTask: URLSessionDataTask?
     
     private func fetchConnection(for id: String, numberOfRetries: Int = 3, retryCount: Int = 0) {
+        button.animator(for: .buttonState(.loading)).preform(animated: true)
         button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).preform(animated: false)
         connectionFetchingDataTask?.cancel()
         connectionFetchingDataTask = nil
