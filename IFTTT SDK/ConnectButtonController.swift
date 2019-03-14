@@ -155,10 +155,14 @@ public class ConnectButtonController {
         }
     }
     
+    private var connectionFetchingDataTask: URLSessionDataTask?
+    
     private func fetchConnection(for id: String, numberOfRetries: Int = 3, retryCount: Int = 0) {
         button.animator(for: .buttonState(.loading)).preform(animated: true)
+        connectionFetchingDataTask?.cancel()
+        connectionFetchingDataTask = nil
 
-        connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
+        connectionFetchingDataTask = connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: credentialProvider)) { [weak self] response in
             guard let self = self else { return }
             
             switch response.result {
