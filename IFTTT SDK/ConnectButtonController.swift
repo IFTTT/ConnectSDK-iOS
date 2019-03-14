@@ -158,7 +158,7 @@ public class ConnectButtonController {
     private var connectionFetchingDataTask: URLSessionDataTask?
     
     private func fetchConnection(for id: String, numberOfRetries: Int = 3, retryCount: Int = 0) {
-        button.animator(for: .buttonState(.loading)).preform(animated: true)
+        button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).preform(animated: false)
         connectionFetchingDataTask?.cancel()
         connectionFetchingDataTask = nil
 
@@ -583,7 +583,7 @@ public class ConnectButtonController {
             transitionToInitalization(connection: connection, animated: animated)
         case .enterEmail:
             self.transition(to: .initial(animated: false))
-            self.button.animator(for: .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
+            self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(connection: connection, lookupMethod: lookupMethod)
         case .logInExistingUser(let userId):
@@ -625,7 +625,7 @@ public class ConnectButtonController {
             if self.credentialProvider.iftttServiceToken != nil {
                 return .buttonState(.slideToConnectWithToken)
             } else {
-                return .buttonState(.enterEmail(suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)
+                return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
             }
         }
 
