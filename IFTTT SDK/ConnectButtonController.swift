@@ -325,9 +325,14 @@ public class ConnectButtonController {
                                                                      .foregroundColor : textColor])
 
             case .loadingFailed:
-                let text = "button.footer.loading.failed".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
-                                                                     .foregroundColor : textColor])
+                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
+                
+                text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
+                text.append(NSAttributedString(string: "button.footer.loading.failed.postfix".localized,
+                                               attributes: [.font : Constants.footnoteFont,
+                                                            .foregroundColor : textColor,
+                                                            .underlineStyle : NSUnderlineStyle.single.rawValue]))
+                return text
             }
         }
     }
