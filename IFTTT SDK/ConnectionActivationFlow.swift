@@ -71,6 +71,7 @@ struct ConnectionActivationFlow {
     
     private let commonQueryItems: [URLQueryItem]
     private let partnerOauthCodeQueryItem: URLQueryItem?
+    private let inviteCodeQueryItem: URLQueryItem?
     
     private let url: URL
     
@@ -81,26 +82,26 @@ struct ConnectionActivationFlow {
         url = Constants.url.appendingPathComponent(connectionId)
         
         // Creates the query items shared by all URLs
-        let commonQueryItems: [URLQueryItem] = {
-            var queryItems = [URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
-                              URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
-                              URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform),
-                              URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
-            
-            if let inviteCode = credentialProvider.inviteCode {
-                queryItems.append(URLQueryItem(name: Constants.QueryItem.inviteCodeName, value: inviteCode))
-            }
-            return queryItems
-        }()
+        let commonQueryItems =  [
+            URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
+            URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
+            URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform),
+            URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
         
-        // Creates a query item containing the partner's oauth code
-        let partnerOauthCodeQueryItem: URLQueryItem? = {
-            let code = credentialProvider.partnerOAuthCode
-            guard !code.isEmpty else {
-                return nil
-            }
-            return URLQueryItem(name: Constants.QueryItem.oauthCodeName, value: code)
-        }()
+        let partnerOauthCodeQueryItem: URLQueryItem?
+        if !credentialProvider.partnerOAuthCode.isEmpty {
+            partnerOauthCodeQueryItem = URLQueryItem(name: Constants.QueryItem.oauthCodeName,
+                                                     value: credentialProvider.partnerOAuthCode)
+        } else {
+            partnerOauthCodeQueryItem = nil
+        }
+        
+        if let inviteCode = credentialProvider.inviteCode {
+            inviteCodeQueryItem = URLQueryItem(name: Constants.QueryItem.inviteCodeName,
+                                               value: inviteCode)
+        } else {
+            inviteCodeQueryItem = nil
+        }
         
         self.commonQueryItems = commonQueryItems
         self.partnerOauthCodeQueryItem = partnerOauthCodeQueryItem
