@@ -75,6 +75,13 @@ struct ConnectionActivationFlow {
     
     private let url: URL
     
+    /// Creates a `ConnectionActivationFlow`
+    /// Generates URLs for activating a Connection in web or the IFTTT app
+    ///
+    /// - Parameters:
+    ///   - connectionId: The identifier of the Connection to activate
+    ///   - credentialProvider: A `CredentialProvider` for the user
+    ///   - activationRedirect: The redirect back to this application
     init(connectionId: String,
          credentialProvider: CredentialProvider,
          activationRedirect: URL) {
