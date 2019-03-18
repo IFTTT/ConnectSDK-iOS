@@ -116,7 +116,7 @@ public class ConnectButton: UIView {
     }
     
     enum AnimationState {
-        case loading
+        case loading(message: String)
         case loadingFailed
         case connect(service: Service, message: String)
         case createAccount(message: String)
@@ -213,7 +213,7 @@ public class ConnectButton: UIView {
         }
     }
     
-    private(set) var currentState: AnimationState = .loading
+    private(set) var currentState: AnimationState = .loading(message: "")
     
     func progressBar(timeout: TimeInterval) -> Animator {
         return Animator(animator: progressBar.animator(duration: timeout))
@@ -1176,11 +1176,11 @@ private extension ConnectButton {
     
     func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
-        case .loading:
-            transitionToLoading(animator: animator)
+        case let .loading(message):
+            transitionToLoading(message: message, animator: animator)
             
         case .loadingFailed:
-            footerLabelAnimator.transition(with: .rotateDown, updatedValue: ConnectButtonController.FooterMessages.loadingFailed.value, addingTo: animator)
+            transitionToLoadingFailed()
             
         case let .connect(service, message):
             transitionToConnect(service: service, message: message, animator: animator)
@@ -1223,16 +1223,20 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToLoading(animator: UIViewPropertyAnimator) {
+    private func transitionToLoading(message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
         
-        primaryLabelAnimator.configure(.text("button.state.loading".localized), insets: .standard)
+        primaryLabelAnimator.configure(.text(message), insets: .standard)
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = .black
         }
         
         pulseAnimateLabel(toAlpha: .partial)
+    }
+    
+    private func transitionToLoadingFailed() {
+        stopPulseAnimation()
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
