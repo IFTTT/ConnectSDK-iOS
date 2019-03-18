@@ -67,6 +67,14 @@ During Connection activation, your app will receive redirects intended for the C
 	</dict>
 </array>
 ```
+#### Supporting handoff to IFTTT app
+If the IFTTT app is installed, the Connect Button SDK opens it to process a Connection activation flow. You must configure  `LSApplicationQueriesSchemes` in your app's PLIST file. 
+```
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>ifttt-handoff-v1</string>
+</array>
+```
 
 #### Forward redirects to the Connect Button SDK
 Use the `AuthenticationRedirectHandler` to process these redirects.
