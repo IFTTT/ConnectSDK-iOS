@@ -158,7 +158,7 @@ public class ConnectButtonController {
     private var connectionFetchingDataTask: URLSessionDataTask?
     
     private func fetchConnection(for id: String, numberOfRetries: Int = 3, retryCount: Int = 0) {
-        button.animator(for: .buttonState(.loading)).preform(animated: true)
+        button.animator(for: .buttonState(.loading(message: "button.state.loading".localized))).preform(animated: true)
         button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).preform(animated: false)
         connectionFetchingDataTask?.cancel()
         connectionFetchingDataTask = nil
@@ -178,7 +178,8 @@ public class ConnectButtonController {
                         self.fetchConnection(for: id, retryCount: count)
                     }
                 } else {
-                    self.button.animator(for: .buttonState(.loadingFailed)).preform(animated: true)
+                    let footer = ConnectButtonController.FooterMessages.loadingFailed.value
+                    self.button.animator(for: .buttonState(.loadingFailed, footerValue: footer)).preform(animated: true)
                     self.button.footerInteraction.isTapEnabled = true
                     self.button.footerInteraction.onSelect = { [weak self] in
                         self?.fetchConnection(for: id)
