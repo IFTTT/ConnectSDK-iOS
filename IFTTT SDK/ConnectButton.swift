@@ -213,6 +213,8 @@ public class ConnectButton: UIView {
         }
     }
     
+    private(set) var currentState: AnimationState = .loading
+    
     func progressBar(timeout: TimeInterval) -> Animator {
         return Animator(animator: progressBar.animator(duration: timeout))
     }
@@ -222,9 +224,16 @@ public class ConnectButton: UIView {
                                                                  timingParameters: UISpringTimingParameters(dampingRatio: 1)))
         if let state = transition.state {
             // We currently can't support interrupting animations with other touch events
+            // This is due to the way that we update 'currentState' in the animation completion
             // Animations must complete before we will respond to the next event
             // Note: This does not effect dragging the toggle since any ongoing touch events will continue
             animator.animator.isUserInteractionEnabled = false
+            
+            animator.animator.addCompletion { (position) in
+                if position == .end {
+                    self.currentState = state
+                }
+            }
             animation(for: state, with: animator.animator)
         }
         
