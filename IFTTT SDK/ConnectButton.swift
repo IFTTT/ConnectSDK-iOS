@@ -264,12 +264,12 @@ public class ConnectButton: UIView {
         }
         
         /// Can the switch be tapped
-        var isTapEnabled: Bool = false
+        var isTapEnabled: Bool
         
         /// Can the switch be dragged
-        var isDragEnabled: Bool = false
+        var isDragEnabled: Bool
         
-        var resistance: Resistance = .light
+        var resistance: Resistance
         
         /// What is the next button state when switching the toggle
         var toggleTransition: (() -> Transition)?
@@ -277,6 +277,18 @@ public class ConnectButton: UIView {
         /// Callback when switch is toggled
         /// Sends true if switch has been toggled to the on position
         var onToggle: (() -> Void)?
+        
+        init(isTapEnabled: Bool = false,
+             isDragEnabled: Bool = false,
+             resistance: Resistance = .light,
+             toggleTransition: (() -> Transition)? = nil,
+             onToggle: (() -> Void)? = nil) {
+            self.isTapEnabled = isTapEnabled
+            self.isDragEnabled = isDragEnabled
+            self.resistance = resistance
+            self.toggleTransition = toggleTransition
+            self.onToggle = onToggle
+        }
     }
     
     struct EmailInteraction {
