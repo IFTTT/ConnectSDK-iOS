@@ -1392,6 +1392,7 @@ private extension ConnectButton {
         animator.addAnimations {
             self.emailEntryField.alpha = 0
             self.emailConfirmButton.alpha = 0
+            self.backgroundView.backgroundColor = .black
             
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 1
@@ -1435,7 +1436,12 @@ private extension ConnectButton {
     
     private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
-        
+    
+        self.backgroundView.backgroundColor = .black
+        self.switchControl.knob.iconView.alpha = 1
+        self.switchControl.knob.transform = .identity
+        self.switchControl.knob.maskedEndCaps = .all
+ 
         progressBar.configure(with: nil)
         progressBar.alpha = 1
     }
