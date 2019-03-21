@@ -1319,9 +1319,15 @@ private extension ConnectButton {
         
         animator.addAnimations({
             self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
-            self.switchControl.knob.backgroundColor = .black
             self.switchControl.knob.iconView.alpha = 0
             self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+            
+            switch self.style {
+            case .dark:
+                self.switchControl.knob.backgroundColor = .white
+            case .light:
+                self.switchControl.knob.backgroundColor = .black
+            }
         }, delayFactor: 0.25)
         
         animator.addAnimations({
