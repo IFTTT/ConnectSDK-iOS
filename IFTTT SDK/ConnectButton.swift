@@ -1269,7 +1269,9 @@ private extension ConnectButton {
         animator.addAnimations {
             self.switchControl.isOn = isOn
             self.switchControl.knob.iconView.alpha = 0
-            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.layer.shadowOpacity = 0
+            self.switchControl.knob.backgroundColor = Style.Color.grey
+            self.backgroundView.backgroundColor = Style.Color.grey
         }
         
         animator.addCompletion { position in
@@ -1378,7 +1380,6 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.switchControl.alpha = 0
-            self.backgroundView.backgroundColor = Style.Color.grey
         }
     }
     
