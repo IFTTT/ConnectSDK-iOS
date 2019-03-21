@@ -738,7 +738,7 @@ public class ConnectButton: UIView {
         private let bar = PassthroughView()
         
         func configure(with service: Service?) {
-            bar.backgroundColor = service?.brandColor.contrasting() ?? .black
+            bar.backgroundColor = service?.brandColor.contrasting() ?? Style.Color.grey
         }
         
         private func update() {
@@ -1269,9 +1269,8 @@ private extension ConnectButton {
         animator.addAnimations {
             self.switchControl.isOn = isOn
             self.switchControl.knob.iconView.alpha = 0
+            self.switchControl.knob.backgroundColor = .black
             self.switchControl.knob.layer.shadowOpacity = 0
-            self.switchControl.knob.backgroundColor = Style.Color.grey
-            self.backgroundView.backgroundColor = Style.Color.grey
         }
         
         animator.addCompletion { position in
@@ -1393,8 +1392,6 @@ private extension ConnectButton {
             self.emailEntryField.alpha = 0
             self.emailConfirmButton.alpha = 0
             
-            self.backgroundView.backgroundColor = Style.Color.grey
-            
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 1
         }
@@ -1440,11 +1437,6 @@ private extension ConnectButton {
         
         progressBar.configure(with: nil)
         progressBar.alpha = 1
-        
-        animator.addAnimations {
-            self.backgroundView.backgroundColor = Style.Color.grey
-            
-        }
     }
     
     private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
