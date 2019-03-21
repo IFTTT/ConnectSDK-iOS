@@ -1267,8 +1267,9 @@ private extension ConnectButton {
         progressBar.alpha = 1
         
         animator.addAnimations {
-            self.backgroundView.backgroundColor = Style.Color.grey
             self.switchControl.isOn = isOn
+            self.switchControl.knob.iconView.alpha = 0
+            self.switchControl.knob.backgroundColor = .black
         }
         
         animator.addCompletion { position in
@@ -1276,12 +1277,10 @@ private extension ConnectButton {
             case .start:
                 self.backgroundView.backgroundColor = .black
                 self.switchControl.isOn = !isOn
+                self.switchControl.knob.iconView.alpha = 1
             case .end:
-                let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
-                    self.switchControl.alpha = 0
-                }
-                
-                endAnimator.startAnimation()
+                self.switchControl.knob.iconView.alpha = 1
+                self.switchControl.knob.alpha = 0
             case .current:
                 break
             }
@@ -1443,6 +1442,7 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = Style.Color.grey
+            
         }
     }
     
@@ -1460,6 +1460,7 @@ private extension ConnectButton {
             
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.alpha = 1
+            self.switchControl.knob.alpha = 1
             self.switchControl.isOn = true
             
             self.checkmark.alpha = 0
