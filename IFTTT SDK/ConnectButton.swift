@@ -1246,12 +1246,13 @@ private extension ConnectButton {
         stopPulseAnimation()
        
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
             self.progressBar.alpha = 0
             self.backgroundView.backgroundColor = .black
-            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.isOn = false
+            self.switchControl.knob.alpha = 1
             self.switchControl.knob.maskedEndCaps = .all
             self.switchControl.alpha = 1
             
@@ -1486,13 +1487,6 @@ private extension ConnectButton {
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
-        
-        animator.addAnimations {
-            self.backgroundView.backgroundColor = .black
-            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-            self.switchControl.isOn = false
-            self.switchControl.knob.maskedEndCaps = .all
-            self.switchControl.alpha = 1
-        }
+        switchControl.primeAnimation_centerKnob()
     }
 }
