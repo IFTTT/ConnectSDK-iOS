@@ -655,9 +655,9 @@ public class ConnectButtonController {
         let state: ConnectButton.AnimationState
         switch lookupMethod {
         case .email:
-            state = .verifyingEmail(message: "button.state.checking_account".localized)
+            state = .verifyingEmail(message: "button.state.verifying".localized)
         case .token:
-            state = .accessingAccount(message: "button.state.accessing_existing_account".localized)
+            state = .accessingAccount(message: "button.state.verifying".localized)
         }
         button.animator(for: .buttonState(state,
                                           footerValue: FooterMessages.worksWithIFTTT.value)).preform()

@@ -738,7 +738,7 @@ public class ConnectButton: UIView {
         private let bar = PassthroughView()
         
         func configure(with service: Service?) {
-            bar.backgroundColor = service?.brandColor.contrasting() ?? .black
+            bar.backgroundColor = service?.brandColor.contrasting() ?? Style.Color.grey
         }
         
         private func update() {
@@ -1246,12 +1246,13 @@ private extension ConnectButton {
         stopPulseAnimation()
        
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
             self.progressBar.alpha = 0
             self.backgroundView.backgroundColor = .black
-            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.isOn = false
+            self.switchControl.knob.alpha = 1
             self.switchControl.knob.maskedEndCaps = .all
             self.switchControl.alpha = 1
             
@@ -1267,8 +1268,10 @@ private extension ConnectButton {
         progressBar.alpha = 1
         
         animator.addAnimations {
-            self.backgroundView.backgroundColor = Style.Color.grey
             self.switchControl.isOn = isOn
+            self.switchControl.knob.iconView.alpha = 0
+            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.layer.shadowOpacity = 0
         }
         
         animator.addCompletion { position in
@@ -1276,12 +1279,10 @@ private extension ConnectButton {
             case .start:
                 self.backgroundView.backgroundColor = .black
                 self.switchControl.isOn = !isOn
+                self.switchControl.knob.iconView.alpha = 1
             case .end:
-                let endAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
-                    self.switchControl.alpha = 0
-                }
-                
-                endAnimator.startAnimation()
+                self.switchControl.knob.iconView.alpha = 1
+                self.switchControl.knob.alpha = 0
             case .current:
                 break
             }
@@ -1318,9 +1319,15 @@ private extension ConnectButton {
         
         animator.addAnimations({
             self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
-            self.switchControl.knob.backgroundColor = .black
             self.switchControl.knob.iconView.alpha = 0
             self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+            
+            switch self.style {
+            case .dark:
+                self.switchControl.knob.backgroundColor = .white
+            case .light:
+                self.switchControl.knob.backgroundColor = .black
+            }
         }, delayFactor: 0.25)
         
         animator.addAnimations({
@@ -1379,7 +1386,6 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.switchControl.alpha = 0
-            self.backgroundView.backgroundColor = Style.Color.grey
         }
     }
     
@@ -1392,8 +1398,7 @@ private extension ConnectButton {
         animator.addAnimations {
             self.emailEntryField.alpha = 0
             self.emailConfirmButton.alpha = 0
-            
-            self.backgroundView.backgroundColor = Style.Color.grey
+            self.backgroundView.backgroundColor = .black
             
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 1
@@ -1437,13 +1442,14 @@ private extension ConnectButton {
     
     private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
-        
+    
+        self.backgroundView.backgroundColor = .black
+        self.switchControl.knob.iconView.alpha = 1
+        self.switchControl.knob.transform = .identity
+        self.switchControl.knob.maskedEndCaps = .all
+ 
         progressBar.configure(with: nil)
         progressBar.alpha = 1
-        
-        animator.addAnimations {
-            self.backgroundView.backgroundColor = Style.Color.grey
-        }
     }
     
     private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
@@ -1460,6 +1466,7 @@ private extension ConnectButton {
             
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.alpha = 1
+            self.switchControl.knob.alpha = 1
             self.switchControl.isOn = true
             
             self.checkmark.alpha = 0
@@ -1492,13 +1499,6 @@ private extension ConnectButton {
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
-        
-        animator.addAnimations {
-            self.backgroundView.backgroundColor = .black
-            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-            self.switchControl.isOn = false
-            self.switchControl.knob.maskedEndCaps = .all
-            self.switchControl.alpha = 1
-        }
+        switchControl.primeAnimation_centerKnob()
     }
 }
