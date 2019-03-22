@@ -612,6 +612,18 @@ public class ConnectButtonController {
 
     private func transitionToAppHandoff() {
         connectionActivationFlow.performAppHandoff()
+        
+        // Resets the button state after a app handoff
+        // Should the user return without completing the flow, they can just start over
+        // We will handle initial -> complete transition via the redirect
+        let onEnteredBackground = { (notification: Notification) -> Void in
+            self.transition(to: .initial(animated: false))
+            NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        }
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+                                               object: nil,
+                                               queue: .main,
+                                               using: onEnteredBackground)
     }
     
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
