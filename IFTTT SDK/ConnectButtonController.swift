@@ -132,6 +132,7 @@ public class ConnectButtonController {
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         setupConnection(for: connection, animated: false)
+        beginRedirectObserving()
     }
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
@@ -424,7 +425,7 @@ public class ConnectButtonController {
         deinit {
             NotificationCenter.default.removeObserver(self)
         }
-
+        
         private func handleRedirect(_ notification: Notification) {
             guard
                 let url = notification.object as? URL,
@@ -460,8 +461,15 @@ public class ConnectButtonController {
         }
     }
 
-    private var redirectObserving: RedirectObserving?
+    private let redirectObserving = RedirectObserving()
 
+    /// Starts monitoring for connection flow redirects
+    private func beginRedirectObserving() {
+        redirectObserving.onRedirect = { [weak self] outcome in
+            self?.handleRedirect(outcome)
+        }
+    }
+    
     private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
 
         // Before we continue and handle this redirect, we must dismiss the active Safari VC
@@ -521,11 +529,6 @@ public class ConnectButtonController {
 
     /// Creates a `RedirectObserving` and a `SafariDelegate` to track interaction in the web portion of the activation flow
     private func prepareActivationWebFlow(lookupMethod: User.LookupMethod) {
-        redirectObserving = RedirectObserving()
-        redirectObserving?.onRedirect = { [weak self] outcome in
-            self?.handleRedirect(outcome)
-        }
-
         safariDelegate = SafariDelegate { [weak self] in
             self?.handleCancelation(lookupMethod: lookupMethod)
         }
@@ -533,7 +536,6 @@ public class ConnectButtonController {
 
     /// Once activation is finished or canceled, tear down redirect and cancelation observing
     private func endActivationWebFlow() {
-        redirectObserving = nil
         safariDelegate = nil
     }
 
@@ -668,14 +670,16 @@ public class ConnectButtonController {
         // Resets the button state after a app handoff
         // Should the user return without completing the flow, they can just start over
         // We will handle initial -> complete transition via the redirect
-        let onEnteredBackground = { (notification: Notification) -> Void in
-            self.transition(to: .initial(animated: false))
-            NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        }
-        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+        var token: Any?
+        token = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
                                                object: nil,
-                                               queue: .main,
-                                               using: onEnteredBackground)
+                                               queue: .main) { _ in
+                                                self.transition(to: .initial(animated: false))
+                                                if let token = token {
+                                                    // This is one-time use. Remove it immediately.
+                                                    NotificationCenter.default.removeObserver(token)
+                                                }
+        }
     }
     
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
