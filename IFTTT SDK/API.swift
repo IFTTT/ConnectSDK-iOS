@@ -39,14 +39,8 @@ struct API {
     
     static func findUserBy(email: String) -> URL? {
         var components = URLComponents(url: API.findEmail, resolvingAgainstBaseURL: true)
-        
         components?.queryItems = [URLQueryItem(name: API.URLConstants.emailName, value: email)]
-        
-        // We need to manually encode `+` characters in a user's e-mail because `+` is a valid character that represents a space in a url query. E-mail's with spaces are not valid.
-        let percentEncodedQuery = components?.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: .emailEncodingPassthrough)
-        components?.percentEncodedQuery = percentEncodedQuery
-        
-        return components?.url
+        return components?.fixingEmailEncoding().url
     }
     
     static let findUserByToken = URL(string: "\(API.URLConstants.base)\(API.URLConstants.me)")!
