@@ -131,7 +131,6 @@ public class ConnectButtonController {
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         setupConnection(for: connection, animated: false)
-        beginObservingAppForegrounded()
     }
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
@@ -302,43 +301,6 @@ public class ConnectButtonController {
     }
     
     
-    // MARK: - App foregrounded observing
-    
-    /// We are monitoring the app coming into the foreground so we process a cancelation if the user bails on a flow outside of the app.
-    private func beginObservingAppForegrounded() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleAppForegrounded),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
-    }
-    
-    @objc private func handleAppForegrounded() {
-        // Add a short delay between receiving an app foregrounded event and processing it
-        // This is for both visual preception (so the UI is moving as the app is opening)
-        // and so we don't have to worry about a race condition when receiving a redirect
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            switch self.currentActivationStep {
-            case .appHandoff:
-                // If after the delay, we are still in the `appHandoff` state, assume the user bailed. 
-                self.transition(to: .canceled)
-            case .initial,
-                 .enterEmail,
-                 .identifyUser,
-                 .logInExistingUser,
-                 .serviceAuthentication,
-                 .authenticationComplete,
-                 .connected,
-                 .confirmDisconnect,
-                 .processDisconnect,
-                 .disconnected,
-                 .failed,
-                 .canceled:
-                break
-            }
-        }
-    }
-
-
     // MARK: - Safari VC delegate (cancelation handling)
 
     /// Delegate object for Safari VC
@@ -558,15 +520,12 @@ public class ConnectButtonController {
         case disconnected
     }
 
-    private var currentActivationStep: ActivationStep = .initial(animated: false)
-    
     /// State machine handling Applet activation and deactivation
     private func transition(to step: ActivationStep) {
         guard let connection = connection else {
             assertionFailure("It is required to have a non nil `Connection` in order to handle activation and deactivation.")
             return
         }
-        currentActivationStep = step
 
         // Cleanup
         button.toggleInteraction = .init()
