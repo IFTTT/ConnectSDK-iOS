@@ -10,6 +10,7 @@
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
 		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
+		1D7918412227202700429936 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7918402227202700429936 /* Reachability.swift */; };
 		1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */; };
 		1DFE02052190E25500856ABC /* CredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* CredentialProvider.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
@@ -98,6 +99,7 @@
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EmailDataDetectorTests.swift"; sourceTree = "<group>"; };
+		1D7918402227202700429936 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ValueType,ErrorType>.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* CredentialProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialProvider.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 				FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */,
 				FC84B84B21C4321F00BAF7ED /* Links.swift */,
 				FC84B85221C43A3000BAF7ED /* LegalTermsText.swift */,
+				1D7918402227202700429936 /* Reachability.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -517,6 +520,7 @@
 				1DFE02092190E35300856ABC /* AuthenticationRedirectHandler.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
+				1D7918412227202700429936 /* Reachability.swift in Sources */,
 				FC22B19421ACA54000738023 /* ImageCache.swift in Sources */,
 				1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */,
 				FCF0C4E421B0A97000DEB117 /* NetworkError.swift in Sources */,
