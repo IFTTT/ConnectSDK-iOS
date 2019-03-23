@@ -5,6 +5,12 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>ifttt-handoff-v1</string>
+        <string>message</string>
+        <string>googlegmail</string>
+        <string>ms-outlook</string>
+        <string>ymail</string>
+        <string>airmail</string>
+        <string>readdle-spark</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

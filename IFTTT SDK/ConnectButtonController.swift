@@ -90,6 +90,10 @@ public class ConnectButtonController {
     /// The `Connection` the controller is handling. The controller may change the `Connection.Status` of the `Connection`.
     public private(set) var connection: Connection?
 
+    /// The current `User`
+    /// This is set during the `identifyUser` step. It is required that we have this information for later steps in the flow.
+    private var user: User?
+    
     private func appletChangedStatus(isOn: Bool) {
         guard let connection = connection else {
             return
@@ -487,10 +491,10 @@ public class ConnectButtonController {
                     return .failed(.unableToGetConnection)
                 }
 
-                if let service = connection.services.first(where: { $0.id == id }) {
+                if let service = connection.services.first(where: { $0.id == id }), let user = user {
                     // If service connection comes after a redirect we must have already completed user log in or account creation
                     // Therefore newUserEmail is always nil here
-                    return .serviceAuthentication(service, newUserEmail: nil)
+                    return .serviceAuthentication(service, user: user)
                 } else {
                     // For some reason, the service ID we received from web doesn't match the connection
                     // If this ever happens, it is due to a bug on web
@@ -544,14 +548,14 @@ public class ConnectButtonController {
     /// Defines the `Connection` authorization state machine
     ///
     /// - initial: The `Connection` is in the initial state (not authorized)
+    /// - appHandoff: Links to the IFTTT app to complete the connection flow
+    /// - enterEmail: If we don't yet know the user, show the email field
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
-    /// - logInExistingUser: Ensure that the user is logged into IFTTT in Safari VC. This is required even if we have a user token.
-    /// - logInComplete: User was successfully logged in to IFTTT in Safari VC. `nextStep` specifies what come next in the flow. It originates from the authorization redirect.
-    /// - serviceAuthentication: Authorize one of this `Connection`s services
-    /// - serviceConnectionComplete: Service authorization was successful. `nextStep` specifies what come next in the flow. It originates from the authorization redirect.
+    /// - logInExistingUser: If we have a user token, ensure the user is logged in to Safari.
+    /// - serviceAuthentication: Authorize one of this `Connection`s services. Passing the service to connect and the current user.
+    /// - authenticationComplete: Connection activation was successful. This always originates from the authorization redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
-    /// - connectionConfigurationComplete: This state always preceeds `connected` when the `Connection` required configuration on web. It includes the `Service` which was configured.
     /// - connected: The `Connection` was successfully authorized.
     /// - confirmDisconnect: The "Slide to disconnect" state, asking for the user's confirmation to disable the `Connection`.
     /// - processDisconnect: Disable the `Connection`.
@@ -561,8 +565,8 @@ public class ConnectButtonController {
         case appHandoff
         case enterEmail
         case identifyUser(User.LookupMethod)
-        case logInExistingUser(User.Id)
-        case serviceAuthentication(Connection.Service, newUserEmail: String?)
+        case logInExistingUser(User)
+        case serviceAuthentication(Connection.Service, user: User)
         case authenticationComplete
         case failed(ConnectButtonControllerError)
         case canceled
@@ -595,10 +599,10 @@ public class ConnectButtonController {
             self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).preform()
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(connection: connection, lookupMethod: lookupMethod)
-        case .logInExistingUser(let userId):
-            transitionToLogInExistingUser(connection: connection, userId: userId)
-        case .serviceAuthentication(let service, let newUserEmail):
-            transitionToServiceAuthentication(connection: connection, service: service, newUserEmail: newUserEmail)
+        case .logInExistingUser(let user):
+            transitionToLogInExistingUser(connection: connection, user: user)
+        case .serviceAuthentication(let service, let user):
+            transitionToServiceAuthentication(connection: connection, service: service, user: user)
         case .authenticationComplete:
             transitionToAuthenticationComplete()
         case .failed(let error):
@@ -705,23 +709,30 @@ public class ConnectButtonController {
 
             switch result {
             case .success(let user):
-                if case .email(let email) = user.id, user.isExistingUser == false {
-
-                    // There is no account for this user
-                    // Show a fake message that we are creating an account
-                    // Then move to the first step of the service connection flow
-                    self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).preform()
-
-                    progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
-                    progress.onComplete { position in
-                        if position == .end {
-                            self.transition(to: .serviceAuthentication(connection.connectingService, newUserEmail: email))
+                self.user = user
+                
+                if case .email = user.id { // We know the user's email but don't have a token
+                    if user.isExistingUser {
+                        // This is an existing IFTTT user but we don't have a token
+                        // Send on to service authentication, web will take care of getting the user signed in
+                        self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                    } else {
+                        // There is no account for this user
+                        // Show a fake message that we are creating an account
+                        // Then move to the first step of the service connection flow
+                        self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).preform()
+                        
+                        progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 1.5)
+                        progress.onComplete { position in
+                            if position == .end {
+                                self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                            }
                         }
                     }
-                } else { // Existing IFTTT user
+                } else { // Existing IFTTT user (with a token)
                     progress.resume(with: UISpringTimingParameters(dampingRatio: 1), duration: 0.25)
                     progress.onComplete { _ in
-                        self.transition(to: .logInExistingUser(user.id))
+                        self.transition(to: .logInExistingUser(user))
                     }
                 }
 
@@ -741,18 +752,18 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToLogInExistingUser(connection: Connection, userId: User.Id) {
-        let url = connectionActivationFlow.loginUrl(userId: userId)
+    private func transitionToLogInExistingUser(connection: Connection, user: User) {
+        let url = connectionActivationFlow.loginUrl(userId: user.id)
         openActivationURL(url)
     }
 
-    private func transitionToServiceAuthentication(connection: Connection, service: Connection.Service, newUserEmail: String?) {
+    private func transitionToServiceAuthentication(connection: Connection, service: Connection.Service, user: User) {
         button.footerInteraction.isTapEnabled = true
         button.animator(for: .buttonState(.continueToService(service: service.connectButtonService,
                                                              message: "button.state.sign_in".localized(with: service.name)),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).preform()
 
-        let url = connectionActivationFlow.serviceConnectionUrl(newUserEmail: newUserEmail)
+        let url = connectionActivationFlow.serviceConnectionUrl(user: user)
 
         let timeout = 2.0
         button.progressBar(timeout: timeout).preform()
