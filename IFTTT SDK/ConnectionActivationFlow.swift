@@ -59,7 +59,7 @@ struct ConnectionActivationFlow {
         if case .email(let email) = user.id { // New or returning user (without a token)
             queryItems.append(URLQueryItem(name: Constants.QueryItem.emailName, value: email))
             if !user.isExistingUser { // New user
-                queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreatAccountName, value: Constants.QueryItem.defaultTrueValue))
+                queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreateAccountName, value: Constants.QueryItem.defaultTrueValue))
             } else { // Returning user
                 queryItems.append(contentsOf: queryItemsForAvailableEmailClients())
             }
@@ -154,7 +154,7 @@ struct ConnectionActivationFlow {
             static let inviteCodeName = "invite_code"
             static let emailName = "email"
             static let skipSDKRedirectName = "skip_sdk_redirect"
-            static let sdkCreatAccountName = "sdk_create_account"
+            static let sdkCreateAccountName = "sdk_create_account"
             static let oauthCodeName = "code"
             static let defaultTrueValue = "true"
             static let sdkVersionName = "sdk_version"
