@@ -1451,7 +1451,7 @@ private extension ConnectButton {
         progressBar.configure(with: nil)
         progressBar.alpha = 1
         
-        // We don't show messages and the switch know at the same time
+        // We don't show messages and the switch at the same time
         switchControl.alpha = 0
     }
     
