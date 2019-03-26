@@ -32,8 +32,8 @@ public final class AuthenticationRedirectHandler {
     /// - Returns: True if this is an IFTTT SDK redirect. False for any other `URL`.
     public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         
-        // Checks if the source is `SafariViewService` and the scheme matches the SDK redirect.
-        if let source = options[.sourceApplication] as? String, url.scheme == authorizationRedirectURL.scheme && source == "com.apple.SafariViewService" {
+        // Checks if the scheme matches the SDK redirect.
+        if url.scheme == authorizationRedirectURL.scheme {
             NotificationCenter.default.post(name: .authorizationRedirect, object: url)
             return true
         }

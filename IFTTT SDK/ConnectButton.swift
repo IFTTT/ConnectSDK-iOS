@@ -1443,13 +1443,16 @@ private extension ConnectButton {
     private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
     
-        self.backgroundView.backgroundColor = .black
-        self.switchControl.knob.iconView.alpha = 1
-        self.switchControl.knob.transform = .identity
-        self.switchControl.knob.maskedEndCaps = .all
+        backgroundView.backgroundColor = .black
+        switchControl.knob.iconView.alpha = 1
+        switchControl.knob.transform = .identity
+        switchControl.knob.maskedEndCaps = .all
  
         progressBar.configure(with: nil)
         progressBar.alpha = 1
+        
+        // We don't show messages and the switch at the same time
+        switchControl.alpha = 0
     }
     
     private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
