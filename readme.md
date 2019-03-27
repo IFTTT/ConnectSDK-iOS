@@ -67,12 +67,21 @@ During Connection activation, your app will receive redirects intended for the C
 	</dict>
 </array>
 ```
-#### Supporting handoff to IFTTT app
-If the IFTTT app is installed, the Connect Button SDK opens it to process a Connection activation flow. You must configure  `LSApplicationQueriesSchemes` in your app's PLIST file. 
+#### Supporting returning user flows
+When the user making the connection is already a user on IFTTT, the activation flow may redirect outside of your app to verify the user's account. 
+- If the IFTTT app is installed, the Connect Button SDK opens it to process a Connection activation flow. 
+- If the IFTTT app is not installed, the user will receive a confirmation link in their email. In order to create a good user experience, we provide a link to user's email client. 
+You must configure  `LSApplicationQueriesSchemes` in your app's PLIST file to support returning IFTTT users.
 ```
 <key>LSApplicationQueriesSchemes</key>
 <array>
     <string>ifttt-handoff-v1</string>
+    <string>message</string>
+    <string>googlegmail</string>
+    <string>ms-outlook</string>
+    <string>ymail</string>
+    <string>airmail</string>
+    <string>readdle-spark</string>
 </array>
 ```
 

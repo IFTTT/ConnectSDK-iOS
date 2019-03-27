@@ -46,9 +46,9 @@ struct ConnectionActivationFlow {
     
     /// The URL to connect a service and complete the flow in Safari
     ///
-    /// - Parameter newUserEmail: For the new user flow send the user email, otherwise send nil
+    /// - Parameter user: The current User
     /// - Returns: The URL to open in Safari
-    func serviceConnectionUrl(newUserEmail: String?) -> URL {
+    func serviceConnectionUrl(user: User) -> URL {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return url
         }
@@ -56,9 +56,13 @@ struct ConnectionActivationFlow {
         
         queryItems.append(URLQueryItem(name: Constants.QueryItem.skipSDKRedirectName, value: Constants.QueryItem.defaultTrueValue))
         
-        if let email = newUserEmail {
+        if case .email(let email) = user.id { // New or returning user (without a token)
             queryItems.append(URLQueryItem(name: Constants.QueryItem.emailName, value: email))
-            queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreatAccountName, value: Constants.QueryItem.defaultTrueValue))
+            if !user.isExistingUser { // New user
+                queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreateAccountName, value: Constants.QueryItem.defaultTrueValue))
+            } else { // Returning user
+                queryItems.append(contentsOf: queryItemsForAvailableEmailClients())
+            }
             if let oauthItem = partnerOauthCodeQueryItem {
                 queryItems.append(oauthItem)
             }
@@ -126,7 +130,22 @@ struct ConnectionActivationFlow {
         }()
     }
     
-    struct Constants {
+    /// Checks for available email clients on the device
+    /// This enables us to give the user a list of options to complete email verfication in the returning user flow
+    ///
+    /// - Returns: A list of `URLQueryItem`s for available email clients
+    private func queryItemsForAvailableEmailClients() -> [URLQueryItem] {
+        return EmailClientSchemes.all.compactMap {
+            if UIApplication.shared.canOpenURL($0.url) {
+                return URLQueryItem(name: Constants.QueryItem.availableEmailScheme,
+                                    value: $0.rawValue)
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    private struct Constants {
         static let appHandoffURL = URL(string: "ifttt-handoff-v1://connections")!
         static let url = URL(string: "https://ifttt.com/access/api")!
         
@@ -135,12 +154,28 @@ struct ConnectionActivationFlow {
             static let inviteCodeName = "invite_code"
             static let emailName = "email"
             static let skipSDKRedirectName = "skip_sdk_redirect"
-            static let sdkCreatAccountName = "sdk_create_account"
+            static let sdkCreateAccountName = "sdk_create_account"
             static let oauthCodeName = "code"
             static let defaultTrueValue = "true"
             static let sdkVersionName = "sdk_version"
             static let sdkPlatformName = "sdk_platform"
             static let sdkAnonymousId = "sdk_anonymous_id"
+            static let availableEmailScheme = "available_email_app_schemes[]"
+        }
+    }
+    
+    private enum EmailClientSchemes: String {
+        static let all: [EmailClientSchemes] = [.mail, .gmail, .outlook, .yahoo, .airmail, .spark]
+        
+        case mail = "message://"
+        case gmail = "googlegmail://"
+        case outlook = "ms-outlook://"
+        case yahoo = "ymail://"
+        case airmail = "airmail://"
+        case spark = "readdle-spark://"
+        
+        var url: URL {
+            return URL(string: rawValue)!
         }
     }
 }
