@@ -90,6 +90,14 @@ struct ConstraintsMaker {
         view.widthAnchor.constraint(equalToConstant: length).isActive = true
     }
     
+    /// Constaints the `view`s size to a constant value
+    ///
+    /// - Parameter size: The size of the `view`
+    func size(_ size: CGSize) {
+        view.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        view.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+    }
+    
     /// Constrains the `view`s width to that of a layout guide
     ///
     /// - Parameter guide: Provides the widthAnchor
