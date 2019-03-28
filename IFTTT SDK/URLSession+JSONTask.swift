@@ -23,25 +23,4 @@ extension URLSession {
             }
         }
     }
-    
-    func jsonTask(with urlRequest: URLRequest, waitUntil minimumDuration: TimeInterval, _ completion: @escaping (Parser, HTTPURLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        
-        var result: (Parser, HTTPURLResponse?, Error?)?
-        var minimumTimeElapsed = false
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + minimumDuration) {
-            minimumTimeElapsed = true
-            if let result = result {
-                completion(result.0, result.1, result.2)
-            }
-        }
-        
-        return jsonTask(with: urlRequest) { (parser, response, error) in
-            if minimumTimeElapsed {
-                completion(parser, response, error)
-            } else {
-                result = (parser, response, error)
-            }
-        }
-    }
 }

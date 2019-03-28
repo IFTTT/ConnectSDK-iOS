@@ -35,6 +35,7 @@
 		FC22B1A621ACCE5E00738023 /* UIKit+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */; };
 		FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2573122139E8CC0065AAD6 /* ConnectButton.swift */; };
 		FC28D7E52225B1E900D84A1B /* ServiceIconsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC28D7E42225B1E900D84A1B /* ServiceIconsNetworkController.swift */; };
+		FC361B61224D872D0078B153 /* ProgressBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC361B60224D872D0078B153 /* ProgressBarController.swift */; };
 		FC3E3078215C42D6002326AE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FC3E3079215C42D6002326AE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC3E4B5B21DD4BEC00CF7AB8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */; };
@@ -124,6 +125,7 @@
 		FC22B1A521ACCE5E00738023 /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC28D7E42225B1E900D84A1B /* ServiceIconsNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceIconsNetworkController.swift; sourceTree = "<group>"; };
+		FC361B60224D872D0078B153 /* ProgressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarController.swift; sourceTree = "<group>"; };
 		FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 		FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				FC84B84B21C4321F00BAF7ED /* Links.swift */,
 				FC84B85221C43A3000BAF7ED /* LegalTermsText.swift */,
 				1D7918402227202700429936 /* Reachability.swift */,
+				FC361B60224D872D0078B153 /* ProgressBarController.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -508,6 +511,7 @@
 				FCF29FCB2187D0E3004B1100 /* User.swift in Sources */,
 				FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */,
 				FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */,
+				FC361B61224D872D0078B153 /* ProgressBarController.swift in Sources */,
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
 				FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,

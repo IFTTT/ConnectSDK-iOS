@@ -166,72 +166,21 @@ public class ConnectButton: UIView {
         }
     }
     
-    /// Wrapper for UIViewPropertyAnimator
-    /// Drives button state transitions
-    struct Animator {
-        fileprivate let animator: UIViewPropertyAnimator
-        
-        func preform(animated: Bool = true) {
-            if animated {
-                animator.startAnimation()
-            } else {
-                animator.startAnimation()
-                animator.stopAnimation(false)
-                animator.finishAnimation(at: .end)
-            }
-        }
-        func pause() {
-            animator.pauseAnimation()
-        }
-        func set(progress: CGFloat) {
-            // The animation will automatically finish if it hits 0 or 1
-            animator.fractionComplete = max(0.001, min(0.999, progress))
-        }
-        
-        /// The progress of the animation represented as a TimeInterval
-        /// Returns the time elapsed based on the fractionComplete of the animation
-        var timeElasped: TimeInterval {
-            return TimeInterval(1 - animator.fractionComplete) * animator.duration
-        }
-        
-        func resume(with timing: UITimingCurveProvider, duration: TimeInterval? = nil) {
-            var durationFactor: CGFloat = 1
-            if let continueDuration = duration {
-                let timeElasped = TimeInterval(1 - animator.fractionComplete) * animator.duration
-                durationFactor = CGFloat((continueDuration + timeElasped) / animator.duration)
-            }
-            animator.continueAnimation(withTimingParameters: timing, durationFactor: durationFactor)
-        }
-        func onComplete(_ body: @escaping ((UIViewAnimatingPosition) -> Void)) {
-            animator.addCompletion { position in
-                body(position)
-            }
-        }
-        func finish(at finalPosition: UIViewAnimatingPosition) {
-            animator.stopAnimation(false)
-            animator.finishAnimation(at: finalPosition)
-        }
-    }
-    
-    func progressBar(timeout: TimeInterval) -> Animator {
-        return Animator(animator: progressBar.animator(duration: timeout))
-    }
-    
-    func animator(for transition: Transition) -> Animator {
-        let animator = Animator(animator: UIViewPropertyAnimator(duration: transition.duration,
-                                                                 timingParameters: UISpringTimingParameters(dampingRatio: 1)))
+    func animator(for transition: Transition) -> UIViewPropertyAnimator {
+        let animator = UIViewPropertyAnimator(duration: transition.duration,
+                                              timingParameters: UISpringTimingParameters(dampingRatio: 1))
         if let state = transition.state {
             // We currently can't support interrupting animations with other touch events
             // Animations must complete before we will respond to the next event
             // Note: This does not effect dragging the toggle since any ongoing touch events will continue
-            animator.animator.isUserInteractionEnabled = false
-            animation(for: state, with: animator.animator)
+            animator.isUserInteractionEnabled = false
+            animation(for: state, with: animator)
         }
         
         if let footerValue = transition.footerValue {
             footerLabelAnimator.transition(with: .rotateDown,
                                            updatedValue: footerValue,
-                                           addingTo: animator.animator)
+                                           addingTo: animator)
         }
         
         return animator
@@ -352,9 +301,9 @@ public class ConnectButton: UIView {
         self?.footerInteraction.onSelect?()
     }
     
-    private var currentToggleAnimation: Animator?
+    private var currentToggleAnimation: UIViewPropertyAnimator?
     
-    private func getToggleAnimation() -> Animator? {
+    private func getToggleAnimation() -> UIViewPropertyAnimator? {
         if currentToggleAnimation != nil {
             return currentToggleAnimation
         }
@@ -363,19 +312,19 @@ public class ConnectButton: UIView {
             return nil
         }
         
-        let a = animator(for: transition)
-        a.animator.addCompletion { position in
+        let animator = self.animator(for: transition)
+        animator.addCompletion { position in
             if position == .end {
                 self.toggleInteraction.onToggle?()
             }
         }
-        return a
+        return animator
     }
     
     @objc private func handleSwitchTap(_ gesture: SelectGestureRecognizer) {
         if gesture.state == .ended {
             if let animation = getToggleAnimation() {
-                animation.preform()
+                animation.startAnimation()
                 currentToggleAnimation = nil
             }
         }
@@ -398,26 +347,29 @@ public class ConnectButton: UIView {
         case .possible:
             break
         case .began:
-            animation.preform()
-            animation.pause()
+            animation.startAnimation()
+            animation.pauseAnimation()
         
         case .changed:
-            animation.set(progress: progress)
+            // The animation will automatically finish if it hits 0 or 1
+            animation.fractionComplete = max(0.001, min(0.999, progress))
             
         case .ended:
             // Decide if we should reverse the transition
             // switchControl.isOn gives us the value that we are animating towards
             if toggleInteraction.resistance.shouldReverse(switchOn: switchControl.isOn, velocity: v, progress: progress) {
-                animation.animator.isReversed = true
+                animation.isReversed = true
             }
-            animation.resume(with: UISpringTimingParameters(dampingRatio: 1,
-                                                             initialVelocity: CGVector(dx: v, dy: 0)))
+            let timing = UISpringTimingParameters(dampingRatio: 1,
+                                                  initialVelocity: CGVector(dx: v, dy: 0))
+            animation.continueAnimation(withTimingParameters: timing, durationFactor: 1)
             currentToggleAnimation = nil
             
         case .cancelled, .failed:
-            animation.animator.isReversed = true
-            animation.resume(with: UISpringTimingParameters(dampingRatio: 1,
-                                                             initialVelocity: CGVector(dx: v, dy: 0)))
+            animation.isReversed = true
+            let timing = UISpringTimingParameters(dampingRatio: 1,
+                                                  initialVelocity: CGVector(dx: v, dy: 0))
+            animation.continueAnimation(withTimingParameters: timing, durationFactor: 1)
             currentToggleAnimation = nil
         }
     }
@@ -1162,13 +1114,13 @@ extension ConnectButton.CheckmarkView: CAAnimationDelegate {
 // MARK: Progress bar
 
 @available(iOS 10.0, *)
-private extension ConnectButton.ProgressBar {
-    func animator(duration: TimeInterval) -> UIViewPropertyAnimator {
-        fractionComplete = 0
-        let animator = UIViewPropertyAnimator(duration: duration, curve: .linear) {
-            self.fractionComplete = 1
+extension ConnectButton: ProgressBar {
+    func showProgress(from start: CGFloat = 0, to end: CGFloat = 1,
+                      duration: TimeInterval, curve: UIView.AnimationCurve = .linear) -> UIViewPropertyAnimator {
+        progressBar.fractionComplete = start
+        return UIViewPropertyAnimator(duration: duration, curve: curve) {
+            self.progressBar.fractionComplete = end
         }
-        return animator
     }
 }
 
