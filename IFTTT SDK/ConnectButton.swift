@@ -1050,7 +1050,7 @@ public class ConnectButton: UIView {
 extension ConnectButton: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // Prevents the toggle gesture from interfering with scrolling when it is placed in a scroll view
-        return true
+        return false
     }
 }
 
@@ -1151,16 +1151,16 @@ private extension ConnectButton {
             transitionToDisconnecting(message: message, animator: animator)
             
         case let .slideToConnect(message):
-            transitionToButtonState(isOn: true,
-                                    service: nil,
-                                    labelValue: .text(message),
-                                    animator: animator)
+            transitionToSlideToConnect(isOn: true,
+                                       service: nil,
+                                       labelValue: .text(message),
+                                       animator: animator)
 
         case let .slideToConnectService(service, message):
-            transitionToButtonState(isOn: true,
-                                    service: service,
-                                    labelValue: .text(message),
-                                    animator: animator)
+            transitionToSlideToConnect(isOn: true,
+                                       service: service,
+                                       labelValue: .text(message),
+                                       animator: animator)
             
         case let .enterEmail(service, suggestedEmail):
             transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
@@ -1223,16 +1223,19 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToButtonState(isOn: Bool,
-                                         service: Service?,
-                                         labelValue: LabelValue,
-                                         animator: UIViewPropertyAnimator) {
+    /// The toggle transition from initial or reconnect to a message about activating the connection
+    private func transitionToSlideToConnect(isOn: Bool,
+                                            service: Service?,
+                                            labelValue: LabelValue,
+                                            animator: UIViewPropertyAnimator) {
+        
         primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: labelValue,
                                         insets: .avoidSwitchKnob,
                                         addingTo: animator)
         
         progressBar.configure(with: service)
+        progressBar.fractionComplete = 0
         progressBar.alpha = 1
         
         animator.addAnimations {
@@ -1240,17 +1243,16 @@ private extension ConnectButton {
             self.switchControl.knob.iconView.alpha = 0
             self.switchControl.knob.backgroundColor = service?.brandColor ?? .black
             self.switchControl.knob.layer.shadowOpacity = 0
+            
+            self.backgroundView.backgroundColor = service?.brandColor ?? .black
         }
         
         animator.addCompletion { position in
             switch position {
             case .start:
-                self.backgroundView.backgroundColor = service?.brandColor ?? .black
                 self.switchControl.isOn = !isOn
-                self.switchControl.knob.iconView.alpha = 1
             case .end:
-                self.switchControl.knob.iconView.alpha = 1
-                self.switchControl.knob.alpha = 0
+                self.switchControl.alpha = 0
             case .current:
                 break
             }
@@ -1455,24 +1457,28 @@ private extension ConnectButton {
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
-                                        insets: .avoidSwitchKnob,
+                                        insets: .standard,
                                         addingTo: animator)
         pulseAnimateLabel(toAlpha: .partial)
     }
     
     private func transitionToDisconnecting(message: String, animator: UIViewPropertyAnimator) {
-        transitionToButtonState(isOn: false,
-                                service: nil,
-                                labelValue:  .text(message),
-                                animator: animator)
+        primaryLabelAnimator.transition(with: .rotateDown,
+                                        updatedValue: .text(message),
+                                        insets: .standard,
+                                        addingTo: animator)
+        progressBar.configure(with: nil)
         stopPulseAnimation()
+        
+        animator.addAnimations {
+            self.switchControl.isOn = false
+        }
     }
     
     private func transitionToDisconnected(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
-        
-        progressBar.configure(with: nil)
-        progressBar.fractionComplete = 0
-        switchControl.primeAnimation_centerKnob()
+        primaryLabelAnimator.transition(with: .rotateDown,
+                                        updatedValue: .text(message),
+                                        insets: .standard,
+                                        addingTo: animator)
     }
 }
