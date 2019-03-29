@@ -120,7 +120,8 @@ public class ConnectButton: UIView {
         case loadingFailed
         case connect(service: Service, message: String)
         case createAccount(message: String)
-        case slideToConnectWithToken
+        case slideToConnect(message: String)
+        case slideToConnectService(service: Service, message: String)
         case slideToDisconnect(message: String)
         case disconnecting(message: String)
         case enterEmail(service: Service, suggestedEmail: String)
@@ -130,7 +131,7 @@ public class ConnectButton: UIView {
         case connecting(message: String)
         case checkmark
         case connected(service: Service, message: String)
-        case disconnected(service: Service, message: String)
+        case disconnected(message: String)
     }
     
     /// Groups button State and footer value into a single state transition
@@ -1149,9 +1150,18 @@ private extension ConnectButton {
         case let .disconnecting(message):
             transitionToDisconnecting(message: message, animator: animator)
             
-        case .slideToConnectWithToken:
-            transitionToButtonState(isOn: true, labelValue:  .none, animator: animator)
+        case let .slideToConnect(message):
+            transitionToButtonState(isOn: true,
+                                    service: nil,
+                                    labelValue: .text(message),
+                                    animator: animator)
 
+        case let .slideToConnectService(service, message):
+            transitionToButtonState(isOn: true,
+                                    service: service,
+                                    labelValue: .text(message),
+                                    animator: animator)
+            
         case let .enterEmail(service, suggestedEmail):
             transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
             
@@ -1173,8 +1183,8 @@ private extension ConnectButton {
         case let .connected(service, message):
             transitionToConnected(service: service, message: message, animator: animator)
             
-        case let .disconnected(service, message):
-            transitionToDisconnected(service: service, message: message, animator: animator)
+        case let .disconnected(message):
+            transitionToDisconnected(message: message, animator: animator)
         }
     }
     
@@ -1213,23 +1223,29 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToButtonState(isOn: Bool, labelValue: LabelValue, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: labelValue, insets: .avoidSwitchKnob, addingTo: animator)
+    private func transitionToButtonState(isOn: Bool,
+                                         service: Service?,
+                                         labelValue: LabelValue,
+                                         animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade,
+                                        updatedValue: labelValue,
+                                        insets: .avoidSwitchKnob,
+                                        addingTo: animator)
         
-        progressBar.configure(with: nil)
+        progressBar.configure(with: service)
         progressBar.alpha = 1
         
         animator.addAnimations {
             self.switchControl.isOn = isOn
             self.switchControl.knob.iconView.alpha = 0
-            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.backgroundColor = service?.brandColor ?? .black
             self.switchControl.knob.layer.shadowOpacity = 0
         }
         
         animator.addCompletion { position in
             switch position {
             case .start:
-                self.backgroundView.backgroundColor = .black
+                self.backgroundView.backgroundColor = service?.brandColor ?? .black
                 self.switchControl.isOn = !isOn
                 self.switchControl.knob.iconView.alpha = 1
             case .end:
@@ -1445,14 +1461,17 @@ private extension ConnectButton {
     }
     
     private func transitionToDisconnecting(message: String, animator: UIViewPropertyAnimator) {
-        transitionToButtonState(isOn: false, labelValue:  .text(message), animator: animator)
+        transitionToButtonState(isOn: false,
+                                service: nil,
+                                labelValue:  .text(message),
+                                animator: animator)
         stopPulseAnimation()
     }
     
-    private func transitionToDisconnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToDisconnected(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
         
-        progressBar.configure(with: service)
+        progressBar.configure(with: nil)
         progressBar.fractionComplete = 0
         switchControl.primeAnimation_centerKnob()
     }
