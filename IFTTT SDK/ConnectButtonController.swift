@@ -669,6 +669,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToAppHandoff() {
+        let progress = button.showProgress(duration: 1)
         progress.addCompletion { _ in
             self.connectionActivationFlow.performAppHandoff()
         }
