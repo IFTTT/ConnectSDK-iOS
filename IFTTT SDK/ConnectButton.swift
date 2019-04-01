@@ -1050,7 +1050,7 @@ public class ConnectButton: UIView {
 extension ConnectButton: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // Prevents the toggle gesture from interfering with scrolling when it is placed in a scroll view
-        return false
+        return true
     }
 }
 
