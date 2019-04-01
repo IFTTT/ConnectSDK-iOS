@@ -1472,6 +1472,20 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.switchControl.isOn = false
+            self.switchControl.knob.iconView.alpha = 0
+            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.layer.shadowOpacity = 0
+        }
+        
+        animator.addCompletion { position in
+            switch position {
+            case .start:
+                self.switchControl.isOn = false
+            case .end:
+                self.switchControl.alpha = 0
+            case .current:
+                break
+            }
         }
     }
     
