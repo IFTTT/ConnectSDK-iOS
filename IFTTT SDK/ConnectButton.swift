@@ -1457,7 +1457,7 @@ private extension ConnectButton {
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .rotateDown,
                                         updatedValue: .text(message),
-                                        insets: .standard,
+                                        insets: .avoidSwitchKnob,
                                         addingTo: animator)
         pulseAnimateLabel(toAlpha: .partial)
     }
