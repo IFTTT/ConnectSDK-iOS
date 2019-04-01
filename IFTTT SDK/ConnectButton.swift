@@ -1455,7 +1455,7 @@ private extension ConnectButton {
     }
     
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade,
+        primaryLabelAnimator.transition(with: .rotateDown,
                                         updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
@@ -1463,7 +1463,7 @@ private extension ConnectButton {
     }
     
     private func transitionToDisconnecting(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
