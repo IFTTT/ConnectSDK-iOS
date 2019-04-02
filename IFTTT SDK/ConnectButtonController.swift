@@ -717,7 +717,9 @@ public class ConnectButtonController {
                     if user.isExistingUser {
                         // This is an existing IFTTT user but we don't have a token
                         // Send on to service authentication, web will take care of getting the user signed in
-                        self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                        progress.finish {
+                            self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                        }
                     } else {
                         // There is no account for this user
                         // Show a fake message that we are creating an account
