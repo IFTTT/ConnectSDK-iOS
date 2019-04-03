@@ -1049,8 +1049,9 @@ public class ConnectButton: UIView {
 @available(iOS 10.0, *)
 extension ConnectButton: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Prevents the toggle gesture from interfering with scrolling when it is placed in a scroll view
-        return true
+        // Prevents the tap gesture from interfering with scrolling when it is placed in a scroll view
+        // We don't want this behavior for the toggle drag gesture. The scroll view should not move when the user is dragging the toggle.
+        return self.toggleTapGesture == gestureRecognizer
     }
 }
 
