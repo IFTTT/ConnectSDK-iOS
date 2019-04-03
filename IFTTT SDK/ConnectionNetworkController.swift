@@ -59,18 +59,12 @@ public final class ConnectionNetworkController {
     /// - Returns: The `URLSessionDataTask` for the request.
     @discardableResult
     public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) -> URLSessionDataTask {
-        let dataTask = task(urlRequest: urlRequest, minimumDuration: nil, completion: completion)
+        let dataTask = task(urlRequest: urlRequest, completion: completion)
         dataTask.resume()
         return dataTask
     }
     
-    func start(urlRequest: URLRequest, waitUntil minimumDuration: TimeInterval, timeout: TimeInterval, completion: @escaping CompletionHandler) {
-        var urlRequest = urlRequest
-        urlRequest.timeoutInterval = timeout
-        task(urlRequest: urlRequest, minimumDuration: minimumDuration, completion: completion).resume()
-    }
-    
-    private func task(urlRequest: URLRequest, minimumDuration: TimeInterval?, completion: @escaping CompletionHandler) -> URLSessionDataTask {
+    private func task(urlRequest: URLRequest, completion: @escaping CompletionHandler) -> URLSessionDataTask {
         let handler = { (parser: Parser, response: HTTPURLResponse?, error: Error?) in
             let statusCode = response?.statusCode
             if let applet = Connection.parseAppletsResponse(parser)?.first {
@@ -86,33 +80,29 @@ public final class ConnectionNetworkController {
                 completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(networkError)))
             }
         }
-        if let minimumDuration = minimumDuration {
-            return urlSession.jsonTask(with: urlRequest, waitUntil: minimumDuration, handler)
-        } else {
-            return urlSession.jsonTask(with: urlRequest, handler)
-        }
+        return urlSession.jsonTask(with: urlRequest, handler)
     }
     
     private enum APIConstants {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
-        return checkUser(user: user, waitUntil: waitUntil, timeout: timeout) { result in
+    func getConnectConfiguration(user: User.LookupMethod, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
+        return checkUser(user: user) { result in
             DispatchQueue.main.async {
                 completion(result)
             }
         }
     }
     
-    private func checkUser(user: User.LookupMethod, waitUntil: TimeInterval, timeout: TimeInterval, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
+    private func checkUser(user: User.LookupMethod, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
         switch user {
         case .email(let email):
-            guard let request = makeFindUserByEmailRequest(with: email, timeout: timeout) else {
+            guard let request = makeFindUserByEmailRequest(with: email) else {
                 return nil
             }
             
-            let dataTask = urlSession.jsonTask(with: request, waitUntil: waitUntil) { _, response, error in
+            let dataTask = urlSession.jsonTask(with: request) { _, response, error in
                 let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
                 completion(.success(configuration))
                 
@@ -121,7 +111,7 @@ public final class ConnectionNetworkController {
         
             return dataTask
         case .token(let token):
-            let dataTask = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token, timeout: timeout), waitUntil: waitUntil) { parser, _, error in
+            let dataTask = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token)) { parser, _, error in
                 guard let username = parser[APIConstants.userLoginKey].string else {
                     if let networkError = error {
                         completion(.failure(.genericError(networkError)))
@@ -140,21 +130,19 @@ public final class ConnectionNetworkController {
         }
     }
     
-    private func makeFindUserByEmailRequest(with email: String, timeout: TimeInterval) -> URLRequest? {
+    private func makeFindUserByEmailRequest(with email: String) -> URLRequest? {
         guard let url = API.findUserBy(email: email) else {
             return nil
         }
         
         var request = URLRequest(url: url)
-        request.timeoutInterval = timeout
         request.addVersionTracking()
         return request
     }
     
-    private func makeFindUserByTokenRequest(with token: String, timeout: TimeInterval) -> URLRequest {
+    private func makeFindUserByTokenRequest(with token: String) -> URLRequest {
         var request = URLRequest(url: API.findUserByToken)
         request.addIftttServiceToken(token)
-        request.timeoutInterval = timeout
         request.addVersionTracking()
         return request
     }
