@@ -643,7 +643,7 @@ public class ConnectButtonController {
                 return initialButtonState
             }
             if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.iftttServiceToken != nil {
-                return .buttonState(.slideToConnectWithToken)
+                return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
             }
@@ -669,7 +669,11 @@ public class ConnectButtonController {
     }
 
     private func transitionToAppHandoff() {
-        connectionActivationFlow.performAppHandoff()
+        let progress = button.showProgress(duration: 1)
+        progress.addCompletion { _ in
+            self.connectionActivationFlow.performAppHandoff()
+        }
+        progress.startAnimation()
         
         // Resets the button state after a app handoff
         // Should the user return without completing the flow, they can just start over
@@ -871,7 +875,7 @@ public class ConnectButtonController {
     private func transitionToDisconnected(connection: Connection) {
         appletChangedStatus(isOn: false)
 
-        button.animator(for: .buttonState(.disconnected(service: connection.connectingService.connectButtonService, message: "button.state.disconnected".localized))).perform()
+        button.animator(for: .buttonState(.disconnected(message: "button.state.disconnected".localized))).perform()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.transition(to: .initial(animated: true))
         }
