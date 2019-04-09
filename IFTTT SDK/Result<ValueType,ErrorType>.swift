@@ -9,7 +9,7 @@
 import Foundation
 
 /// An object to model success and failure states from an API.
-public enum Result<ValueType, ErrorType> {
+public enum Result<ValueType, ErrorType: Error> {
     
     /// The operation was successful. The passed associated value is the result that was returned from the API.
     case success(ValueType)
