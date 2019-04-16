@@ -130,8 +130,7 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
         switch result {
         case .success:
-            // Get the an IFTTT service token for this user
-            TokenRequest(credentials: connectionCredentials).start()
+            break
             
         case .failure(let error):
             if let reason = error.reason {
@@ -144,6 +143,12 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
         // Received when the Connection is deactivated.
+    }
+    
+    func connectButtonController(_ connectButtonController: ConnectButtonController, receivedUserToken token: String) {
+        // A Connection was activated and we received the user's service-level IFTTT token
+        // Let's update our credential for this user
+        connectionCredentials.loginUser(with: token)
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) {

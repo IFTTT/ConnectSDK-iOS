@@ -54,7 +54,18 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>)
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>)
+
+    /// When Connection activation is successful this passes the service-level user token for your service
+    /// This token should be stored securely in the keychain and provided in `CredentialProvider`
+    /// It is also used to make requests to the Connection API on behalf of your user
+    ///
+    /// - Parameters:
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
+    ///   - token: The service-level user token for your service
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 receivedUserToken token: String)
 
     /// Connection deactivation is finished.
     ///
@@ -65,14 +76,16 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection deactivation request.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
 
     /// The controller recieved an invalid email from the user. The default implementation of this function is to do nothing.
     ///
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - email: The invalid email `String` provided by the user.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String)
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didRecieveInvalidEmail email: String)
 }
 
 @available(iOS 10.0, *)
@@ -94,7 +107,7 @@ public class ConnectButtonController {
     /// This is set during the `identifyUser` step. It is required that we have this information for later steps in the flow.
     private var user: User?
     
-    private func appletChangedStatus(isOn: Bool) {
+    private func connectionChangedStatus(isOn: Bool) {
         guard let connection = connection else {
             return
         }
@@ -106,6 +119,10 @@ public class ConnectButtonController {
         } else {
             delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
+    }
+    
+    private func handleReceivedUserToken(_ userToken: String) {
+        delegate?.connectButtonController(self, receivedUserToken: userToken)
     }
 
     private var credentialProvider: CredentialProvider {
@@ -401,7 +418,7 @@ public class ConnectButtonController {
             static let serviceAuthentication = "service_authentication"
             static let serviceId = "service_id"
             static let complete = "complete"
-            static let config = "config"
+            static let userToken = "user_token"
             static let error = "error"
             static let errorType = "error_type"
             static let errorTypeAccountCreation = "account_creation"
@@ -410,11 +427,11 @@ public class ConnectButtonController {
         /// Authorization redirect encodes some information about what comes next in the flow
         ///
         /// - serviceConnection: In the next step, authorize a service.
-        /// - complete: The Connection is complete. `didConfiguration` is true, if the Connection required a configuration step on web.
+        /// - complete: The Connection is complete. If the user token was present in the redirect, it is returned here. This is optional to allow future flexibility.
         /// - failed: An error occurred on web, aborting the flow.
         enum Outcome {
             case serviceAuthorization(id: String)
-            case complete(didConfiguration: Bool)
+            case complete(userToken: String?)
             case failed(ConnectButtonControllerError)
         }
 
@@ -449,8 +466,8 @@ public class ConnectButtonController {
                     onRedirect?(.failed(.unknownRedirect))
                 }
             case QueryItems.complete:
-                let didConfiguration = queryItems.first(where: { $0.name == QueryItems.config })?.value == "true"
-                onRedirect?(.complete(didConfiguration: didConfiguration))
+                let userToken = queryItems.first(where: { $0.name == QueryItems.userToken })?.value
+                onRedirect?(.complete(userToken: userToken))
 
             case QueryItems.error:
                 if let reason = queryItems.first(where: { $0.name == QueryItems.errorType })?.value, reason == QueryItems.errorTypeAccountCreation {
@@ -508,8 +525,8 @@ public class ConnectButtonController {
                     // If this ever happens, it is due to a bug on web
                     return .failed(.unknownRedirect)
                 }
-            case .complete:
-                return .authenticationComplete
+            case .complete(let userToken):
+                return .authenticationComplete(userToken: userToken)
             }
         }()
 
@@ -555,7 +572,7 @@ public class ConnectButtonController {
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
     /// - logInExistingUser: If we have a user token, ensure the user is logged in to Safari.
     /// - serviceAuthentication: Authorize one of this `Connection`s services. Passing the service to connect and the current user.
-    /// - authenticationComplete: Connection activation was successful. This always originates from the authorization redirect.
+    /// - authenticationComplete: Connection activation was successful. This always originates from the authorization redirect. Passes the user token if it was included in the redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
     /// - connected: The `Connection` was successfully authorized.
@@ -569,7 +586,7 @@ public class ConnectButtonController {
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User)
         case serviceAuthentication(Connection.Service, user: User)
-        case authenticationComplete
+        case authenticationComplete(userToken: String?)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
@@ -605,7 +622,10 @@ public class ConnectButtonController {
             transitionToLogInExistingUser(connection: connection, user: user)
         case .serviceAuthentication(let service, let user):
             transitionToServiceAuthentication(connection: connection, service: service, user: user)
-        case .authenticationComplete:
+        case .authenticationComplete(let userToken):
+            if let userToken = userToken {
+                handleReceivedUserToken(userToken)
+            }
             transitionToAuthenticationComplete()
         case .failed(let error):
             transitionToFailed(error: error)
@@ -814,7 +834,7 @@ public class ConnectButtonController {
         button.footerInteraction.isTapEnabled = true
 
         // Connection was changed to this state, not initialized with it, so let the delegate know
-        appletChangedStatus(isOn: true)
+        connectionChangedStatus(isOn: true)
 
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
@@ -873,7 +893,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToDisconnected(connection: Connection) {
-        appletChangedStatus(isOn: false)
+        connectionChangedStatus(isOn: false)
 
         button.animator(for: .buttonState(.disconnected(message: "button.state.disconnected".localized))).perform()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
