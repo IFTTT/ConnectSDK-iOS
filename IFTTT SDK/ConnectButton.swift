@@ -1217,6 +1217,7 @@ private extension ConnectButton {
             self.switchControl.isOn = false
             self.switchControl.knob.alpha = 1
             self.switchControl.knob.maskedEndCaps = .all
+            self.switchControl.knob.iconView.alpha = 1
             self.switchControl.alpha = 1
             
             // This is only relevent for dark mode when we draw a border around the switch
