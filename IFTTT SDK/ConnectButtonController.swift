@@ -287,7 +287,7 @@ public class ConnectButtonController {
         /// Our best guess of the maximum height of the footer label
         fileprivate static var estimatedMaximumTextHeight: CGFloat {
             // We are estimating that the text will never exceed 2 lines (plus some line spacing)
-            return 2.1 * Constants.footnoteFont.lineHeight
+            return 1.1 * Constants.footnoteFont.lineHeight
         }
 
         private var iftttWordmark: NSAttributedString {
