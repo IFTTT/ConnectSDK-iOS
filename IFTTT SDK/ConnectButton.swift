@@ -363,7 +363,11 @@ public class ConnectButton: UIView {
             }
             let timing = UISpringTimingParameters(dampingRatio: 1,
                                                   initialVelocity: CGVector(dx: v, dy: 0))
+            self.isUserInteractionEnabled = false
             animation.continueAnimation(withTimingParameters: timing, durationFactor: 1)
+            animation.addCompletion { [weak self] _ in
+                self?.isUserInteractionEnabled = true
+            }
             currentToggleAnimation = nil
             
         case .cancelled, .failed:
