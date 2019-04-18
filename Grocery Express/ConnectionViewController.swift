@@ -127,10 +127,16 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         return self
     }
     
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>,
+                                 userToken: String?) {
         switch result {
         case .success:
-            break
+            // A Connection was activated and we received the user's service-level IFTTT token
+            // Let's update our credential for this user
+            if let token = userToken {
+                connectionCredentials.loginUser(with: token)
+            }
             
         case .failure(let error):
             if let reason = error.reason {
@@ -141,17 +147,8 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         }
     }
     
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
         // Received when the Connection is deactivated.
-    }
-    
-    func connectButtonController(_ connectButtonController: ConnectButtonController, receivedUserToken token: String) {
-        // A Connection was activated and we received the user's service-level IFTTT token
-        // Let's update our credential for this user
-        connectionCredentials.loginUser(with: token)
-    }
-    
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) {
-        // Likely this can be ignore, informs us that the email entered in the Connection flow was not valid.
     }
 }

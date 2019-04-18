@@ -54,18 +54,10 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
+    ///   - userToken: The IFTTT service-level user token for your service.
     func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>)
-
-    /// When Connection activation is successful this passes the service-level user token for your service
-    /// This token should be stored securely in the keychain and provided in `CredentialProvider`
-    /// It is also used to make requests to the Connection API on behalf of your user
-    ///
-    /// - Parameters:
-    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
-    ///   - token: The service-level user token for your service
-    func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 receivedUserToken token: String)
+                                 didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>,
+                                 userToken: String?)
 
     /// Connection deactivation is finished.
     ///
@@ -78,14 +70,6 @@ public protocol ConnectButtonControllerDelegate: class {
     ///   - result: A result of the connection deactivation request.
     func connectButtonController(_ connectButtonController: ConnectButtonController,
                                  didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
-
-    /// The controller recieved an invalid email from the user. The default implementation of this function is to do nothing.
-    ///
-    /// - Parameters:
-    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
-    ///   - email: The invalid email `String` provided by the user.
-    func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didRecieveInvalidEmail email: String)
 }
 
 @available(iOS 10.0, *)
@@ -107,22 +91,27 @@ public class ConnectButtonController {
     /// This is set during the `identifyUser` step. It is required that we have this information for later steps in the flow.
     private var user: User?
     
-    private func connectionChangedStatus(isOn: Bool) {
-        guard let connection = connection else {
-            return
+    private func handleActivationFinished(userToken: String?) {
+        connection?.status = .enabled
+        if let connection = connection {
+            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(connection),
+                                              userToken: userToken)
         }
-
-        self.connection?.status = isOn ? .enabled : .disabled
-
-        if isOn {
-            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(connection))
-        } else {
+    }
+    
+    private func handleActivationFailed(error: ConnectButtonControllerError) {
+        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error), userToken: nil)
+    }
+    
+    private func handleDeactivationFinished() {
+        connection?.status = .disabled
+        if let connection = connection {
             delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
     }
     
-    private func handleReceivedUserToken(_ userToken: String) {
-        delegate?.connectButtonController(self, receivedUserToken: userToken)
+    private func handleDeactivationFailed(error: ConnectButtonControllerError) {
+        delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
     }
 
     private var credentialProvider: CredentialProvider {
@@ -623,9 +612,7 @@ public class ConnectButtonController {
         case .serviceAuthentication(let service, let user):
             transitionToServiceAuthentication(connection: connection, service: service, user: user)
         case .authenticationComplete(let userToken):
-            if let userToken = userToken {
-                handleReceivedUserToken(userToken)
-            }
+            handleActivationFinished(userToken: userToken)
             transitionToAuthenticationComplete()
         case .failed(let error):
             transitionToFailed(error: error)
@@ -638,6 +625,7 @@ public class ConnectButtonController {
         case .processDisconnect:
             transitionToProccessDisconnect()
         case .disconnected:
+            handleDeactivationFinished()
             transitionToDisconnected(connection: connection)
         }
     }
@@ -819,12 +807,12 @@ public class ConnectButtonController {
     }
 
     private func transitionToFailed(error: Error) {
-        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.networkError(.genericError(error))))
+        handleActivationFailed(error: .networkError(.genericError(error)))
         transition(to: .initial(animated: false))
     }
 
     private func transitionToCanceled(connection: Connection) {
-        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.canceled))
+        handleActivationFailed(error: .canceled)
         transitionToInitalization(connection: connection, animated: true)
     }
 
@@ -832,9 +820,6 @@ public class ConnectButtonController {
         button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService), footerValue: FooterMessages.worksWithIFTTT.value)).perform(animated: animated)
 
         button.footerInteraction.isTapEnabled = true
-
-        // Connection was changed to this state, not initialized with it, so let the delegate know
-        connectionChangedStatus(isOn: true)
 
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
@@ -885,7 +870,7 @@ public class ConnectButtonController {
                 case .success:
                     self.transition(to: .disconnected)
                 case .failure(let error):
-                    self.delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(.networkError(error)))
+                    self.handleDeactivationFailed(error: .networkError(error))
                     self.transition(to: .connected(animated: true))
                 }
             }
@@ -893,8 +878,6 @@ public class ConnectButtonController {
     }
 
     private func transitionToDisconnected(connection: Connection) {
-        connectionChangedStatus(isOn: false)
-
         button.animator(for: .buttonState(.disconnected(message: "button.state.disconnected".localized))).perform()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.transition(to: .initial(animated: true))
