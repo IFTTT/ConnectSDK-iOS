@@ -145,6 +145,17 @@ extension UIFont {
         return customFont(withName: name, size: 16, style: style, isDynamic: isDynamic)
     }
     
+    /// Creates the standard callout font
+    /// This is equivalent to body with demi bold weight and isCallout == true
+    ///
+    /// - Parameters:
+    ///   - weight: The thickness of the font. Defaults to demi bold.
+    ///   - isDynamic: Whether the font scales based on a user's settings. Defaults to true.
+    /// - Returns: The font configured.
+    static func callout(weight: CustomFontWeight = .demiBold, isDynamic: Bool = true) -> UIFont {
+        return .body(weight: weight, isDynamic: isDynamic, isCallout: true)
+    }
+    
     /// Creates the footnote font.
     ///
     /// - Parameters:
