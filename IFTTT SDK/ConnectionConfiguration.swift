@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 /// Encapsulates the information needed to authenticate a `Connection`'s services.
 public struct ConnectionConfiguration {
     
@@ -23,6 +24,7 @@ public struct ConnectionConfiguration {
     /// A `CredentialProvider` conforming object for providing credentials.
     public let credentialProvider: CredentialProvider
     
+    // FIXME: redirectURL
     /// The `URL` that is used for authentication redirects.
     public let connectAuthorizationRedirectURL: URL
     

@@ -8,12 +8,16 @@
 
 import Foundation
 
+// FIXME: ConnectionCredentialProvider
+
 /// A protocol that defines APIs for providing credentials used during the service authentication process for an `Connection`.
 public protocol CredentialProvider {
     
+    // FIXME: oauthCode
     /// Provides the partner's OAuth code for a service during authentication with a `Connection`.
     var partnerOAuthCode: String { get }
     
+    // FIXME: userToken
     /// Provides the service's token associated with the IFTTT platform.
     var iftttServiceToken: String? { get }
     

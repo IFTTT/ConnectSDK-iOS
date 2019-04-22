@@ -8,6 +8,9 @@
 
 import Foundation
 
+// FIXME: Parse redirect URL here not in the controller
+// FIXME: ConnectionRedirectHandler
+
 /// A class to handle redirections of `URL`s recieved as a part of the `Connection` activation process.
 @available(iOS 10.0, *)
 public final class AuthenticationRedirectHandler {

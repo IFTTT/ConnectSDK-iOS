@@ -6,6 +6,8 @@
 //  Copyright © 2018 IFTTT. All rights reserved.
 //
 
+// FIXME: ConnectNetworkError
+
 import Foundation
 
 /// An error occurred, preventing the network controller from completing `Connection` network requests.

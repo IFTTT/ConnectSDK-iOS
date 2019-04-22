@@ -6,6 +6,8 @@
 //  Copyright © 2018 IFTTT. All rights reserved.
 //
 
+// FIXME: Not public
+
 import Foundation
 
 extension URLRequest {
