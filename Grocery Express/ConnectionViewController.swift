@@ -128,13 +128,12 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>,
-                                 userToken: String?) {
+                                 didFinishActivationWithResult result: Result<ConnectionActivation, ConnectButtonControllerError>) {
         switch result {
-        case .success:
+        case .success(let activation):
             // A Connection was activated and we received the user's service-level IFTTT token
             // Let's update our credential for this user
-            if let token = userToken {
+            if let token = activation.userToken {
                 connectionCredentials.loginUser(with: token)
             }
             

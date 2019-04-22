@@ -9,6 +9,16 @@
 import UIKit
 import SafariServices
 
+/// Bundles values when a Connection is activated
+public struct ConnectionActivation {
+    
+    /// The IFTTT service-level user token for your service.
+    public let userToken: String?
+    
+    /// The Connection that was activated
+    public let connection: Connection
+}
+
 /// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
 public enum ConnectButtonControllerError: Error {
 
@@ -54,10 +64,8 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
-    ///   - userToken: The IFTTT service-level user token for your service.
     func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>,
-                                 userToken: String?)
+                                 didFinishActivationWithResult result: Result<ConnectionActivation, ConnectButtonControllerError>)
 
     /// Connection deactivation is finished.
     ///
@@ -94,13 +102,14 @@ public class ConnectButtonController {
     private func handleActivationFinished(userToken: String?) {
         connection?.status = .enabled
         if let connection = connection {
-            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(connection),
-                                              userToken: userToken)
+            let activation = ConnectionActivation(userToken: userToken,
+                                                  connection: connection)
+            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
         }
     }
     
     private func handleActivationFailed(error: ConnectButtonControllerError) {
-        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error), userToken: nil)
+        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error))
     }
     
     private func handleDeactivationFinished() {
