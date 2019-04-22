@@ -1213,7 +1213,7 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.progressBar.alpha = 0
-            self.backgroundView.backgroundColor = .black
+            self.backgroundView.backgroundColor = UIColor(hex: 0x666666)
             self.switchControl.isOn = false
             self.switchControl.knob.alpha = 1
             self.switchControl.knob.maskedEndCaps = .all

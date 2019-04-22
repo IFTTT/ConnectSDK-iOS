@@ -229,7 +229,7 @@ public class ConnectButtonController {
                             message: "button.state.connect".localized(with: service.shortName))
         case .disabled:
             return .connect(service: service.connectButtonService,
-                            message: "button.state.reconnect".localized(with: service.shortName))
+                            message: "button.state.connect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
                               message: "button.state.connected".localized)
