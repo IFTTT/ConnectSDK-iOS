@@ -376,6 +376,9 @@ public class ConnectButton: UIView {
                                                   initialVelocity: CGVector(dx: v, dy: 0))
             animation.continueAnimation(withTimingParameters: timing, durationFactor: 1)
             currentToggleAnimation = nil
+        @unknown default:
+            assertionFailure("A future unexpected case has been added. We need to update the SDK to handle this.")
+            break
         }
     }
     
@@ -1261,6 +1264,9 @@ private extension ConnectButton {
                 self.switchControl.alpha = 0
             case .current:
                 break
+            @unknown default:
+                assertionFailure("A future unexpected case has been added. We need to update the SDK to handle this.")
+                break
             }
         }
     }
@@ -1490,6 +1496,9 @@ private extension ConnectButton {
             case .end:
                 self.switchControl.alpha = 0
             case .current:
+                break
+            @unknown default:
+                assertionFailure("A future unexpected case has been added. We need to update the SDK to handle this.")
                 break
             }
         }
