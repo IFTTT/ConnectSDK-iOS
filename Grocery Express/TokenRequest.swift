@@ -21,7 +21,7 @@ struct TokenRequest {
         let credentials = self.credentials
         let task = URLSession.shared.dataTask(with: urlRequest) { (data, _, _) in
             if let data = data,
-                let response = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any],
+                let response = ((try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]) as [String : Any]??),
                 let token = response?["user_token"] as? String {
                 
                 credentials.loginUser(with: token)

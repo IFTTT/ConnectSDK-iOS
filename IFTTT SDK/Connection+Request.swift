@@ -11,7 +11,7 @@ import Foundation
 public extension Connection {
     
     /// Handles network requests related to the `Connection`.
-    public struct Request {
+    struct Request {
         
         /// The HTTP request method options.
         enum Method: String {
