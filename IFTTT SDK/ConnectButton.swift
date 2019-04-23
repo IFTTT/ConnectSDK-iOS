@@ -629,7 +629,7 @@ public class ConnectButton: UIView {
                 animator.addAnimations {
                     // This will fade out the label more quickly than the length of the full animation
                     // Doing this we can create a two step animation without nesting animation blocks
-                    self.primary.label.alpha = -0.6
+                    self.primary.label.alpha = 0
                 }
                 // Fade in the new label as the second part of the animation
                 animator.addAnimations({
