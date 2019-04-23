@@ -179,7 +179,7 @@ public class ConnectButton: UIView {
         }
         
         if let footerValue = transition.footerValue {
-            footerLabelAnimator.transition(with: .rotateDown,
+            footerLabelAnimator.transition(with: .crossfade,
                                            updatedValue: footerValue,
                                            addingTo: animator)
         }
@@ -1150,7 +1150,7 @@ private extension ConnectButton {
             transitionToConnect(service: service, message: message, animator: animator)
             
         case let .createAccount(message):
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
             transitionToSlideToDisconnect(message: message, animator: animator)
@@ -1392,7 +1392,7 @@ private extension ConnectButton {
     }
     
     private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
         
@@ -1402,7 +1402,7 @@ private extension ConnectButton {
     }
     
     private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .none, addingTo: animator)
         
         backgroundView.backgroundColor = .black
         
@@ -1423,7 +1423,7 @@ private extension ConnectButton {
     }
     
     private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
     
         backgroundView.backgroundColor = .black
         switchControl.knob.iconView.alpha = 1
@@ -1468,7 +1468,7 @@ private extension ConnectButton {
     }
     
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
                                         insets: .avoidSwitchKnob,
                                         addingTo: animator)
@@ -1506,7 +1506,7 @@ private extension ConnectButton {
     }
     
     private func transitionToDisconnected(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
