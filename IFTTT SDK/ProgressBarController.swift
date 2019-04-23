@@ -27,6 +27,15 @@ final class ProgressBarController {
     private let pauseAt: CGFloat
     private let duration: TimeInterval
     
+    /// The current duration the progress bar is at.
+    var currentDuration: TimeInterval {
+        guard let currentAnimation = currentAnimation else {
+            return 0
+        }
+        
+        return Double(currentAnimation.fractionComplete) * currentAnimation.duration
+    }
+    
     /// Creates a `ProgressBarCoordinator`
     ///
     /// - Parameters:

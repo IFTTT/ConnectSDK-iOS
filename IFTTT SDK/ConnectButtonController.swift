@@ -745,9 +745,13 @@ public class ConnectButtonController {
                         // There is no account for this user
                         // Show a fake message that we are creating an account
                         // Then move to the first step of the service connection flow
-                        self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
+                        let minimumDuration = 0.5
+                        let timeTillMinimumDuration = minimumDuration - progress.currentDuration
+                        DispatchQueue.main.asyncAfter(deadline: .now() + timeTillMinimumDuration) {
+                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
+                        }
                         
-                        progress.finish(extendingDurationBy: 1.5) {
+                        progress.finish {
                             self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
                         }
                     }
