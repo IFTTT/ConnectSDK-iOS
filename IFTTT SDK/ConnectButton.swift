@@ -1452,6 +1452,7 @@ private extension ConnectButton {
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.alpha = 1
             self.switchControl.knob.alpha = 1
+            self.switchControl.knob.iconView.alpha = 1
             self.switchControl.isOn = true
             
             self.checkmark.alpha = 0
