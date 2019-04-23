@@ -284,6 +284,7 @@ public class ConnectButtonController {
         case worksWithIFTTT
         case enterEmail
         case emailInvalid
+        case creatingAccount(email: String)
         case loadingFailed
 
         private struct Constants {
@@ -317,7 +318,7 @@ public class ConnectButtonController {
         
         var isErrorMessage: Bool {
             switch self {
-            case .worksWithIFTTT, .enterEmail:
+            case .worksWithIFTTT, .enterEmail, .creatingAccount:
                 return false
             case .emailInvalid, .loadingFailed:
                 return true
@@ -358,7 +359,19 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
                                                                      .foregroundColor : textColor])
-
+                
+            case let .creatingAccount(email):
+                let text = NSMutableAttributedString(string: "button.footer.accountCreation.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : textColor])
+                text.append(iftttWordmark)
+                text.append(NSAttributedString(string: " "))
+                text.append(NSMutableAttributedString(string: "button.footer.accountCreation.postfix".localized(with: email),
+                                                      attributes: [.font : Constants.footnoteFont,
+                                                                   .foregroundColor : textColor]))
+                
+                return text
+                
             case .loadingFailed:
                 let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
                 
@@ -748,7 +761,7 @@ public class ConnectButtonController {
                         let minimumDuration = 0.5
                         let timeTillMinimumDuration = minimumDuration - progress.currentDuration
                         DispatchQueue.main.asyncAfter(deadline: .now() + timeTillMinimumDuration) {
-                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
+                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized), footerValue: FooterMessages.creatingAccount(email: user.id.value).value)).perform()
                         }
                         
                         progress.finish {
