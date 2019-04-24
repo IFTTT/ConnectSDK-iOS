@@ -838,7 +838,7 @@ public class ConnectButtonController {
 
         button.toggleInteraction.toggleTransition = {
             return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
-                                footerValue: .none)
+                                footerValue: FooterMessages.worksWithIFTTT.value)
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
@@ -859,7 +859,7 @@ public class ConnectButtonController {
                                          resistance: .heavy,
                                          toggleTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                                                          footerValue: .none) },
+                                                                          footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
                                             timer.invalidate() })
