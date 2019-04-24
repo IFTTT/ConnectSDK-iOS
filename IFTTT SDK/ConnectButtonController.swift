@@ -287,7 +287,7 @@ public class ConnectButtonController {
         case loadingFailed
 
         private struct Constants {
-            static let textColor = UIColor(white: 0.68, alpha: 1)
+            static let textColor = UIColor(white: 1, alpha: 0.68)
             
             static let errorTextColor = UIColor.red
             
