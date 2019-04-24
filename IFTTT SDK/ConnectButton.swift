@@ -128,8 +128,8 @@ public class ConnectButton: UIView {
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
         case continueToService(service: Service, message: String)
-        case connecting(message: String)
-        case checkmark
+        case connecting(service: Service, message: String)
+        case checkmark(service: Service)
         case connected(service: Service, message: String)
         case disconnected(message: String)
     }
@@ -1181,11 +1181,11 @@ private extension ConnectButton {
         case let .continueToService(service, message):
             transitionToContinueToService(service: service, message: message, animator: animator)
             
-        case let .connecting(message):
-            transitionToConnecting(message: message, animator: animator)
+        case let .connecting(service, message):
+            transitionToConnecting(service: service, message: message, animator: animator)
             
-        case .checkmark:
-            transitionToCheckmark(animator: animator)
+        case let .checkmark(service):
+            transitionToCheckmark(service: service, animator: animator)
             
         case let .connected(service, message):
             transitionToConnected(service: service, message: message, animator: animator)
@@ -1400,10 +1400,10 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
+    private func transitionToCheckmark(service: Service, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .none, addingTo: animator)
         
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = service.brandColor
         
         checkmark.alpha = 1
         checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
@@ -1421,15 +1421,15 @@ private extension ConnectButton {
         checkmark.drawCheckmark(duration: 1.25)
     }
     
-    private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToConnecting(service: Service, message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
     
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = service.brandColor
         switchControl.knob.iconView.alpha = 1
         switchControl.knob.transform = .identity
         switchControl.knob.maskedEndCaps = .all
  
-        progressBar.configure(with: nil)
+        progressBar.configure(with: service)
         progressBar.alpha = 1
         
         // We don't show messages and the switch at the same time
