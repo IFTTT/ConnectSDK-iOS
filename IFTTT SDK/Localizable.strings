@@ -29,6 +29,8 @@
 "button.footer.loading.failed.postfix" = "Retry";
 "button.footer.email.prefix" = "Secured with ";
 "button.footer.email.postfix" = "Learn more";
+"button.footer.accountCreation.prefix" = "New ";
+"button.footer.accountCreation.postfix" = "account for %@";
 
 "about.title" = " connects %@ and %@";
 "about.connect" = "Unlock new features when your favorite things work together";
