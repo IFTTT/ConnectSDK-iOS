@@ -1434,7 +1434,7 @@ private extension ConnectButton {
         stopPulseAnimation() // If we canceled disconnect
         
         switchControl.primeAnimation_centerKnob()
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
