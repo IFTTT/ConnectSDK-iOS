@@ -11,8 +11,8 @@ import UIKit
 // Layout constants
 
 fileprivate struct Layout {
-    static let height: CGFloat = 64
-    static let maximumWidth = 6 * height
+    static let height: CGFloat = 70
+    static let maximumWidth = 4.5 * height
     static let knobInset: CGFloat = 6
     static let knobDiameter = height - 2 * knobInset
     static let checkmarkDiameter: CGFloat = 42
