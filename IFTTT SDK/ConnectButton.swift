@@ -19,6 +19,8 @@ fileprivate struct Layout {
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2.5
+    /// The amount by which the email field is offset from the center
+    static let emailFieldOffset: CGFloat = 4
     static let buttonFooterSpacing: CGFloat = 20
 }
 
@@ -40,11 +42,14 @@ public class ConnectButton: UIView {
         fileprivate struct Font {
             static let connect = UIFont(name: "AvenirNext-Bold",
                                         size: 24)!
+            static let email = UIFont(name: "AvenirNext-DemiBold",
+                                      size: 18)!
         }
         
         fileprivate struct Color {
             static let blue = UIColor(hex: 0x0099FF)
             static let lightGrey = UIColor(hex: 0xCCCCCC)
+            static let mediumGrey = UIColor(hex: 0x666666)
             static let grey = UIColor(hex: 0x414141)
             static let border = UIColor(white: 1, alpha: 0.32)
         }
@@ -480,6 +485,8 @@ public class ConnectButton: UIView {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
+        field.font = Style.Font.email
+        field.textColor = Style.Color.mediumGrey
         return field
     }()
     
@@ -999,8 +1006,10 @@ public class ConnectButton: UIView {
         primaryLabelAnimator.transition.view.constrain.edges(to: backgroundView)
         
         emailEntryField.constrain.edges(to: backgroundView,
-                                        inset: UIEdgeInsets(top: 0, left: LabelAnimator.Insets.standard.left,
-                                                            bottom: 0, right: LabelAnimator.Insets.avoidSwitchKnob.right))
+                                        inset: UIEdgeInsets(top: Layout.emailFieldOffset,
+                                                            left: LabelAnimator.Insets.standard.left,
+                                                            bottom: 0,
+                                                            right: LabelAnimator.Insets.avoidSwitchKnob.right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
