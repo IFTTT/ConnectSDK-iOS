@@ -19,6 +19,8 @@ fileprivate struct Layout {
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2.5
+    /// The amount by which the email field is offset from the center
+    static let emailFieldOffset: CGFloat = 4
     static let buttonFooterSpacing: CGFloat = 15
 }
 
@@ -40,11 +42,14 @@ public class ConnectButton: UIView {
         fileprivate struct Font {
             static let connect = UIFont(name: "AvenirNext-Bold",
                                         size: 24)!
+            static let email = UIFont(name: "AvenirNext-DemiBold",
+                                      size: 18)!
         }
         
         fileprivate struct Color {
             static let blue = UIColor(hex: 0x0099FF)
             static let lightGrey = UIColor(hex: 0xCCCCCC)
+            static let mediumGrey = UIColor(hex: 0x666666)
             static let grey = UIColor(hex: 0x414141)
             static let border = UIColor(white: 1, alpha: 0.32)
         }
@@ -128,8 +133,8 @@ public class ConnectButton: UIView {
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
         case continueToService(service: Service, message: String)
-        case connecting(message: String)
-        case checkmark
+        case connecting(service: Service, message: String)
+        case checkmark(service: Service)
         case connected(service: Service, message: String)
         case disconnected(message: String)
     }
@@ -480,6 +485,8 @@ public class ConnectButton: UIView {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
+        field.font = Style.Font.email
+        field.textColor = Style.Color.mediumGrey
         return field
     }()
     
@@ -992,9 +999,7 @@ public class ConnectButton: UIView {
         primaryLabelAnimator.primary.view.constrain.edges(to: backgroundView)
         primaryLabelAnimator.transition.view.constrain.edges(to: backgroundView)
         
-        emailEntryField.constrain.edges(to: backgroundView,
-                                        inset: UIEdgeInsets(top: 0, left: LabelAnimator.Insets.standard.left,
-                                                            bottom: 0, right: LabelAnimator.Insets.avoidRightKnob.right))
+        emailEntryField.constrain.edges(to: backgroundView, inset: UIEdgeInsets(top: Layout.emailFieldOffset, left: LabelAnimator.Insets.standard.left, bottom: 0, right: LabelAnimator.Insets.avoidRightKnob.right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
@@ -1175,11 +1180,11 @@ private extension ConnectButton {
         case let .continueToService(service, message):
             transitionToContinueToService(service: service, message: message, animator: animator)
             
-        case let .connecting(message):
-            transitionToConnecting(message: message, animator: animator)
+        case let .connecting(service, message):
+            transitionToConnecting(service: service, message: message, animator: animator)
             
-        case .checkmark:
-            transitionToCheckmark(animator: animator)
+        case let .checkmark(service):
+            transitionToCheckmark(service: service, animator: animator)
             
         case let .connected(service, message):
             transitionToConnected(service: service, message: message, animator: animator)
@@ -1394,10 +1399,10 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
+    private func transitionToCheckmark(service: Service, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .none, addingTo: animator)
         
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = service.brandColor
         
         checkmark.alpha = 1
         checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
@@ -1415,15 +1420,15 @@ private extension ConnectButton {
         checkmark.drawCheckmark(duration: 1.25)
     }
     
-    private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToConnecting(service: Service, message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
     
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = service.brandColor
         switchControl.knob.iconView.alpha = 1
         switchControl.knob.transform = .identity
         switchControl.knob.maskedEndCaps = .all
  
-        progressBar.configure(with: nil)
+        progressBar.configure(with: service)
         progressBar.alpha = 1
         
         // We don't show messages and the switch at the same time

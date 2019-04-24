@@ -284,6 +284,7 @@ public class ConnectButtonController {
         case worksWithIFTTT
         case enterEmail
         case emailInvalid
+        case creatingAccount(email: String)
         case loadingFailed
 
         private struct Constants {
@@ -317,7 +318,7 @@ public class ConnectButtonController {
         
         var isErrorMessage: Bool {
             switch self {
-            case .worksWithIFTTT, .enterEmail:
+            case .worksWithIFTTT, .enterEmail, .creatingAccount:
                 return false
             case .emailInvalid, .loadingFailed:
                 return true
@@ -358,7 +359,19 @@ public class ConnectButtonController {
                 let text = "button.footer.email.invalid".localized
                 return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
                                                                      .foregroundColor : textColor])
-
+                
+            case let .creatingAccount(email):
+                let text = NSMutableAttributedString(string: "button.footer.accountCreation.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : textColor])
+                text.append(iftttWordmark)
+                text.append(NSAttributedString(string: " "))
+                text.append(NSMutableAttributedString(string: "button.footer.accountCreation.postfix".localized(with: email),
+                                                      attributes: [.font : Constants.footnoteFont,
+                                                                   .foregroundColor : textColor]))
+                
+                return text
+                
             case .loadingFailed:
                 let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
                 
@@ -622,7 +635,7 @@ public class ConnectButtonController {
             transitionToServiceAuthentication(connection: connection, service: service, user: user)
         case .authenticationComplete(let userToken):
             handleActivationFinished(userToken: userToken)
-            transitionToAuthenticationComplete()
+            transitionToAuthenticationComplete(service: connection.connectingService)
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -803,14 +816,14 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAuthenticationComplete() {
-        button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized),
+    private func transitionToAuthenticationComplete(service: Connection.Service) {
+        button.animator(for: .buttonState(.connecting(service: service.connectButtonService, message: "button.state.connecting".localized),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         let progress = button.showProgress(duration: 2)
         progress.perform()
         progress.addCompletion { _ in
-            self.button.animator(for: .buttonState(.checkmark)).perform()
+            self.button.animator(for: .buttonState(.checkmark(service: service.connectButtonService))).perform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: .connected(animated: true))
             }
@@ -838,7 +851,7 @@ public class ConnectButtonController {
 
         button.toggleInteraction.toggleTransition = {
             return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
-                                footerValue: .none)
+                                footerValue: FooterMessages.worksWithIFTTT.value)
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
@@ -847,7 +860,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToConfirmDisconnect() {
-       let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
+       let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
             // Revert state if user doesn't follow through
             self?.transition(to: .connected(animated: false))
             timer.invalidate()
@@ -859,7 +872,7 @@ public class ConnectButtonController {
                                          resistance: .heavy,
                                          toggleTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                                                          footerValue: .none) },
+                                                                          footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
                                             timer.invalidate() })
