@@ -450,7 +450,7 @@ public class ConnectButton: UIView {
         switchControl.alpha = 1
         switchControl.isOn = false
         switchControl.knob.backgroundColor = Style.Color.blue
-        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
+        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidLeftKnob)
         let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
         footerLabelAnimator.configure(.attributed(initialFooterText))
     }
@@ -569,17 +569,11 @@ public class ConnectButton: UIView {
             let left: CGFloat
             let right: CGFloat
             
+            static let standardInsetValue = 0.5 * Layout.height
             static let zero = Insets(left: 0, right: 0)
-            static let standard = Insets(left: 0.5 * Layout.height,
-                                         right: 0.5 * Layout.height)
-            
-            static let avoidServiceIcon = Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
-                                                 right: standard.right)
-            
-            static var avoidSwitchKnob: Insets {
-                let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
-                return Insets(left: avoidSwitch, right: avoidSwitch)
-            }
+            static let standard = Insets(left: standardInsetValue, right: standardInsetValue)
+            static let avoidLeftKnob = Insets(left: Layout.knobDiameter + 20, right: standardInsetValue)
+            static let avoidRightKnob = Insets(left: standardInsetValue, right: Layout.knobDiameter + 20)
             
             fileprivate func apply(_ view: UIStackView) {
                 view.layoutMargins.left = left
@@ -1000,7 +994,7 @@ public class ConnectButton: UIView {
         
         emailEntryField.constrain.edges(to: backgroundView,
                                         inset: UIEdgeInsets(top: 0, left: LabelAnimator.Insets.standard.left,
-                                                            bottom: 0, right: LabelAnimator.Insets.avoidSwitchKnob.right))
+                                                            bottom: 0, right: LabelAnimator.Insets.avoidRightKnob.right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
@@ -1214,7 +1208,7 @@ private extension ConnectButton {
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
        
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
@@ -1239,7 +1233,7 @@ private extension ConnectButton {
         
         primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: labelValue,
-                                        insets: .avoidSwitchKnob,
+                                        insets: .standard,
                                         addingTo: animator)
         
         progressBar.configure(with: service)
@@ -1440,7 +1434,7 @@ private extension ConnectButton {
         stopPulseAnimation() // If we canceled disconnect
         
         switchControl.primeAnimation_centerKnob()
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
@@ -1469,7 +1463,7 @@ private extension ConnectButton {
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
-                                        insets: .avoidSwitchKnob,
+                                        insets: .avoidRightKnob,
                                         addingTo: animator)
         pulseAnimateLabel(toAlpha: .partial)
     }
