@@ -847,7 +847,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToConfirmDisconnect() {
-       let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
+       let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
             // Revert state if user doesn't follow through
             self?.transition(to: .connected(animated: false))
             timer.invalidate()
