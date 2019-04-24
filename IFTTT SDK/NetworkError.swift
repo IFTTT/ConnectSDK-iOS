@@ -6,7 +6,7 @@
 //  Copyright © 2018 IFTTT. All rights reserved.
 //
 
-// FIXME: ConnectNetworkError
+// FIXME: ConnectionNetworkError
 
 import Foundation
 

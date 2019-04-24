@@ -6,6 +6,8 @@
 //  Copyright © 2018 IFTTT. All rights reserved.
 //
 
+// FIXME: Maybe remove?
+
 import Foundation
 
 /// An object to model success and failure states from an API.
