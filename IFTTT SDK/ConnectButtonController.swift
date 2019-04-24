@@ -244,7 +244,7 @@ public class ConnectButtonController {
                             message: "button.state.connect".localized(with: service.shortName))
         case .disabled:
             return .connect(service: service.connectButtonService,
-                            message: "button.state.reconnect".localized(with: service.shortName))
+                            message: "button.state.connect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
                               message: "button.state.connected".localized)
@@ -758,14 +758,12 @@ public class ConnectButtonController {
                         // There is no account for this user
                         // Show a fake message that we are creating an account
                         // Then move to the first step of the service connection flow
-                        let minimumDuration = 0.5
-                        let timeTillMinimumDuration = minimumDuration - progress.currentDuration
-                        DispatchQueue.main.asyncAfter(deadline: .now() + timeTillMinimumDuration) {
-                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized), footerValue: FooterMessages.creatingAccount(email: user.id.value).value)).perform()
-                        }
-                        
-                        progress.finish {
-                            self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                        progress.wait(until: 0.5) {
+                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
+                            
+                            progress.finish {
+                                self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                            }
                         }
                     }
                 } else { // Existing IFTTT user (with a token)
