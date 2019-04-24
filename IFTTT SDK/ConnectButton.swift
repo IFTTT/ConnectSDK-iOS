@@ -420,8 +420,9 @@ public class ConnectButton: UIView {
             emailConfirmButton.imageView.tintColor = .white
             emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
             
-            footerLabelAnimator.primary.label.textColor = UIColor(white: 0, alpha: 0.68)
-            footerLabelAnimator.transition.label.textColor = UIColor(white: 0, alpha: 0.68)
+            let darkFooterColor = UIColor(white: 0, alpha: 0.68)
+            footerLabelAnimator.primary.label.textColor = darkFooterColor
+            footerLabelAnimator.transition.label.textColor = darkFooterColor
             
             backgroundView.border = .none
             progressBar.insetForButtonBorder = 0
@@ -436,8 +437,9 @@ public class ConnectButton: UIView {
             layer.shadowRadius = 5
             layer.shadowOffset = CGSize(width: -2, height: 0)
             
-            footerLabelAnimator.primary.label.textColor = UIColor(white: 1.0, alpha: 0.68)
-            footerLabelAnimator.transition.label.textColor = UIColor(white: 1.0, alpha: 0.68)
+            let lightFooterColor = UIColor(white: 1.0, alpha: 0.68)
+            footerLabelAnimator.primary.label.textColor = lightFooterColor
+            footerLabelAnimator.transition.label.textColor = lightFooterColor
             
             backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
             progressBar.insetForButtonBorder = Layout.borderWidth
