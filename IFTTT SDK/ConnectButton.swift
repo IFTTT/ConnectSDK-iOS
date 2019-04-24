@@ -627,10 +627,9 @@ public class ConnectButton: UIView {
             case .crossfade:
                 transition.label.alpha = 0
                 animator.addAnimations {
-                    // This will fade out the label more quickly than the length of the full animation
-                    // Doing this we can create a two step animation without nesting animation blocks
                     self.primary.label.alpha = 0
                 }
+                
                 // Fade in the new label as the second part of the animation
                 animator.addAnimations({
                     self.transition.label.alpha = 1
