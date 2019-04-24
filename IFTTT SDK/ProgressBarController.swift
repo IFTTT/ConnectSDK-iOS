@@ -70,7 +70,7 @@ final class ProgressBarController {
     ///   - minimumDuration: The amount of time you would like to wait.
     ///   - completionHandler: Called when the amount of time has passed.
     func wait(until minimumDuration: TimeInterval, _ completionHandler: @escaping () -> Void) {
-        let timeTillMinimumDuration = minimumDuration - currentDuration
+        let timeTillMinimumDuration = max(0, minimumDuration - currentDuration)
         DispatchQueue.main.asyncAfter(deadline: .now() + timeTillMinimumDuration) {
             completionHandler()
         }
