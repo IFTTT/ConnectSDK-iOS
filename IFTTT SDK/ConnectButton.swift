@@ -19,7 +19,7 @@ fileprivate struct Layout {
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2.5
-    static let buttonFooterSpacing: CGFloat = 20
+    static let buttonFooterSpacing: CGFloat = 15
 }
 
 
