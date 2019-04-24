@@ -27,6 +27,15 @@ final class ProgressBarController {
     private let pauseAt: CGFloat
     private let duration: TimeInterval
     
+    /// The current duration the progress bar is at.
+    private var currentDuration: TimeInterval {
+        guard let currentAnimation = currentAnimation else {
+            return 0
+        }
+        
+        return Double(currentAnimation.fractionComplete) * currentAnimation.duration
+    }
+    
     /// Creates a `ProgressBarCoordinator`
     ///
     /// - Parameters:
@@ -53,6 +62,18 @@ final class ProgressBarController {
                                                     duration: TimeInterval(pauseAt) * duration,
                                                     curve: .linear)
         currentAnimation?.startAnimation()
+    }
+    
+    /// Tells the coordinator to wait for an amount of time before call its completion handler.
+    ///
+    /// - Parameters:
+    ///   - minimumDuration: The amount of time you would like to wait.
+    ///   - completionHandler: Called when the amount of time has passed.
+    func wait(until minimumDuration: TimeInterval, _ completionHandler: @escaping () -> Void) {
+        let timeTillMinimumDuration = max(0, minimumDuration - currentDuration)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeTillMinimumDuration) {
+            completionHandler()
+        }
     }
     
     /// Tells the coordinator that the associated long running task is complete

@@ -179,7 +179,7 @@ public class ConnectButton: UIView {
         }
         
         if let footerValue = transition.footerValue {
-            footerLabelAnimator.transition(with: .rotateDown,
+            footerLabelAnimator.transition(with: .crossfade,
                                            updatedValue: footerValue,
                                            addingTo: animator)
         }
@@ -376,6 +376,9 @@ public class ConnectButton: UIView {
                                                   initialVelocity: CGVector(dx: v, dy: 0))
             animation.continueAnimation(withTimingParameters: timing, durationFactor: 1)
             currentToggleAnimation = nil
+        @unknown default:
+            assertionFailure("A future unexpected case has been added. We need to update the SDK to handle this.")
+            break
         }
     }
     
@@ -624,10 +627,9 @@ public class ConnectButton: UIView {
             case .crossfade:
                 transition.label.alpha = 0
                 animator.addAnimations {
-                    // This will fade out the label more quickly than the length of the full animation
-                    // Doing this we can create a two step animation without nesting animation blocks
-                    self.primary.label.alpha = -0.6
+                    self.primary.label.alpha = 0
                 }
+                
                 // Fade in the new label as the second part of the animation
                 animator.addAnimations({
                     self.transition.label.alpha = 1
@@ -1147,7 +1149,7 @@ private extension ConnectButton {
             transitionToConnect(service: service, message: message, animator: animator)
             
         case let .createAccount(message):
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
             transitionToSlideToDisconnect(message: message, animator: animator)
@@ -1260,6 +1262,9 @@ private extension ConnectButton {
             case .end:
                 self.switchControl.alpha = 0
             case .current:
+                break
+            @unknown default:
+                assertionFailure("A future unexpected case has been added. We need to update the SDK to handle this.")
                 break
             }
         }
@@ -1386,7 +1391,7 @@ private extension ConnectButton {
     }
     
     private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
         
@@ -1396,7 +1401,7 @@ private extension ConnectButton {
     }
     
     private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .none, addingTo: animator)
         
         backgroundView.backgroundColor = .black
         
@@ -1417,7 +1422,7 @@ private extension ConnectButton {
     }
     
     private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
     
         backgroundView.backgroundColor = .black
         switchControl.knob.iconView.alpha = 1
@@ -1446,6 +1451,7 @@ private extension ConnectButton {
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.alpha = 1
             self.switchControl.knob.alpha = 1
+            self.switchControl.knob.iconView.alpha = 1
             self.switchControl.isOn = true
             
             self.checkmark.alpha = 0
@@ -1461,7 +1467,7 @@ private extension ConnectButton {
     }
     
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
                                         insets: .avoidSwitchKnob,
                                         addingTo: animator)
@@ -1491,12 +1497,15 @@ private extension ConnectButton {
                 self.switchControl.alpha = 0
             case .current:
                 break
+            @unknown default:
+                assertionFailure("A future unexpected case has been added. We need to update the SDK to handle this.")
+                break
             }
         }
     }
     
     private func transitionToDisconnected(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
