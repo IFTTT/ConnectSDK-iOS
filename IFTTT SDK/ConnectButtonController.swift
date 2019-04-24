@@ -635,7 +635,7 @@ public class ConnectButtonController {
             transitionToServiceAuthentication(connection: connection, service: service, user: user)
         case .authenticationComplete(let userToken):
             handleActivationFinished(userToken: userToken)
-            transitionToAuthenticationComplete()
+            transitionToAuthenticationComplete(service: connection.connectingService)
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -816,14 +816,14 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAuthenticationComplete() {
-        button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized),
+    private func transitionToAuthenticationComplete(service: Connection.Service) {
+        button.animator(for: .buttonState(.connecting(service: service.connectButtonService, message: "button.state.connecting".localized),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         let progress = button.showProgress(duration: 2)
         progress.perform()
         progress.addCompletion { _ in
-            self.button.animator(for: .buttonState(.checkmark)).perform()
+            self.button.animator(for: .buttonState(.checkmark(service: service.connectButtonService))).perform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: .connected(animated: true))
             }
