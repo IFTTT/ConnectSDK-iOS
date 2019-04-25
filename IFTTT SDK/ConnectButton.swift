@@ -52,8 +52,8 @@ public class ConnectButton: UIView {
             static let mediumGrey = UIColor(hex: 0x666666)
             static let grey = UIColor(hex: 0x414141)
             static let border = UIColor(white: 1, alpha: 0.32)
-            static let darkFooter = UIColor(white: 0, alpha: 0.68)
-            static let lightFooter = UIColor(white: 1, alpha: 0.68)
+            static let darkFooter = UIColor(white: 0, alpha: 0.32)
+            static let lightFooter = UIColor(white: 1, alpha: 0.32)
         }
     }
     
