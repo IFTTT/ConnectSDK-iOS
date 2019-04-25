@@ -137,6 +137,7 @@ public class ConnectButton: UIView {
         case continueToService(service: Service, message: String)
         case connecting(service: Service, message: String)
         case checkmark(service: Service)
+        // We start out the knob in the center when animating to connected. If the knob is already in the correct location you can choose to not animated the knob from the center.
         case connected(service: Service, message: String, shouldAnimateKnob: Bool)
         case disconnected(message: String)
     }
