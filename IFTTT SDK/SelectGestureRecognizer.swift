@@ -45,6 +45,7 @@ class SelectGestureRecognizer: UIGestureRecognizer {
             case .ended:
                 // Touches have ended but we're not already in the touch state which means this was a tap so show the tap animation
                 if isHighlighted == false {
+                    // Set the alpha immediately to selected and then animate to the unselected state.
                     view?.alpha = 0.8
                     isHighlighted = false
                 } else {
