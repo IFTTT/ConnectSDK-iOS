@@ -51,16 +51,16 @@ class AboutViewController: UIViewController {
             static let headerSpacing: CGFloat = 16
             
             /// The spacing between the header, body, and footer
-            static let bodyItemMargins: CGFloat = 36
+            static let valuePropMargins: CGFloat = 36
             
             /// The spacing between items in the page body
-            static let bodyItemSpacing: CGFloat = 24
+            static let valuePropSpacing: CGFloat = 24
             
             /// The size of item icons in the page body
-            static let bodyItemIconSise: CGFloat = 24
+            static let valuePropIconSise: CGFloat = 24
             
             /// The spacing between the icon and title in body items
-            static let bodyItemIconTitleSpacing: CGFloat = 24
+            static let ValuePropIconTextSpacing: CGFloat = 24
             
             /// The spacing between the download in app store button and the legal terms
             static let footerSpacing: CGFloat = 24
@@ -140,13 +140,13 @@ class AboutViewController: UIViewController {
     ]
     
     private lazy var itemsStackView = UIStackView(valuePropositionViews) {
-        $0.spacing = Constants.Layout.bodyItemSpacing
+        $0.spacing = Constants.Layout.valuePropSpacing
         $0.axis = .vertical
         $0.alignment = .fill
         $0.isLayoutMarginsRelativeArrangement = true
-        $0.layoutMargins = UIEdgeInsets(top: Constants.Layout.bodyItemMargins,
+        $0.layoutMargins = UIEdgeInsets(top: Constants.Layout.valuePropMargins,
                                         left: 0,
-                                        bottom: Constants.Layout.bodyItemMargins,
+                                        bottom: Constants.Layout.valuePropMargins,
                                         right: 0)
     }
     
@@ -279,7 +279,7 @@ private extension AboutViewController {
             let iconView = UIImageView(image: icon)
             iconView.tintColor = Constants.Color.mediumGrey
             iconView.contentMode = .scaleAspectFit
-            iconView.constrain.square(length: Constants.Layout.bodyItemIconSise)
+            iconView.constrain.square(length: Constants.Layout.valuePropIconSise)
             
             let label = UILabel(text) {
                 $0.font = .body(weight: .demiBold)
@@ -289,7 +289,7 @@ private extension AboutViewController {
             }
             
             let stackView = UIStackView([iconView, label]) {
-                $0.spacing = Constants.Layout.bodyItemIconTitleSpacing
+                $0.spacing = Constants.Layout.ValuePropIconTextSpacing
                 $0.axis = .horizontal
                 $0.alignment = .center
             }
