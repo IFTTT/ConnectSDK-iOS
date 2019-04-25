@@ -288,13 +288,12 @@ public class ConnectButtonController {
         case loadingFailed
 
         private struct Constants {
-            static let textColor = UIColor(white: 1, alpha: 0.68)
-            
             static let errorTextColor = UIColor.red
             
             static var footnoteFont: UIFont {
                 return .footnote(weight: .demiBold)
             }
+            
             static var iftttWordmarkFont: UIFont {
                 return .footnote(weight: .heavy)
             }
@@ -302,35 +301,17 @@ public class ConnectButtonController {
 
         /// Our best guess of the maximum height of the footer label
         fileprivate static var estimatedMaximumTextHeight: CGFloat {
-            // We are estimating that the text will never exceed 2 lines (plus some line spacing)
+            // We are estimating that the text will never exceed 1 lines (plus some line spacing)
             return 1.1 * Constants.footnoteFont.lineHeight
         }
 
         private var iftttWordmark: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : Constants.iftttWordmarkFont,
-                                                   .foregroundColor : Constants.textColor])
+                                      attributes: [.font : Constants.iftttWordmarkFont])
         }
 
         var value: ConnectButton.LabelValue {
             return .attributed(attributedString)
-        }
-        
-        var isErrorMessage: Bool {
-            switch self {
-            case .worksWithIFTTT, .enterEmail, .creatingAccount:
-                return false
-            case .emailInvalid, .loadingFailed:
-                return true
-            }
-        }
-
-        private var textColor: UIColor {
-            if isErrorMessage {
-                return Constants.errorTextColor
-            } else {
-                return Constants.textColor
-            }
         }
         
         var attributedString: NSAttributedString {
@@ -338,47 +319,45 @@ public class ConnectButtonController {
             switch self {
             case .worksWithIFTTT:
                 let text = NSMutableAttributedString(string: "button.footer.works_with".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 return text
                 
             case .enterEmail:
                 let text = NSMutableAttributedString(string: "button.footer.email.prefix".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.email.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
-                                                            .foregroundColor : textColor,
                                                             .underlineStyle : NSUnderlineStyle.single.rawValue]))
                 return text
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
-                                                                     .foregroundColor : textColor])
+                return NSAttributedString(string: text,
+                                          attributes: [.font : Constants.footnoteFont,
+                                                       .foregroundColor : Constants.errorTextColor])
                 
             case let .creatingAccount(email):
                 let text = NSMutableAttributedString(string: "button.footer.accountCreation.prefix".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 text.append(NSAttributedString(string: " "))
                 text.append(NSMutableAttributedString(string: "button.footer.accountCreation.postfix".localized(with: email),
-                                                      attributes: [.font : Constants.footnoteFont,
-                                                                   .foregroundColor : textColor]))
+                                                      attributes: [.font : Constants.footnoteFont]))
                 
                 return text
                 
             case .loadingFailed:
-                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
+                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : Constants.errorTextColor])
                 
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.loading.failed.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
-                                                            .foregroundColor : textColor,
+                                                            .foregroundColor : Constants.errorTextColor,
                                                             .underlineStyle : NSUnderlineStyle.single.rawValue]))
                 return text
             }
