@@ -13,12 +13,14 @@ import StoreKit
 @available(iOS 10.0, *)
 class AboutViewController: UIViewController {
     
+    private let connection: Connection
     private let primaryService: Connection.Service
     private let secondaryService: Connection.Service
     
-    init(primaryService: Connection.Service, secondaryService: Connection.Service) {
-        self.primaryService = primaryService
-        self.secondaryService = secondaryService
+    init(connection: Connection) {
+        self.connection = connection
+        self.primaryService = connection.primaryService
+        self.secondaryService = connection.connectingService
         
         super.init(nibName: nil, bundle: nil)
         
@@ -34,6 +36,7 @@ class AboutViewController: UIViewController {
     private struct Constants {
         struct Color {
             static let mediumGrey = UIColor(hex: 0x666666)
+            static let transparentWhite = UIColor(white: 1, alpha: 0.14)
         }
         
         struct Layout {
@@ -157,17 +160,36 @@ class AboutViewController: UIViewController {
         self?.open(url: url)
     }
     
+    private lazy var deepLinkConnectionButton = PillButton("about.connection-deep-link".localized) {
+        $0.backgroundColor = Constants.Color.transparentWhite
+        $0.label.textColor = .white
+        $0.label.font = .h5()
+    }
+    
     private lazy var downloadOnAppStoreButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(Assets.About.downloadOnAppStore, for: [])
         return button
     }()
     
-    private lazy var footerView = UIStackView([downloadOnAppStoreButton, legalTermsView]) {
-        $0.axis = .vertical
-        $0.alignment = .center
-        $0.spacing = Constants.Layout.footerSpacing
-    }
+    private lazy var footerView: UIStackView = {
+        let views: [UIView]
+        if DeepLink.isIftttAppAvailable {
+            switch connection.status {
+            case .enabled:
+                views = [deepLinkConnectionButton, legalTermsView]
+            case .initial, .disabled, .unknown:
+                views = [legalTermsView]
+            }
+        } else {
+            views = [downloadOnAppStoreButton, legalTermsView]
+        }
+        return UIStackView(views) {
+            $0.axis = .vertical
+            $0.alignment = .center
+            $0.spacing = Constants.Layout.footerSpacing
+        }
+    }()
     
     private func open(url: URL) {
         let controller = SFSafariViewController(url: url)
@@ -190,6 +212,17 @@ class AboutViewController: UIViewController {
         viewController.loadProduct(withParameters: parameters, completionBlock: nil)
         viewController.delegate = storeProductViewControllerDelegate
         present(viewController, animated: true)
+    }
+    
+    private func deepLinkToConnection() {
+        let url = DeepLink.connection(connection).url
+        UIApplication.shared.open(url, options: [.universalLinksOnly: true]) { didOpen in
+            if !didOpen {
+                // Fallback to opening in Safari
+                let safari = SFSafariViewController(url: url)
+                self.present(safari, animated: true, completion: nil)
+            }
+        }
     }
     
     
@@ -221,6 +254,10 @@ class AboutViewController: UIViewController {
         scrollView.constrain.edges(to: view)
         
         downloadOnAppStoreButton.addTarget(self, action: #selector(showAppStorePage), for: .touchUpInside)
+        
+        deepLinkConnectionButton.onSelect { [weak self] in
+            self?.deepLinkToConnection()
+        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
