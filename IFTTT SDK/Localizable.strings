@@ -10,6 +10,7 @@
 
 "button.state.loading" = "Loading...";
 "button.state.connect" = "Connect %@";
+"button.state.reconnect" = "Reconnect %@";
 "button.state.verifying" = "Verifying…";
 "button.state.creating_account" = "Creating account…";
 "button.state.sign_in" = "Going to %@...";
