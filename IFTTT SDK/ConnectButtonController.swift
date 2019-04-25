@@ -268,13 +268,7 @@ public class ConnectButtonController {
             assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
-
-        guard let secondaryService = connection.worksWithServices.first else {
-            return
-        }
-
-        let aboutViewController = AboutViewController(primaryService: connection.primaryService,
-                                                      secondaryService: secondaryService)
+        let aboutViewController = AboutViewController(connection: connection)
         present(aboutViewController)
     }
 
@@ -846,6 +840,9 @@ public class ConnectButtonController {
         button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService), footerValue: FooterMessages.worksWithIFTTT.value)).perform(animated: animated)
 
         button.footerInteraction.isTapEnabled = true
+        button.footerInteraction.onSelect = { [weak self] in
+            self?.showAboutPage()
+        }
 
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position

@@ -44,6 +44,7 @@
 		FC3E4B5D21DD612400CF7AB8 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */; };
 		FC3E4B6121DD79EA00CF7AB8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */; };
 		FC3E4B6321DD7A0300CF7AB8 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */; };
+		FC425EBB22721F130020967F /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC425EBA22721F130020967F /* DeepLink.swift */; };
 		FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */; };
 		FC50FB1F21E69D67005D4152 /* TokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC50FB1E21E69D67005D4152 /* TokenRequest.swift */; };
 		FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */; };
@@ -134,6 +135,7 @@
 		FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 		FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		FC425EBA22721F130020967F /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		FC50FB1E21E69D67005D4152 /* TokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRequest.swift; sourceTree = "<group>"; };
 		FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButtonController.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				FC75F93B22386626007C2DDB /* ConnectionActivationFlow.swift */,
 				FC75F93D22387164007C2DDB /* URLComponents+email.swift */,
 				FCF29FCA2187D0E3004B1100 /* User.swift */,
+				FC425EBA22721F130020967F /* DeepLink.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -545,6 +548,7 @@
 				1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */,
 				FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */,
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
+				FC425EBB22721F130020967F /* DeepLink.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FC28D7E52225B1E900D84A1B /* ServiceIconsNetworkController.swift in Sources */,
