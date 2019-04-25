@@ -849,7 +849,7 @@ public class ConnectButtonController {
         // The user must slide to deactivate the Connection
         button.toggleInteraction = .init(isTapEnabled: false,
                                          isDragEnabled: true,
-                                         resistance: .light,
+                                         resistance: .heavy,
                                          toggleTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
                                                                           footerValue: FooterMessages.worksWithIFTTT.value) },

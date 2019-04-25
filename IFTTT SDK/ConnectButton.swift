@@ -213,10 +213,10 @@ public class ConnectButton: UIView {
                     return velocity > 0.1 || (abs(velocity) < 0.05 && progress > 0.6)
                     
                 case (.heavy, true):
-                    return progress < 0.5 && velocity > -0.1
+                    return progress < 0.5
                     
                 case (.heavy, false):
-                    return progress < 0.5 && velocity < 0.1
+                    return progress < 0.5
                 }
             }
         }
