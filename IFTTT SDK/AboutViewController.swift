@@ -132,14 +132,14 @@ class AboutViewController: UIViewController {
     
     // MARK: - Page body
     
-    private lazy var itemViews: [ItemView] = [
-        ItemView(icon: Assets.About.connect, text: "about.connect".localized),
-        ItemView(icon: Assets.About.control, text: "about.control".localized),
-        ItemView(icon: Assets.About.security, text: "about.security".localized),
-        ItemView(icon: Assets.About.manage, text: "about.manage".localized)
+    private lazy var valuePropositionViews: [ValuePropositionView] = [
+        ValuePropositionView(icon: Assets.About.connect, text: "about.connect".localized),
+        ValuePropositionView(icon: Assets.About.control, text: "about.control".localized),
+        ValuePropositionView(icon: Assets.About.security, text: "about.security".localized),
+        ValuePropositionView(icon: Assets.About.manage, text: "about.manage".localized)
     ]
     
-    private lazy var itemsStackView = UIStackView(itemViews) {
+    private lazy var itemsStackView = UIStackView(valuePropositionViews) {
         $0.spacing = Constants.Layout.bodyItemSpacing
         $0.axis = .vertical
         $0.alignment = .fill
@@ -272,7 +272,7 @@ private extension AboutViewController {
 
 @available(iOS 10.0, *)
 private extension AboutViewController {
-    final class ItemView: UIView {
+    final class ValuePropositionView: UIView {
         init(icon: UIImage, text: String) {
             super.init(frame: .zero)
             
@@ -328,7 +328,9 @@ private extension AboutViewController {
             
             view.attributedText = text
             view.textAlignment = .center
-            view.tintColor = .white
+            // This sets the color of the links
+            // The should match the text
+            view.tintColor = Constants.Color.mediumGrey
             view.isScrollEnabled = false
             view.isEditable = false
             view.backgroundColor = .clear
