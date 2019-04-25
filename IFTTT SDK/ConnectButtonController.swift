@@ -237,7 +237,7 @@ public class ConnectButtonController {
         return .seconds(seconds)
     }
 
-    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service, shouldAnimatedKnob: Bool = true) -> ConnectButton.AnimationState {
+    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service, shouldAnimateKnob: Bool = true) -> ConnectButton.AnimationState {
         switch status {
         case .initial, .unknown:
             return .connect(service: service.connectButtonService,
@@ -248,7 +248,7 @@ public class ConnectButtonController {
         case .enabled:
             return .connected(service: service.connectButtonService,
                               message: "button.state.connected".localized,
-                              shouldAnimatedKnob: shouldAnimatedKnob)
+                              shouldAnimateKnob: shouldAnimateKnob)
         }
     }
 
@@ -821,7 +821,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToConnected(connection: Connection, animated: Bool) {
-        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService, shouldAnimatedKnob: animated), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService, shouldAnimateKnob: animated), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
 

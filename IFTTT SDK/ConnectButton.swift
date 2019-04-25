@@ -137,7 +137,7 @@ public class ConnectButton: UIView {
         case continueToService(service: Service, message: String)
         case connecting(service: Service, message: String)
         case checkmark(service: Service)
-        case connected(service: Service, message: String, shouldAnimatedKnob: Bool)
+        case connected(service: Service, message: String, shouldAnimateKnob: Bool)
         case disconnected(message: String)
     }
     
@@ -1196,8 +1196,8 @@ private extension ConnectButton {
         case let .checkmark(service):
             transitionToCheckmark(service: service, animator: animator)
             
-        case let .connected(service, message, shouldAnimatedKnob):
-            transitionToConnected(service: service, message: message, shouldAnimatedKnob: shouldAnimatedKnob, animator: animator)
+        case let .connected(service, message, shouldAnimateKnob):
+            transitionToConnected(service: service, message: message, shouldAnimateKnob: shouldAnimateKnob, animator: animator)
             
         case let .disconnected(message):
             transitionToDisconnected(message: message, animator: animator)
@@ -1447,7 +1447,7 @@ private extension ConnectButton {
         switchControl.alpha = 0
     }
     
-    private func transitionToConnected(service: Service, message: String, shouldAnimatedKnob: Bool, animator: UIViewPropertyAnimator) {
+    private func transitionToConnected(service: Service, message: String, shouldAnimateKnob: Bool, animator: UIViewPropertyAnimator) {
         stopPulseAnimation() // If we canceled disconnect
         
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
@@ -1455,7 +1455,7 @@ private extension ConnectButton {
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
         
-        if shouldAnimatedKnob {
+        if shouldAnimateKnob {
             switchControl.primeAnimation_centerKnob()
             animator.addAnimations {
                 self.switchControl.isOn = true
