@@ -57,6 +57,59 @@ public struct Connection: Equatable {
         }
     }
     
+    /// The cover image asset for the Connection
+    /// As configured on platform.ifttt.com for this Connection
+    public struct CoverImage {
+        
+        /// Describes the scaled size of this image
+        /// Sizes are defined by width in pixels
+        public enum Size: Int {
+            /// 480 pixels wide
+            case w480 = 480
+            
+            /// 720 pixels wide
+            case w720 = 720
+            
+            /// 1080 pixels wide
+            case w1080 = 1080
+            
+            /// 1440 pixels wide
+            case w1440 = 1440
+            
+            /// 2160 pixels wide
+            case w2160 = 2160
+            
+            /// 2880 pixels wide
+            case w2880 = 2880
+            
+            internal static let all: [Size] = [.w2880, .w2160, .w1440, .w1080, .w720, .w480]
+            
+            fileprivate static func closest(to pixelWidth: CGFloat) -> Size {
+                return all.first {
+                    $0.rawValue < Int(pixelWidth * 1.2)
+                } ?? .w480
+            }
+        }
+        
+        /// The URL for this cover image asset
+        public let url: URL?
+        
+        /// The size of this cover image defined by its width
+        public let size: Size
+    }
+    
+    /// A value proposition for this Connection as defined on platform.iftt.com
+    /// Consists of detail text and an image asset
+    public struct ValueProposition {
+        
+        /// The text details for this value proposition
+        /// Known as description on the IFTTT platform
+        public let details: String
+        
+        /// The URl for the icon asset
+        public let iconURL: URL?
+    }
+    
     /// The identifier of the `Connection`.
     public let id: String
     
@@ -69,8 +122,37 @@ public struct Connection: Equatable {
     /// The `Status` of the `Connection`.
     public internal(set) var status: Status
     
-    /// The `URL` for the `Connection`.
+    /// A deep link `URL` for the `Connection` on IFTTT.
     public let url: URL
+    
+    /// The CoverImage assets for the Connection arranged by size
+    internal let coverImages: [CoverImage.Size : CoverImage]
+    
+    /// Returns the CoverImage for a given size or nil if it doesn't exist.
+    /// This returns nil if there is not an exact match.
+    /// Use `coverImage(for estimatedLayoutWidth: CGFloat, scale: CGFloat)`
+    /// to return the best matching image available.
+    ///
+    /// - Parameter size: The size of desired image
+    /// - Returns: The CoverImage asset
+    public func coverImage(size: CoverImage.Size) -> CoverImage? {
+        return coverImages[size]
+    }
+    
+    /// Returns the best available CoverImage asset for a specific layout
+    /// A best fit image may be up to 20% larger than the estimated layout width
+    ///
+    /// - Parameters:
+    ///   - estimatedLayoutWidth: The estimated width of the container in which the asset will go
+    ///   - scale: The current screen scale. Default value is `UIScreen.main.scale`
+    /// - Returns: The CoverImage asset
+    public func coverImage(for estimatedLayoutWidth: CGFloat,
+                           scale: CGFloat = UIScreen.main.scale) -> CoverImage? {
+        return coverImages[.closest(to: estimatedLayoutWidth * scale)]
+    }
+    
+    /// An array of `ValueProposition` for this Connection as defined on platform.ifttt.com
+    public let valuePropositions: [ValueProposition]
     
     /// An array of `Service`s associated with the `Connection`.
     public let services: [Service]
