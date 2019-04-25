@@ -60,6 +60,7 @@ public struct Connection: Equatable {
     /// The cover image asset for the Connection
     /// As configured on platform.ifttt.com for this Connection
     public struct CoverImage {
+        
         /// Describes the scaled size of this image
         /// Sizes are defined by width in pixels
         public enum Size: Int {
@@ -103,10 +104,10 @@ public struct Connection: Equatable {
         
         /// The text details for this value proposition
         /// Known as description on the IFTTT platform
-        let details: String
+        public let details: String
         
         /// The URl for the icon asset
-        let iconURL: URL?
+        public let iconURL: URL?
     }
     
     /// The identifier of the `Connection`.
@@ -139,6 +140,7 @@ public struct Connection: Equatable {
     }
     
     /// Returns the best available CoverImage asset for a specific layout
+    /// A best fit image may be up to 20% larger than the estimated layout width
     ///
     /// - Parameters:
     ///   - estimatedLayoutWidth: The estimated width of the container in which the asset will go
