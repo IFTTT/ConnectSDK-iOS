@@ -39,6 +39,9 @@ public enum ConnectButtonControllerError: Error {
 
     /// For some reason the `Connection` used by this controller has gone nil or could not be retrieved. This should never happen.
     case unableToGetConnection
+    
+    /// For some reason we could not redirect to the IFTTT app. This should never happen since we check if the app is installed first.
+    case iftttAppRedirectFailed
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
@@ -237,7 +240,7 @@ public class ConnectButtonController {
         return .seconds(seconds)
     }
 
-    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
+    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service, shouldAnimateKnob: Bool = true) -> ConnectButton.AnimationState {
         switch status {
         case .initial, .unknown:
             return .connect(service: service.connectButtonService,
@@ -247,7 +250,8 @@ public class ConnectButtonController {
                             message: "button.state.reconnect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
-                              message: "button.state.connected".localized)
+                              message: "button.state.connected".localized,
+                              shouldAnimateKnob: shouldAnimateKnob)
         }
     }
 
@@ -265,13 +269,7 @@ public class ConnectButtonController {
             assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
-
-        guard let secondaryService = connection.worksWithServices.first else {
-            return
-        }
-
-        let aboutViewController = AboutViewController(primaryService: connection.primaryService,
-                                                      secondaryService: secondaryService)
+        let aboutViewController = AboutViewController(connection: connection)
         present(aboutViewController)
     }
 
@@ -571,7 +569,7 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     enum ActivationStep {
         case initial(animated: Bool)
-        case appHandoff
+        case appHandoff(url: URL, redirectImmediately: Bool)
         case enterEmail
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User)
@@ -601,8 +599,8 @@ public class ConnectButtonController {
         switch step {
         case .initial(let animated):
             transitionToInitalization(connection: connection, animated: animated)
-        case .appHandoff:
-            transitionToAppHandoff()
+        case .appHandoff(let url, let redirectImmediately):
+            transitionToAppHandoff(url: url, redirectImmediately: redirectImmediately)
         case .enterEmail:
             self.transition(to: .initial(animated: false))
             self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).perform()
@@ -654,16 +652,16 @@ public class ConnectButtonController {
             if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
                 return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
             } else {
-                return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
+                return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
             }
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
             guard let self = self else { return }
-            if self.connectionActivationFlow.isAppHandoffAvailable {
-                self.transition(to: .appHandoff)
-            } else if let token = self.credentialProvider.userToken {
+            if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
+            } else if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: nil) {
+                self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))
             }
         }
 
@@ -677,10 +675,26 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAppHandoff() {
+    /// Redirects to the IFTTT app for the app handoff connection flow
+    ///
+    /// - Parameters:
+    ///   - url: The handoff URL
+    ///   - redirectImmediately: When true, do redirect immediately. Or delay to show progress bar.
+    private func transitionToAppHandoff(url: URL, redirectImmediately: Bool) {
+        let redirect = {
+            let success = UIApplication.shared.openURL(url)
+            if !success {
+                self.transition(to: .failed(.iftttAppRedirectFailed))
+            }
+        }
+        guard redirectImmediately == false else {
+            redirect()
+            return
+        }
+        
         let progress = button.showProgress(duration: 1)
         progress.addCompletion { _ in
-            self.connectionActivationFlow.performAppHandoff()
+            redirect()
         }
         progress.startAnimation()
         
@@ -747,7 +761,11 @@ public class ConnectButtonController {
                     }
                 } else { // Existing IFTTT user (with a token)
                     progress.finish {
-                        self.transition(to: .logInExistingUser(user))
+                        if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: user.id) {
+                            self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: true))
+                        } else {
+                            self.transition(to: .logInExistingUser(user))
+                        }
                     }
                 }
 
@@ -809,8 +827,8 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToFailed(error: Error) {
-        handleActivationFailed(error: .networkError(.genericError(error)))
+    private func transitionToFailed(error: ConnectButtonControllerError) {
+        handleActivationFailed(error: error)
         transition(to: .initial(animated: false))
     }
 
@@ -820,9 +838,12 @@ public class ConnectButtonController {
     }
 
     private func transitionToConnected(connection: Connection, animated: Bool) {
-        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService), footerValue: FooterMessages.worksWithIFTTT.value)).perform(animated: animated)
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService, shouldAnimateKnob: animated), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
+        button.footerInteraction.onSelect = { [weak self] in
+            self?.showAboutPage()
+        }
 
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
@@ -854,7 +875,11 @@ public class ConnectButtonController {
                                                                           footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
+                                            timer.invalidate() },
+                                         onReverse: { [weak self] in
+                                            self?.transition(to: .connected(animated: false))
                                             timer.invalidate() })
+        
     }
 
     private func transitionToProccessDisconnect() {

@@ -117,7 +117,9 @@ private extension ConnectButtonControllerError {
         case .canceled:
             return nil
         case .unableToGetConnection:
-            return "The connection being used is nil."
+            return "The connection being used is nil"
+        case .iftttAppRedirectFailed:
+            return "Could not open the IFTTT app for handoff flow"
         }
     }
 }
