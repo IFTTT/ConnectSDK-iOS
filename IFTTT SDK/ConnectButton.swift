@@ -137,7 +137,8 @@ public class ConnectButton: UIView {
         case continueToService(service: Service, message: String)
         case connecting(service: Service, message: String)
         case checkmark(service: Service)
-        case connected(service: Service, message: String)
+        // We start out the knob in the center when animating to connected. If the knob is already in the correct location you can choose to not animated the knob from the center.
+        case connected(service: Service, message: String, shouldAnimateKnob: Bool)
         case disconnected(message: String)
     }
     
@@ -211,10 +212,10 @@ public class ConnectButton: UIView {
                     return velocity > 0.1 || (abs(velocity) < 0.05 && progress > 0.6)
                     
                 case (.heavy, true):
-                    return progress < 0.5 && velocity > -0.1
+                    return progress < 0.5
                     
                 case (.heavy, false):
-                    return progress < 0.5 && velocity < 0.1
+                    return progress < 0.5
                 }
             }
         }
@@ -231,19 +232,23 @@ public class ConnectButton: UIView {
         var toggleTransition: (() -> Transition)?
         
         /// Callback when switch is toggled
-        /// Sends true if switch has been toggled to the on position
         var onToggle: (() -> Void)?
+        
+        /// Callback when the switch is toggled but we reversed the animation to end in the start position
+        var onReverse: (() -> Void)?
         
         init(isTapEnabled: Bool = false,
              isDragEnabled: Bool = false,
              resistance: Resistance = .light,
              toggleTransition: (() -> Transition)? = nil,
-             onToggle: (() -> Void)? = nil) {
+             onToggle: (() -> Void)? = nil,
+             onReverse: (() -> Void)? = nil) {
             self.isTapEnabled = isTapEnabled
             self.isDragEnabled = isDragEnabled
             self.resistance = resistance
             self.toggleTransition = toggleTransition
             self.onToggle = onToggle
+            self.onReverse = onReverse
         }
     }
     
@@ -323,6 +328,10 @@ public class ConnectButton: UIView {
         animator.addCompletion { position in
             if position == .end {
                 self.toggleInteraction.onToggle?()
+            }
+            
+            if position == .start {
+                self.toggleInteraction.onReverse?()
             }
         }
         return animator
@@ -1187,8 +1196,8 @@ private extension ConnectButton {
         case let .checkmark(service):
             transitionToCheckmark(service: service, animator: animator)
             
-        case let .connected(service, message):
-            transitionToConnected(service: service, message: message, animator: animator)
+        case let .connected(service, message, shouldAnimateKnob):
+            transitionToConnected(service: service, message: message, shouldAnimateKnob: shouldAnimateKnob, animator: animator)
             
         case let .disconnected(message):
             transitionToDisconnected(message: message, animator: animator)
@@ -1224,6 +1233,7 @@ private extension ConnectButton {
             self.switchControl.knob.alpha = 1
             self.switchControl.knob.maskedEndCaps = .all
             self.switchControl.knob.iconView.alpha = 1
+            self.switchControl.knob.layer.shadowOpacity = 0.25
             self.switchControl.alpha = 1
             
             // This is only relevent for dark mode when we draw a border around the switch
@@ -1259,6 +1269,7 @@ private extension ConnectButton {
             switch position {
             case .start:
                 self.switchControl.isOn = !isOn
+                self.switchControl.knob.layer.shadowOpacity = 0.25
             case .end:
                 self.switchControl.alpha = 0
             case .current:
@@ -1436,14 +1447,20 @@ private extension ConnectButton {
         switchControl.alpha = 0
     }
     
-    private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToConnected(service: Service, message: String, shouldAnimateKnob: Bool, animator: UIViewPropertyAnimator) {
         stopPulseAnimation() // If we canceled disconnect
         
-        switchControl.primeAnimation_centerKnob()
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
+        
+        if shouldAnimateKnob {
+            switchControl.primeAnimation_centerKnob()
+            animator.addAnimations {
+                self.switchControl.isOn = true
+            }
+        }
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = .black
@@ -1452,10 +1469,7 @@ private extension ConnectButton {
             self.switchControl.alpha = 1
             self.switchControl.knob.alpha = 1
             self.switchControl.knob.iconView.alpha = 1
-            self.switchControl.isOn = true
-            
             self.checkmark.alpha = 0
-            
             // Animate the checkmark along with the knob from the center position to the knob's final position
             let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
             self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
@@ -1489,10 +1503,15 @@ private extension ConnectButton {
             self.switchControl.knob.layer.shadowOpacity = 0
         }
         
+        animator.addAnimations({
+            self.switchControl.alpha = 0
+        }, delayFactor: 0.8)
+        
         animator.addCompletion { position in
             switch position {
             case .start:
-                self.switchControl.isOn = false
+                self.switchControl.isOn = true
+                self.switchControl.knob.layer.shadowOpacity = 0.25
             case .end:
                 self.switchControl.alpha = 0
             case .current:

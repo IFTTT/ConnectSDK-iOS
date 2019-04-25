@@ -240,7 +240,7 @@ public class ConnectButtonController {
         return .seconds(seconds)
     }
 
-    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
+    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service, shouldAnimateKnob: Bool = true) -> ConnectButton.AnimationState {
         switch status {
         case .initial, .unknown:
             return .connect(service: service.connectButtonService,
@@ -250,7 +250,8 @@ public class ConnectButtonController {
                             message: "button.state.reconnect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
-                              message: "button.state.connected".localized)
+                              message: "button.state.connected".localized,
+                              shouldAnimateKnob: shouldAnimateKnob)
         }
     }
 
@@ -837,7 +838,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToConnected(connection: Connection, animated: Bool) {
-        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService), footerValue: FooterMessages.worksWithIFTTT.value)).perform(animated: animated)
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService, shouldAnimateKnob: animated), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
         button.footerInteraction.onSelect = { [weak self] in
@@ -874,7 +875,11 @@ public class ConnectButtonController {
                                                                           footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
+                                            timer.invalidate() },
+                                         onReverse: { [weak self] in
+                                            self?.transition(to: .connected(animated: false))
                                             timer.invalidate() })
+        
     }
 
     private func transitionToProccessDisconnect() {
