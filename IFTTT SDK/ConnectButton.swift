@@ -232,19 +232,23 @@ public class ConnectButton: UIView {
         var toggleTransition: (() -> Transition)?
         
         /// Callback when switch is toggled
-        /// Sends true if switch has been toggled to the on position
         var onToggle: (() -> Void)?
+        
+        /// Callback when the switch is toggled but we reversed the animation to end in the start position
+        var onReverse: (() -> Void)?
         
         init(isTapEnabled: Bool = false,
              isDragEnabled: Bool = false,
              resistance: Resistance = .light,
              toggleTransition: (() -> Transition)? = nil,
-             onToggle: (() -> Void)? = nil) {
+             onToggle: (() -> Void)? = nil,
+             onReverse: (() -> Void)? = nil) {
             self.isTapEnabled = isTapEnabled
             self.isDragEnabled = isDragEnabled
             self.resistance = resistance
             self.toggleTransition = toggleTransition
             self.onToggle = onToggle
+            self.onReverse = onReverse
         }
     }
     
@@ -324,6 +328,10 @@ public class ConnectButton: UIView {
         animator.addCompletion { position in
             if position == .end {
                 self.toggleInteraction.onToggle?()
+            }
+            
+            if position == .start {
+                self.toggleInteraction.onReverse?()
             }
         }
         return animator
@@ -1225,6 +1233,7 @@ private extension ConnectButton {
             self.switchControl.knob.alpha = 1
             self.switchControl.knob.maskedEndCaps = .all
             self.switchControl.knob.iconView.alpha = 1
+            self.switchControl.knob.layer.shadowOpacity = 0.25
             self.switchControl.alpha = 1
             
             // This is only relevent for dark mode when we draw a border around the switch
@@ -1260,6 +1269,7 @@ private extension ConnectButton {
             switch position {
             case .start:
                 self.switchControl.isOn = !isOn
+                self.switchControl.knob.layer.shadowOpacity = 0.25
             case .end:
                 self.switchControl.alpha = 0
             case .current:
@@ -1490,10 +1500,15 @@ private extension ConnectButton {
             self.switchControl.knob.layer.shadowOpacity = 0
         }
         
+        animator.addAnimations({
+            self.switchControl.alpha = 0
+        }, delayFactor: 0.8)
+        
         animator.addCompletion { position in
             switch position {
             case .start:
-                self.switchControl.isOn = false
+                self.switchControl.isOn = true
+                self.switchControl.knob.layer.shadowOpacity = 0.25
             case .end:
                 self.switchControl.alpha = 0
             case .current:

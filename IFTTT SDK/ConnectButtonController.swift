@@ -848,13 +848,16 @@ public class ConnectButtonController {
         // The user must slide to deactivate the Connection
         button.toggleInteraction = .init(isTapEnabled: false,
                                          isDragEnabled: true,
-                                         resistance: .heavy,
+                                         resistance: .light,
                                          toggleTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
                                                                           footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
-                                            timer.invalidate() })
+                                            timer.invalidate() },
+                                         onReverse: { [weak self] in
+                                            self?.transition(to: .connected(animated: false)) })
+        
     }
 
     private func transitionToProccessDisconnect() {
