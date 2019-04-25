@@ -42,13 +42,16 @@ class AboutViewController: UIViewController {
             static let serviceIconSpacing: CGFloat = 24
             
             /// The margins around all the page content
-            static let pageMargins = UIEdgeInsets(top: 40, left: 30, bottom: 40, right: 30)
+            static let pageMargins = UIEdgeInsets(top: 20, left: 30, bottom: 40, right: 30)
             
-            /// The spacing between the header, body, and foot
-            static let pageComponentSpacing: CGFloat = 52
+            /// The spacing between the close button and the page header
+            static let closeButtonHeaderSpacing: CGFloat = 20
             
             /// The spacing between views in the header
-            static let headerSpacing: CGFloat = 32
+            static let headerSpacing: CGFloat = 16
+            
+            /// The spacing between the header, body, and footer
+            static let bodyItemMargins: CGFloat = 36
             
             /// The spacing between items in the page body
             static let bodyItemSpacing: CGFloat = 24
@@ -70,9 +73,9 @@ class AboutViewController: UIViewController {
                 let rawText = "about.title".localized(with: primaryService.shortName,
                                                       secondaryService.shortName)
                 let text = NSMutableAttributedString(string: rawText,
-                                                     attributes: [.font : UIFont.h4(weight: .demiBold)])
+                                                     attributes: [.font : UIFont.h3(weight: .demiBold)])
                 let ifttt = NSAttributedString(string: "IFTTT",
-                                               attributes: [.font : UIFont.h4(weight: .heavy)])
+                                               attributes: [.font : UIFont.h3(weight: .heavy)])
                 text.insert(ifttt, at: 0)
                 return text
             }
@@ -102,39 +105,11 @@ class AboutViewController: UIViewController {
     private lazy var closeButtonContainer = UIStackView([closeButton]) {
         $0.axis = .vertical
         $0.alignment = .trailing
-    }
-    
-    /// Presents the primary and secondary service icons with an arrow connecting the two
-    private class ServiceIconsView: UIView {
-        
-        init(primaryIcon: URL, secondaryIcon: URL) {
-            super.init(frame: .zero)
-            
-            let primaryIconView = UIImageView()
-            let secondaryIconView = UIImageView()
-            
-            primaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
-            secondaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
-            
-            let arrowIcon = UIImageView(image: Assets.About.connectArrow)
-            
-            let stackView = UIStackView([primaryIconView, arrowIcon, secondaryIconView]) { (view) in
-                view.axis = .horizontal
-                view.spacing = Constants.Layout.serviceIconSpacing
-                view.alignment = .center
-            }
-            addSubview(stackView)
-            stackView.constrain.edges(to: self)
-            
-            let serviceIconsDownloader = ServiceIconsNetworkController()
-            serviceIconsDownloader.setImage(with: primaryIcon, for: primaryIconView)
-            serviceIconsDownloader.setImage(with: secondaryIcon, for: secondaryIconView)
-        }
-        
-        @available(*, unavailable)
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.layoutMargins = UIEdgeInsets(top: 0,
+                                        left: 0,
+                                        bottom: Constants.Layout.closeButtonHeaderSpacing,
+                                        right: 0)
     }
     
     private lazy var serviceIconsView = ServiceIconsView(primaryIcon: primaryService.templateIconURL,
@@ -157,40 +132,6 @@ class AboutViewController: UIViewController {
     
     // MARK: - Page body
     
-    private class ItemView: UIView {
-        init(icon: UIImage, text: String) {
-            super.init(frame: .zero)
-            
-            let iconView = UIImageView(image: icon)
-            iconView.tintColor = Constants.Color.mediumGrey
-            iconView.contentMode = .scaleAspectFit
-            iconView.constrain.square(length: Constants.Layout.bodyItemIconSise)
-            
-            let label = UILabel(text) {
-                $0.font = .body(weight: .demiBold)
-                $0.textColor = .white
-                $0.textAlignment = .left
-                $0.numberOfLines = 0
-            }
-            
-            let stackView = UIStackView([iconView, label]) {
-                $0.spacing = Constants.Layout.bodyItemIconTitleSpacing
-                $0.axis = .horizontal
-                $0.alignment = .center
-            }
-            
-            addSubview(stackView)
-            stackView.constrain.edges(to: self)
-            
-            iconView.setContentHuggingPriority(.required, for: .horizontal)
-        }
-        
-        @available(*, unavailable)
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
-    
     private lazy var itemViews: [ItemView] = [
         ItemView(icon: Assets.About.connect, text: "about.connect".localized),
         ItemView(icon: Assets.About.control, text: "about.control".localized),
@@ -202,6 +143,11 @@ class AboutViewController: UIViewController {
         $0.spacing = Constants.Layout.bodyItemSpacing
         $0.axis = .vertical
         $0.alignment = .fill
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.layoutMargins = UIEdgeInsets(top: Constants.Layout.bodyItemMargins,
+                                        left: 0,
+                                        bottom: Constants.Layout.bodyItemMargins,
+                                        right: 0)
     }
     
     
@@ -251,7 +197,6 @@ class AboutViewController: UIViewController {
     
     /// Aligns all page components
     private lazy var primaryView = UIStackView([closeButtonContainer, headerView, itemsStackView, footerView]) {
-        $0.spacing = Constants.Layout.pageComponentSpacing
         $0.axis = .vertical
         $0.alignment = .fill
         $0.isLayoutMarginsRelativeArrangement = true
@@ -284,11 +229,90 @@ class AboutViewController: UIViewController {
 }
 
 
+// MARK: - Service icons header view
+
+@available(iOS 10.0, *)
+private extension AboutViewController {
+    /// Presents the primary and secondary service icons with an arrow connecting the two
+    final class ServiceIconsView: UIView {
+        
+        init(primaryIcon: URL, secondaryIcon: URL) {
+            super.init(frame: .zero)
+            
+            let primaryIconView = UIImageView()
+            let secondaryIconView = UIImageView()
+            
+            primaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
+            secondaryIconView.constrain.square(length: Constants.Layout.serviceIconSize)
+            
+            let arrowIcon = UIImageView(image: Assets.About.connectArrow)
+            
+            let stackView = UIStackView([primaryIconView, arrowIcon, secondaryIconView]) { (view) in
+                view.axis = .horizontal
+                view.spacing = Constants.Layout.serviceIconSpacing
+                view.alignment = .center
+            }
+            addSubview(stackView)
+            stackView.constrain.edges(to: self)
+            
+            let serviceIconsDownloader = ServiceIconsNetworkController()
+            serviceIconsDownloader.setImage(with: primaryIcon, for: primaryIconView)
+            serviceIconsDownloader.setImage(with: secondaryIcon, for: secondaryIconView)
+        }
+        
+        @available(*, unavailable)
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    }
+}
+
+
+// MARK: - Value proposition view
+
+@available(iOS 10.0, *)
+private extension AboutViewController {
+    final class ItemView: UIView {
+        init(icon: UIImage, text: String) {
+            super.init(frame: .zero)
+            
+            let iconView = UIImageView(image: icon)
+            iconView.tintColor = Constants.Color.mediumGrey
+            iconView.contentMode = .scaleAspectFit
+            iconView.constrain.square(length: Constants.Layout.bodyItemIconSise)
+            
+            let label = UILabel(text) {
+                $0.font = .body(weight: .demiBold)
+                $0.textColor = .white
+                $0.textAlignment = .left
+                $0.numberOfLines = 0
+            }
+            
+            let stackView = UIStackView([iconView, label]) {
+                $0.spacing = Constants.Layout.bodyItemIconTitleSpacing
+                $0.axis = .horizontal
+                $0.alignment = .center
+            }
+            
+            addSubview(stackView)
+            stackView.constrain.edges(to: self)
+            
+            iconView.setContentHuggingPriority(.required, for: .horizontal)
+        }
+        
+        @available(*, unavailable)
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    }
+}
+
+
 // MARK: - Legal terms view
 
 @available(iOS 10.0, *)
 private extension AboutViewController {
-    class LegalTermsView: UIView, UITextViewDelegate {
+    final class LegalTermsView: UIView, UITextViewDelegate {
         
         /// One of the links was selected
         let onLinkSelected: ((URL) -> Void)?
