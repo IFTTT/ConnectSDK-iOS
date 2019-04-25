@@ -137,7 +137,7 @@ public class ConnectButton: UIView {
         case continueToService(service: Service, message: String)
         case connecting(service: Service, message: String)
         case checkmark(service: Service)
-        case connected(service: Service, message: String)
+        case connected(service: Service, message: String, shouldAnimatedKnob: Bool)
         case disconnected(message: String)
     }
     
@@ -1196,8 +1196,8 @@ private extension ConnectButton {
         case let .checkmark(service):
             transitionToCheckmark(service: service, animator: animator)
             
-        case let .connected(service, message):
-            transitionToConnected(service: service, message: message, animator: animator)
+        case let .connected(service, message, shouldAnimatedKnob):
+            transitionToConnected(service: service, message: message, shouldAnimatedKnob: shouldAnimatedKnob, animator: animator)
             
         case let .disconnected(message):
             transitionToDisconnected(message: message, animator: animator)
@@ -1447,14 +1447,20 @@ private extension ConnectButton {
         switchControl.alpha = 0
     }
     
-    private func transitionToConnected(service: Service, message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToConnected(service: Service, message: String, shouldAnimatedKnob: Bool, animator: UIViewPropertyAnimator) {
         stopPulseAnimation() // If we canceled disconnect
         
-        switchControl.primeAnimation_centerKnob()
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
+        
+        if shouldAnimatedKnob {
+            switchControl.primeAnimation_centerKnob()
+            animator.addAnimations {
+                self.switchControl.isOn = true
+            }
+        }
         
         animator.addAnimations {
             self.backgroundView.backgroundColor = .black
@@ -1463,10 +1469,7 @@ private extension ConnectButton {
             self.switchControl.alpha = 1
             self.switchControl.knob.alpha = 1
             self.switchControl.knob.iconView.alpha = 1
-            self.switchControl.isOn = true
-            
             self.checkmark.alpha = 0
-            
             // Animate the checkmark along with the knob from the center position to the knob's final position
             let knobOffsetFromCenter = 0.5 * self.backgroundView.bounds.width - Layout.knobInset - 0.5 * Layout.knobDiameter
             self.checkmark.transform = CGAffineTransform(translationX: knobOffsetFromCenter, y: 0)
