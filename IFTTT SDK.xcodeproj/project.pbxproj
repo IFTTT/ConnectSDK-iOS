@@ -24,6 +24,8 @@
 		FC094BA3215D9E2D008B35F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC094BA2215D9E2D008B35F6 /* Localizable.strings */; };
 		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
+		FC1F491422710B62008A1B21 /* Connection_parsingSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1F491322710B62008A1B21 /* Connection_parsingSpec.swift */; };
+		FC1F491622710BE4008A1B21 /* fetch_connection_response.json in Resources */ = {isa = PBXBuildFile; fileRef = FC1F491522710BE4008A1B21 /* fetch_connection_response.json */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
 		FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19921ACCD9C00738023 /* ConstraintsMaker.swift */; };
@@ -115,6 +117,8 @@
 		FC094BA2215D9E2D008B35F6 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		FC1F491322710B62008A1B21 /* Connection_parsingSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_parsingSpec.swift; sourceTree = "<group>"; };
+		FC1F491522710BE4008A1B21 /* fetch_connection_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = fetch_connection_response.json; sourceTree = "<group>"; };
 		FC22B19321ACA54000738023 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		FC22B19521ACA54A00738023 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
 		FC22B19921ACCD9C00738023 /* ConstraintsMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsMaker.swift; sourceTree = "<group>"; };
@@ -289,8 +293,10 @@
 			isa = PBXGroup;
 			children = (
 				1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */,
+				FC1F491322710B62008A1B21 /* Connection_parsingSpec.swift */,
 				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
+				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
 			);
 			path = "IFTTT SDKTests";
 			sourceTree = "<group>";
@@ -491,6 +497,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC1F491622710BE4008A1B21 /* fetch_connection_response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,6 +566,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */,
+				FC1F491422710B62008A1B21 /* Connection_parsingSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -39,6 +39,9 @@ public enum ConnectButtonControllerError: Error {
 
     /// For some reason the `Connection` used by this controller has gone nil or could not be retrieved. This should never happen.
     case unableToGetConnection
+    
+    /// For some reason we could not redirect to the IFTTT app. This should never happen since we check if the app is installed first.
+    case iftttAppRedirectFailed
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
@@ -244,7 +247,7 @@ public class ConnectButtonController {
                             message: "button.state.connect".localized(with: service.shortName))
         case .disabled:
             return .connect(service: service.connectButtonService,
-                            message: "button.state.connect".localized(with: service.shortName))
+                            message: "button.state.reconnect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
                               message: "button.state.connected".localized)
@@ -282,13 +285,12 @@ public class ConnectButtonController {
         case loadingFailed
 
         private struct Constants {
-            static let textColor = UIColor(white: 1, alpha: 0.68)
-            
             static let errorTextColor = UIColor.red
             
             static var footnoteFont: UIFont {
                 return .footnote(weight: .demiBold)
             }
+            
             static var iftttWordmarkFont: UIFont {
                 return .footnote(weight: .heavy)
             }
@@ -296,35 +298,17 @@ public class ConnectButtonController {
 
         /// Our best guess of the maximum height of the footer label
         fileprivate static var estimatedMaximumTextHeight: CGFloat {
-            // We are estimating that the text will never exceed 2 lines (plus some line spacing)
+            // We are estimating that the text will never exceed 1 lines (plus some line spacing)
             return 1.1 * Constants.footnoteFont.lineHeight
         }
 
         private var iftttWordmark: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : Constants.iftttWordmarkFont,
-                                                   .foregroundColor : Constants.textColor])
+                                      attributes: [.font : Constants.iftttWordmarkFont])
         }
 
         var value: ConnectButton.LabelValue {
             return .attributed(attributedString)
-        }
-        
-        var isErrorMessage: Bool {
-            switch self {
-            case .worksWithIFTTT, .enterEmail, .creatingAccount:
-                return false
-            case .emailInvalid, .loadingFailed:
-                return true
-            }
-        }
-
-        private var textColor: UIColor {
-            if isErrorMessage {
-                return Constants.errorTextColor
-            } else {
-                return Constants.textColor
-            }
         }
         
         var attributedString: NSAttributedString {
@@ -332,47 +316,45 @@ public class ConnectButtonController {
             switch self {
             case .worksWithIFTTT:
                 let text = NSMutableAttributedString(string: "button.footer.works_with".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 return text
                 
             case .enterEmail:
                 let text = NSMutableAttributedString(string: "button.footer.email.prefix".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.email.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
-                                                            .foregroundColor : textColor,
                                                             .underlineStyle : NSUnderlineStyle.single.rawValue]))
                 return text
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
-                                                                     .foregroundColor : textColor])
+                return NSAttributedString(string: text,
+                                          attributes: [.font : Constants.footnoteFont,
+                                                       .foregroundColor : Constants.errorTextColor])
                 
             case let .creatingAccount(email):
                 let text = NSMutableAttributedString(string: "button.footer.accountCreation.prefix".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 text.append(NSAttributedString(string: " "))
                 text.append(NSMutableAttributedString(string: "button.footer.accountCreation.postfix".localized(with: email),
-                                                      attributes: [.font : Constants.footnoteFont,
-                                                                   .foregroundColor : textColor]))
+                                                      attributes: [.font : Constants.footnoteFont]))
                 
                 return text
                 
             case .loadingFailed:
-                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
+                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : Constants.errorTextColor])
                 
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.loading.failed.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
-                                                            .foregroundColor : textColor,
+                                                            .foregroundColor : Constants.errorTextColor,
                                                             .underlineStyle : NSUnderlineStyle.single.rawValue]))
                 return text
             }
@@ -586,7 +568,7 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     enum ActivationStep {
         case initial(animated: Bool)
-        case appHandoff
+        case appHandoff(url: URL, redirectImmediately: Bool)
         case enterEmail
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User)
@@ -616,8 +598,8 @@ public class ConnectButtonController {
         switch step {
         case .initial(let animated):
             transitionToInitalization(connection: connection, animated: animated)
-        case .appHandoff:
-            transitionToAppHandoff()
+        case .appHandoff(let url, let redirectImmediately):
+            transitionToAppHandoff(url: url, redirectImmediately: redirectImmediately)
         case .enterEmail:
             self.transition(to: .initial(animated: false))
             self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).perform()
@@ -675,10 +657,10 @@ public class ConnectButtonController {
 
         button.toggleInteraction.onToggle = { [weak self] in
             guard let self = self else { return }
-            if self.connectionActivationFlow.isAppHandoffAvailable {
-                self.transition(to: .appHandoff)
-            } else if let token = self.credentialProvider.iftttServiceToken {
+            if let token = self.credentialProvider.iftttServiceToken {
                 self.transition(to: .identifyUser(.token(token)))
+            } else if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: nil) {
+                self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))
             }
         }
 
@@ -692,10 +674,26 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAppHandoff() {
+    /// Redirects to the IFTTT app for the app handoff connection flow
+    ///
+    /// - Parameters:
+    ///   - url: The handoff URL
+    ///   - redirectImmediately: When true, do redirect immediately. Or delay to show progress bar.
+    private func transitionToAppHandoff(url: URL, redirectImmediately: Bool) {
+        let redirect = {
+            let success = UIApplication.shared.openURL(url)
+            if !success {
+                self.transition(to: .failed(.iftttAppRedirectFailed))
+            }
+        }
+        guard redirectImmediately == false else {
+            redirect()
+            return
+        }
+        
         let progress = button.showProgress(duration: 1)
         progress.addCompletion { _ in
-            self.connectionActivationFlow.performAppHandoff()
+            redirect()
         }
         progress.startAnimation()
         
@@ -762,7 +760,11 @@ public class ConnectButtonController {
                     }
                 } else { // Existing IFTTT user (with a token)
                     progress.finish {
-                        self.transition(to: .logInExistingUser(user))
+                        if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: user.id) {
+                            self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: true))
+                        } else {
+                            self.transition(to: .logInExistingUser(user))
+                        }
                     }
                 }
 
@@ -824,8 +826,8 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToFailed(error: Error) {
-        handleActivationFailed(error: .networkError(.genericError(error)))
+    private func transitionToFailed(error: ConnectButtonControllerError) {
+        handleActivationFailed(error: error)
         transition(to: .initial(animated: false))
     }
 
