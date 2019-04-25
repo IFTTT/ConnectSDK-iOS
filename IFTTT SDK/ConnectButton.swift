@@ -393,7 +393,7 @@ public class ConnectButton: UIView {
         toggleTapGesture.delaysTouchesBegan = true
         toggleTapGesture.delegate = self
         
-        switchControl.addGestureRecognizer(toggleDragGesture)
+        switchControl.knob.addGestureRecognizer(toggleDragGesture)
         toggleDragGesture.delegate = self
         
         emailConfirmButton.onSelect { [weak self] in
