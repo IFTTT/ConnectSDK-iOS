@@ -33,7 +33,7 @@ class AboutViewController: UIViewController {
     
     private struct Constants {
         struct Color {
-            static let footerTextColor = UIColor(white: 1, alpha: 0.35)
+            static let mediumGrey = UIColor(hex: 0x666666)
         }
         
         struct Layout {
@@ -70,9 +70,9 @@ class AboutViewController: UIViewController {
                 let rawText = "about.title".localized(with: primaryService.shortName,
                                                       secondaryService.shortName)
                 let text = NSMutableAttributedString(string: rawText,
-                                                     attributes: [.font : UIFont.body(weight: .demiBold)])
+                                                     attributes: [.font : UIFont.h4(weight: .demiBold)])
                 let ifttt = NSAttributedString(string: "IFTTT",
-                                               attributes: [.font : UIFont.body(weight: .heavy)])
+                                               attributes: [.font : UIFont.h4(weight: .heavy)])
                 text.insert(ifttt, at: 0)
                 return text
             }
@@ -80,7 +80,7 @@ class AboutViewController: UIViewController {
             /// The text for legal terms
             static var legalTermsText: NSAttributedString {
                 return LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
-                                                              attributes: [.foregroundColor : Color.footerTextColor,
+                                                              attributes: [.foregroundColor : Color.mediumGrey,
                                                                            .font : UIFont.body(weight: .demiBold)])
             }
         }
@@ -162,6 +162,7 @@ class AboutViewController: UIViewController {
             super.init(frame: .zero)
             
             let iconView = UIImageView(image: icon)
+            iconView.tintColor = Constants.Color.mediumGrey
             iconView.contentMode = .scaleAspectFit
             iconView.constrain.square(length: Constants.Layout.bodyItemIconSise)
             
@@ -303,7 +304,7 @@ private extension AboutViewController {
             
             view.attributedText = text
             view.textAlignment = .center
-            view.tintColor = Constants.Color.footerTextColor
+            view.tintColor = .white
             view.isScrollEnabled = false
             view.isEditable = false
             view.backgroundColor = .clear
