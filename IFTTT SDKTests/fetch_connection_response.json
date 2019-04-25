@@ -1,0 +1,46 @@
+{
+    "type": "connection",
+    "id": "LMhuSZW9",
+    "name": "Make time for all of your favorite shows on Netflix",
+    "description": "Traveling and forgot to notify us? Now you can show Amex your location and not have to worry about it before your next vacation. Let's collapse longer descriptions.",
+    "url": "https://ifttt.com/applets/LMhuSZW9",
+    "enabled_count": 12,
+    "user_status": "enabled",
+    "services": [
+        {
+            "service_id": "twitch",
+            "service_name": "Twitch",
+            "service_short_name": "Twitch",
+            "is_primary": true,
+            "monochrome_icon_url": "https://assets.ifttt.com/images/channels/603756155/icons/monochrome_regular.png",
+            "color_icon_url": "https://assets.ifttt.com/images/channels/603756155/icons/on_color_regular.png",
+            "brand_color": "#6441a5",
+            "url": "https://ifttt.com/twitch"
+        },
+        {
+            "service_id": "youtube",
+            "service_name": "YouTube",
+            "service_short_name": "YouTube",
+            "is_primary": false,
+            "monochrome_icon_url": "https://assets.ifttt.com/images/channels/32/icons/monochrome_regular.png",
+            "color_icon_url": "https://assets.ifttt.com/images/channels/32/icons/on_color_regular.png",
+            "brand_color": "#ff0000",
+            "url": "https://ifttt.com/youtube"
+        }
+    ],
+    "cover_image": {
+        "480w_url": "https://ifttt.com/480w",
+        "720w_url": "https://ifttt.com/720w",
+        "1080w_url": "https://ifttt.com/1080w",
+        "1440w_url": "https://ifttt.com/1440w",
+        "2160w_url": "https://ifttt.com/2160w",
+        "2880w_url": "https://ifttt.com/2880w",
+        "4320w_url": "https://ifttt.com/4320w"
+    },
+    "value_propositions": [
+        {
+            "description": "Automatically sync your Netflix favorites to your seat",
+            "icon_url": "https://ifttt.com/value-prop-icons/heart.png"
+        }
+    ]
+}

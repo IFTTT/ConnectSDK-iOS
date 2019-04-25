@@ -28,6 +28,12 @@ extension Connection {
             return nil
         }
         self.primaryService = primaryService
+        
+        self.coverImages = CoverImage.images(with: parser["cover_image"])
+        
+        self.valuePropositions = parser["value_propositions"].compactMap {
+            Connection.ValueProposition(parser: $0)
+        }
     }
     static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {
         if let type = parser["type"].string {
@@ -64,5 +70,32 @@ extension Connection.Service {
         self.templateIconURL = templateIconURL
         self.brandColor = brandColor
         self.url = url
+    }
+}
+
+private extension Connection.ValueProposition {
+    init?(parser: Parser) {
+        guard
+            let description = parser["description"].string,
+            let iconURL = parser["icon_url"].url else {
+                return nil
+        }
+        self.details = description
+        self.iconURL = iconURL
+    }
+}
+
+private extension Connection.CoverImage {
+    static func images(with parser: Parser) -> [Connection.CoverImage.Size : Connection.CoverImage] {
+        let images: [Connection.CoverImage] = Size.all.compactMap {
+            if let url = parser["\($0.rawValue)w_url"].url {
+                return Connection.CoverImage(url: url, size: $0)
+            } else {
+                return nil
+            }
+        }
+        return images.reduce(into: [Connection.CoverImage.Size : Connection.CoverImage]()) { (dict, image) in
+            dict[image.size] = image
+        }
     }
 }
