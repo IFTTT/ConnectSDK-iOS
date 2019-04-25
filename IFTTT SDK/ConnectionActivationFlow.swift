@@ -87,7 +87,7 @@ struct ConnectionActivationFlow {
     ///   - credentialProvider: A `CredentialProvider` for the user
     ///   - activationRedirect: The redirect back to this application
     init(connectionId: String,
-         credentialProvider: CredentialProvider,
+         credentialProvider: ConnectionCredentialProvider,
          activationRedirect: URL) {
         
         url = Constants.url.appendingPathComponent(connectionId)
@@ -100,9 +100,9 @@ struct ConnectionActivationFlow {
             URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
         
         let partnerOauthCodeQueryItem: URLQueryItem?
-        if !credentialProvider.partnerOAuthCode.isEmpty {
+        if !credentialProvider.oauthCode.isEmpty {
             partnerOauthCodeQueryItem = URLQueryItem(name: Constants.QueryItem.oauthCodeName,
-                                                     value: credentialProvider.partnerOAuthCode)
+                                                     value: credentialProvider.oauthCode)
         } else {
             partnerOauthCodeQueryItem = nil
         }

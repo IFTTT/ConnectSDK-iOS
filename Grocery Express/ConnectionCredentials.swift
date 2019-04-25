@@ -10,13 +10,13 @@ import Foundation
 import IFTTT_SDK
 
 /// Provides the user's credentials related to IFTTT Connections
-class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
+class ConnectionCredentials: ConnectionCredentialProvider, CustomStringConvertible {
     
     /// The email address for the connected IFTTT account
     let email: String
     
     /// The OAuth code of the Grocery Express service, used to automatically connect Grocery Express to IFTTT during a Connection flow.
-    var partnerOAuthCode: String {
+    var oauthCode: String {
         /// The Grocery Express service doesn't use real OAuth codes since it is only for demoing
         /// It will accept any value for an OAuth code, send the IFTTT email address for simplicity
         /// In your app, you should send a real value here
@@ -26,7 +26,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     /// The IFTTT access token for this user, related to the Grocery Express service
     /// This token permits you to access the user's Connections for Grocery Express but not for any other services on IFTTT
     /// This is also the token that you use to make requests to the Connection API for triggers, actions, and queries on the user's behalf
-    private(set) var iftttServiceToken: String?
+    private(set) var userToken: String?
     
     /// Grocery Express is an unpublished service, therefore we must provide the invite code from https://platform.ifttt.com/services/grocery_express/general
     /// If your service is in development, you will find your invite code here
@@ -36,12 +36,12 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     
     /// Have we made a successful IFTTT Connection
     var isLoggedIn: Bool {
-        return iftttServiceToken != nil
+        return userToken != nil
     }
     
     /// Prints the IFTTT email and token for debugging purposes
     var description: String {
-        if let token = iftttServiceToken {
+        if let token = userToken {
             return "Email: \(email)\nToken: \(token)"
         } else {
             return "Logged out"
@@ -54,7 +54,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     ///
     /// - Parameter token: The IFTTT service token
     func loginUser(with token: String) {
-        iftttServiceToken = token
+        userToken = token
         let user: [String : Any] = [
             Keys.email : email,
             Keys.token : token
@@ -64,7 +64,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     
     /// Clears the active IFTTT session
     func logout() {
-        iftttServiceToken = nil
+        userToken = nil
         UserDefaults.standard.set(nil, forKey: Keys.user)
     }
     
@@ -74,7 +74,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
     init(settings: Settings) {
         if let user = UserDefaults.standard.dictionary(forKey: Keys.user), let email = user[Keys.email] as? String, let token = user[Keys.token] as? String {
             self.email = email
-            self.iftttServiceToken = token
+            self.userToken = token
         } else {
             if settings.forcesNewUserFlow, let atIndex = settings.email.firstIndex(where: { $0 == "@" }) {
                 var newUserEmail = settings.email
@@ -83,7 +83,7 @@ class ConnectionCredentials: CredentialProvider, CustomStringConvertible {
             } else {
                 self.email = settings.email
             }
-            iftttServiceToken = nil
+            userToken = nil
         }
     }
     

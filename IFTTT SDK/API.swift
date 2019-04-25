@@ -8,8 +8,6 @@
 
 import Foundation
 
-// FIXME: Not public
-
 struct API {
     
     /// The unique id for IFTTT's App Store listing

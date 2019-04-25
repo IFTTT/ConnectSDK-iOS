@@ -1,5 +1,5 @@
 //
-//  AuthenticationRedirectHandler.swift
+//  ConnectionRedirectHandler.swift
 //  IFTTT SDK
 //
 //  Created by Michael Amundsen on 11/5/18.
@@ -8,20 +8,17 @@
 
 import Foundation
 
-// FIXME: Parse redirect URL here not in the controller
-// FIXME: ConnectionRedirectHandler
-
 /// A class to handle redirections of `URL`s recieved as a part of the `Connection` activation process.
 @available(iOS 10.0, *)
-public final class AuthenticationRedirectHandler {
+public final class ConnectionRedirectHandler {
     
-    private let authorizationRedirectURL: URL
+    private let redirectURL: URL
     
     /// An `AuthenticationRedirectHandler` configured to handle a `URL`.
     ///
-    /// - Parameter authorizationRedirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
-    public init(authorizationRedirectURL: URL) {
-        self.authorizationRedirectURL = authorizationRedirectURL
+    /// - Parameter redirectURL: A `URL` that is used as the redirect sent on `Connection` activation.
+    public init(redirectURL: URL) {
+        self.redirectURL = redirectURL
     }
     
     /// Handles redirects during a `Connection` activation.
@@ -36,7 +33,7 @@ public final class AuthenticationRedirectHandler {
     public func handleApplicationRedirect(url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
         
         // Checks if the scheme matches the SDK redirect.
-        if url.scheme == authorizationRedirectURL.scheme {
+        if url.scheme == redirectURL.scheme {
             NotificationCenter.default.post(name: .authorizationRedirect, object: url)
             return true
         }

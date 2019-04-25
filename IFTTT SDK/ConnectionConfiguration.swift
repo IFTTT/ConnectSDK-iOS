@@ -22,7 +22,7 @@ public struct ConnectionConfiguration {
     public let suggestedUserEmail: String
     
     /// A `CredentialProvider` conforming object for providing credentials.
-    public let credentialProvider: CredentialProvider
+    public let credentialProvider: ConnectionCredentialProvider
     
     // FIXME: redirectURL
     /// The `URL` that is used for authentication redirects.
@@ -35,7 +35,7 @@ public struct ConnectionConfiguration {
     ///   - suggestedUserEmail: A `String` with a an email for the user.
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
     ///   - connectAuthorizationRedirectURL: The `URL` that is used for authentication redirects.
-    public init(connectionId: String, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
+    public init(connectionId: String, suggestedUserEmail: String, credentialProvider: ConnectionCredentialProvider, connectAuthorizationRedirectURL: URL) {
         self.connectionId = connectionId
         self.connection = nil
         self.suggestedUserEmail = suggestedUserEmail
@@ -50,7 +50,7 @@ public struct ConnectionConfiguration {
     ///   - suggestedUserEmail: A `String` with a an email for the user.
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
     ///   - connectAuthorizationRedirectURL: The `URL` that is used for authentication redirects.
-    public init(connection: Connection, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
+    public init(connection: Connection, suggestedUserEmail: String, credentialProvider: ConnectionCredentialProvider, connectAuthorizationRedirectURL: URL) {
         self.connectionId = connection.id
         self.connection = connection
         self.suggestedUserEmail = suggestedUserEmail

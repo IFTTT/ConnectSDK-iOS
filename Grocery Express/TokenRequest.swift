@@ -43,7 +43,7 @@ struct TokenRequest {
     
     private static func tokenURLRequest(for credentials: ConnectionCredentials) -> URLRequest {
         var components = URLComponents(string: "https://grocery-express.ifttt.com/api/user_token")!
-        components.queryItems = [URLQueryItem(name: "code", value: credentials.partnerOAuthCode)]
+        components.queryItems = [URLQueryItem(name: "code", value: credentials.oauthCode)]
         
         // For the Grocery Express service we use the email as the oauth code
         // We need to manually encode `+` characters in a user's e-mail because `+` is a valid character that represents a space in a url query. E-mail's with spaces are not valid.

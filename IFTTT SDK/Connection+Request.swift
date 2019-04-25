@@ -32,7 +32,7 @@ public extension Connection {
         ///   - id: The identifier of the `Connection`.
         ///   - credentialProvider: An object that handle providing credentials for a request.
         /// - Returns: A `Request` configured to get the `Connection`.
-        public static func fetchConnection(for id: String, credentialProvider: CredentialProvider) -> Request {
+        public static func fetchConnection(for id: String, credentialProvider: ConnectionCredentialProvider) -> Request {
             return Request(path: "/connections/\(id)", method: .GET, credentialProvider: credentialProvider)
         }
         
@@ -42,17 +42,17 @@ public extension Connection {
         ///   - id: The identifier of the `Connection`.
         ///   - credentialProvider: An object that handle providing credentials for a request.
         /// - Returns:  A `Request` configured to disconnect the `Connection`.
-        public static func disconnectConnection(with id: String, credentialProvider: CredentialProvider) -> Request {
+        public static func disconnectConnection(with id: String, credentialProvider: ConnectionCredentialProvider) -> Request {
             return Request(path: "/connections/\(id)/disable", method: .POST, credentialProvider: credentialProvider)
         }
         
-        private init(path: String, method: Method, credentialProvider: CredentialProvider) {
+        private init(path: String, method: Method, credentialProvider: ConnectionCredentialProvider) {
             let url = API.base.appendingPathComponent(path)
             
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             
-            if let userToken = credentialProvider.iftttServiceToken, userToken.isEmpty == false {
+            if let userToken = credentialProvider.userToken, userToken.isEmpty == false {
                 request.addIftttServiceToken(userToken)
             }
             

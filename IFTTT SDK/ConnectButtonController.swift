@@ -26,7 +26,7 @@ public enum ConnectButtonControllerError: Error {
     case iftttAccountCreationFailed
 
     /// Some generic networking error occurred.
-    case networkError(NetworkError)
+    case networkError(ConnectionNetworkError)
 
     /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
@@ -123,7 +123,7 @@ public class ConnectButtonController {
         delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
     }
 
-    private var credentialProvider: CredentialProvider {
+    private var credentialProvider: ConnectionCredentialProvider {
         return connectionConfiguration.credentialProvider
     }
 
@@ -651,7 +651,7 @@ public class ConnectButtonController {
             guard let self = self else {
                 return initialButtonState
             }
-            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.iftttServiceToken != nil {
+            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
                 return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
@@ -662,7 +662,7 @@ public class ConnectButtonController {
             guard let self = self else { return }
             if self.connectionActivationFlow.isAppHandoffAvailable {
                 self.transition(to: .appHandoff)
-            } else if let token = self.credentialProvider.iftttServiceToken {
+            } else if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
             }
         }
