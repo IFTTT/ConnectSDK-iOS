@@ -163,20 +163,19 @@ public class ConnectButton: UIView {
             self.duration = duration
         }
         
-        static func buttonState(_ state: AnimationState, duration: TimeInterval = 0.5) -> Transition {
+        static func buttonState(_ state: AnimationState, duration: TimeInterval = 0.4) -> Transition {
             return Transition(state: state, footerValue: nil, duration: duration)
         }
-        static func buttonState(_ state: AnimationState, footerValue: LabelValue, duration: TimeInterval = 0.5) -> Transition {
+        static func buttonState(_ state: AnimationState, footerValue: LabelValue, duration: TimeInterval = 0.4) -> Transition {
             return Transition(state: state, footerValue: footerValue, duration: duration)
         }
-        static func footerValue(_ value: LabelValue, duration: TimeInterval = 0.5) -> Transition {
+        static func footerValue(_ value: LabelValue, duration: TimeInterval = 0.4) -> Transition {
             return Transition(state: nil, footerValue: value, duration: duration)
         }
     }
     
     func animator(for transition: Transition) -> UIViewPropertyAnimator {
-        let animator = UIViewPropertyAnimator(duration: transition.duration,
-                                              timingParameters: UISpringTimingParameters(dampingRatio: 1))
+        let animator = UIViewPropertyAnimator(duration: transition.duration, curve: .easeInOut)
         if let state = transition.state {
             // We currently can't support interrupting animations with other touch events
             // Animations must complete before we will respond to the next event
