@@ -11,15 +11,17 @@ import UIKit
 // Layout constants
 
 fileprivate struct Layout {
-    static let height: CGFloat = 64
-    static let maximumWidth = 6 * height
-    static let knobInset: CGFloat = 6
+    static let height: CGFloat = 70
+    static let maximumWidth = 4.5 * height
+    static let knobInset: CGFloat = 4
     static let knobDiameter = height - 2 * knobInset
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
     static let borderWidth: CGFloat = 2.5
-    static let buttonFooterSpacing: CGFloat = 20
+    /// The amount by which the email field is offset from the center
+    static let emailFieldOffset: CGFloat = 4
+    static let buttonFooterSpacing: CGFloat = 15
 }
 
 
@@ -40,13 +42,18 @@ public class ConnectButton: UIView {
         fileprivate struct Font {
             static let connect = UIFont(name: "AvenirNext-Bold",
                                         size: 24)!
+            static let email = UIFont(name: "AvenirNext-DemiBold",
+                                      size: 18)!
         }
         
         fileprivate struct Color {
             static let blue = UIColor(hex: 0x0099FF)
             static let lightGrey = UIColor(hex: 0xCCCCCC)
+            static let mediumGrey = UIColor(hex: 0x666666)
             static let grey = UIColor(hex: 0x414141)
             static let border = UIColor(white: 1, alpha: 0.32)
+            static let darkFooter = UIColor(white: 0, alpha: 0.32)
+            static let lightFooter = UIColor(white: 1, alpha: 0.32)
         }
     }
     
@@ -128,8 +135,8 @@ public class ConnectButton: UIView {
         case accessingAccount(message: String)
         case verifyingEmail(message: String)
         case continueToService(service: Service, message: String)
-        case connecting(message: String)
-        case checkmark
+        case connecting(service: Service, message: String)
+        case checkmark(service: Service)
         case connected(service: Service, message: String)
         case disconnected(message: String)
     }
@@ -179,7 +186,7 @@ public class ConnectButton: UIView {
         }
         
         if let footerValue = transition.footerValue {
-            footerLabelAnimator.transition(with: .rotateDown,
+            footerLabelAnimator.transition(with: .crossfade,
                                            updatedValue: footerValue,
                                            addingTo: animator)
         }
@@ -420,8 +427,8 @@ public class ConnectButton: UIView {
             emailConfirmButton.imageView.tintColor = .white
             emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
             
-            footerLabelAnimator.primary.label.textColor = .black
-            footerLabelAnimator.transition.label.textColor = .black
+            footerLabelAnimator.primary.label.textColor = Style.Color.darkFooter
+            footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
             
             backgroundView.border = .none
             progressBar.insetForButtonBorder = 0
@@ -436,8 +443,8 @@ public class ConnectButton: UIView {
             layer.shadowRadius = 5
             layer.shadowOffset = CGSize(width: -2, height: 0)
             
-            footerLabelAnimator.primary.label.textColor = .white
-            footerLabelAnimator.transition.label.textColor = .white
+            footerLabelAnimator.primary.label.textColor = Style.Color.lightFooter
+            footerLabelAnimator.transition.label.textColor = Style.Color.lightFooter
             
             backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
             progressBar.insetForButtonBorder = Layout.borderWidth
@@ -450,7 +457,7 @@ public class ConnectButton: UIView {
         switchControl.alpha = 1
         switchControl.isOn = false
         switchControl.knob.backgroundColor = Style.Color.blue
-        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidSwitchKnob)
+        primaryLabelAnimator.configure(.text("Connect"), insets: .avoidLeftKnob)
         let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
         footerLabelAnimator.configure(.attributed(initialFooterText))
     }
@@ -480,6 +487,8 @@ public class ConnectButton: UIView {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
+        field.font = Style.Font.email
+        field.textColor = Style.Color.mediumGrey
         return field
     }()
     
@@ -569,17 +578,11 @@ public class ConnectButton: UIView {
             let left: CGFloat
             let right: CGFloat
             
+            static let standardInsetValue = 0.5 * Layout.height
             static let zero = Insets(left: 0, right: 0)
-            static let standard = Insets(left: 0.5 * Layout.height,
-                                         right: 0.5 * Layout.height)
-            
-            static let avoidServiceIcon = Insets(left: 0.5 * Layout.height + 0.5 * Layout.serviceIconDiameter + 10,
-                                                 right: standard.right)
-            
-            static var avoidSwitchKnob: Insets {
-                let avoidSwitch = 0.5 * Layout.height + 0.5 * Layout.knobDiameter + 10
-                return Insets(left: avoidSwitch, right: avoidSwitch)
-            }
+            static let standard = Insets(left: standardInsetValue, right: standardInsetValue)
+            static let avoidLeftKnob = Insets(left: Layout.knobDiameter + 20, right: standardInsetValue)
+            static let avoidRightKnob = Insets(left: standardInsetValue, right: Layout.knobDiameter + 20)
             
             fileprivate func apply(_ view: UIStackView) {
                 view.layoutMargins.left = left
@@ -627,10 +630,9 @@ public class ConnectButton: UIView {
             case .crossfade:
                 transition.label.alpha = 0
                 animator.addAnimations {
-                    // This will fade out the label more quickly than the length of the full animation
-                    // Doing this we can create a two step animation without nesting animation blocks
-                    self.primary.label.alpha = -0.6
+                    self.primary.label.alpha = 0
                 }
+                
                 // Fade in the new label as the second part of the animation
                 animator.addAnimations({
                     self.transition.label.alpha = 1
@@ -999,9 +1001,7 @@ public class ConnectButton: UIView {
         primaryLabelAnimator.primary.view.constrain.edges(to: backgroundView)
         primaryLabelAnimator.transition.view.constrain.edges(to: backgroundView)
         
-        emailEntryField.constrain.edges(to: backgroundView,
-                                        inset: UIEdgeInsets(top: 0, left: LabelAnimator.Insets.standard.left,
-                                                            bottom: 0, right: LabelAnimator.Insets.avoidSwitchKnob.right))
+        emailEntryField.constrain.edges(to: backgroundView, inset: UIEdgeInsets(top: Layout.emailFieldOffset, left: LabelAnimator.Insets.standard.left, bottom: 0, right: LabelAnimator.Insets.avoidRightKnob.right))
         
         // In animations involving the email confirm button, it always tracks along with the switch knob
         emailConfirmButtonTrack.constrain.edges(to: backgroundView)
@@ -1150,7 +1150,7 @@ private extension ConnectButton {
             transitionToConnect(service: service, message: message, animator: animator)
             
         case let .createAccount(message):
-            primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
             transitionToSlideToDisconnect(message: message, animator: animator)
@@ -1182,11 +1182,11 @@ private extension ConnectButton {
         case let .continueToService(service, message):
             transitionToContinueToService(service: service, message: message, animator: animator)
             
-        case let .connecting(message):
-            transitionToConnecting(message: message, animator: animator)
+        case let .connecting(service, message):
+            transitionToConnecting(service: service, message: message, animator: animator)
             
-        case .checkmark:
-            transitionToCheckmark(animator: animator)
+        case let .checkmark(service):
+            transitionToCheckmark(service: service, animator: animator)
             
         case let .connected(service, message):
             transitionToConnected(service: service, message: message, animator: animator)
@@ -1215,7 +1215,7 @@ private extension ConnectButton {
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
        
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
@@ -1240,7 +1240,7 @@ private extension ConnectButton {
         
         primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: labelValue,
-                                        insets: .avoidSwitchKnob,
+                                        insets: .standard,
                                         addingTo: animator)
         
         progressBar.configure(with: service)
@@ -1392,7 +1392,7 @@ private extension ConnectButton {
     }
     
     private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
         
@@ -1401,10 +1401,10 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToCheckmark(animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .none, addingTo: animator)
+    private func transitionToCheckmark(service: Service, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .none, addingTo: animator)
         
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = service.brandColor
         
         checkmark.alpha = 1
         checkmark.outline.transform = CGAffineTransform(scaleX: 0, y: 0)
@@ -1422,15 +1422,15 @@ private extension ConnectButton {
         checkmark.drawCheckmark(duration: 1.25)
     }
     
-    private func transitionToConnecting(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown, updatedValue: .text(message), insets: .standard, addingTo: animator)
+    private func transitionToConnecting(service: Service, message: String, animator: UIViewPropertyAnimator) {
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
     
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = service.brandColor
         switchControl.knob.iconView.alpha = 1
         switchControl.knob.transform = .identity
         switchControl.knob.maskedEndCaps = .all
  
-        progressBar.configure(with: nil)
+        progressBar.configure(with: service)
         progressBar.alpha = 1
         
         // We don't show messages and the switch at the same time
@@ -1441,7 +1441,7 @@ private extension ConnectButton {
         stopPulseAnimation() // If we canceled disconnect
         
         switchControl.primeAnimation_centerKnob()
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidSwitchKnob, addingTo: animator)
+        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
@@ -1452,6 +1452,7 @@ private extension ConnectButton {
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
             self.switchControl.alpha = 1
             self.switchControl.knob.alpha = 1
+            self.switchControl.knob.iconView.alpha = 1
             self.switchControl.isOn = true
             
             self.checkmark.alpha = 0
@@ -1467,9 +1468,9 @@ private extension ConnectButton {
     }
     
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
-                                        insets: .avoidSwitchKnob,
+                                        insets: .avoidRightKnob,
                                         addingTo: animator)
         pulseAnimateLabel(toAlpha: .partial)
     }
@@ -1505,7 +1506,7 @@ private extension ConnectButton {
     }
     
     private func transitionToDisconnected(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .rotateDown,
+        primaryLabelAnimator.transition(with: .crossfade,
                                         updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)

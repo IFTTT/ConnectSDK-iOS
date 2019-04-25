@@ -9,6 +9,16 @@
 import UIKit
 import SafariServices
 
+/// Bundles values when a Connection is activated
+public struct ConnectionActivation {
+    
+    /// The IFTTT service-level user token for your service.
+    public let userToken: String?
+    
+    /// The Connection that was activated
+    public let connection: Connection
+}
+
 /// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
 public enum ConnectButtonControllerError: Error {
 
@@ -54,7 +64,8 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithResult result: Result<Connection, ConnectButtonControllerError>)
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishActivationWithResult result: Result<ConnectionActivation, ConnectButtonControllerError>)
 
     /// Connection deactivation is finished.
     ///
@@ -65,14 +76,8 @@ public protocol ConnectButtonControllerDelegate: class {
     /// - Parameters:
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection deactivation request.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
-
-    /// The controller recieved an invalid email from the user. The default implementation of this function is to do nothing.
-    ///
-    /// - Parameters:
-    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
-    ///   - email: The invalid email `String` provided by the user.
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String)
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
 }
 
 @available(iOS 10.0, *)
@@ -94,18 +99,28 @@ public class ConnectButtonController {
     /// This is set during the `identifyUser` step. It is required that we have this information for later steps in the flow.
     private var user: User?
     
-    private func appletChangedStatus(isOn: Bool) {
-        guard let connection = connection else {
-            return
+    private func handleActivationFinished(userToken: String?) {
+        connection?.status = .enabled
+        if let connection = connection {
+            let activation = ConnectionActivation(userToken: userToken,
+                                                  connection: connection)
+            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
         }
-
-        self.connection?.status = isOn ? .enabled : .disabled
-
-        if isOn {
-            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(connection))
-        } else {
+    }
+    
+    private func handleActivationFailed(error: ConnectButtonControllerError) {
+        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error))
+    }
+    
+    private func handleDeactivationFinished() {
+        connection?.status = .disabled
+        if let connection = connection {
             delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
+    }
+    
+    private func handleDeactivationFailed(error: ConnectButtonControllerError) {
+        delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
     }
 
     private var credentialProvider: CredentialProvider {
@@ -269,16 +284,16 @@ public class ConnectButtonController {
         case worksWithIFTTT
         case enterEmail
         case emailInvalid
+        case creatingAccount(email: String)
         case loadingFailed
 
         private struct Constants {
-            static let textColor = UIColor(white: 0.68, alpha: 1)
-            
             static let errorTextColor = UIColor.red
             
             static var footnoteFont: UIFont {
                 return .footnote(weight: .demiBold)
             }
+            
             static var iftttWordmarkFont: UIFont {
                 return .footnote(weight: .heavy)
             }
@@ -286,35 +301,17 @@ public class ConnectButtonController {
 
         /// Our best guess of the maximum height of the footer label
         fileprivate static var estimatedMaximumTextHeight: CGFloat {
-            // We are estimating that the text will never exceed 2 lines (plus some line spacing)
+            // We are estimating that the text will never exceed 1 lines (plus some line spacing)
             return 1.1 * Constants.footnoteFont.lineHeight
         }
 
         private var iftttWordmark: NSAttributedString {
             return NSAttributedString(string: "IFTTT",
-                                      attributes: [.font : Constants.iftttWordmarkFont,
-                                                   .foregroundColor : Constants.textColor])
+                                      attributes: [.font : Constants.iftttWordmarkFont])
         }
 
         var value: ConnectButton.LabelValue {
             return .attributed(attributedString)
-        }
-        
-        var isErrorMessage: Bool {
-            switch self {
-            case .worksWithIFTTT, .enterEmail:
-                return false
-            case .emailInvalid, .loadingFailed:
-                return true
-            }
-        }
-
-        private var textColor: UIColor {
-            if isErrorMessage {
-                return Constants.errorTextColor
-            } else {
-                return Constants.textColor
-            }
         }
         
         var attributedString: NSAttributedString {
@@ -322,35 +319,45 @@ public class ConnectButtonController {
             switch self {
             case .worksWithIFTTT:
                 let text = NSMutableAttributedString(string: "button.footer.works_with".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 return text
                 
             case .enterEmail:
                 let text = NSMutableAttributedString(string: "button.footer.email.prefix".localized,
-                                                     attributes: [.font : Constants.footnoteFont,
-                                                                  .foregroundColor : textColor])
+                                                     attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.email.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
-                                                            .foregroundColor : textColor,
                                                             .underlineStyle : NSUnderlineStyle.single.rawValue]))
                 return text
 
             case .emailInvalid:
                 let text = "button.footer.email.invalid".localized
-                return NSAttributedString(string: text, attributes: [.font : Constants.footnoteFont,
-                                                                     .foregroundColor : textColor])
-
+                return NSAttributedString(string: text,
+                                          attributes: [.font : Constants.footnoteFont,
+                                                       .foregroundColor : Constants.errorTextColor])
+                
+            case let .creatingAccount(email):
+                let text = NSMutableAttributedString(string: "button.footer.accountCreation.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont])
+                text.append(iftttWordmark)
+                text.append(NSAttributedString(string: " "))
+                text.append(NSMutableAttributedString(string: "button.footer.accountCreation.postfix".localized(with: email),
+                                                      attributes: [.font : Constants.footnoteFont]))
+                
+                return text
+                
             case .loadingFailed:
-                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized, attributes: [.font : Constants.footnoteFont, .foregroundColor : textColor])
+                let text = NSMutableAttributedString(string: "button.footer.loading.failed.prefix".localized,
+                                                     attributes: [.font : Constants.footnoteFont,
+                                                                  .foregroundColor : Constants.errorTextColor])
                 
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.loading.failed.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
-                                                            .foregroundColor : textColor,
+                                                            .foregroundColor : Constants.errorTextColor,
                                                             .underlineStyle : NSUnderlineStyle.single.rawValue]))
                 return text
             }
@@ -401,7 +408,7 @@ public class ConnectButtonController {
             static let serviceAuthentication = "service_authentication"
             static let serviceId = "service_id"
             static let complete = "complete"
-            static let config = "config"
+            static let userToken = "user_token"
             static let error = "error"
             static let errorType = "error_type"
             static let errorTypeAccountCreation = "account_creation"
@@ -410,11 +417,11 @@ public class ConnectButtonController {
         /// Authorization redirect encodes some information about what comes next in the flow
         ///
         /// - serviceConnection: In the next step, authorize a service.
-        /// - complete: The Connection is complete. `didConfiguration` is true, if the Connection required a configuration step on web.
+        /// - complete: The Connection is complete. If the user token was present in the redirect, it is returned here. This is optional to allow future flexibility.
         /// - failed: An error occurred on web, aborting the flow.
         enum Outcome {
             case serviceAuthorization(id: String)
-            case complete(didConfiguration: Bool)
+            case complete(userToken: String?)
             case failed(ConnectButtonControllerError)
         }
 
@@ -449,8 +456,8 @@ public class ConnectButtonController {
                     onRedirect?(.failed(.unknownRedirect))
                 }
             case QueryItems.complete:
-                let didConfiguration = queryItems.first(where: { $0.name == QueryItems.config })?.value == "true"
-                onRedirect?(.complete(didConfiguration: didConfiguration))
+                let userToken = queryItems.first(where: { $0.name == QueryItems.userToken })?.value
+                onRedirect?(.complete(userToken: userToken))
 
             case QueryItems.error:
                 if let reason = queryItems.first(where: { $0.name == QueryItems.errorType })?.value, reason == QueryItems.errorTypeAccountCreation {
@@ -508,8 +515,8 @@ public class ConnectButtonController {
                     // If this ever happens, it is due to a bug on web
                     return .failed(.unknownRedirect)
                 }
-            case .complete:
-                return .authenticationComplete
+            case .complete(let userToken):
+                return .authenticationComplete(userToken: userToken)
             }
         }()
 
@@ -555,7 +562,7 @@ public class ConnectButtonController {
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
     /// - logInExistingUser: If we have a user token, ensure the user is logged in to Safari.
     /// - serviceAuthentication: Authorize one of this `Connection`s services. Passing the service to connect and the current user.
-    /// - authenticationComplete: Connection activation was successful. This always originates from the authorization redirect.
+    /// - authenticationComplete: Connection activation was successful. This always originates from the authorization redirect. Passes the user token if it was included in the redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
     /// - connected: The `Connection` was successfully authorized.
@@ -569,7 +576,7 @@ public class ConnectButtonController {
         case identifyUser(User.LookupMethod)
         case logInExistingUser(User)
         case serviceAuthentication(Connection.Service, user: User)
-        case authenticationComplete
+        case authenticationComplete(userToken: String?)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
@@ -605,8 +612,9 @@ public class ConnectButtonController {
             transitionToLogInExistingUser(connection: connection, user: user)
         case .serviceAuthentication(let service, let user):
             transitionToServiceAuthentication(connection: connection, service: service, user: user)
-        case .authenticationComplete:
-            transitionToAuthenticationComplete()
+        case .authenticationComplete(let userToken):
+            handleActivationFinished(userToken: userToken)
+            transitionToAuthenticationComplete(service: connection.connectingService)
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -618,6 +626,7 @@ public class ConnectButtonController {
         case .processDisconnect:
             transitionToProccessDisconnect()
         case .disconnected:
+            handleDeactivationFinished()
             transitionToDisconnected(connection: connection)
         }
     }
@@ -728,10 +737,12 @@ public class ConnectButtonController {
                         // There is no account for this user
                         // Show a fake message that we are creating an account
                         // Then move to the first step of the service connection flow
-                        self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
-                        
-                        progress.finish(extendingDurationBy: 1.5) {
-                            self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                        progress.wait(until: 0.5) {
+                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
+                            
+                            progress.finish {
+                                self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
+                            }
                         }
                     }
                 } else { // Existing IFTTT user (with a token)
@@ -784,14 +795,14 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAuthenticationComplete() {
-        button.animator(for: .buttonState(.connecting(message: "button.state.connecting".localized),
+    private func transitionToAuthenticationComplete(service: Connection.Service) {
+        button.animator(for: .buttonState(.connecting(service: service.connectButtonService, message: "button.state.connecting".localized),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         let progress = button.showProgress(duration: 2)
         progress.perform()
         progress.addCompletion { _ in
-            self.button.animator(for: .buttonState(.checkmark)).perform()
+            self.button.animator(for: .buttonState(.checkmark(service: service.connectButtonService))).perform()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.transition(to: .connected(animated: true))
             }
@@ -799,12 +810,12 @@ public class ConnectButtonController {
     }
 
     private func transitionToFailed(error: Error) {
-        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.networkError(.genericError(error))))
+        handleActivationFailed(error: .networkError(.genericError(error)))
         transition(to: .initial(animated: false))
     }
 
     private func transitionToCanceled(connection: Connection) {
-        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(.canceled))
+        handleActivationFailed(error: .canceled)
         transitionToInitalization(connection: connection, animated: true)
     }
 
@@ -813,16 +824,13 @@ public class ConnectButtonController {
 
         button.footerInteraction.isTapEnabled = true
 
-        // Connection was changed to this state, not initialized with it, so let the delegate know
-        appletChangedStatus(isOn: true)
-
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
         button.toggleInteraction.isTapEnabled = true
 
         button.toggleInteraction.toggleTransition = {
             return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
-                                footerValue: .none)
+                                footerValue: FooterMessages.worksWithIFTTT.value)
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
@@ -831,7 +839,7 @@ public class ConnectButtonController {
     }
 
     private func transitionToConfirmDisconnect() {
-       let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] timer in
+       let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
             // Revert state if user doesn't follow through
             self?.transition(to: .connected(animated: false))
             timer.invalidate()
@@ -843,7 +851,7 @@ public class ConnectButtonController {
                                          resistance: .heavy,
                                          toggleTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                                                          footerValue: .none) },
+                                                                          footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
                                             timer.invalidate() })
@@ -865,7 +873,7 @@ public class ConnectButtonController {
                 case .success:
                     self.transition(to: .disconnected)
                 case .failure(let error):
-                    self.delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(.networkError(error)))
+                    self.handleDeactivationFailed(error: .networkError(error))
                     self.transition(to: .connected(animated: true))
                 }
             }
@@ -873,8 +881,6 @@ public class ConnectButtonController {
     }
 
     private func transitionToDisconnected(connection: Connection) {
-        appletChangedStatus(isOn: false)
-
         button.animator(for: .buttonState(.disconnected(message: "button.state.disconnected".localized))).perform()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.transition(to: .initial(animated: true))
