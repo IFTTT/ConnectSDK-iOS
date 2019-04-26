@@ -143,7 +143,11 @@ The Connect Button is designed to fit into your UI just like any `UIKit` control
 - Set this in code with `connectButton.style = .dark` 
 - Or set this in Storyboard by setting `isLightStyle` in the inspector
 
-![Light style](DocumentationAssets/button-light-style.jpeg) ![Dark style](DocumentationAssets/button-dark-style.jpeg)
+*Light style*
+![Light style](DocumentationAssets/button-light-style.jpeg) 
+
+*Dark style*
+![Dark style](DocumentationAssets/button-dark-style.jpeg)
 
 2) The `ConnectButton` has a fixed height of 70 and a maximum width of 329
 - The actual height of the `ConnectButton` with footer text will be slightly larger than this to accommodate the space for the text. You should allow the `ConnectButton` to calculate its height rather than setting any layout constraints on this as this will result in an invalid layout. 
@@ -151,7 +155,7 @@ The Connect Button is designed to fit into your UI just like any `UIKit` control
 
 3) The `ConnectButton` will prompt users to enter their email the first time that they activate a Connection. You must accommodate for the keyboard presentation in your UI.
 
-‼️ Need to update the Connect Button graphic
+![Keyboard presentation](DocumentationAssets/button-email-state.jpeg) 
 
 ### Configuring the `ConnectButtonController` 
 Once you have the `ConnectButton` in your UI, you'll need to attach it to a `ConnectButtonController`. The controller handles the Connection activation flow. 
