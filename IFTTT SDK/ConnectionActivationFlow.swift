@@ -42,39 +42,15 @@ struct ConnectionActivationFlow {
         return urlComponents.fixingEmailEncoding().url
     }
     
-    /// The URL to log the user in on Safari
-    ///
-    /// - Parameter userId: The identifier for the user
-    /// - Returns: The URL to open in Safari
-    func loginUrl(userId: User.Id) -> URL {
-        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return url
-        }
-        var queryItems = commonQueryItems
-        
-        queryItems.append(userQueryItem(for: userId))
-        
-        queryItems.append(contentsOf: queryItemsForAvailableEmailClients())
-        
-        if let oauthItem = partnerOauthCodeQueryItem {
-            queryItems.append(oauthItem)
-        }
-        
-        urlComponents.queryItems = queryItems
-        return urlComponents.fixingEmailEncoding().url ?? url
-    }
-    
-    /// The URL to connect a service and complete the flow in Safari
+    /// The URL to complete a Connection activate in Safari
     ///
     /// - Parameter user: The current User
     /// - Returns: The URL to open in Safari
-    func serviceConnectionUrl(user: User) -> URL {
+    func webFlowUrl(user: User) -> URL {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return url
         }
         var queryItems = commonQueryItems
-        
-        queryItems.append(URLQueryItem(name: Constants.QueryItem.skipSDKRedirectName, value: Constants.QueryItem.defaultTrueValue))
         
         queryItems.append(userQueryItem(for: user.id))
         
@@ -172,7 +148,6 @@ struct ConnectionActivationFlow {
             static let inviteCodeName = "invite_code"
             static let emailName = "email"
             static let username = "username"
-            static let skipSDKRedirectName = "skip_sdk_redirect"
             static let sdkCreateAccountName = "sdk_create_account"
             static let oauthCodeName = "code"
             static let defaultTrueValue = "true"
