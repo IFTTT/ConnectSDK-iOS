@@ -1327,16 +1327,20 @@ private extension ConnectButton {
             self.emailEntryField.alpha = 1
         }, delayFactor: 0.7)
         
+        let resetKnob = {
+            // Keep the knob is a "clean" state since we don't animate backwards from this step
+            self.switchControl.knob.transform = .identity
+            self.switchControl.knob.maskedEndCaps = .all // reset
+            self.switchControl.knob.layer.shadowOpacity = 0.25
+            self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
+            self.switchControl.knob.iconView.alpha = 1.0
+        }
+        
         animator.addCompletion { position in
             
             switch position {
             case .start:
-                // Keep the knob is a "clean" state since we don't animate backwards from this step
-                self.switchControl.knob.transform = .identity
-                self.switchControl.knob.maskedEndCaps = .all // reset
-                self.switchControl.knob.layer.shadowOpacity = 0.25
-                self.switchControl.configure(with: service, networkController: self.imageViewNetworkController)
-                self.switchControl.knob.iconView.alpha = 1.0
+                resetKnob()
                 self.emailEntryField.alpha = 0.0
                 
                 self.switchControl.isOn = false
@@ -1360,6 +1364,7 @@ private extension ConnectButton {
                     if suggestedEmail == nil || shouldBecomeFirstResponder {
                         self.emailEntryField.becomeFirstResponder()
                     }
+                    resetKnob()
                 }
                 
                 endAnimator.startAnimation()
