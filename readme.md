@@ -7,6 +7,9 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Setup](#setup)
+- [The Connect Button](#the-connect-button)
+- [Advanced](#advanced)
+
 
 <!-- /TOC -->
 
