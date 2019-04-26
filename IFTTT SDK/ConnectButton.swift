@@ -1460,6 +1460,8 @@ private extension ConnectButton {
             animator.addAnimations {
                 self.switchControl.isOn = true
             }
+        } else {
+            switchControl.isOn = true
         }
         
         animator.addAnimations {
