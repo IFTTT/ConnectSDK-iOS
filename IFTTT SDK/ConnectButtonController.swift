@@ -726,9 +726,12 @@ public class ConnectButtonController {
                     // Show a fake message that we are creating an account
                     // Then move to the first step of the service connection flow
                     progress.wait(until: 0.5) {
-                        self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
+                        self.button.animator(for: .buttonState(
+                            .createAccount(message: "button.state.creating_account".localized),
+                            footerValue: FooterMessages.creatingAccount(email: user.id.value).value)
+                            ).perform()
                         
-                        progress.finish {
+                        progress.finish(extendingDurationBy: 1.5) {
                             self.transition(to: .activateConnection(user))
                         }
                     }
