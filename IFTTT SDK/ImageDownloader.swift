@@ -20,7 +20,7 @@ struct ImageDownloader {
     }
     
     @discardableResult
-    func downloadImage(url: URL, _ completion: @escaping (Result<UIImage, NetworkError>) -> Void) -> URLSessionDataTask? {
+    func downloadImage(url: URL, _ completion: @escaping (Result<UIImage, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
         if let image = cache.image(for: url) {
             completion(.success(image))
             return nil

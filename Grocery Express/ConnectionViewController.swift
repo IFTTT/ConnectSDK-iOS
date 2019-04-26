@@ -52,7 +52,7 @@ class ConnectionViewController: UIViewController {
             let connectionConfiguration = ConnectionConfiguration(connectionId: id,
                                                                   suggestedUserEmail: self.connectionCredentials.email,
                                                                   credentialProvider: self.connectionCredentials,
-                                                                  connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                                                                  redirectURL: AppDelegate.connectionRedirectURL)
             self.setupConnectButtonController(connectionConfiguration)
         } else {
             activityIndicator.startAnimating()
@@ -67,7 +67,7 @@ class ConnectionViewController: UIViewController {
                     let connectionConfiguration = ConnectionConfiguration(connection: connection,
                                                                           suggestedUserEmail: self.connectionCredentials.email,
                                                                           credentialProvider: self.connectionCredentials,
-                                                                          connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                                                                          redirectURL: AppDelegate.connectionRedirectURL)
                     self.setupConnectButtonController(connectionConfiguration)
                     
                 case .failure:

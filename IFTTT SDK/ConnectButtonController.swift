@@ -26,7 +26,7 @@ public enum ConnectButtonControllerError: Error {
     case iftttAccountCreationFailed
 
     /// Some generic networking error occurred.
-    case networkError(NetworkError)
+    case networkError(ConnectionNetworkError)
 
     /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
@@ -126,7 +126,7 @@ public class ConnectButtonController {
         delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
     }
 
-    private var credentialProvider: CredentialProvider {
+    private var credentialProvider: ConnectionCredentialProvider {
         return connectionConfiguration.credentialProvider
     }
 
@@ -150,7 +150,7 @@ public class ConnectButtonController {
         self.connectionConfiguration = connectionConfiguration
         self.connectionActivationFlow = ConnectionActivationFlow(connectionId: connectionConfiguration.connectionId,
                                                                  credentialProvider: connectionConfiguration.credentialProvider,
-                                                                 activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+                                                                 activationRedirect: connectionConfiguration.redirectURL)
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         setupConnection(for: connection, animated: false)
@@ -426,7 +426,7 @@ public class ConnectButtonController {
         var onRedirect: ((Outcome) -> Void)?
 
         init() {
-            NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .connectionRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }
@@ -649,7 +649,7 @@ public class ConnectButtonController {
             guard let self = self else {
                 return initialButtonState
             }
-            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.iftttServiceToken != nil {
+            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
                 return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
@@ -658,7 +658,7 @@ public class ConnectButtonController {
 
         button.toggleInteraction.onToggle = { [weak self] in
             guard let self = self else { return }
-            if let token = self.credentialProvider.iftttServiceToken {
+            if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
             } else if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: nil) {
                 self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))

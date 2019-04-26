@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 /// Encapsulates the information needed to authenticate a `Connection`'s services.
 public struct ConnectionConfiguration {
     
@@ -21,10 +22,10 @@ public struct ConnectionConfiguration {
     public let suggestedUserEmail: String
     
     /// A `CredentialProvider` conforming object for providing credentials.
-    public let credentialProvider: CredentialProvider
+    public let credentialProvider: ConnectionCredentialProvider
     
     /// The `URL` that is used for authentication redirects.
-    public let connectAuthorizationRedirectURL: URL
+    public let redirectURL: URL
     
     /// Creates a new `ConnectionConfiguration`.
     ///
@@ -32,13 +33,13 @@ public struct ConnectionConfiguration {
     ///   - connectionId: The connection identifier to fetch the `Connection` for authentication.
     ///   - suggestedUserEmail: A `String` with a an email for the user.
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
-    ///   - connectAuthorizationRedirectURL: The `URL` that is used for authentication redirects.
-    public init(connectionId: String, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
+    ///   - redirectURL: The `URL` that is used for connection activation redirects.
+    public init(connectionId: String, suggestedUserEmail: String, credentialProvider: ConnectionCredentialProvider, redirectURL: URL) {
         self.connectionId = connectionId
         self.connection = nil
         self.suggestedUserEmail = suggestedUserEmail
         self.credentialProvider = credentialProvider
-        self.connectAuthorizationRedirectURL = connectAuthorizationRedirectURL
+        self.redirectURL = redirectURL
     }
     
     /// Creates a new `ConnectionConfiguration`.
@@ -47,12 +48,12 @@ public struct ConnectionConfiguration {
     ///   - connection: The `Connection` for authentication.
     ///   - suggestedUserEmail: A `String` with a an email for the user.
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
-    ///   - connectAuthorizationRedirectURL: The `URL` that is used for authentication redirects.
-    public init(connection: Connection, suggestedUserEmail: String, credentialProvider: CredentialProvider, connectAuthorizationRedirectURL: URL) {
+    ///   - redirectURL: The `URL` that is used for connection activation redirects.
+    public init(connection: Connection, suggestedUserEmail: String, credentialProvider: ConnectionCredentialProvider, redirectURL: URL) {
         self.connectionId = connection.id
         self.connection = connection
         self.suggestedUserEmail = suggestedUserEmail
         self.credentialProvider = credentialProvider
-        self.connectAuthorizationRedirectURL = connectAuthorizationRedirectURL
+        self.redirectURL = redirectURL
     }
 }

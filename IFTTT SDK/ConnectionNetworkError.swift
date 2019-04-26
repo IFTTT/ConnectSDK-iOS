@@ -1,5 +1,5 @@
 //
-//  NetworkError.swift
+//  ConnectionNetworkError.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 11/29/18.
@@ -9,7 +9,7 @@
 import Foundation
 
 /// An error occurred, preventing the network controller from completing `Connection` network requests.
-public enum NetworkError: Error {
+public enum ConnectionNetworkError: Error {
     
     /// Some generic networking error occurred
     case genericError(Error)
