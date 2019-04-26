@@ -18,7 +18,7 @@ fileprivate struct Layout {
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
     static let serviceIconDiameter = 0.5 * knobDiameter
-    static let borderWidth: CGFloat = 2.5
+    static let borderWidth: CGFloat = 2
     /// The amount by which the email field is offset from the center
     static let emailFieldOffset: CGFloat = 4
     static let buttonFooterSpacing: CGFloat = 15
