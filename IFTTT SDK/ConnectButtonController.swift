@@ -150,7 +150,7 @@ public class ConnectButtonController {
         self.connectionConfiguration = connectionConfiguration
         self.connectionActivationFlow = ConnectionActivationFlow(connectionId: connectionConfiguration.connectionId,
                                                                  credentialProvider: connectionConfiguration.credentialProvider,
-                                                                 activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+                                                                 activationRedirect: connectionConfiguration.redirectURL)
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         setupConnection(for: connection, animated: false)
@@ -426,7 +426,7 @@ public class ConnectButtonController {
         var onRedirect: ((Outcome) -> Void)?
 
         init() {
-            NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .connectionRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }

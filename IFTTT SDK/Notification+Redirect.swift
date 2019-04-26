@@ -11,5 +11,5 @@ import Foundation
 extension Notification.Name {
     
     /// A `Notification.Name` used to post notifications when the app recieves a redirect request for a `Connection` activation.
-    static let authorizationRedirect = Notification.Name("ifttt.authorization.redirect")
+    static let connectionRedirect = Notification.Name("ifttt.connection.redirect")
 }

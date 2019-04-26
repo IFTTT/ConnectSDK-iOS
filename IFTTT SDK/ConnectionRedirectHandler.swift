@@ -34,7 +34,7 @@ public final class ConnectionRedirectHandler {
         
         // Checks if the scheme matches the SDK redirect.
         if url.scheme == redirectURL.scheme {
-            NotificationCenter.default.post(name: .authorizationRedirect, object: url)
+            NotificationCenter.default.post(name: .connectionRedirect, object: url)
             return true
         }
         
