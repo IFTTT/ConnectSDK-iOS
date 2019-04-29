@@ -103,8 +103,8 @@ public final class ConnectionNetworkController {
             }
             
             let dataTask = urlSession.jsonTask(with: request) { _, response, error in
-                let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
-                completion(.success(configuration))
+                let user = User(id: .email(email), isExistingUser: response?.statusCode == 204)
+                completion(.success(user))
                 
             }
             dataTask.resume()
@@ -121,8 +121,8 @@ public final class ConnectionNetworkController {
                     return
                 }
                 
-                let configuration = User(id: .username(username), isExistingUser: true)
-                completion(.success(configuration))
+                let user = User(id: .username(username), isExistingUser: true)
+                completion(.success(user))
             }
             dataTask.resume()
             
