@@ -10,6 +10,8 @@ import Foundation
 
 struct API {
     
+    static let iftttAppScheme = "ifttt-handoff-v1://"
+    
     /// The unique id for IFTTT's App Store listing
     static let iftttAppStoreId = "660944635"
     

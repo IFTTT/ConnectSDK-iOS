@@ -26,7 +26,7 @@ public enum ConnectButtonControllerError: Error {
     case iftttAccountCreationFailed
 
     /// Some generic networking error occurred.
-    case networkError(NetworkError)
+    case networkError(ConnectionNetworkError)
 
     /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
@@ -39,6 +39,9 @@ public enum ConnectButtonControllerError: Error {
 
     /// For some reason the `Connection` used by this controller has gone nil or could not be retrieved. This should never happen.
     case unableToGetConnection
+    
+    /// For some reason we could not redirect to the IFTTT app. This should never happen since we check if the app is installed first.
+    case iftttAppRedirectFailed
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
@@ -123,7 +126,7 @@ public class ConnectButtonController {
         delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
     }
 
-    private var credentialProvider: CredentialProvider {
+    private var credentialProvider: ConnectionCredentialProvider {
         return connectionConfiguration.credentialProvider
     }
 
@@ -147,7 +150,7 @@ public class ConnectButtonController {
         self.connectionConfiguration = connectionConfiguration
         self.connectionActivationFlow = ConnectionActivationFlow(connectionId: connectionConfiguration.connectionId,
                                                                  credentialProvider: connectionConfiguration.credentialProvider,
-                                                                 activationRedirect: connectionConfiguration.connectAuthorizationRedirectURL)
+                                                                 activationRedirect: connectionConfiguration.redirectURL)
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         setupConnection(for: connection, animated: false)
@@ -237,7 +240,7 @@ public class ConnectButtonController {
         return .seconds(seconds)
     }
 
-    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service) -> ConnectButton.AnimationState {
+    private func buttonState(forConnectionStatus status: Connection.Status, service: Connection.Service, shouldAnimateKnob: Bool = true) -> ConnectButton.AnimationState {
         switch status {
         case .initial, .unknown:
             return .connect(service: service.connectButtonService,
@@ -247,7 +250,8 @@ public class ConnectButtonController {
                             message: "button.state.reconnect".localized(with: service.shortName))
         case .enabled:
             return .connected(service: service.connectButtonService,
-                              message: "button.state.connected".localized)
+                              message: "button.state.connected".localized,
+                              shouldAnimateKnob: shouldAnimateKnob)
         }
     }
 
@@ -265,13 +269,7 @@ public class ConnectButtonController {
             assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
-
-        guard let secondaryService = connection.worksWithServices.first else {
-            return
-        }
-
-        let aboutViewController = AboutViewController(primaryService: connection.primaryService,
-                                                      secondaryService: secondaryService)
+        let aboutViewController = AboutViewController(connection: connection)
         present(aboutViewController)
     }
 
@@ -405,8 +403,6 @@ public class ConnectButtonController {
 
         private struct QueryItems {
             static let nextStep = "next_step"
-            static let serviceAuthentication = "service_authentication"
-            static let serviceId = "service_id"
             static let complete = "complete"
             static let userToken = "user_token"
             static let error = "error"
@@ -416,11 +412,9 @@ public class ConnectButtonController {
 
         /// Authorization redirect encodes some information about what comes next in the flow
         ///
-        /// - serviceConnection: In the next step, authorize a service.
         /// - complete: The Connection is complete. If the user token was present in the redirect, it is returned here. This is optional to allow future flexibility.
         /// - failed: An error occurred on web, aborting the flow.
         enum Outcome {
-            case serviceAuthorization(id: String)
             case complete(userToken: String?)
             case failed(ConnectButtonControllerError)
         }
@@ -428,7 +422,7 @@ public class ConnectButtonController {
         var onRedirect: ((Outcome) -> Void)?
 
         init() {
-            NotificationCenter.default.addObserver(forName: .authorizationRedirect, object: nil, queue: .main) { [weak self] notification in
+            NotificationCenter.default.addObserver(forName: .connectionRedirect, object: nil, queue: .main) { [weak self] notification in
                 self?.handleRedirect(notification)
             }
         }
@@ -449,12 +443,6 @@ public class ConnectButtonController {
             }
 
             switch nextStep {
-            case QueryItems.serviceAuthentication:
-                if let serviceId = queryItems.first(where: { $0.name == QueryItems.serviceId })?.value {
-                    onRedirect?(.serviceAuthorization(id: serviceId))
-                } else {
-                    onRedirect?(.failed(.unknownRedirect))
-                }
             case QueryItems.complete:
                 let userToken = queryItems.first(where: { $0.name == QueryItems.userToken })?.value
                 onRedirect?(.complete(userToken: userToken))
@@ -500,23 +488,8 @@ public class ConnectButtonController {
             case .failed(let error):
                 return .failed(error)
 
-            case .serviceAuthorization(let id):
-                guard let connection = connection else {
-                    assertionFailure("It is expected and required that we have a non nil connection in this state.")
-                    return .failed(.unableToGetConnection)
-                }
-
-                if let service = connection.services.first(where: { $0.id == id }), let user = user {
-                    // If service connection comes after a redirect we must have already completed user log in or account creation
-                    // Therefore newUserEmail is always nil here
-                    return .serviceAuthentication(service, user: user)
-                } else {
-                    // For some reason, the service ID we received from web doesn't match the connection
-                    // If this ever happens, it is due to a bug on web
-                    return .failed(.unknownRedirect)
-                }
             case .complete(let userToken):
-                return .authenticationComplete(userToken: userToken)
+                return .activationComplete(userToken: userToken)
             }
         }()
 
@@ -560,9 +533,8 @@ public class ConnectButtonController {
     /// - appHandoff: Links to the IFTTT app to complete the connection flow
     /// - enterEmail: If we don't yet know the user, show the email field
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
-    /// - logInExistingUser: If we have a user token, ensure the user is logged in to Safari.
-    /// - serviceAuthentication: Authorize one of this `Connection`s services. Passing the service to connect and the current user.
-    /// - authenticationComplete: Connection activation was successful. This always originates from the authorization redirect. Passes the user token if it was included in the redirect.
+    /// - activateConnection: Go to the web or the IFTTT app to activate this Connection
+    /// - activationComplete: Connection activation was successful. This always originates from a redirect. Passes the user token if it was included in the redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
     /// - connected: The `Connection` was successfully authorized.
@@ -571,12 +543,11 @@ public class ConnectButtonController {
     /// - disconnected: The `Connection` was disabled.
     enum ActivationStep {
         case initial(animated: Bool)
-        case appHandoff
+        case appHandoff(url: URL, redirectImmediately: Bool)
         case enterEmail
         case identifyUser(User.LookupMethod)
-        case logInExistingUser(User)
-        case serviceAuthentication(Connection.Service, user: User)
-        case authenticationComplete(userToken: String?)
+        case activateConnection(User)
+        case activationComplete(userToken: String?)
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
@@ -601,20 +572,18 @@ public class ConnectButtonController {
         switch step {
         case .initial(let animated):
             transitionToInitalization(connection: connection, animated: animated)
-        case .appHandoff:
-            transitionToAppHandoff()
+        case .appHandoff(let url, let redirectImmediately):
+            transitionToAppHandoff(url: url, redirectImmediately: redirectImmediately)
         case .enterEmail:
             self.transition(to: .initial(animated: false))
             self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).perform()
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(connection: connection, lookupMethod: lookupMethod)
-        case .logInExistingUser(let user):
-            transitionToLogInExistingUser(connection: connection, user: user)
-        case .serviceAuthentication(let service, let user):
-            transitionToServiceAuthentication(connection: connection, service: service, user: user)
-        case .authenticationComplete(let userToken):
+        case .activateConnection(let user):
+            transitionToActivate(connection: connection, user: user)
+        case .activationComplete(let userToken):
             handleActivationFinished(userToken: userToken)
-            transitionToAuthenticationComplete(service: connection.connectingService)
+            transitionToActivationComplete(service: connection.connectingService)
         case .failed(let error):
             transitionToFailed(error: error)
         case .canceled:
@@ -651,19 +620,19 @@ public class ConnectButtonController {
             guard let self = self else {
                 return initialButtonState
             }
-            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.iftttServiceToken != nil {
+            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
                 return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
             } else {
-                return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 1.0)
+                return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
             }
         }
 
         button.toggleInteraction.onToggle = { [weak self] in
             guard let self = self else { return }
-            if self.connectionActivationFlow.isAppHandoffAvailable {
-                self.transition(to: .appHandoff)
-            } else if let token = self.credentialProvider.iftttServiceToken {
+            if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
+            } else if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: nil) {
+                self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))
             }
         }
 
@@ -677,10 +646,26 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAppHandoff() {
+    /// Redirects to the IFTTT app for the app handoff connection flow
+    ///
+    /// - Parameters:
+    ///   - url: The handoff URL
+    ///   - redirectImmediately: When true, do redirect immediately. Or delay to show progress bar.
+    private func transitionToAppHandoff(url: URL, redirectImmediately: Bool) {
+        let redirect = {
+            let success = UIApplication.shared.openURL(url)
+            if !success {
+                self.transition(to: .failed(.iftttAppRedirectFailed))
+            }
+        }
+        guard redirectImmediately == false else {
+            redirect()
+            return
+        }
+        
         let progress = button.showProgress(duration: 1)
         progress.addCompletion { _ in
-            self.connectionActivationFlow.performAppHandoff()
+            redirect()
         }
         progress.startAnimation()
         
@@ -726,28 +711,29 @@ public class ConnectButtonController {
             case .success(let user):
                 self.user = user
                 
-                if case .email = user.id { // We know the user's email but don't have a token
-                    if user.isExistingUser {
-                        // This is an existing IFTTT user but we don't have a token
-                        // Send on to service authentication, web will take care of getting the user signed in
-                        progress.finish {
-                            self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
-                        }
-                    } else {
-                        // There is no account for this user
-                        // Show a fake message that we are creating an account
-                        // Then move to the first step of the service connection flow
-                        progress.wait(until: 0.5) {
-                            self.button.animator(for: .buttonState(.createAccount(message: "button.state.creating_account".localized))).perform()
-                            
-                            progress.finish {
-                                self.transition(to: .serviceAuthentication(connection.connectingService, user: user))
-                            }
+                if user.isExistingUser {
+                    // This is an existing IFTTT user but we don't have a token
+                    // Send on to service authentication, web will take care of getting the user signed in
+                    progress.finish {
+                        if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: user.id) {
+                            self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: true))
+                        } else {
+                            self.transition(to: .activateConnection(user))
                         }
                     }
-                } else { // Existing IFTTT user (with a token)
-                    progress.finish {
-                        self.transition(to: .logInExistingUser(user))
+                } else {
+                    // There is no account for this user
+                    // Show a fake message that we are creating an account
+                    // Then move to the first step of the service connection flow
+                    progress.wait(until: 0.5) {
+                        self.button.animator(for: .buttonState(
+                            .createAccount(message: "button.state.creating_account".localized),
+                            footerValue: FooterMessages.creatingAccount(email: user.id.value).value)
+                            ).perform()
+                        
+                        progress.finish(extendingDurationBy: 1.5) {
+                            self.transition(to: .activateConnection(user))
+                        }
                     }
                 }
 
@@ -767,18 +753,15 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToLogInExistingUser(connection: Connection, user: User) {
-        let url = connectionActivationFlow.loginUrl(userId: user.id)
-        openActivationURL(url)
-    }
-
-    private func transitionToServiceAuthentication(connection: Connection, service: Connection.Service, user: User) {
+    private func transitionToActivate(connection: Connection, user: User) {
+        let service = connection.connectingService
+        
         button.footerInteraction.isTapEnabled = true
         button.animator(for: .buttonState(.continueToService(service: service.connectButtonService,
                                                              message: "button.state.sign_in".localized(with: service.name)),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
-        let url = connectionActivationFlow.serviceConnectionUrl(user: user)
+        let url = connectionActivationFlow.webFlowUrl(user: user)
 
         let timeout = 2.0
         button.showProgress(duration: timeout).startAnimation()
@@ -795,7 +778,7 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToAuthenticationComplete(service: Connection.Service) {
+    private func transitionToActivationComplete(service: Connection.Service) {
         button.animator(for: .buttonState(.connecting(service: service.connectButtonService, message: "button.state.connecting".localized),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
@@ -809,8 +792,8 @@ public class ConnectButtonController {
         }
     }
 
-    private func transitionToFailed(error: Error) {
-        handleActivationFailed(error: .networkError(.genericError(error)))
+    private func transitionToFailed(error: ConnectButtonControllerError) {
+        handleActivationFailed(error: error)
         transition(to: .initial(animated: false))
     }
 
@@ -820,9 +803,12 @@ public class ConnectButtonController {
     }
 
     private func transitionToConnected(connection: Connection, animated: Bool) {
-        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService), footerValue: FooterMessages.worksWithIFTTT.value)).perform(animated: animated)
+        button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService, shouldAnimateKnob: animated), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
+        button.footerInteraction.onSelect = { [weak self] in
+            self?.showAboutPage()
+        }
 
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
@@ -854,7 +840,11 @@ public class ConnectButtonController {
                                                                           footerValue: FooterMessages.worksWithIFTTT.value) },
                                          onToggle: { [weak self] in
                                             self?.transition(to: .processDisconnect)
+                                            timer.invalidate() },
+                                         onReverse: { [weak self] in
+                                            self?.transition(to: .connected(animated: false))
                                             timer.invalidate() })
+        
     }
 
     private func transitionToProccessDisconnect() {

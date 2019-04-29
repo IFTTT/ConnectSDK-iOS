@@ -32,7 +32,7 @@ public final class ConnectionNetworkController {
         public let statusCode: Int?
         
         /// The `Result<Connection>` of the network request.
-        public let result: Result<Connection, NetworkError>
+        public let result: Result<Connection, ConnectionNetworkError>
     }
     
     /// A handler that is used when a `Response` is recieved from a network request.
@@ -70,7 +70,7 @@ public final class ConnectionNetworkController {
             if let applet = Connection.parseAppletsResponse(parser)?.first {
                 completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
             } else {
-                let networkError: NetworkError = {
+                let networkError: ConnectionNetworkError = {
                     if let error = error {
                         return .genericError(error)
                     } else {
@@ -87,7 +87,7 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
+    func getConnectConfiguration(user: User.LookupMethod, _ completion: @escaping (Result<User, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
         return checkUser(user: user) { result in
             DispatchQueue.main.async {
                 completion(result)
@@ -95,7 +95,7 @@ public final class ConnectionNetworkController {
         }
     }
     
-    private func checkUser(user: User.LookupMethod, _ completion: @escaping (Result<User, NetworkError>) -> Void) -> URLSessionDataTask? {
+    private func checkUser(user: User.LookupMethod, _ completion: @escaping (Result<User, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
         switch user {
         case .email(let email):
             guard let request = makeFindUserByEmailRequest(with: email) else {
@@ -103,8 +103,8 @@ public final class ConnectionNetworkController {
             }
             
             let dataTask = urlSession.jsonTask(with: request) { _, response, error in
-                let configuration = User(id: .email(email), isExistingUser: response?.statusCode == 204)
-                completion(.success(configuration))
+                let user = User(id: .email(email), isExistingUser: response?.statusCode == 204)
+                completion(.success(user))
                 
             }
             dataTask.resume()
@@ -121,8 +121,8 @@ public final class ConnectionNetworkController {
                     return
                 }
                 
-                let configuration = User(id: .username(username), isExistingUser: false)
-                completion(.success(configuration))
+                let user = User(id: .username(username), isExistingUser: true)
+                completion(.success(user))
             }
             dataTask.resume()
             

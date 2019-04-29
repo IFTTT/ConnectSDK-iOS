@@ -23,7 +23,9 @@ class SelectGestureRecognizer: UIGestureRecognizer {
     /// Default implementation reduces the view's alpha to 0.8
     /// Set to nil to disable highlighting
     var performHighlight: ((UIView?, Bool) -> Void)? = { (view: UIView?, isHighlighted: Bool) -> Void in
-        view?.alpha = isHighlighted ? 0.8 : 1
+        UIView.animate(withDuration: 0.1) {
+            view?.alpha = isHighlighted ? 0.8 : 1
+        }
     }
     
     var touchesBeganDelay: CFTimeInterval = 0.1
@@ -43,10 +45,9 @@ class SelectGestureRecognizer: UIGestureRecognizer {
             case .ended:
                 // Touches have ended but we're not already in the touch state which means this was a tap so show the tap animation
                 if isHighlighted == false {
-                    isHighlighted = true
-                    UIView.animate(withDuration: 0.2, delay: 0.2, options: [], animations: {
-                        self.isHighlighted = false
-                    }, completion: nil)
+                    // Set the alpha immediately to selected and then animate to the unselected state.
+                    view?.alpha = 0.8
+                    isHighlighted = false
                 } else {
                     isHighlighted = false
                 }

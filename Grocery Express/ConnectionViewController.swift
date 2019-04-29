@@ -52,7 +52,7 @@ class ConnectionViewController: UIViewController {
             let connectionConfiguration = ConnectionConfiguration(connectionId: id,
                                                                   suggestedUserEmail: self.connectionCredentials.email,
                                                                   credentialProvider: self.connectionCredentials,
-                                                                  connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                                                                  redirectURL: AppDelegate.connectionRedirectURL)
             self.setupConnectButtonController(connectionConfiguration)
         } else {
             activityIndicator.startAnimating()
@@ -67,7 +67,7 @@ class ConnectionViewController: UIViewController {
                     let connectionConfiguration = ConnectionConfiguration(connection: connection,
                                                                           suggestedUserEmail: self.connectionCredentials.email,
                                                                           credentialProvider: self.connectionCredentials,
-                                                                          connectAuthorizationRedirectURL: AppDelegate.connectionRedirectURL)
+                                                                          redirectURL: AppDelegate.connectionRedirectURL)
                     self.setupConnectButtonController(connectionConfiguration)
                     
                 case .failure:
@@ -117,7 +117,9 @@ private extension ConnectButtonControllerError {
         case .canceled:
             return nil
         case .unableToGetConnection:
-            return "The connection being used is nil."
+            return "The connection being used is nil"
+        case .iftttAppRedirectFailed:
+            return "Could not open the IFTTT app for handoff flow"
         }
     }
 }

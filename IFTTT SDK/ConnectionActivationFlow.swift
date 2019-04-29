@@ -12,60 +12,56 @@ import Foundation
 struct ConnectionActivationFlow {
     
     /// The URL for the deeplinking to the connection in the IFTTT app or nil if the app is not installed
-    private let appHandoffUrl: URL?
+    private let baseAppHandoffUrl: URL
     
-    /// Returns true if the IFTTT app is installed
+    /// Returns true if the IFTTT app is installed and support handoff from the SDK
     var isAppHandoffAvailable: Bool {
-        return appHandoffUrl != nil
+        return UIApplication.shared.canOpenURL(baseAppHandoffUrl)
     }
     
-    /// Launch the IFTTT app to complete the connection activation flow
-    func performAppHandoff() {
-        guard let url = appHandoffUrl else { return }
-        UIApplication.shared.openURL(url)
-    }
-    
-    /// The URL to log the user in on Safari
+    /// Creates the URL to handoff the connection activation flow to the IFTTT app
     ///
-    /// - Parameter userId: The identifier for the user
-    /// - Returns: The URL to open in Safari
-    func loginUrl(userId: User.Id) -> URL {
-        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return url
+    /// - Parameter userId: The current User or nil if there isn't one
+    /// - Returns: The URL to open handoff in the IFTTT app or nil if handoff cannot be done
+    func appHandoffUrl(userId: User.Id?) -> URL? {
+        guard
+            UIApplication.shared.canOpenURL(baseAppHandoffUrl),
+            var urlComponents = URLComponents(url: baseAppHandoffUrl,
+                                                resolvingAgainstBaseURL: false) else {
+            return nil
         }
         var queryItems = commonQueryItems
-        
-        queryItems.append(URLQueryItem(name: Constants.QueryItem.emailName, value: userId.value))
-        if let oauthItem = partnerOauthCodeQueryItem {
-            queryItems.append(oauthItem)
+        if let oauthCodeItem = partnerOauthCodeQueryItem {
+            queryItems.append(oauthCodeItem)
         }
-        
+        if let userId = userId {
+            queryItems.append(userQueryItem(for: userId))
+        }
         urlComponents.queryItems = queryItems
-        return urlComponents.fixingEmailEncoding().url ?? url
+        
+        return urlComponents.fixingEmailEncoding().url
     }
     
-    /// The URL to connect a service and complete the flow in Safari
+    /// The URL to complete a Connection activate in Safari
     ///
     /// - Parameter user: The current User
     /// - Returns: The URL to open in Safari
-    func serviceConnectionUrl(user: User) -> URL {
+    func webFlowUrl(user: User) -> URL {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return url
         }
         var queryItems = commonQueryItems
         
-        queryItems.append(URLQueryItem(name: Constants.QueryItem.skipSDKRedirectName, value: Constants.QueryItem.defaultTrueValue))
+        queryItems.append(userQueryItem(for: user.id))
         
-        if case .email(let email) = user.id { // New or returning user (without a token)
-            queryItems.append(URLQueryItem(name: Constants.QueryItem.emailName, value: email))
-            if !user.isExistingUser { // New user
-                queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreateAccountName, value: Constants.QueryItem.defaultTrueValue))
-            } else { // Returning user
-                queryItems.append(contentsOf: queryItemsForAvailableEmailClients())
-            }
-            if let oauthItem = partnerOauthCodeQueryItem {
-                queryItems.append(oauthItem)
-            }
+        if !user.isExistingUser { // New user
+            queryItems.append(URLQueryItem(name: Constants.QueryItem.sdkCreateAccountName, value: Constants.QueryItem.defaultTrueValue))
+        } else { // Returning user
+            queryItems.append(contentsOf: queryItemsForAvailableEmailClients())
+        }
+        
+        if let oauthItem = partnerOauthCodeQueryItem {
+            queryItems.append(oauthItem)
         }
         
         urlComponents.queryItems = queryItems
@@ -87,7 +83,7 @@ struct ConnectionActivationFlow {
     ///   - credentialProvider: A `CredentialProvider` for the user
     ///   - activationRedirect: The redirect back to this application
     init(connectionId: String,
-         credentialProvider: CredentialProvider,
+         credentialProvider: ConnectionCredentialProvider,
          activationRedirect: URL) {
         
         url = Constants.url.appendingPathComponent(connectionId)
@@ -100,9 +96,9 @@ struct ConnectionActivationFlow {
             URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
         
         let partnerOauthCodeQueryItem: URLQueryItem?
-        if !credentialProvider.partnerOAuthCode.isEmpty {
+        if !credentialProvider.oauthCode.isEmpty {
             partnerOauthCodeQueryItem = URLQueryItem(name: Constants.QueryItem.oauthCodeName,
-                                                     value: credentialProvider.partnerOAuthCode)
+                                                     value: credentialProvider.oauthCode)
         } else {
             partnerOauthCodeQueryItem = nil
         }
@@ -116,18 +112,7 @@ struct ConnectionActivationFlow {
         
         self.commonQueryItems = commonQueryItems
         self.partnerOauthCodeQueryItem = partnerOauthCodeQueryItem
-        appHandoffUrl = {
-            let url = Constants.appHandoffURL.appendingPathComponent(connectionId)
-            guard UIApplication.shared.canOpenURL(url),
-                var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-                    return nil
-            }
-            urlComponents.queryItems = commonQueryItems
-            if let oauthCodeItem = partnerOauthCodeQueryItem {
-                urlComponents.queryItems!.append(oauthCodeItem)
-            }
-            return urlComponents.url
-        }()
+        baseAppHandoffUrl = Constants.appHandoffURL.appendingPathComponent(connectionId)
     }
     
     /// Checks for available email clients on the device
@@ -145,15 +130,24 @@ struct ConnectionActivationFlow {
         }
     }
     
+    private func userQueryItem(for userId: User.Id) -> URLQueryItem {
+        switch userId {
+        case .email(let email):
+            return URLQueryItem(name: Constants.QueryItem.emailName, value: email)
+        case .username(let username):
+            return URLQueryItem(name: Constants.QueryItem.username, value: username)
+        }
+    }
+    
     private struct Constants {
-        static let appHandoffURL = URL(string: "ifttt-handoff-v1://connections")!
+        static let appHandoffURL = URL(string: "\(API.iftttAppScheme)connections")!
         static let url = URL(string: "https://ifttt.com/access/api")!
         
         struct QueryItem {
             static let sdkReturnName = "sdk_return_to"
             static let inviteCodeName = "invite_code"
             static let emailName = "email"
-            static let skipSDKRedirectName = "skip_sdk_redirect"
+            static let username = "username"
             static let sdkCreateAccountName = "sdk_create_account"
             static let oauthCodeName = "code"
             static let defaultTrueValue = "true"
