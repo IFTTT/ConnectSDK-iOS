@@ -106,7 +106,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
 * `userToken`: This is the IFTTT user token for your service. This token allows you to get IFTTT user data related to only your service. For example, include this token to get the enabled status of Connections for your user. It is also the same token that is used to make trigger, query, and action requests for Connections on behalf of the user. 
 
 **How to get a `userToken`**
-1) You should retrieve it from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create on endpoint on your own server to access the user's IFTTT service token.
+1) You should retrieve it from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create on endpoint on your own server to access the user's IFTTT service token. See https://platform.ifttt.com/docs/connection_api#get-a-user-token.
 2) Additionally, `ConnectButtonControllerDelegate` returns the user token when a connection is activated. 
 You should support both methods to receive the `userToken` since the user may have already connected your service to IFTTT.
 
