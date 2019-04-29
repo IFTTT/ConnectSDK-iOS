@@ -103,7 +103,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
 
 * `oauthCode`: The OAuth code for your user on your service. This is used to skip a step for connecting to your own service during the Connect Button activation flow. We require this value to provide the best possible user experience. 
 * `userToken`: This is the IFTTT user token for your service. This token allows you to get IFTTT user data related to only your service. For example, include this token to get the enabled status of Connections for your user. It is also the same token that is used to make trigger, query, and action requests for Connections on behave of the user. You should get this token from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create on endpoint on your own server to access the user's IFTTT service token.
-Additionally, the callback from ConnectButtonController returns the user token when a connection is made.
+Additionally, the callback from `ConnectButtonController` returns the user token when a connection is made.
 You should support both method, in the case that your user has already connected your service to IFTTT
 * `inviteCode`: This value is only required if your service is not published. You can find it on https://platform.ifttt.com on the Service tab in General under invite URL. If your service is published, return nil.
 
@@ -160,11 +160,11 @@ The Connect Button is designed to fit into your UI just like any `UIKit` control
 ### Configuring the `ConnectButtonController` 
 Once you have the `ConnectButton` in your UI, you'll need to attach it to a `ConnectButtonController`. The controller handles the Connection activation flow. 
 
-First you'll need to setup a `ConnectionConfiguration`
-Second you'll need to configure a delegate 
+First, you'll need to setup a `ConnectionConfiguration`.
+Second, you'll need to configure a `ConnectButtonControllerDelegate`.
 
 #### ConnectionConfiguration
-This configuration type provides information the `Connection` that you wish to use with the button and information about the user.
+This configuration type provides information about the `Connection` that you wish to use with the button and information about the user.
 1) `connectionId`: The identifier for the `Connection`. You can find identifier for your programmatic Connections on platform.ifttt.com.
 2) `suggestedUserEmail`: The email address that your user uses for your service. This allows us to prefill the email. 
 3) `credentialProvider`: The `ConnectionCredentialProvider` you set up in [Setup](#setup)
@@ -181,7 +181,7 @@ func presentingViewController(for connectButtonController: ConnectButtonControll
 }
 ```
 
-When a `Connection` activation finishes, the controller calls this delegate method to inform your app. On successs, this method passes back the updated `Connection` and the IFTTT user token. It is important that you save the this token at this point. You'll need to pass it with `ConnectionCredentialProvider`, the next time the user visits a Connection page in your app. 
+When a `Connection` activation finishes, the controller calls this delegate method to inform your app. On success, this method passes back the updated `Connection` and the IFTTT user token. It is important that you save the this token at this point. You'll need to pass it with `ConnectionCredentialProvider`, the next time the user visits a Connection page in your app. 
 
 ```
 func connectButtonController(_ connectButtonController: ConnectButtonController,
@@ -217,7 +217,7 @@ func connectButtonController(_ connectButtonController: ConnectButtonController,
 
 #### Create the controller
 
-Once you've setup the `ConnectionConfiguration` and the delegate, you can instanciate the controller. 
+Once you've setup the `ConnectionConfiguration` and the delegate, you can instantiate the controller. 
 
 ```
 public init(connectButton: ConnectButton,
@@ -225,7 +225,7 @@ public init(connectButton: ConnectButton,
             delegate: ConnectButtonControllerDelegate)
 ```
 
-That's it! You're ready to strart activating programmable Connections directly in your app. 
+That's it! You're ready to start activating programmable Connections directly in your app. 
 
 
 ## Advanced
