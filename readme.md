@@ -220,6 +220,9 @@ func connectButtonController(_ connectButtonController: ConnectButtonController,
 }
 ```
 
+**NOTE** These delegate methods return a `Result` that is defined in the Connect Button SDK. We will be migrating to the `Result` that is now part of the Swift standard library in a future update. In the meantime, you can have both in your project without conflict.
+
+
 #### Create the controller
 
 Once you've setup the `ConnectionConfiguration` and the delegate, you can instantiate the controller. 
