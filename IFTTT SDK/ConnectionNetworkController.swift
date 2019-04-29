@@ -121,7 +121,7 @@ public final class ConnectionNetworkController {
                     return
                 }
                 
-                let configuration = User(id: .username(username), isExistingUser: false)
+                let configuration = User(id: .username(username), isExistingUser: true)
                 completion(.success(configuration))
             }
             dataTask.resume()
