@@ -97,9 +97,9 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
 }
 ``` 
 
-### CredentialProvider
+### ConnectionCredentialProvider
 * There are various codes and tokens you will need to provide the IFTTT SDK when authenticating your services to IFTTT
-* Conform an object to `CredentialProvider` to handle these requirements.
+* Conform an object to `ConnectionCredentialProvider` to handle these requirements.
 
 * `oauthCode`: The OAuth code for your user on your service. This is used to skip a step for connecting to your own service during the Connect Button activation flow. We require this value to provide the best possible user experience. 
 
@@ -113,7 +113,7 @@ You should support both methods to receive the `userToken` since the user may ha
 * `inviteCode`: This value is only required if your service is not published. You can find it on https://platform.ifttt.com on the Service tab in General under invite URL. If your service is published, return nil.
 
 ```
-struct Credentials: CredentialProvider {
+struct Credentials: ConnectionCredentialProvider {
     
     /// Provides the partner's OAuth code for a service during authentication with a `Connection`.
     var oauthCode: String { 
