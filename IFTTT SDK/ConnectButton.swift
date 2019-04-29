@@ -64,6 +64,10 @@ public class ConnectButton: UIView {
         }
     }
     
+    /// When set, the `ConnectButton`'s style is `light`
+    /// Light style is appropriate for use on a light colored background
+    /// When not set, the `ConnectButton`'s style is `dark`
+    /// Dark style is appropriate for use on a dark background
     /// This wraps `style` for use in Storyboards
     /// If adjusting programatically, consider using `style`
     @IBInspectable
