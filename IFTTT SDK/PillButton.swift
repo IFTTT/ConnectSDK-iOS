@@ -18,6 +18,11 @@ class PillButton: PillView {
     func onSelect(_ body: @escaping (() -> Void)) {
         assert(selectable == nil, "PillButton may have a single select handler")
         selectable = Selectable(self, onSelect: body)
+        selectable?.performHighlight = { [weak self] _, isHighlighted in
+            self?.label.alpha = isHighlighted ? 0.8 : 1
+            self?.imageView.alpha = isHighlighted ? 0.8 : 1
+            self?.isHighlighted = isHighlighted
+        }
     }
     
     private var selectable: Selectable?

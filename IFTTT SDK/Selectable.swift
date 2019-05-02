@@ -15,6 +15,16 @@ class Selectable: NSObject, UIGestureRecognizerDelegate {
         set { gesture.isEnabled = newValue }
     }
     
+    /// Customize the behavior when the Selectable view is highlighted
+    var performHighlight: SelectGestureRecognizer.HighlightHandler? {
+        get {
+            return gesture.performHighlight
+        }
+        set {
+            gesture.performHighlight = newValue
+        }
+    }
+    
     private let gesture = SelectGestureRecognizer()
     private var onSelect: () -> Void
     

@@ -13,6 +13,37 @@ import UIKit
 @available(iOS 10.0, *)
 class PillView: UIView {
     
+    init() {
+        super.init(frame: .zero)
+        createLayout()
+    }
+    
+    private var _backgroundColor: UIColor?
+    
+    override var backgroundColor: UIColor? {
+        get {
+            return _backgroundColor
+        }
+        set {
+            _backgroundColor = newValue
+            if isHighlighted == false {
+                applyBackgroundColor(newValue)
+            }
+        }
+    }
+    
+    /// Set the highlighted state for this view
+    /// When highlighted the backgroundColor's constrast color is used
+    var isHighlighted: Bool = false {
+        didSet {
+            if isHighlighted {
+                applyBackgroundColor(_backgroundColor?.contrasting(brighteningAdjustment: 0.3))
+            } else {
+                applyBackgroundColor(_backgroundColor)
+            }
+        }
+    }
+    
     /// A mask for revealing the left and right end caps
     /// Non-revealed end caps are square
     struct EndCapMask: OptionSet {
@@ -76,8 +107,73 @@ class PillView: UIView {
         }
     }
     
+    private let leftCapView = EndCapView(isLeftSide: true)
+    private let rightCapView = EndCapView(isLeftSide: false)
+    private let centerView = UIView()
+    
+    /*
+     The view's border is tricky due to how we draw the end caps
+     We can't simply apply a border to the whole view since it wouldn't follow the actual end caps
+     Instead, we draw each segment of the border using a `UIView`
+     */
+    
+    private let topBorder = UIView()
+    private lazy var topBorderHeight: NSLayoutConstraint = {
+        return topBorder.heightAnchor.constraint(equalToConstant: 0)
+    }()
+    private let leftBorder = EndCapView(isLeftSide: true)
+    private let rightBorder = EndCapView(isLeftSide: false)
+    private let bottomBorder = UIView()
+    private lazy var bottomBorderHeight: NSLayoutConstraint = {
+        return bottomBorder.heightAnchor.constraint(equalToConstant: 0)
+    }()
+    
+    private func applyBackgroundColor(_ color: UIColor?) {
+        [leftCapView, centerView, rightCapView].forEach {
+            $0.backgroundColor = color
+        }
+    }
+    
+    private func createLayout() {
+        addSubview(leftCapView)
+        addSubview(centerView)
+        addSubview(rightCapView)
+        
+        leftCapView.constrain.edges(to: self, edges: [.top, .left, .bottom])
+        leftCapView.centerXAnchor.constraint(equalTo: centerView.leftAnchor).isActive = true
+        centerView.constrain.edges(to: self, edges: [.top, .bottom])
+        centerView.rightAnchor.constraint(equalTo: rightCapView.centerXAnchor).isActive = true
+        rightCapView.constrain.edges(to: self, edges: [.top, .right, .bottom])
+        
+        leftCapView.constrain.square()
+        rightCapView.constrain.square()
+        
+        addSubview(topBorder)
+        addSubview(leftBorder)
+        addSubview(rightBorder)
+        addSubview(bottomBorder)
+        
+        topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right])
+        topBorderHeight.isActive = true
+        
+        leftBorder.constrain.edges(to: leftCapView)
+        rightBorder.constrain.edges(to: rightCapView)
+        
+        bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right])
+        bottomBorderHeight.isActive = true
+    }
+    
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+@available(iOS 10.0, *)
+private extension PillView {
+    
     /// A half circle view for drawing the end caps
-    private class EndCapView: UIView {
+    final class EndCapView: UIView {
         
         /*
          In `ConnectButton`, when a user turns on a Connection for the first time, the switch knob morphs from a circle to a bullet shape
@@ -125,73 +221,5 @@ class PillView: UIView {
                 mask?.frame = CGRect(x: 0.5 * bounds.width, y: 0, width: 0.5 * bounds.width, height: bounds.height)
             }
         }
-    }
-    
-    private let leftCapView = EndCapView(isLeftSide: true)
-    private let rightCapView = EndCapView(isLeftSide: false)
-    private let centerView = UIView()
-    
-    /*
-     The view's border is tricky due to how we draw the end caps
-     We can't simply apply a border to the whole view since it wouldn't follow the actual end caps
-     Instead, we draw each segment of the border using a `UIView`
-     */
-    
-    private let topBorder = UIView()
-    private lazy var topBorderHeight: NSLayoutConstraint = {
-        return topBorder.heightAnchor.constraint(equalToConstant: 0)
-    }()
-    private let leftBorder = EndCapView(isLeftSide: true)
-    private let rightBorder = EndCapView(isLeftSide: false)
-    private let bottomBorder = UIView()
-    private lazy var bottomBorderHeight: NSLayoutConstraint = {
-        return bottomBorder.heightAnchor.constraint(equalToConstant: 0)
-    }()
-    
-    override var backgroundColor: UIColor? {
-        get {
-            return centerView.backgroundColor
-        }
-        set {
-            [leftCapView, centerView, rightCapView].forEach {
-                $0.backgroundColor = newValue
-            }
-        }
-    }
-    
-    init() {
-        super.init(frame: .zero)
-        
-        addSubview(leftCapView)
-        addSubview(centerView)
-        addSubview(rightCapView)
-        
-        leftCapView.constrain.edges(to: self, edges: [.top, .left, .bottom])
-        leftCapView.centerXAnchor.constraint(equalTo: centerView.leftAnchor).isActive = true
-        centerView.constrain.edges(to: self, edges: [.top, .bottom])
-        centerView.rightAnchor.constraint(equalTo: rightCapView.centerXAnchor).isActive = true
-        rightCapView.constrain.edges(to: self, edges: [.top, .right, .bottom])
-        
-        leftCapView.constrain.square()
-        rightCapView.constrain.square()
-        
-        addSubview(topBorder)
-        addSubview(leftBorder)
-        addSubview(rightBorder)
-        addSubview(bottomBorder)
-        
-        topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right])
-        topBorderHeight.isActive = true
-        
-        leftBorder.constrain.edges(to: leftCapView)
-        rightBorder.constrain.edges(to: rightCapView)
-        
-        bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right])
-        bottomBorderHeight.isActive = true
-    }
-    
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

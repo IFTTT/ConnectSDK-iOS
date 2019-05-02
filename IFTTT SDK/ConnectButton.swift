@@ -293,12 +293,6 @@ public class ConnectButton: UIView {
         animator.startAnimation()
     }
     
-    var stepInteraction = SelectInteraction() {
-        didSet {
-            updateInteraction()
-        }
-    }
-    
     var footerInteraction = SelectInteraction() {
         didSet {
             updateInteraction()
@@ -308,10 +302,6 @@ public class ConnectButton: UIView {
     private lazy var toggleTapGesture = SelectGestureRecognizer(target: self, action: #selector(handleSwitchTap(_:)))
     
     private lazy var toggleDragGesture = UIPanGestureRecognizer(target: self, action: #selector(handleSwitchDrag(_:)))
-    
-    private lazy var stepSelection = Selectable(backgroundView) { [weak self] in
-        self?.stepInteraction.onSelect?()
-    }
     
     private lazy var footerSelection = Selectable(footerLabelAnimator.primary.view) { [weak self] in
         self?.footerInteraction.onSelect?()
@@ -403,8 +393,12 @@ public class ConnectButton: UIView {
     
     private func setupInteraction() {
         switchControl.addGestureRecognizer(toggleTapGesture)
+        
         toggleTapGesture.delaysTouchesBegan = true
         toggleTapGesture.delegate = self
+        toggleTapGesture.performHighlight = { [weak self] _, isHighlighted in
+            self?.backgroundView.isHighlighted = isHighlighted
+        }
         
         switchControl.knob.addGestureRecognizer(toggleDragGesture)
         toggleDragGesture.delegate = self
@@ -418,7 +412,6 @@ public class ConnectButton: UIView {
     private func updateInteraction() {
         toggleTapGesture.isEnabled = toggleInteraction.isTapEnabled
         toggleDragGesture.isEnabled = toggleInteraction.isDragEnabled
-        stepSelection.isEnabled = stepInteraction.isTapEnabled
         footerSelection.isEnabled = footerInteraction.isTapEnabled
     }
     
