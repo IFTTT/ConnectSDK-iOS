@@ -533,7 +533,7 @@ public class ConnectButtonController {
     /// - appHandoff: Links to the IFTTT app to complete the connection flow
     /// - enterEmail: If we don't yet know the user, show the email field
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
-    /// - activateConnection: Go to the web or the IFTTT app to activate this Connection
+    /// - activateConnection: Go to the web or the IFTTT app to activate this Connection. RedirectImmediately will cause the button to skip showing the going to service progress bar.
     /// - activationComplete: Connection activation was successful. This always originates from a redirect. Passes the user token if it was included in the redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
@@ -546,7 +546,7 @@ public class ConnectButtonController {
         case appHandoff(url: URL, redirectImmediately: Bool)
         case enterEmail
         case identifyUser(User.LookupMethod)
-        case activateConnection(User)
+        case activateConnection(user: User, redirectImmediately: Bool)
         case activationComplete(userToken: String?)
         case failed(ConnectButtonControllerError)
         case canceled
@@ -579,8 +579,8 @@ public class ConnectButtonController {
             self.button.animator(for: .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value)).perform()
         case .identifyUser(let lookupMethod):
             transitionToIdentifyUser(connection: connection, lookupMethod: lookupMethod)
-        case .activateConnection(let user):
-            transitionToActivate(connection: connection, user: user)
+        case .activateConnection(let user, let redirectImmediately):
+            transitionToActivate(connection: connection, user: user, redirectImmediately: redirectImmediately)
         case .activationComplete(let userToken):
             handleActivationFinished(userToken: userToken)
             transitionToActivationComplete(service: connection.connectingService)
@@ -718,7 +718,7 @@ public class ConnectButtonController {
                         if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: user.id) {
                             self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: true))
                         } else {
-                            self.transition(to: .activateConnection(user))
+                            self.transition(to: .activateConnection(user: user, redirectImmediately: true))
                         }
                     }
                 } else {
@@ -732,7 +732,7 @@ public class ConnectButtonController {
                             ).perform()
                         
                         progress.finish(extendingDurationBy: 1.5) {
-                            self.transition(to: .activateConnection(user))
+                            self.transition(to: .activateConnection(user: user, redirectImmediately: false))
                         }
                     }
                 }
@@ -752,16 +752,22 @@ public class ConnectButtonController {
             self.emailInteractionConfirmation(email: email)
         }
     }
+    
 
-    private func transitionToActivate(connection: Connection, user: User) {
+    private func transitionToActivate(connection: Connection, user: User, redirectImmediately: Bool) {
+        let url = connectionActivationFlow.webFlowUrl(user: user)
+        
+        guard redirectImmediately == false else {
+            openActivationURL(url)
+            return
+        }
+        
         let service = connection.connectingService
         
         button.footerInteraction.isTapEnabled = true
         button.animator(for: .buttonState(.continueToService(service: service.connectButtonService,
                                                              message: "button.state.sign_in".localized(with: service.name)),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
-
-        let url = connectionActivationFlow.webFlowUrl(user: user)
 
         let timeout = 2.0
         button.showProgress(duration: timeout).startAnimation()
