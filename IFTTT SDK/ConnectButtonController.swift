@@ -533,7 +533,7 @@ public class ConnectButtonController {
     /// - appHandoff: Links to the IFTTT app to complete the connection flow
     /// - enterEmail: If we don't yet know the user, show the email field
     /// - identifyUser: We will have an email address or an IFTTT service token. Use this information to determine if they are already an IFTTT user. Obviously they are if we have an IFTTT token, but we still need to get their username.
-    /// - activateConnection: Go to the web or the IFTTT app to activate this Connection
+    /// - activateConnection: Go to the web or the IFTTT app to activate this Connection. RedirectImmediately will cause the button to skip showing the going to service progress bar.
     /// - activationComplete: Connection activation was successful. This always originates from a redirect. Passes the user token if it was included in the redirect.
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
