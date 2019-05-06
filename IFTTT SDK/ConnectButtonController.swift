@@ -566,7 +566,6 @@ public class ConnectButtonController {
         // Cleanup
         button.toggleInteraction = .init()
         button.emailInteraction = .init()
-        button.stepInteraction = .init()
         button.footerInteraction.isTapEnabled = false // Don't clear the select block
 
         switch step {
@@ -772,13 +771,7 @@ public class ConnectButtonController {
         let timeout = 2.0
         button.showProgress(duration: timeout).startAnimation()
         
-        let timer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] timer in
-            self?.openActivationURL(url)
-            timer.invalidate()
-        }
-
-        button.stepInteraction.isTapEnabled = true
-        button.stepInteraction.onSelect = { [weak self] in
+        Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] timer in
             self?.openActivationURL(url)
             timer.invalidate()
         }

@@ -11,6 +11,8 @@ import UIKit
 @available(iOS 10.0, *)
 class SelectGestureRecognizer: UIGestureRecognizer {
     
+    typealias HighlightHandler = ((UIView?, Bool) -> Void)
+    
     var cancelsOnForceTouch: Bool = false
     
     private(set) var isHighlighted: Bool = false {
@@ -22,7 +24,7 @@ class SelectGestureRecognizer: UIGestureRecognizer {
     /// Transition the view to its highlighted state
     /// Default implementation reduces the view's alpha to 0.8
     /// Set to nil to disable highlighting
-    var performHighlight: ((UIView?, Bool) -> Void)? = { (view: UIView?, isHighlighted: Bool) -> Void in
+    var performHighlight: HighlightHandler? = { (view: UIView?, isHighlighted: Bool) -> Void in
         UIView.animate(withDuration: 0.1) {
             view?.alpha = isHighlighted ? 0.8 : 1
         }
@@ -46,8 +48,13 @@ class SelectGestureRecognizer: UIGestureRecognizer {
                 // Touches have ended but we're not already in the touch state which means this was a tap so show the tap animation
                 if isHighlighted == false {
                     // Set the alpha immediately to selected and then animate to the unselected state.
-                    view?.alpha = 0.8
-                    isHighlighted = false
+                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.15, delay: 0, options: [], animations: {
+                        self.isHighlighted = true
+                    }) { (_) in
+                        UIViewPropertyAnimator(duration: 0.15, curve: .easeOut, animations: {
+                            self.isHighlighted = false
+                        }).startAnimation()
+                    }
                 } else {
                     isHighlighted = false
                 }
