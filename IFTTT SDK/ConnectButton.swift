@@ -436,7 +436,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
             
             backgroundView.border = .init(color: .white, width: Layout.borderWidth)
-            progressBar.insetForButtonBorder = Layout.borderWidth - 1
+            progressBar.insetForButtonBorder = Layout.borderWidth
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
@@ -452,7 +452,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = Style.Color.lightFooter
             
             backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
-            progressBar.insetForButtonBorder = Layout.borderWidth - 1
+            progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
     
@@ -694,10 +694,10 @@ public class ConnectButton: UIView {
         /// When a border isn't used, set this to 0
         var insetForButtonBorder: CGFloat = 0 {
             didSet {
-                layoutMargins = UIEdgeInsets(top: insetForButtonBorder,
-                                             left: insetForButtonBorder,
-                                             bottom: insetForButtonBorder,
-                                             right: insetForButtonBorder)
+                layoutMargins = UIEdgeInsets(top: insetForButtonBorder - 1,
+                                             left: 0,
+                                             bottom: insetForButtonBorder - 1,
+                                             right: 0)
             }
         }
         
