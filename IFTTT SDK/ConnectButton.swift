@@ -13,7 +13,7 @@ import UIKit
 fileprivate struct Layout {
     static let height: CGFloat = 70
     static let maximumWidth = 4.7 * height
-    static let knobInset: CGFloat = 4
+    static let knobInset: CGFloat = 5
     static let knobDiameter = height - 2 * knobInset
     static let checkmarkDiameter: CGFloat = 42
     static let checkmarkLength: CGFloat = 14
@@ -435,8 +435,8 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = Style.Color.darkFooter
             footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
             
-            backgroundView.border = .none
-            progressBar.insetForButtonBorder = 0
+            backgroundView.border = .init(color: .white, width: Layout.borderWidth)
+            progressBar.insetForButtonBorder = Layout.borderWidth - 1
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
@@ -452,7 +452,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = Style.Color.lightFooter
             
             backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
-            progressBar.insetForButtonBorder = Layout.borderWidth
+            progressBar.insetForButtonBorder = Layout.borderWidth - 1
         }
     }
     

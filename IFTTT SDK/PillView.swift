@@ -153,13 +153,13 @@ class PillView: UIView {
         addSubview(rightBorder)
         addSubview(bottomBorder)
         
-        topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right])
+        topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right], inset: UIEdgeInsets(top: -1, left: 0, bottom: -1, right: 0))
         topBorderHeight.isActive = true
         
-        leftBorder.constrain.edges(to: leftCapView)
-        rightBorder.constrain.edges(to: rightCapView)
+        leftBorder.constrain.edges(to: leftCapView, inset: UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1))
+        rightBorder.constrain.edges(to: rightCapView, inset: UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1))
         
-        bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right])
+        bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right], inset: UIEdgeInsets(top: -1, left: 0, bottom: -1, right: 0))
         bottomBorderHeight.isActive = true
     }
     
