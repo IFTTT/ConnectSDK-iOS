@@ -436,7 +436,6 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
             
             backgroundView.border = .init(color: .white, width: Layout.borderWidth)
-            progressBar.insetForButtonBorder = Layout.borderWidth
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
@@ -452,7 +451,6 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = Style.Color.lightFooter
             
             backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
-            progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
     
@@ -686,18 +684,6 @@ public class ConnectButton: UIView {
         var fractionComplete: CGFloat = 0 {
             didSet {
                 update()
-            }
-        }
-        
-        /// When using a border with the ConnectButton, set this to the border width
-        /// This will inset the progress bar so it doesn't overlap the border
-        /// When a border isn't used, set this to 0
-        var insetForButtonBorder: CGFloat = 0 {
-            didSet {
-                layoutMargins = UIEdgeInsets(top: insetForButtonBorder - 1,
-                                             left: 0,
-                                             bottom: insetForButtonBorder - 1,
-                                             right: 0)
             }
         }
         
@@ -1001,7 +987,9 @@ public class ConnectButton: UIView {
         
         backgroundView.heightAnchor.constraint(equalToConstant: Layout.height).isActive = true
         
-        progressBar.constrain.edges(to: backgroundView)
+        // Because we draw the border 1 pixel outside of the backgroundView, we need to adjust the progress bar to be inset the border width minus 1 to make sure it fills the full space.
+        let adjustBorderInsetValue = Layout.borderWidth - 1
+        progressBar.constrain.edges(to: backgroundView, inset: UIEdgeInsets(top: adjustBorderInsetValue, left: adjustBorderInsetValue, bottom: adjustBorderInsetValue, right: adjustBorderInsetValue))
         
         primaryLabelAnimator.primary.view.constrain.edges(to: backgroundView)
         primaryLabelAnimator.transition.view.constrain.edges(to: backgroundView)
