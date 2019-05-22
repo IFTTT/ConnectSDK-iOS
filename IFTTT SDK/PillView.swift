@@ -153,14 +153,21 @@ class PillView: UIView {
         addSubview(rightBorder)
         addSubview(bottomBorder)
         
-        topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right], inset: UIEdgeInsets(top: -1, left: 0, bottom: -1, right: 0))
+        // In order to make sure the border always draws completely over the view it is pinned to, we need to offset the border to be slightly bigger then the pinned view.
+        let topBottomBorderInset = UIEdgeInsets(top: -1, left: 0, bottom: -1, right: 0)
+        
+        topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right], inset: topBottomBorderInset)
         topBorderHeight.isActive = true
         
-        leftBorder.constrain.edges(to: leftCapView, inset: UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1))
-        rightBorder.constrain.edges(to: rightCapView, inset: UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1))
-        
-        bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right], inset: UIEdgeInsets(top: -1, left: 0, bottom: -1, right: 0))
+        bottomBorder.constrain.edges(to: centerView, edges: [.left, .bottom, .right], inset:topBottomBorderInset)
         bottomBorderHeight.isActive = true
+        
+        // In order to make sure the border always draws completely over the view it is pinned to, we need to offset the border to be slightly bigger then the pinned view.
+        let leftRightBorderInset = UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1)
+        
+        leftBorder.constrain.edges(to: leftCapView, inset: leftRightBorderInset)
+        rightBorder.constrain.edges(to: rightCapView, inset: leftRightBorderInset)
+        
     }
     
     @available(*, unavailable)
