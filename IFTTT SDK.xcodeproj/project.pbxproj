@@ -214,6 +214,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D453EF022972910001994FF /* ConnectButton */ = {
+			isa = PBXGroup;
+			children = (
+				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
+				1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */,
+				1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */,
+				1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */,
+				1D453EE12297222D001994FF /* ConnectButton+Interaction.swift */,
+				1D453EDB2297213E001994FF /* ConnectButton+Service.swift */,
+				1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */,
+				1D453EDF2297218E001994FF /* ConnectButton+Transition.swift */,
+				1D453EE32297230C001994FF /* ConnectButton+LabelValue.swift */,
+				1D453EE52297236C001994FF /* ConnectButton+LabelAnimator.swift */,
+				1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */,
+				1D453ED722971C5C001994FF /* ConnectButton+Style.swift */,
+				1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */,
+			);
+			name = ConnectButton;
+			sourceTree = "<group>";
+		};
 		1DFE02112190E44400856ABC /* Connection */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,19 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				1DFE02112190E44400856ABC /* Connection */,
-				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
-				1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */,
-				1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */,
-				1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */,
-				1D453EE12297222D001994FF /* ConnectButton+Interaction.swift */,
-				1D453EDB2297213E001994FF /* ConnectButton+Service.swift */,
-				1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */,
-				1D453EDF2297218E001994FF /* ConnectButton+Transition.swift */,
-				1D453EE32297230C001994FF /* ConnectButton+LabelValue.swift */,
-				1D453EE52297236C001994FF /* ConnectButton+LabelAnimator.swift */,
-				1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */,
-				1D453ED722971C5C001994FF /* ConnectButton+Style.swift */,
-				1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */,
+				1D453EF022972910001994FF /* ConnectButton */,
 				FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
