@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453ED722971C5C001994FF /* ConnectButton+Style.swift */; };
+		1D453EDA229720AB001994FF /* ConnectButton+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */; };
+		1D453EDC2297213E001994FF /* ConnectButton+Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EDB2297213E001994FF /* ConnectButton+Service.swift */; };
+		1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */; };
+		1D453EE02297218E001994FF /* ConnectButton+Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EDF2297218E001994FF /* ConnectButton+Transition.swift */; };
+		1D453EE22297222D001994FF /* ConnectButton+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE12297222D001994FF /* ConnectButton+Interaction.swift */; };
+		1D453EE42297230C001994FF /* ConnectButton+LabelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE32297230C001994FF /* ConnectButton+LabelValue.swift */; };
+		1D453EE62297236C001994FF /* ConnectButton+LabelAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE52297236C001994FF /* ConnectButton+LabelAnimator.swift */; };
+		1D453EE8229723CA001994FF /* ConnectButton+ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */; };
+		1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */; };
+		1D453EEC2297246C001994FF /* ConnectButton+CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */; };
+		1D453EEE22972738001994FF /* ConnectButton+PulseAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */; };
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
 		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
@@ -99,6 +111,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1D453ED722971C5C001994FF /* ConnectButton+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Style.swift"; sourceTree = "<group>"; };
+		1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Constants.swift"; sourceTree = "<group>"; };
+		1D453EDB2297213E001994FF /* ConnectButton+Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Service.swift"; sourceTree = "<group>"; };
+		1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+AnimationState.swift"; sourceTree = "<group>"; };
+		1D453EDF2297218E001994FF /* ConnectButton+Transition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Transition.swift"; sourceTree = "<group>"; };
+		1D453EE12297222D001994FF /* ConnectButton+Interaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Interaction.swift"; sourceTree = "<group>"; };
+		1D453EE32297230C001994FF /* ConnectButton+LabelValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+LabelValue.swift"; sourceTree = "<group>"; };
+		1D453EE52297236C001994FF /* ConnectButton+LabelAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+LabelAnimator.swift"; sourceTree = "<group>"; };
+		1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+ProgressBar.swift"; sourceTree = "<group>"; };
+		1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+SwitchControl.swift"; sourceTree = "<group>"; };
+		1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+CheckmarkView.swift"; sourceTree = "<group>"; };
+		1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+PulseAnimation.swift"; sourceTree = "<group>"; };
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -359,6 +383,18 @@
 			children = (
 				1DFE02112190E44400856ABC /* Connection */,
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
+				1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */,
+				1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */,
+				1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */,
+				1D453EE12297222D001994FF /* ConnectButton+Interaction.swift */,
+				1D453EDB2297213E001994FF /* ConnectButton+Service.swift */,
+				1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */,
+				1D453EDF2297218E001994FF /* ConnectButton+Transition.swift */,
+				1D453EE32297230C001994FF /* ConnectButton+LabelValue.swift */,
+				1D453EE52297236C001994FF /* ConnectButton+LabelAnimator.swift */,
+				1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */,
+				1D453ED722971C5C001994FF /* ConnectButton+Style.swift */,
+				1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */,
 				FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
@@ -523,17 +559,26 @@
 				FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */,
 				FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */,
 				FC361B61224D872D0078B153 /* ProgressBarController.swift in Sources */,
+				1D453EE42297230C001994FF /* ConnectButton+LabelValue.swift in Sources */,
+				1D453EDC2297213E001994FF /* ConnectButton+Service.swift in Sources */,
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
+				1D453EE62297236C001994FF /* ConnectButton+LabelAnimator.swift in Sources */,
+				1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */,
 				FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,
+				1D453EEC2297246C001994FF /* ConnectButton+CheckmarkView.swift in Sources */,
+				1D453EDA229720AB001994FF /* ConnectButton+Constants.swift in Sources */,
 				FC22B1A621ACCE5E00738023 /* UIKit+ConvenienceInit.swift in Sources */,
 				FC22B19E21ACCDAC00738023 /* PillButton.swift in Sources */,
 				1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */,
 				FC22B19C21ACCDA600738023 /* PillView.swift in Sources */,
+				1D453EE22297222D001994FF /* ConnectButton+Interaction.swift in Sources */,
 				1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */,
 				FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */,
 				1DFE02092190E35300856ABC /* ConnectionRedirectHandler.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */,
+				1D453EE02297218E001994FF /* ConnectButton+Transition.swift in Sources */,
+				1D453EE8229723CA001994FF /* ConnectButton+ProgressBar.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
 				1D7918412227202700429936 /* Reachability.swift in Sources */,
 				FC22B19421ACA54000738023 /* ImageCache.swift in Sources */,
@@ -542,6 +587,7 @@
 				1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
+				1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */,
 				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
 				FCF29FC72187C8C2004B1100 /* Connection+parsing.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
@@ -550,6 +596,7 @@
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				FC425EBB22721F130020967F /* DeepLink.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
+				1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FC28D7E52225B1E900D84A1B /* ServiceIconsNetworkController.swift in Sources */,
 				FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */,
@@ -558,6 +605,7 @@
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
 				FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */,
 				FC75F93C22386626007C2DDB /* ConnectionActivationFlow.swift in Sources */,
+				1D453EEE22972738001994FF /* ConnectButton+PulseAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

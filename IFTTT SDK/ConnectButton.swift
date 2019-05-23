@@ -14,50 +14,6 @@ import UIKit
 @IBDesignable
 public class ConnectButton: UIView {
     
-    // Layout constants
-    struct Layout {
-        fileprivate static let height: CGFloat = 70
-        fileprivate static let maximumWidth = 4.7 * height
-        fileprivate static let knobInset: CGFloat = borderWidth + 3
-        fileprivate static let knobDiameter = height - 2 * knobInset
-        fileprivate static let checkmarkDiameter: CGFloat = 42
-        fileprivate static let checkmarkLength: CGFloat = 14
-        fileprivate static let serviceIconDiameter = 0.5 * knobDiameter
-        
-        /// The thickness of the border around the the connect button.
-        static let borderWidth: CGFloat = 4
-        
-        /// The amount by which the email field is offset from the center
-        fileprivate static let emailFieldOffset: CGFloat = 4
-        fileprivate static let buttonFooterSpacing: CGFloat = 15
-    }
-    
-    /// Adjusts the button for a white or black background
-    ///
-    /// - light: Style the button for a white background (Default)
-    /// - dark: Style the button for a black background
-    public enum Style {
-        case light
-        case dark
-        
-        fileprivate struct Font {
-            static let connect = UIFont(name: "AvenirNext-Bold",
-                                        size: 24)!
-            static let email = UIFont(name: "AvenirNext-DemiBold",
-                                      size: 18)!
-        }
-        
-        fileprivate struct Color {
-            static let blue = UIColor(hex: 0x0099FF)
-            static let lightGrey = UIColor(hex: 0xCCCCCC)
-            static let mediumGrey = UIColor(hex: 0x666666)
-            static let grey = UIColor(hex: 0x414141)
-            static let border = UIColor(white: 1, alpha: 0.32)
-            static let darkFooter = UIColor(white: 0, alpha: 0.32)
-            static let lightFooter = UIColor(white: 1, alpha: 0.32)
-        }
-    }
-    
     /// Adjust the button's style
     public var style: Style {
         didSet {
@@ -106,78 +62,19 @@ public class ConnectButton: UIView {
         createLayout()
         updateStyle()
     }
+    
     public override init(frame: CGRect) {
         style = .light
         super.init(frame: frame)
         createLayout()
         updateStyle()
     }
+    
     required init?(coder aDecoder: NSCoder) {
         style = .light
         super.init(coder: aDecoder)
         createLayout()
         updateStyle()
-    }
-    
-    
-    // MARK: - Button state
-    
-    struct Service {
-        let iconURL: URL?
-        let brandColor: UIColor
-    }
-    
-    enum AnimationState {
-        case loading(message: String)
-        case loadingFailed
-        case connect(service: Service, message: String)
-        case createAccount(message: String)
-        case slideToConnect(message: String)
-        case slideToConnectService(service: Service, message: String)
-        case slideToDisconnect(message: String)
-        case disconnecting(message: String)
-        case enterEmail(service: Service, suggestedEmail: String)
-        case accessingAccount(message: String)
-        case verifyingEmail(message: String)
-        case continueToService(service: Service, message: String)
-        case connecting(service: Service, message: String)
-        case checkmark(service: Service)
-        // We start out the knob in the center when animating to connected. If the knob is already in the correct location you can choose to not animated the knob from the center.
-        case connected(service: Service, message: String, shouldAnimateKnob: Bool)
-        case disconnected(message: String)
-    }
-    
-    /// Groups button State and footer value into a single state transition
-    struct Transition {
-        let state: AnimationState?
-        let footerValue: LabelValue?
-        let duration: TimeInterval
-        
-        init(state: AnimationState, duration: TimeInterval) {
-            self.state = state
-            self.footerValue = nil
-            self.duration = duration
-        }
-        init(footerValue: LabelValue, duration: TimeInterval) {
-            self.state = nil
-            self.footerValue = footerValue
-            self.duration = duration
-        }
-        init(state: AnimationState?, footerValue: LabelValue?, duration: TimeInterval) {
-            self.state = state
-            self.footerValue = footerValue
-            self.duration = duration
-        }
-        
-        static func buttonState(_ state: AnimationState, duration: TimeInterval = 0.4) -> Transition {
-            return Transition(state: state, footerValue: nil, duration: duration)
-        }
-        static func buttonState(_ state: AnimationState, footerValue: LabelValue, duration: TimeInterval = 0.4) -> Transition {
-            return Transition(state: state, footerValue: footerValue, duration: duration)
-        }
-        static func footerValue(_ value: LabelValue, duration: TimeInterval = 0.4) -> Transition {
-            return Transition(state: nil, footerValue: value, duration: duration)
-        }
     }
     
     func animator(for transition: Transition) -> UIViewPropertyAnimator {
@@ -201,72 +98,6 @@ public class ConnectButton: UIView {
     
     
     // MARK: - Interaction
-    
-    struct ToggleInteraction {
-        // How easy is it to throw the switch into the next position
-        enum Resistance {
-            case light, heavy
-            
-            fileprivate func shouldReverse(switchOn: Bool, velocity: CGFloat, progress: CGFloat) -> Bool {
-                // Negative velocity is oriented towards switch off
-                switch (self, switchOn) {
-                case (.light, true):
-                    return velocity < -0.1 || (abs(velocity) < 0.05 && progress < 0.4)
-                    
-                case (.light, false):
-                    return velocity > 0.1 || (abs(velocity) < 0.05 && progress > 0.6)
-                    
-                case (.heavy, true):
-                    return progress < 0.5
-                    
-                case (.heavy, false):
-                    return progress < 0.5
-                }
-            }
-        }
-        
-        /// Can the switch be tapped
-        var isTapEnabled: Bool
-        
-        /// Can the switch be dragged
-        var isDragEnabled: Bool
-        
-        var resistance: Resistance
-        
-        /// What is the next button state when switching the toggle
-        var toggleTransition: (() -> Transition)?
-        
-        /// Callback when switch is toggled
-        var onToggle: (() -> Void)?
-        
-        /// Callback when the switch is toggled but we reversed the animation to end in the start position
-        var onReverse: (() -> Void)?
-        
-        init(isTapEnabled: Bool = false,
-             isDragEnabled: Bool = false,
-             resistance: Resistance = .light,
-             toggleTransition: (() -> Transition)? = nil,
-             onToggle: (() -> Void)? = nil,
-             onReverse: (() -> Void)? = nil) {
-            self.isTapEnabled = isTapEnabled
-            self.isDragEnabled = isDragEnabled
-            self.resistance = resistance
-            self.toggleTransition = toggleTransition
-            self.onToggle = onToggle
-            self.onReverse = onReverse
-        }
-    }
-    
-    struct EmailInteraction {
-        /// Callback when the email address is confirmed
-        var onConfirm: ((String) -> Void)?
-    }
-    
-    struct SelectInteraction {
-        var isTapEnabled: Bool = false
-        
-        var onSelect: (() -> Void)?
-    }
     
     var toggleInteraction = ToggleInteraction() {
         didSet {
@@ -433,8 +264,8 @@ public class ConnectButton: UIView {
             emailConfirmButton.imageView.tintColor = .white
             emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
             
-            footerLabelAnimator.primary.label.textColor = Style.Color.darkFooter
-            footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
+            footerLabelAnimator.primary.label.textColor = style.footerColor
+            footerLabelAnimator.transition.label.textColor = style.footerColor
             
             backgroundView.border = .init(color: .clear, width: Layout.borderWidth)
             
@@ -448,10 +279,10 @@ public class ConnectButton: UIView {
             layer.shadowRadius = 5
             layer.shadowOffset = CGSize(width: -2, height: 0)
             
-            footerLabelAnimator.primary.label.textColor = Style.Color.lightFooter
-            footerLabelAnimator.transition.label.textColor = Style.Color.lightFooter
+            footerLabelAnimator.primary.label.textColor = style.footerColor
+            footerLabelAnimator.transition.label.textColor = style.footerColor
             
-            backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
+            backgroundView.border = .init(color: Color.border, width: Layout.borderWidth)
         }
     }
     
@@ -460,7 +291,7 @@ public class ConnectButton: UIView {
         backgroundView.backgroundColor = .black
         switchControl.alpha = 1
         switchControl.isOn = false
-        switchControl.knob.backgroundColor = Style.Color.blue
+        switchControl.knob.backgroundColor = Color.blue
         primaryLabelAnimator.configure(.text("Connect"), insets: .avoidLeftKnob)
         let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
         footerLabelAnimator.configure(.attributed(initialFooterText))
@@ -492,50 +323,11 @@ public class ConnectButton: UIView {
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
         field.font = Style.Font.email
-        field.textColor = Style.Color.mediumGrey
+        field.textColor = Color.mediumGrey
         return field
     }()
     
     // MARK: Text
-    
-    enum LabelValue: Equatable {
-        case
-        none,
-        text(String),
-        attributed(NSAttributedString)
-        
-        func update(label: UILabel) {
-            switch self {
-            case .none:
-                label.text = nil
-                label.attributedText = nil
-            case .text(let text):
-                label.text = text
-            case .attributed(let text):
-                label.attributedText = text
-            }
-        }
-        
-        var isEmpty: Bool {
-            if case .none = self {
-                return true
-            }
-            return false
-        }
-        
-        static func ==(lhs: LabelValue, rhs: LabelValue) -> Bool {
-            switch (lhs, rhs) {
-            case (.none, .none):
-                return true
-            case (.text(let lhs), .text(let rhs)):
-                return lhs == rhs
-            case (.attributed(let lhs), .attributed(let rhs)):
-                return lhs == rhs
-            default:
-                return false
-            }
-        }
-    }
     
     fileprivate var primaryLabelAnimator = LabelAnimator {
         $0.textAlignment = .center
@@ -548,358 +340,20 @@ public class ConnectButton: UIView {
         $0.numberOfLines = 1
         $0.textAlignment = .center
         $0.lineBreakMode = .byTruncatingMiddle
-    }
-    
-    fileprivate class LabelAnimator {
-        
-        typealias View = (label: UILabel, view: UIStackView)
-        
-        let primary: View
-        let transition: View
-        
-        private var currrentValue: LabelValue = .none
-        
-        init(_ configuration: @escaping (UILabel) -> Void) {
-            primary = LabelAnimator.views(configuration)
-            transition = LabelAnimator.views(configuration)
-        }
-        
-        static func views(_ configuration: @escaping (UILabel) -> Void) -> View {
-            let label = UILabel("", configuration)
-            return (label, UIStackView([label]) {
-                $0.isLayoutMarginsRelativeArrangement = true
-                $0.layoutMargins = .zero
-            })
-        }
-        
-        enum Effect {
-            case
-            crossfade,
-            slideInFromRight,
-            rotateDown
-        }
-        struct Insets {
-            let left: CGFloat
-            let right: CGFloat
-            
-            static let standardInsetValue = 0.5 * Layout.height
-            static let zero = Insets(left: 0, right: 0)
-            static let standard = Insets(left: standardInsetValue, right: standardInsetValue)
-            static let avoidLeftKnob = Insets(left: Layout.knobDiameter + 20, right: standardInsetValue)
-            static let avoidRightKnob = Insets(left: standardInsetValue, right: Layout.knobDiameter + 20)
-            
-            fileprivate func apply(_ view: UIStackView) {
-                view.layoutMargins.left = left
-                view.layoutMargins.right = right
-            }
-        }
-        
-        func configure(_ value: LabelValue, insets: Insets? = nil) {
-            value.update(label: primary.label)
-            insets?.apply(primary.view)
-            currrentValue = value
-        }
-        
-        func transition(with effect: Effect,
-                        updatedValue: LabelValue,
-                        insets: Insets? = nil,
-                        addingTo animator: UIViewPropertyAnimator) {
-            guard updatedValue != currrentValue else {
-                animator.addAnimations { }
-                return
-            }
-            
-            // Update the transition to view
-            transition.view.isHidden = false
-            insets?.apply(transition.view)
-            updatedValue.update(label: transition.label)
-            
-            // Set final state at the end of the animation
-            animator.addCompletion { position in
-                self.transition.view.isHidden = true
-                self.transition.label.alpha = 0
-                self.transition.label.transform = .identity
-                
-                self.primary.label.alpha = 1
-                self.primary.label.transform = .identity
-                
-                if position == .end {
-                    insets?.apply(self.primary.view)
-                    updatedValue.update(label: self.primary.label)
-                    self.currrentValue = updatedValue
-                }
-            }
-            
-            switch effect {
-            case .crossfade:
-                transition.label.alpha = 0
-                animator.addAnimations {
-                    self.primary.label.alpha = 0
-                }
-                
-                // Fade in the new label as the second part of the animation
-                animator.addAnimations({
-                    self.transition.label.alpha = 1
-                }, delayFactor: 0.5)
-                
-            case .slideInFromRight:
-                transition.label.alpha = 0
-                transition.label.transform = CGAffineTransform(translationX: 20, y: 0)
-                animator.addAnimations {
-                    // In this animation we don't expect there to be any text in the previous state
-                    // But just for prosterity, let's fade out the old value
-                    self.primary.label.alpha = 0
-                    
-                    self.transition.label.transform = .identity
-                    self.transition.label.alpha = 1
-                }
-                
-            case .rotateDown:
-                let translate: CGFloat = 12
-                
-                // Starting position for the new text
-                // It will rotate down into place
-                transition.label.alpha = 0
-                transition.label.transform = CGAffineTransform(translationX: 0, y: -translate)
-                
-                animator.addAnimations {
-                    // Fade out the current text and rotate it down
-                    self.primary.label.alpha = 0
-                    self.primary.label.transform = CGAffineTransform(translationX: 0, y: translate)
-                }
-                animator.addAnimations({
-                    // Fade in the new text and rotate down from the top
-                    self.transition.label.alpha = 1
-                    self.transition.label.transform = .identity
-                }, delayFactor: 0.5)
-            }
-        }
-    }
-    
+    }    
     
     // MARK: Progress bar
     
     fileprivate let progressBar = ProgressBar()
     
-    fileprivate class ProgressBar: PassthroughView {
-        var fractionComplete: CGFloat = 0 {
-            didSet {
-                update()
-            }
-        }
-        
-        private let track = UIView()
-        private let bar = PassthroughView()
-        
-        func configure(with service: Service?) {
-            bar.backgroundColor = service?.brandColor.contrasting() ?? Style.Color.grey
-        }
-        
-        private func update() {
-            bar.transform = CGAffineTransform(translationX: (1 - fractionComplete) * -bounds.width, y: 0)
-            track.layer.cornerRadius = 0.5 * bounds.height // Progress bar should match rounded corners of connect button
-        }
-        
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            update()
-        }
-        
-        init() {
-            super.init(frame: .zero)
-            
-            // The track ensures that the progress bar stays within its intended bounds
-            
-            track.clipsToBounds = true
-            
-            addSubview(track)
-            track.constrain.edges(to: layoutMarginsGuide)
-            
-            track.addSubview(bar)
-            bar.constrain.edges(to: track)
-            
-            layoutMargins = .zero
-        }
-        @available(*, unavailable)
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
-    
     // MARK: Switch control
     
     fileprivate var switchControl = SwitchControl()
-    
-    fileprivate class SwitchControl: UIView {
-        class Knob: PillView {
-            let iconView = UIImageView()
-            
-            override init() {
-                super.init()
-                
-                layer.shadowColor = UIColor.black.cgColor
-                layer.shadowOpacity = 0.25
-                layer.shadowRadius = 2
-                layer.shadowOffset = CGSize(width: 2, height: 8)
-                
-                addSubview(iconView)
-                iconView.constrain.center(in: self)
-                iconView.constrain.square(length: Layout.serviceIconDiameter)
-            }
-        }
-        
-        var isOn: Bool = false {
-            didSet {
-                centerKnobConstraint.isActive = false
-                offConstraint.isActive = !isOn
-                track.layoutIfNeeded()
-            }
-        }
-        
-        func configure(with service: Service, networkController: ImageViewNetworkController?) {
-            networkController?.setImage(with: service.iconURL, for: knob.iconView)
-            
-            let color = service.brandColor
-            knob.backgroundColor = color
-            
-            // If the knob color is too close to black, draw a border around it
-            if color.distance(from: .black, comparing: .monochrome) < 0.2 {
-                knob.border = .init(color: Style.Color.border, width: Layout.borderWidth)
-            } else {
-                knob.border = .none
-            }
-        }
-        
-        let knob = Knob()
-        let track = PassthroughView()
-        
-        /// Used to prime particular button animations where the know should start in the center
-        fileprivate func primeAnimation_centerKnob() {
-            UIView.performWithoutAnimation {
-                self.offConstraint.isActive = false
-                self.centerKnobConstraint.isActive = true
-                self.layoutIfNeeded()
-            }
-        }
-        
-        private var centerKnobConstraint: NSLayoutConstraint!
-        private var offConstraint: NSLayoutConstraint!
-        
-        init() {
-            super.init(frame: .zero)
-            
-            addSubview(track)
-            track.addSubview(knob)
-            
-            track.constrain.edges(to: self)
-            
-            knob.constrain.square(length: Layout.knobDiameter)
-            knob.centerYAnchor.constraint(equalTo: track.centerYAnchor).isActive = true
-            
-            centerKnobConstraint = knob.centerXAnchor.constraint(equalTo: track.centerXAnchor)
-            centerKnobConstraint.isActive = false
-            
-            offConstraint = knob.leftAnchor.constraint(equalTo: track.leftAnchor, constant: Layout.knobInset)
-            offConstraint.isActive = true
-            
-            let onConstraint = knob.rightAnchor.constraint(equalTo: track.rightAnchor, constant: -Layout.knobInset)
-            onConstraint.priority = .defaultHigh // Lower than off constraint, so we can toggle by enabling / disabling off
-            onConstraint.isActive = true
-        }
-        @available(*, unavailable)
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
     
     // MARK: Checkmark view
     
     fileprivate let checkmark = CheckmarkView()
     
-    fileprivate class CheckmarkView: UIView {
-        let outline = UIView()
-        let indicator = UIView()
-        let checkmarkShape = CAShapeLayer()
-        
-        var indicatorAnimationPath = UIBezierPath()
-        
-        fileprivate func reset() {
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            checkmarkShape.strokeEnd = 0
-            CATransaction.commit()
-        }
-        
-        init() {
-            super.init(frame: .zero)
-            
-            constrain.square(length: Layout.height)
-            
-            let lineWidth: CGFloat = 3
-            
-            addSubview(outline)
-            outline.layer.borderWidth = lineWidth
-            outline.layer.borderColor = Style.Color.border.cgColor
-            
-            outline.constrain.center(in: self)
-            outline.constrain.square(length: Layout.checkmarkDiameter)
-            
-            addSubview(indicator)
-            indicator.translatesAutoresizingMaskIntoConstraints = false
-            indicator.frame = CGRect(x: 0, y: 0, width: lineWidth, height: lineWidth)
-            
-            layer.addSublayer(checkmarkShape)
-            
-            indicator.backgroundColor = .white
-            checkmarkShape.fillColor = UIColor.clear.cgColor
-            checkmarkShape.strokeColor = UIColor.white.cgColor
-            #if swift(>=4.2)
-            checkmarkShape.lineCap = .round
-            checkmarkShape.lineJoin = .round
-            #else
-            checkmarkShape.lineCap = kCALineCapRound
-            checkmarkShape.lineJoin = kCALineJoinRound
-            #endif
-            checkmarkShape.lineWidth = lineWidth
-            
-            // Offset by line width (this visually centered the checkmark)
-            let center = CGPoint(x: 0.5 * Layout.height - lineWidth, y: 0.5 * Layout.height)
-            // The projection of the checkmarks longest arm to the X and Y axes (Since its a 45 / 45 triangle)
-            let armProjection = Layout.checkmarkLength / sqrt(2)
-            
-            let checkmarkStartPoint = CGPoint(x: center.x - 0.5 * armProjection,
-                                              y: center.y)
-            
-            let path = UIBezierPath()
-            path.move(to: checkmarkStartPoint)
-            path.addLine(to: CGPoint(x: center.x,
-                                     y: center.y + 0.5 * armProjection))
-            path.addLine(to: CGPoint(x: center.x + armProjection,
-                                     y: center.y - 0.5 * armProjection))
-            checkmarkShape.path = path.cgPath
-            checkmarkShape.strokeEnd = 0
-            
-            indicatorAnimationPath.move(to: center)
-            indicatorAnimationPath.addQuadCurve(to: CGPoint(x: 0,
-                                                            y: center.y),
-                                                controlPoint: CGPoint(x: 0,
-                                                                      y: Layout.height))
-            indicatorAnimationPath.addQuadCurve(to: checkmarkStartPoint,
-                                                controlPoint: .zero)
-        }
-        @available(*, unavailable)
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            outline.layer.cornerRadius = 0.5 * outline.bounds.height
-            indicator.layer.cornerRadius = 0.5 * indicator.bounds.height
-            
-            checkmarkShape.frame = bounds
-        }
-    }
     
     // MARK: Layout
     
@@ -1064,54 +518,6 @@ extension ConnectButton: UITextFieldDelegate {
     }
 }
 
-
-// MARK: - Animation
-
-// MARK: Checkmark
-
-@available(iOS 10.0, *)
-private extension ConnectButton.CheckmarkView {
-    func drawCheckmark(duration: TimeInterval) {
-        UIView.performWithoutAnimation {
-            self.indicator.alpha = 1
-        }
-        reset()
-        
-        let indicatorAnimation = CAKeyframeAnimation(keyPath: "position")
-        indicatorAnimation.path = indicatorAnimationPath.cgPath
-        indicatorAnimation.duration = 0.6 * duration
-        #if swift(>=4.2)
-        indicatorAnimation.timingFunction = CAMediaTimingFunction(name: .easeIn)
-        #else
-        indicatorAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-        #endif
-        indicatorAnimation.delegate = self
-        indicator.layer.add(indicatorAnimation, forKey: "position along path")
-        indicator.layer.position = indicatorAnimationPath.currentPoint
-    }
-}
-
-@available(iOS 10.0, *)
-extension ConnectButton.CheckmarkView: CAAnimationDelegate {
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if anim is CAKeyframeAnimation {
-            indicator.alpha = 0
-            
-            checkmarkShape.strokeEnd = 1
-            let checkmarkAnimation = CABasicAnimation(keyPath: "strokeEnd")
-            checkmarkAnimation.fromValue = 0
-            checkmarkAnimation.toValue = 1
-            checkmarkAnimation.duration = 0.4 * anim.duration
-            #if swift(>=4.2)
-            checkmarkAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            #else
-            checkmarkAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-            #endif
-            self.checkmarkShape.add(checkmarkAnimation, forKey: "draw line")
-        }
-    }
-}
-
 // MARK: Progress bar
 
 @available(iOS 10.0, *)
@@ -1151,16 +557,10 @@ private extension ConnectButton {
             transitionToDisconnecting(message: message, animator: animator)
             
         case let .slideToConnect(message):
-            transitionToSlideToConnect(isOn: true,
-                                       service: nil,
-                                       labelValue: .text(message),
-                                       animator: animator)
+            transitionToSlideToConnect(isOn: true, service: nil, labelValue: .text(message), animator: animator)
 
         case let .slideToConnectService(service, message):
-            transitionToSlideToConnect(isOn: true,
-                                       service: service,
-                                       labelValue: .text(message),
-                                       animator: animator)
+            transitionToSlideToConnect(isOn: true, service: service, labelValue: .text(message), animator: animator)
             
         case let .enterEmail(service, suggestedEmail):
             transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
@@ -1283,7 +683,7 @@ private extension ConnectButton {
         
         emailEntryField.alpha = 0
         animator.addAnimations {
-            self.backgroundView.backgroundColor = Style.Color.lightGrey
+            self.backgroundView.backgroundColor = Color.lightGrey
             self.switchControl.isOn = true
             self.switchControl.knob.layer.shadowOpacity = 0.0
             // This is only relevent for dark mode when we draw a border around the switch
