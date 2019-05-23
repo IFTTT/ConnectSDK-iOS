@@ -435,7 +435,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = Style.Color.darkFooter
             footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
             
-            backgroundView.border = .init(color: .white, width: Layout.borderWidth)
+            backgroundView.border = .init(color: .clear, width: Layout.borderWidth)
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
