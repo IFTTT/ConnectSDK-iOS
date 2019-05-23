@@ -8,28 +8,29 @@
 
 import UIKit
 
-// Layout constants
-
-fileprivate struct Layout {
-    static let height: CGFloat = 70
-    static let maximumWidth = 4.7 * height
-    static let knobInset: CGFloat = borderWidth + 3
-    static let knobDiameter = height - 2 * knobInset
-    static let checkmarkDiameter: CGFloat = 42
-    static let checkmarkLength: CGFloat = 14
-    static let serviceIconDiameter = 0.5 * knobDiameter
-    static let borderWidth: CGFloat = 2
-    /// The amount by which the email field is offset from the center
-    static let emailFieldOffset: CGFloat = 4
-    static let buttonFooterSpacing: CGFloat = 15
-}
-
-
 // MARK: - Connect Button
 
 @available(iOS 10.0, *)
 @IBDesignable
 public class ConnectButton: UIView {
+    
+    // Layout constants
+    struct Layout {
+        fileprivate static let height: CGFloat = 70
+        fileprivate static let maximumWidth = 4.7 * height
+        fileprivate static let knobInset: CGFloat = borderWidth + 3
+        fileprivate static let knobDiameter = height - 2 * knobInset
+        fileprivate static let checkmarkDiameter: CGFloat = 42
+        fileprivate static let checkmarkLength: CGFloat = 14
+        fileprivate static let serviceIconDiameter = 0.5 * knobDiameter
+        
+        /// The thickness of the border around the the connect button.
+        static let borderWidth: CGFloat = 4
+        
+        /// The amount by which the email field is offset from the center
+        fileprivate static let emailFieldOffset: CGFloat = 4
+        fileprivate static let buttonFooterSpacing: CGFloat = 15
+    }
     
     /// Adjusts the button for a white or black background
     ///
@@ -987,9 +988,7 @@ public class ConnectButton: UIView {
         
         backgroundView.heightAnchor.constraint(equalToConstant: Layout.height).isActive = true
         
-        // Because we draw the border 1 pixel outside of the backgroundView, we need to adjust the progress bar to be inset the border width minus 1 to make sure it fills the full space.
-        let adjustBorderInsetValue = Layout.borderWidth - 1
-        progressBar.constrain.edges(to: backgroundView, inset: UIEdgeInsets(top: adjustBorderInsetValue, left: adjustBorderInsetValue, bottom: adjustBorderInsetValue, right: adjustBorderInsetValue))
+        progressBar.constrain.edges(to: backgroundView)
         
         primaryLabelAnimator.primary.view.constrain.edges(to: backgroundView)
         primaryLabelAnimator.transition.view.constrain.edges(to: backgroundView)

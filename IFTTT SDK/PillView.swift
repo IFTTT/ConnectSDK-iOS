@@ -154,7 +154,7 @@ class PillView: UIView {
         addSubview(bottomBorder)
         
         // In order to make sure the border always draws completely over the view it is pinned to, we need to offset the border to be slightly bigger then the pinned view.
-        let topBottomBorderInset = UIEdgeInsets(top: -1, left: 0, bottom: -1, right: 0)
+        let topBottomBorderInset = UIEdgeInsets(top: -ConnectButton.Layout.borderWidth, left: 0, bottom: -ConnectButton.Layout.borderWidth, right: 0)
         
         topBorder.constrain.edges(to: centerView, edges: [.left, .top, .right], inset: topBottomBorderInset)
         topBorderHeight.isActive = true
@@ -163,7 +163,7 @@ class PillView: UIView {
         bottomBorderHeight.isActive = true
         
         // In order to make sure the border always draws completely over the view it is pinned to, we need to offset the border to be slightly bigger then the pinned view.
-        let leftRightBorderInset = UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1)
+        let leftRightBorderInset = UIEdgeInsets(top: -ConnectButton.Layout.borderWidth, left: -ConnectButton.Layout.borderWidth, bottom: -ConnectButton.Layout.borderWidth, right: -ConnectButton.Layout.borderWidth)
         
         leftBorder.constrain.edges(to: leftCapView, inset: leftRightBorderInset)
         rightBorder.constrain.edges(to: rightCapView, inset: leftRightBorderInset)
