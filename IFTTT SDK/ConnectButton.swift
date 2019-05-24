@@ -8,28 +8,29 @@
 
 import UIKit
 
-// Layout constants
-
-fileprivate struct Layout {
-    static let height: CGFloat = 70
-    static let maximumWidth = 4.7 * height
-    static let knobInset: CGFloat = 4
-    static let knobDiameter = height - 2 * knobInset
-    static let checkmarkDiameter: CGFloat = 42
-    static let checkmarkLength: CGFloat = 14
-    static let serviceIconDiameter = 0.5 * knobDiameter
-    static let borderWidth: CGFloat = 2
-    /// The amount by which the email field is offset from the center
-    static let emailFieldOffset: CGFloat = 4
-    static let buttonFooterSpacing: CGFloat = 15
-}
-
-
 // MARK: - Connect Button
 
 @available(iOS 10.0, *)
 @IBDesignable
 public class ConnectButton: UIView {
+    
+    // Layout constants
+    struct Layout {
+        fileprivate static let height: CGFloat = 70
+        fileprivate static let maximumWidth = 4.7 * height
+        fileprivate static let knobInset: CGFloat = borderWidth + 3
+        fileprivate static let knobDiameter = height - 2 * knobInset
+        fileprivate static let checkmarkDiameter: CGFloat = 42
+        fileprivate static let checkmarkLength: CGFloat = 14
+        fileprivate static let serviceIconDiameter = 0.5 * knobDiameter
+        
+        /// The thickness of the border around the the connect button.
+        static let borderWidth: CGFloat = 4
+        
+        /// The amount by which the email field is offset from the center
+        fileprivate static let emailFieldOffset: CGFloat = 4
+        fileprivate static let buttonFooterSpacing: CGFloat = 15
+    }
     
     /// Adjusts the button for a white or black background
     ///
@@ -435,8 +436,7 @@ public class ConnectButton: UIView {
             footerLabelAnimator.primary.label.textColor = Style.Color.darkFooter
             footerLabelAnimator.transition.label.textColor = Style.Color.darkFooter
             
-            backgroundView.border = .none
-            progressBar.insetForButtonBorder = 0
+            backgroundView.border = .init(color: .clear, width: Layout.borderWidth)
             
         case .dark:
             emailConfirmButton.backgroundColor = .white
@@ -452,7 +452,6 @@ public class ConnectButton: UIView {
             footerLabelAnimator.transition.label.textColor = Style.Color.lightFooter
             
             backgroundView.border = .init(color: Style.Color.border, width: Layout.borderWidth)
-            progressBar.insetForButtonBorder = Layout.borderWidth
         }
     }
     
@@ -686,18 +685,6 @@ public class ConnectButton: UIView {
         var fractionComplete: CGFloat = 0 {
             didSet {
                 update()
-            }
-        }
-        
-        /// When using a border with the ConnectButton, set this to the border width
-        /// This will inset the progress bar so it doesn't overlap the border
-        /// When a border isn't used, set this to 0
-        var insetForButtonBorder: CGFloat = 0 {
-            didSet {
-                layoutMargins = UIEdgeInsets(top: insetForButtonBorder,
-                                             left: insetForButtonBorder,
-                                             bottom: insetForButtonBorder,
-                                             right: insetForButtonBorder)
             }
         }
         
