@@ -18,7 +18,6 @@
 		1D453EE8229723CA001994FF /* ConnectButton+ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */; };
 		1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */; };
 		1D453EEC2297246C001994FF /* ConnectButton+CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */; };
-		1D453EEE22972738001994FF /* ConnectButton+PulseAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */; };
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
 		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
@@ -122,7 +121,6 @@
 		1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+ProgressBar.swift"; sourceTree = "<group>"; };
 		1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+SwitchControl.swift"; sourceTree = "<group>"; };
 		1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+CheckmarkView.swift"; sourceTree = "<group>"; };
-		1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+PulseAnimation.swift"; sourceTree = "<group>"; };
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -220,7 +218,6 @@
 				FC2573122139E8CC0065AAD6 /* ConnectButton.swift */,
 				1D453EE922972407001994FF /* ConnectButton+SwitchControl.swift */,
 				1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */,
-				1D453EED22972738001994FF /* ConnectButton+PulseAnimation.swift */,
 				1D453EE12297222D001994FF /* ConnectButton+Interaction.swift */,
 				1D453EDB2297213E001994FF /* ConnectButton+Service.swift */,
 				1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */,
@@ -613,7 +610,6 @@
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
 				FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */,
 				FC75F93C22386626007C2DDB /* ConnectionActivationFlow.swift in Sources */,
-				1D453EEE22972738001994FF /* ConnectButton+PulseAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
