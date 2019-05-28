@@ -83,11 +83,6 @@ public protocol ConnectButtonControllerDelegate: class {
                                  didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
 }
 
-@available(iOS 10.0, *)
-public extension ConnectButtonControllerDelegate {
-    func connectButtonController(_ connectButtonController: ConnectButtonController, didRecieveInvalidEmail email: String) { }
-}
-
 /// A controller that handles the `ConnectButton` when authenticating a `Connection`. It is mandatory that you interact with the ConnectButton only through this controller.
 @available(iOS 10.0, *)
 public class ConnectButtonController {
@@ -278,7 +273,7 @@ public class ConnectButtonController {
     /// - worksWithIFTTT: Default message used for most button states
     /// - enterEmail: Message for the enter email step
     /// - emailInvalid: Message when the entered email is invalid
-    enum FooterMessages {
+    private enum FooterMessages {
         case worksWithIFTTT
         case enterEmail
         case emailInvalid
@@ -367,7 +362,7 @@ public class ConnectButtonController {
 
     /// Delegate object for Safari VC
     /// Handles user cancelation in the web flow
-    class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
+    private final class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
         /// Callback when the Safari VC is dismissed by the user
         /// This triggers a cancelation event
         let onCancelation: () -> Void
@@ -399,7 +394,7 @@ public class ConnectButtonController {
 
     // MARK: - Safari VC redirect handling
 
-    class RedirectObserving {
+    private final class RedirectObserving {
 
         private struct QueryItems {
             static let nextStep = "next_step"
@@ -522,8 +517,6 @@ public class ConnectButtonController {
     private func endActivationWebFlow() {
         safariDelegate = nil
     }
-
-
 
     // MARK: - Connection activation & deactivation
 
@@ -885,7 +878,6 @@ public class ConnectButtonController {
         if email.isValidEmail {
             self.transition(to: .identifyUser(.email(email)))
         } else {
-            self.delegate?.connectButtonController(self, didRecieveInvalidEmail: email)
             self.button.animator(for: .footerValue(FooterMessages.emailInvalid.value)).perform()
             self.button.performInvalidEmailAnimation()
 
