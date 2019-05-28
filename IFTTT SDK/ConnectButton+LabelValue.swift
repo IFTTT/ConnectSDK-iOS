@@ -11,12 +11,21 @@ import Foundation
 @available(iOS 10.0, *)
 extension ConnectButton {
     
+    /// Wraps various ways a `UILabel`'s text can be set.
     enum LabelValue: Equatable {
-        case
-        none,
-        text(String),
-        attributed(NSAttributedString)
         
+        /// The label has no text.
+        case none
+        
+        /// The text of the label.
+        case text(String)
+        
+        /// The attributed text of the label.
+        case attributed(NSAttributedString)
+        
+        /// Updates the label with the value of the enum.
+        ///
+        /// - Parameter label: The label to update the text on.
         func update(label: UILabel) {
             switch self {
             case .none:
@@ -29,6 +38,7 @@ extension ConnectButton {
             }
         }
         
+        /// Whether there is text provided.
         var isEmpty: Bool {
             if case .none = self {
                 return true
