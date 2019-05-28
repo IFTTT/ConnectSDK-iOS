@@ -695,7 +695,7 @@ public class ConnectButtonController {
         let progress = ProgressBarController(progressBar: button, pauseAt: 0.5)
         progress.begin()
         
-        let dataTask = connectionNetworkController.getConnectConfiguration(user: lookupMethod) { [weak self] result in
+        let dataTask = connectionNetworkController.fetchUser(lookupMethod: lookupMethod) { [weak self] result in
             guard let self = self else {
                 return
             }
