@@ -11,6 +11,15 @@ import UIKit
 /// Interface for a `ProgressBar` view to use in conjunction with a `ProgressBarCoordinator`
 @available(iOS 10.0, *)
 protocol ProgressBar {
+    
+    /// Shows the `ProgressBar`.
+    ///
+    /// - Parameters:
+    ///   - start: A value representing the starting value of the progress bar's fraction complete.
+    ///   - end: A value representing the ending value of the progress bar's fraction complete.
+    ///   - duration: The amount of time the animation should take.
+    ///   - curve: The `UIView.AnimationCurve` to configure the `UIViewPropertyAnimator`.
+    /// - Returns: A `UIViewPropertyAnimator` configured to show the progress bar.
     func showProgress(from start: CGFloat, to end: CGFloat,
                       duration: TimeInterval, curve: UIView.AnimationCurve) -> UIViewPropertyAnimator
 }
