@@ -35,14 +35,6 @@ extension ConnectButton {
         /// - message: The text you want to display during this step.
         case slideToConnectService(service: Service, message: String)
         
-        /// The state to transition to when a user slides to disconnect a service.
-        /// - message: The text you want to display during the step.
-        case slideToDisconnect(message: String)
-        
-        /// The state to show progress while we disconnect the connection.
-        /// - message: The text you want to display during the step.
-        case disconnecting(message: String)
-        
         /// The state where we ask the user to enter their email.
         /// - service: A model that includes info about the branding of the service to connect.
         /// - suggestedEmail: A suggested email provided to auto populate the text field.
@@ -75,6 +67,14 @@ extension ConnectButton {
         /// - message: The text you want to display during this step.
         /// - shouldAnimateKnob: Whether we should animate the knob turning on. We start out the knob in the center when animating to connected. If the knob is already in the correct location you can choose to not animated the knob from the center.
         case connected(service: Service, message: String, shouldAnimateKnob: Bool)
+        
+        /// The state to transition to when a user slides to disconnect a service.
+        /// - message: The text you want to display during the step.
+        case slideToDisconnect(message: String)
+        
+        /// The state to show progress while we disconnect the connection.
+        /// - message: The text you want to display during the step.
+        case disconnecting(message: String)
         
         /// The state to transition to when a connection is disconnected.
         /// - message: The text you want to display during the step.
