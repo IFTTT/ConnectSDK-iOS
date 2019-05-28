@@ -11,7 +11,10 @@ import Foundation
 @available(iOS 10.0, *)
 extension ConnectButton {
     
-    class ProgressBar: PassthroughView {
+    /// A `PassthroughView` subclass that represents the progress bar of the connect button.
+    final class ProgressBar: PassthroughView {
+        
+        /// The value of how much of the progress bar has completed.
         var fractionComplete: CGFloat = 0 {
             didSet {
                 update()
@@ -21,6 +24,9 @@ extension ConnectButton {
         private let track = UIView()
         private let bar = PassthroughView()
         
+        /// Configures the progress bar background with the optionally provided `Service`.
+        ///
+        /// - Parameter service: An optional `Service` to set the backgrund color to.
         func configure(with service: Service?) {
             bar.backgroundColor = service?.brandColor.contrasting() ?? Color.grey
         }
@@ -35,6 +41,7 @@ extension ConnectButton {
             update()
         }
         
+        /// Creates a `ProgressBar`.
         init() {
             super.init(frame: .zero)
             
