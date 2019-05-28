@@ -11,20 +11,24 @@ import Foundation
 @available(iOS 10.0, *)
 extension ConnectButton {
     
-    class CheckmarkView: UIView {
+    /// A `UIView` subclass that is used to draw a checkmark when completing activation.
+    final class CheckmarkView: UIView {
+        
+        /// The `UIView` that represents the circular outline of the `CheckmarkView`.
         let outline = UIView()
-        let indicator = UIView()
-        let checkmarkShape = CAShapeLayer()
+        private let indicator = UIView()
+        private let checkmarkShape = CAShapeLayer()
         
-        var indicatorAnimationPath = UIBezierPath()
+        private let indicatorAnimationPath = UIBezierPath()
         
-        func reset() {
+        private func reset() {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
             checkmarkShape.strokeEnd = 0
             CATransaction.commit()
         }
         
+        /// Creates a `CheckmarkView`.
         init() {
             super.init(frame: .zero)
             
@@ -100,6 +104,10 @@ extension ConnectButton {
 
 @available(iOS 10.0, *)
 extension ConnectButton.CheckmarkView {
+    
+    /// Draws the checkmark.
+    ///
+    /// - Parameter duration: The amount of time the checkmark should be drawn in.
     func drawCheckmark(duration: TimeInterval) {
         UIView.performWithoutAnimation {
             self.indicator.alpha = 1
