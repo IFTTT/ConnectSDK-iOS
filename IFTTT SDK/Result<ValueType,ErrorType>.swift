@@ -21,7 +21,6 @@ public enum Result<ValueType, ErrorType: Error> {
 extension Result {
     
     /// The associated `ValueType` for `success`. `nil` on `failure`.
-    /// The associated `ResultType` for `failure`s. Returns nil on `success`.
     var value: ValueType? {
         switch self {
         case let .success(value):
