@@ -28,7 +28,7 @@ extension ConnectButton {
             /// - Parameters:
             ///   - switchOn: Whether the switch is moving towards being on.
             ///   - velocity: The value the represents the velocity of the movement towards being on or off.
-            ///   - progress: THe value of how far along the button is to being on or off.
+            ///   - progress: The value of how far along the button is to being on or off.
             /// - Returns: Whether the toggle interaction should be reversed.
             func shouldReverse(switchOn: Bool, velocity: CGFloat, progress: CGFloat) -> Bool {
                 // Negative velocity is oriented towards switch off
