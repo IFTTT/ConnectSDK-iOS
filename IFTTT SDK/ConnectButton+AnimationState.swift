@@ -27,13 +27,9 @@ extension ConnectButton {
         case connect(service: Service, message: String)
         
         /// The state to transition to when a user slides or taps to connect a service.
+        /// - service: An optional model that includes info about the branding of the service to connect.
         /// - message: The text you want to display during the step.
-        case slideToConnect(message: String)
-        
-        /// The state to transition to when a user slides or taps to connect a service. This is currently only being used by the IFTTT iOS app.
-        /// - service: A model that includes info about the branding of the service to connect.
-        /// - message: The text you want to display during this step.
-        case slideToConnectService(service: Service, message: String)
+        case slideToConnect(service: Service?, message: String)
         
         /// The state where we ask the user to enter their email.
         /// - service: A model that includes info about the branding of the service to connect.

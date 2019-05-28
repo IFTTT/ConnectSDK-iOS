@@ -620,7 +620,7 @@ public class ConnectButtonController {
                 return initialButtonState
             }
             if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
-                return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
+                return .buttonState(.slideToConnect(service: nil, message: "button.state.verifying".localized))
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
             }

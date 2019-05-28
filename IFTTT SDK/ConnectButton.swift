@@ -556,10 +556,7 @@ private extension ConnectButton {
         case let .disconnecting(message):
             transitionToDisconnecting(message: message, animator: animator)
             
-        case let .slideToConnect(message):
-            transitionToSlideToConnect(isOn: true, service: nil, labelValue: .text(message), animator: animator)
-
-        case let .slideToConnectService(service, message):
+        case let .slideToConnect(service, message):
             transitionToSlideToConnect(isOn: true, service: service, labelValue: .text(message), animator: animator)
             
         case let .enterEmail(service, suggestedEmail):
