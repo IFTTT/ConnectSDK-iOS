@@ -11,8 +11,13 @@ import Foundation
 @available(iOS 10.0, *)
 extension ConnectButton {
     
-    class SwitchControl: UIView {
-        class Knob: PillView {
+    /// A `UIView` subclass composed of a knob and track that represents the switch of the connect button.
+    final class SwitchControl: UIView {
+        
+        /// A `PillView` subclass that adds an icon image view to represent the circular switch of the connect button.
+        final class Knob: PillView {
+            
+            /// A `UIImageView` to display an icon on the knob.
             let iconView = UIImageView()
             
             override init() {
@@ -29,6 +34,7 @@ extension ConnectButton {
             }
         }
         
+        /// Whether the connect button's switch is on or not.
         var isOn: Bool = false {
             didSet {
                 centerKnobConstraint.isActive = false
@@ -37,6 +43,11 @@ extension ConnectButton {
             }
         }
         
+        /// Configures the knob with the service coloring and fetches the service's associated icon.
+        ///
+        /// - Parameters:
+        ///   - service: The `Service` model to used to configure the styling of the knob.
+        ///   - networkController: An optional `ImageViewNetworkController` for fetching the service's icon.
         func configure(with service: Service, networkController: ImageViewNetworkController?) {
             networkController?.setImage(with: service.iconURL, for: knob.iconView)
             
@@ -51,8 +62,10 @@ extension ConnectButton {
             }
         }
         
+        /// The connect button's circular switch.
         let knob = Knob()
-        let track = PassthroughView()
+        
+        private let track = PassthroughView()
         
         /// Used to prime particular button animations where the know should start in the center
         func primeAnimation_centerKnob() {
@@ -66,6 +79,7 @@ extension ConnectButton {
         private var centerKnobConstraint: NSLayoutConstraint!
         private var offConstraint: NSLayoutConstraint!
         
+        /// Creates a `SwitchControl`.
         init() {
             super.init(frame: .zero)
             

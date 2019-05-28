@@ -18,6 +18,9 @@ public final class ConnectionNetworkController {
         self.init(urlSession: .connectionURLSession)
     }
     
+    /// Creates a `ConnectionNetworkController`.
+    ///
+    /// - Parameter urlSession: A `URLSession` to make request on.
     init(urlSession: URLSession) {
         self.urlSession = urlSession
     }
@@ -87,8 +90,14 @@ public final class ConnectionNetworkController {
         static let userLoginKey = "user_login"
     }
     
-    func getConnectConfiguration(user: User.LookupMethod, _ completion: @escaping (Result<User, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
-        return checkUser(user: user) { result in
+    /// Fetches a `User` based on the provided lookup method.
+    ///
+    /// - Parameters:
+    ///   - lookupMethod: Tells the controller how to identify the user’s IFTTT account.
+    ///   - completion: A results of either the user or an error from looking up their IFTTT acount.
+    /// - Returns: An optional `URLSessionDataTask` of the user fetching request.
+    func fetchUser(lookupMethod: User.LookupMethod, _ completion: @escaping (Result<User, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
+        return checkUser(user: lookupMethod) { result in
             DispatchQueue.main.async {
                 completion(result)
             }
