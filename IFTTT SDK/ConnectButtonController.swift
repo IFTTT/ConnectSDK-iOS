@@ -685,16 +685,7 @@ public class ConnectButtonController {
     
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
         prepareActivationWebFlow(lookupMethod: lookupMethod)
-
-        let state: ConnectButton.AnimationState
-        switch lookupMethod {
-        case .email:
-            state = .verifyingEmail(message: "button.state.verifying".localized)
-        case .token:
-            state = .accessingAccount(message: "button.state.verifying".localized)
-        }
-        button.animator(for: .buttonState(state,
-                                          footerValue: FooterMessages.worksWithIFTTT.value)).perform()
+        button.animator(for: .buttonState(.verifying(message: "button.state.verifying".localized), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
 

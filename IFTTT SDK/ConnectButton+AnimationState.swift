@@ -26,10 +26,6 @@ extension ConnectButton {
         /// - message: The text you want to display during the step.
         case connect(service: Service, message: String)
         
-        /// The state when we show that we are creating a new account for the user.
-        /// - message: The text you want to display during the step.
-        case createAccount(message: String)
-        
         /// The state to transition to when a user slides or taps to connect a service.
         /// - message: The text you want to display during the step.
         case slideToConnect(message: String)
@@ -51,14 +47,14 @@ extension ConnectButton {
         /// - service: A model that includes info about the branding of the service to connect.
         /// - suggestedEmail: A suggested email provided to auto populate the text field.
         case enterEmail(service: Service, suggestedEmail: String)
-        
+
         /// The state to transition to when are verifying a users account.
         /// - message: The text you want to display during the step.
-        case accessingAccount(message: String)
+        case verifying(message: String)
         
-        /// The state to transition to when are verifying a users account.
+        /// The state when we show that we are creating a new account for the user.
         /// - message: The text you want to display during the step.
-        case verifyingEmail(message: String)
+        case createAccount(message: String)
         
         /// The state to transition to when we are about to continue to the service's website for authentication.
         /// - service: A model that includes info about the branding of the service to connect.

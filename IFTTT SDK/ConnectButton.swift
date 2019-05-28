@@ -565,11 +565,8 @@ private extension ConnectButton {
         case let .enterEmail(service, suggestedEmail):
             transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
             
-        case let .accessingAccount(message):
-            transitionToAccessingAccount(message: message, animator: animator)
-        
-        case let .verifyingEmail(message):
-            transitionToVerifyingAccount(message: message, animator: animator)
+        case let .verifying(message):
+            transitionToVerifying(message: message, animator: animator)
             
         case let .continueToService(service, message):
             transitionToContinueToService(service: service, message: message, animator: animator)
@@ -759,7 +756,7 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToAccessingAccount(message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToVerifying(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: nil)
@@ -767,16 +764,6 @@ private extension ConnectButton {
         
         animator.addAnimations {
             self.switchControl.alpha = 0
-        }
-    }
-    
-    private func transitionToVerifyingAccount(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
-        
-        progressBar.configure(with: nil)
-        progressBar.alpha = 1
-        
-        animator.addAnimations {
             self.emailEntryField.alpha = 0
             self.emailConfirmButton.alpha = 0
             self.backgroundView.backgroundColor = .black
