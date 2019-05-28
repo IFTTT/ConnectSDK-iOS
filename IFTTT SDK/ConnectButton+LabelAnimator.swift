@@ -11,21 +11,29 @@ import Foundation
 @available(iOS 10.0, *)
 extension ConnectButton {
     
-    class LabelAnimator {
+    /// A clas that wraps the ability to animate a `UILabel` to and from a value.
+    final class LabelAnimator {
         
+        /// Represents the the views the `LabelAnimator` is controlling.
         typealias View = (label: UILabel, view: UIStackView)
         
+        /// The primary `View` that is used by the label animator.
         let primary: View
+        
+        /// The transition `View` that is used by the label animator.
         let transition: View
         
         private var currrentValue: LabelValue = .none
         
+        /// Creates a `LabelAnimator`.
+        ///
+        /// - Parameter configuration: A configuration closure for configuring the `UILabel`.
         init(_ configuration: @escaping (UILabel) -> Void) {
             primary = LabelAnimator.views(configuration)
             transition = LabelAnimator.views(configuration)
         }
         
-        static func views(_ configuration: @escaping (UILabel) -> Void) -> View {
+        private static func views(_ configuration: @escaping (UILabel) -> Void) -> View {
             let label = UILabel("", configuration)
             return (label, UIStackView([label]) {
                 $0.isLayoutMarginsRelativeArrangement = true
@@ -33,21 +41,27 @@ extension ConnectButton {
             })
         }
         
-        enum Effect {
-            case
-            crossfade,
-            slideInFromRight,
-            rotateDown
-        }
-        
+        /// Represents the insets for the labels of the label animator.
         struct Insets {
+            
+            /// The value the label should be inset from the left.
             let left: CGFloat
+            
+            /// The value the label should be inset from the right.
             let right: CGFloat
             
-            static let standardInsetValue = 0.5 * Layout.height
+            private static let standardInsetValue = 0.5 * Layout.height
+            
+            /// An inset of zero.
             static let zero = Insets(left: 0, right: 0)
+            
+            /// The default amount of inset.
             static let standard = Insets(left: standardInsetValue, right: standardInsetValue)
+            
+            /// An inset to avoid the connect button knob on the left.
             static let avoidLeftKnob = Insets(left: Layout.knobDiameter + 20, right: standardInsetValue)
+            
+            /// An inset to avoid the connect button knob on the right.
             static let avoidRightKnob = Insets(left: standardInsetValue, right: Layout.knobDiameter + 20)
             
             fileprivate func apply(_ view: UIStackView) {
@@ -56,14 +70,24 @@ extension ConnectButton {
             }
         }
         
+        /// Configures the label with the value and insets provided without animating.
+        ///
+        /// - Parameters:
+        ///   - value: The `LabelValue` to update the primary label to.
+        ///   - insets: An optional amount to inset the label. Defaults to nil.
         func configure(_ value: LabelValue, insets: Insets? = nil) {
             value.update(label: primary.label)
             insets?.apply(primary.view)
             currrentValue = value
         }
         
-        func transition(with effect: Effect,
-                        updatedValue: LabelValue,
+        /// Animates configuring the label with the value and insets provided.
+        ///
+        /// - Parameters:
+        ///   - updatedValue: The `LabelValue` to update the primary label to.
+        ///   - insets: An optional amount to inset the label. Defaults to nil.
+        ///   - animator: The `UIViewPropertyAnimator` to add the animations to.
+        func transition(updatedValue: LabelValue,
                         insets: Insets? = nil,
                         addingTo animator: UIViewPropertyAnimator) {
             guard updatedValue != currrentValue else {
@@ -75,6 +99,16 @@ extension ConnectButton {
             transition.view.isHidden = false
             insets?.apply(transition.view)
             updatedValue.update(label: transition.label)
+            
+            transition.label.alpha = 0
+            animator.addAnimations {
+                self.primary.label.alpha = 0
+            }
+            
+            // Fade in the new label as the second part of the animation
+            animator.addAnimations({
+                self.transition.label.alpha = 1
+            }, delayFactor: 0.5)
             
             // Set final state at the end of the animation
             animator.addCompletion { position in
@@ -90,50 +124,6 @@ extension ConnectButton {
                     updatedValue.update(label: self.primary.label)
                     self.currrentValue = updatedValue
                 }
-            }
-            
-            switch effect {
-            case .crossfade:
-                transition.label.alpha = 0
-                animator.addAnimations {
-                    self.primary.label.alpha = 0
-                }
-                
-                // Fade in the new label as the second part of the animation
-                animator.addAnimations({
-                    self.transition.label.alpha = 1
-                }, delayFactor: 0.5)
-                
-            case .slideInFromRight:
-                transition.label.alpha = 0
-                transition.label.transform = CGAffineTransform(translationX: 20, y: 0)
-                animator.addAnimations {
-                    // In this animation we don't expect there to be any text in the previous state
-                    // But just for prosterity, let's fade out the old value
-                    self.primary.label.alpha = 0
-                    
-                    self.transition.label.transform = .identity
-                    self.transition.label.alpha = 1
-                }
-                
-            case .rotateDown:
-                let translate: CGFloat = 12
-                
-                // Starting position for the new text
-                // It will rotate down into place
-                transition.label.alpha = 0
-                transition.label.transform = CGAffineTransform(translationX: 0, y: -translate)
-                
-                animator.addAnimations {
-                    // Fade out the current text and rotate it down
-                    self.primary.label.alpha = 0
-                    self.primary.label.transform = CGAffineTransform(translationX: 0, y: translate)
-                }
-                animator.addAnimations({
-                    // Fade in the new text and rotate down from the top
-                    self.transition.label.alpha = 1
-                    self.transition.label.transform = .identity
-                }, delayFactor: 0.5)
             }
         }
     }

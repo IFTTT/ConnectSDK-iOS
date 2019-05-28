@@ -77,6 +77,10 @@ public class ConnectButton: UIView {
         updateStyle()
     }
     
+    /// Creates a `UIViewPropertyAnimator` for the provided transition.
+    ///
+    /// - Parameter transition: The `Transition` to animate to.
+    /// - Returns: A `UIViewPropertyAnimator` configured for the transition.
     func animator(for transition: Transition) -> UIViewPropertyAnimator {
         let animator = UIViewPropertyAnimator(duration: transition.duration, curve: .easeInOut)
         if let state = transition.state {
@@ -88,8 +92,7 @@ public class ConnectButton: UIView {
         }
         
         if let footerValue = transition.footerValue {
-            footerLabelAnimator.transition(with: .crossfade,
-                                           updatedValue: footerValue,
+            footerLabelAnimator.transition(updatedValue: footerValue,
                                            addingTo: animator)
         }
         
@@ -99,12 +102,14 @@ public class ConnectButton: UIView {
     
     // MARK: - Interaction
     
+    /// The interaction for tapping or dragging the connect button on and off.
     var toggleInteraction = ToggleInteraction() {
         didSet {
             updateInteraction()
         }
     }
     
+    /// The interaction for email address entry.
     var emailInteraction = EmailInteraction()
     
     /// Shakes email horizontally to give a visual indication that it is invalid
@@ -247,7 +252,7 @@ public class ConnectButton: UIView {
         footerSelection.isEnabled = footerInteraction.isTapEnabled
     }
     
-    fileprivate func confirmEmail() {
+    private func confirmEmail() {
         let _ = emailEntryField.resignFirstResponder()
         emailInteraction.onConfirm?(emailEntryField.text ?? "")
     }
@@ -297,7 +302,7 @@ public class ConnectButton: UIView {
         footerLabelAnimator.configure(.attributed(initialFooterText))
     }
     
-    fileprivate let backgroundView = PillView()
+    private let backgroundView = PillView()
     
     // MARK: Email view
     
@@ -314,11 +319,11 @@ public class ConnectButton: UIView {
     /// The container view for the email button
     /// Provide a "track" on which the button is animated
     /// This scopes effects of layoutIfNeeded
-    fileprivate let emailConfirmButtonTrack = PassthroughView()
+    private let emailConfirmButtonTrack = PassthroughView()
     
-    fileprivate let emailConfirmButton = PillButton(UIImage())
+    private let emailConfirmButton = PillButton(UIImage())
     
-    fileprivate let emailEntryField: UITextField = {
+    private let emailEntryField: UITextField = {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
@@ -329,14 +334,14 @@ public class ConnectButton: UIView {
     
     // MARK: Text
     
-    fileprivate var primaryLabelAnimator = LabelAnimator {
+    private let primaryLabelAnimator = LabelAnimator {
         $0.textAlignment = .center
         $0.textColor = .white
         $0.font = Style.Font.connect
         $0.adjustsFontSizeToFitWidth = true
     }
     
-    fileprivate let footerLabelAnimator = LabelAnimator {
+    private let footerLabelAnimator = LabelAnimator {
         $0.numberOfLines = 1
         $0.textAlignment = .center
         $0.lineBreakMode = .byTruncatingMiddle
@@ -344,15 +349,15 @@ public class ConnectButton: UIView {
     
     // MARK: Progress bar
     
-    fileprivate let progressBar = ProgressBar()
+    private let progressBar = ProgressBar()
     
     // MARK: Switch control
     
-    fileprivate var switchControl = SwitchControl()
+    private let switchControl = SwitchControl()
     
     // MARK: Checkmark view
     
-    fileprivate let checkmark = CheckmarkView()
+    private let checkmark = CheckmarkView()
     
     
     // MARK: Layout
@@ -536,7 +541,7 @@ extension ConnectButton: ProgressBar {
 @available(iOS 10.0, *)
 private extension ConnectButton {
     
-    func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
+    private func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
         switch animationState {
         case let .loading(message):
             transitionToLoading(message: message, animator: animator)
@@ -548,7 +553,7 @@ private extension ConnectButton {
             transitionToConnect(service: service, message: message, animator: animator)
             
         case let .createAccount(message):
-            primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+            primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
             
         case let .slideToDisconnect(message):
             transitionToSlideToDisconnect(message: message, animator: animator)
@@ -607,7 +612,7 @@ private extension ConnectButton {
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
        
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
@@ -631,8 +636,7 @@ private extension ConnectButton {
                                             labelValue: LabelValue,
                                             animator: UIViewPropertyAnimator) {
         
-        primaryLabelAnimator.transition(with: .crossfade,
-                                        updatedValue: labelValue,
+        primaryLabelAnimator.transition(updatedValue: labelValue,
                                         insets: .standard,
                                         addingTo: animator)
         
@@ -674,8 +678,7 @@ private extension ConnectButton {
         emailConfirmButton.transform = CGAffineTransform(scaleX: 1 / scaleFactor, y: 1 / scaleFactor)
         emailConfirmButton.maskedEndCaps = .all // Match the switch knob at the start of the animation
         
-        primaryLabelAnimator.transition(with: .crossfade,
-                                        updatedValue: .none,
+        primaryLabelAnimator.transition(updatedValue: .none,
                                         addingTo: animator)
         
         progressBar.configure(with: nil)
@@ -760,7 +763,7 @@ private extension ConnectButton {
     }
     
     private func transitionToAccessingAccount(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: nil)
         progressBar.alpha = 1
@@ -771,7 +774,7 @@ private extension ConnectButton {
     }
     
     private func transitionToVerifyingAccount(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: nil)
         progressBar.alpha = 1
@@ -791,7 +794,7 @@ private extension ConnectButton {
     }
     
     private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
         
@@ -801,7 +804,7 @@ private extension ConnectButton {
     }
     
     private func transitionToCheckmark(service: Service, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .none, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .none, addingTo: animator)
         
         backgroundView.backgroundColor = service.brandColor
         
@@ -822,7 +825,7 @@ private extension ConnectButton {
     }
     
     private func transitionToConnecting(service: Service, message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
     
         backgroundView.backgroundColor = service.brandColor
         switchControl.knob.iconView.alpha = 1
@@ -839,7 +842,7 @@ private extension ConnectButton {
     private func transitionToConnected(service: Service, message: String, shouldAnimateKnob: Bool, animator: UIViewPropertyAnimator) {
         stopPulseAnimation() // If we canceled disconnect
         
-        primaryLabelAnimator.transition(with: .crossfade, updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
@@ -872,16 +875,14 @@ private extension ConnectButton {
     }
     
     private func transitionToSlideToDisconnect(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade,
-                                        updatedValue: .text(message),
+        primaryLabelAnimator.transition(updatedValue: .text(message),
                                         insets: .avoidRightKnob,
                                         addingTo: animator)
         pulseAnimateLabel(toAlpha: .partial)
     }
     
     private func transitionToDisconnecting(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade,
-                                        updatedValue: .text(message),
+        primaryLabelAnimator.transition(updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
         progressBar.configure(with: nil)
@@ -915,8 +916,7 @@ private extension ConnectButton {
     }
     
     private func transitionToDisconnected(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(with: .crossfade,
-                                        updatedValue: .text(message),
+        primaryLabelAnimator.transition(updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
     }
