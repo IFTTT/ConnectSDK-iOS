@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 /// Encapsulates the information needed to authenticate a `Connection`'s services.
 public struct ConnectionConfiguration {
     
