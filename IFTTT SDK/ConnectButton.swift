@@ -561,20 +561,14 @@ private extension ConnectButton {
         case let .disconnecting(message):
             transitionToDisconnecting(message: message, animator: animator)
             
-        case let .slideToConnect(message):
-            transitionToSlideToConnect(isOn: true, service: nil, labelValue: .text(message), animator: animator)
-
-        case let .slideToConnectService(service, message):
+        case let .slideToConnect(service, message):
             transitionToSlideToConnect(isOn: true, service: service, labelValue: .text(message), animator: animator)
             
         case let .enterEmail(service, suggestedEmail):
             transitionToEmail(service: service, suggestedEmail: suggestedEmail, animator: animator)
             
-        case let .accessingAccount(message):
-            transitionToAccessingAccount(message: message, animator: animator)
-        
-        case let .verifyingEmail(message):
-            transitionToVerifyingAccount(message: message, animator: animator)
+        case let .verifying(message):
+            transitionToVerifying(message: message, animator: animator)
             
         case let .continueToService(service, message):
             transitionToContinueToService(service: service, message: message, animator: animator)
@@ -762,18 +756,7 @@ private extension ConnectButton {
         }
     }
     
-    private func transitionToAccessingAccount(message: String, animator: UIViewPropertyAnimator) {
-        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
-        
-        progressBar.configure(with: nil)
-        progressBar.alpha = 1
-        
-        animator.addAnimations {
-            self.switchControl.alpha = 0
-        }
-    }
-    
-    private func transitionToVerifyingAccount(message: String, animator: UIViewPropertyAnimator) {
+    private func transitionToVerifying(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: nil)

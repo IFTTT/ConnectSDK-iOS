@@ -613,7 +613,7 @@ public class ConnectButtonController {
                 return initialButtonState
             }
             if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
-                return .buttonState(.slideToConnect(message: "button.state.verifying".localized))
+                return .buttonState(.slideToConnect(service: nil, message: "button.state.verifying".localized))
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
             }
@@ -678,16 +678,7 @@ public class ConnectButtonController {
     
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
         prepareActivationWebFlow(lookupMethod: lookupMethod)
-
-        let state: ConnectButton.AnimationState
-        switch lookupMethod {
-        case .email:
-            state = .verifyingEmail(message: "button.state.verifying".localized)
-        case .token:
-            state = .accessingAccount(message: "button.state.verifying".localized)
-        }
-        button.animator(for: .buttonState(state,
-                                          footerValue: FooterMessages.worksWithIFTTT.value)).perform()
+        button.animator(for: .buttonState(.verifying(message: "button.state.verifying".localized), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
 
