@@ -15,7 +15,7 @@ class PillButton: PillView {
     
     let imageView = UIImageView()
     
-    func onSelect(_ body: @escaping (() -> Void)) {
+    func onSelect(_ body: @escaping VoidClosure) {
         assert(selectable == nil, "PillButton may have a single select handler")
         selectable = Selectable(self, onSelect: body)
         selectable?.performHighlight = { [weak self] _, isHighlighted in

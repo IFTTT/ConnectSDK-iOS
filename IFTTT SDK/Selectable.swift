@@ -26,9 +26,9 @@ class Selectable: NSObject, UIGestureRecognizerDelegate {
     }
     
     private let gesture = SelectGestureRecognizer()
-    private var onSelect: () -> Void
+    private var onSelect: VoidClosure
     
-    init(_ view: UIView, onSelect: @escaping () -> Void) {
+    init(_ view: UIView, onSelect: @escaping VoidClosure) {
         self.onSelect = onSelect
         
         super.init()

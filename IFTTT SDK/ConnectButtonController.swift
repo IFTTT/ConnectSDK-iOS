@@ -365,12 +365,12 @@ public class ConnectButtonController {
     private final class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
         /// Callback when the Safari VC is dismissed by the user
         /// This triggers a cancelation event
-        let onCancelation: () -> Void
+        let onCancelation: VoidClosure
 
         /// Create a new SafariDelegate
         ///
         /// - Parameter onCancelation: The cancelation handler
-        init(onCancelation: @escaping () -> Void) {
+        init(onCancelation: @escaping VoidClosure) {
             self.onCancelation = onCancelation
         }
 
@@ -607,8 +607,8 @@ public class ConnectButtonController {
 
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
-
-        button.toggleInteraction.toggleTransition = { [weak self] in
+        
+        let transition: (() -> ConnectButton.Transition)? = { [weak self] in
             guard let self = self else {
                 return initialButtonState
             }
@@ -618,8 +618,8 @@ public class ConnectButtonController {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
             }
         }
-
-        button.toggleInteraction.onToggle = { [weak self] in
+        
+        let toggle: VoidClosure = { [weak self] in
             guard let self = self else { return }
             if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
@@ -627,6 +627,12 @@ public class ConnectButtonController {
                 self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))
             }
         }
+
+        button.toggleInteraction.toggleDragTransition = transition
+        button.toggleInteraction.toggleTapTransition = transition
+
+        button.toggleInteraction.onToggleTap = toggle
+        button.toggleInteraction.onToggleDrag = toggle
 
         button.emailInteraction.onConfirm = { [weak self] email in
             guard let self = self else {
@@ -787,28 +793,43 @@ public class ConnectButtonController {
 
     private func transitionToConnected(connection: Connection, animated: Bool) {
         button.animator(for: .buttonState(buttonState(forConnectionStatus: .enabled, service: connection.connectingService, shouldAnimateKnob: animated), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
-
+        
         button.footerInteraction.isTapEnabled = true
         button.footerInteraction.onSelect = { [weak self] in
             self?.showAboutPage()
         }
-
+        
         // Toggle from here goes to disconnection confirmation
         // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
         button.toggleInteraction.isTapEnabled = true
-
-        button.toggleInteraction.toggleTransition = {
+        button.toggleInteraction.isDragEnabled = true
+        button.toggleInteraction.resistance = .heavy
+        
+        button.toggleInteraction.toggleTapTransition = {
             return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
                                 footerValue: FooterMessages.worksWithIFTTT.value)
         }
-
-        button.toggleInteraction.onToggle = { [weak self] in
+        
+        button.toggleInteraction.toggleDragTransition = {
+            return .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
+                                footerValue: FooterMessages.worksWithIFTTT.value)
+        }
+        
+        button.toggleInteraction.onToggleTap = { [weak self] in
             self?.transition(to: .confirmDisconnect)
         }
+        
+        button.toggleInteraction.onToggleDrag = { [weak self] in
+            self?.transition(to: .processDisconnect)
+        }
+        
+        button.toggleInteraction.onReverseDrag = { [weak self] in
+            self?.transition(to: .connected(animated: false))
+        }
     }
-
+    
     private func transitionToConfirmDisconnect() {
-       let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
+        let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
             // Revert state if user doesn't follow through
             self?.transition(to: .connected(animated: false))
             timer.invalidate()
@@ -818,13 +839,13 @@ public class ConnectButtonController {
         button.toggleInteraction = .init(isTapEnabled: false,
                                          isDragEnabled: true,
                                          resistance: .heavy,
-                                         toggleTransition: {
+                                         toggleDragTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                                                          footerValue: FooterMessages.worksWithIFTTT.value) },
-                                         onToggle: { [weak self] in
+                                                         footerValue: FooterMessages.worksWithIFTTT.value) },
+                                         onToggleDrag: { [weak self] in
                                             self?.transition(to: .processDisconnect)
                                             timer.invalidate() },
-                                         onReverse: { [weak self] in
+                                         onReverseDrag: { [weak self] in
                                             self?.transition(to: .connected(animated: false))
                                             timer.invalidate() })
         
