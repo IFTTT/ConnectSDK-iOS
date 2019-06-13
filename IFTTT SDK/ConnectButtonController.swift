@@ -365,12 +365,12 @@ public class ConnectButtonController {
     private final class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
         /// Callback when the Safari VC is dismissed by the user
         /// This triggers a cancelation event
-        let onCancelation: () -> Void
+        let onCancelation: VoidClosure
 
         /// Create a new SafariDelegate
         ///
         /// - Parameter onCancelation: The cancelation handler
-        init(onCancelation: @escaping () -> Void) {
+        init(onCancelation: @escaping VoidClosure) {
             self.onCancelation = onCancelation
         }
 
@@ -531,7 +531,6 @@ public class ConnectButtonController {
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
     /// - connected: The `Connection` was successfully authorized.
-    /// - confirmDisconnect: The "Slide to disconnect" state, asking for the user's confirmation to disable the `Connection`.
     /// - processDisconnect: Disable the `Connection`.
     /// - disconnected: The `Connection` was disabled.
     enum ActivationStep {
@@ -544,7 +543,6 @@ public class ConnectButtonController {
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
-        case confirmDisconnect
         case processDisconnect
         case disconnected
     }
@@ -582,8 +580,6 @@ public class ConnectButtonController {
             transitionToCanceled(connection: connection)
         case .connected(let animated):
             transitionToConnected(connection: connection, animated: animated)
-        case .confirmDisconnect:
-            transitionToConfirmDisconnect()
         case .processDisconnect:
             transitionToProccessDisconnect()
         case .disconnected:
@@ -607,8 +603,8 @@ public class ConnectButtonController {
 
         button.toggleInteraction.isTapEnabled = true
         button.toggleInteraction.isDragEnabled = true
-
-        button.toggleInteraction.toggleTransition = { [weak self] in
+        
+        let transition: (() -> ConnectButton.Transition)? = { [weak self] in
             guard let self = self else {
                 return initialButtonState
             }
@@ -618,8 +614,8 @@ public class ConnectButtonController {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
             }
         }
-
-        button.toggleInteraction.onToggle = { [weak self] in
+        
+        let toggle: VoidClosure = { [weak self] in
             guard let self = self else { return }
             if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
@@ -627,6 +623,12 @@ public class ConnectButtonController {
                 self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))
             }
         }
+
+        button.toggleInteraction.toggleDragTransition = transition
+        button.toggleInteraction.toggleTapTransition = transition
+
+        button.toggleInteraction.onToggleTap = toggle
+        button.toggleInteraction.onToggleDrag = toggle
 
         button.emailInteraction.onConfirm = { [weak self] email in
             guard let self = self else {
@@ -793,41 +795,28 @@ public class ConnectButtonController {
             self?.showAboutPage()
         }
 
-        // Toggle from here goes to disconnection confirmation
-        // When the user taps the switch, they are asked to confirm disconnection by dragging the switch into the off position
-        button.toggleInteraction.isTapEnabled = true
-
-        button.toggleInteraction.toggleTransition = {
-            return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
-                                footerValue: FooterMessages.worksWithIFTTT.value)
-        }
-
-        button.toggleInteraction.onToggle = { [weak self] in
-            self?.transition(to: .confirmDisconnect)
-        }
-    }
-
-    private func transitionToConfirmDisconnect() {
        let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
             // Revert state if user doesn't follow through
             self?.transition(to: .connected(animated: false))
             timer.invalidate()
         }
-        
+
         // The user must slide to deactivate the Connection
-        button.toggleInteraction = .init(isTapEnabled: false,
+        button.toggleInteraction = .init(isTapEnabled: true,
                                          isDragEnabled: true,
                                          resistance: .heavy,
-                                         toggleTransition: {
+                                         toggleDragTransition: {
                                             .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                                                          footerValue: FooterMessages.worksWithIFTTT.value) },
-                                         onToggle: { [weak self] in
+                                                                footerValue: FooterMessages.worksWithIFTTT.value) },
+                                         toggleTapTransition: {
+                                            .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
+                                                         footerValue: FooterMessages.worksWithIFTTT.value) },
+                                         onToggleDrag: { [weak self] in
                                             self?.transition(to: .processDisconnect)
                                             timer.invalidate() },
-                                         onReverse: { [weak self] in
+                                         onReverseDrag: { [weak self] in
                                             self?.transition(to: .connected(animated: false))
                                             timer.invalidate() })
-        
     }
 
     private func transitionToProccessDisconnect() {

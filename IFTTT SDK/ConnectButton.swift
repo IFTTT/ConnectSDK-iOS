@@ -146,23 +146,26 @@ public class ConnectButton: UIView {
     
     private var currentToggleAnimation: UIViewPropertyAnimator?
     
-    private func getToggleAnimation() -> UIViewPropertyAnimator? {
+    private func getToggleAnimation(isTap: Bool) -> UIViewPropertyAnimator? {
         if currentToggleAnimation != nil {
             return currentToggleAnimation
         }
         
-        guard let transition = toggleInteraction.toggleTransition?() else {
+        let transition = isTap ? toggleInteraction.toggleTapTransition : toggleInteraction.toggleDragTransition
+        guard let value = transition?() else {
             return nil
         }
         
-        let animator = self.animator(for: transition)
+        let animator = self.animator(for: value)
         animator.addCompletion { position in
             if position == .end {
-                self.toggleInteraction.onToggle?()
+                let toggleClosure = isTap ? self.toggleInteraction.onToggleTap : self.toggleInteraction.onToggleDrag
+                toggleClosure?()
             }
             
             if position == .start {
-                self.toggleInteraction.onReverse?()
+                let reverseClosure = isTap ? self.toggleInteraction.onReverseTap : self.toggleInteraction.onReverseDrag
+                reverseClosure?()
             }
         }
         return animator
@@ -170,7 +173,7 @@ public class ConnectButton: UIView {
     
     @objc private func handleSwitchTap(_ gesture: SelectGestureRecognizer) {
         if gesture.state == .ended {
-            if let animation = getToggleAnimation() {
+            if let animation = getToggleAnimation(isTap: true) {
                 animation.startAnimation()
                 currentToggleAnimation = nil
             }
@@ -178,7 +181,7 @@ public class ConnectButton: UIView {
     }
     
     @objc private func handleSwitchDrag(_ gesture: UIPanGestureRecognizer) {
-        guard let animation = getToggleAnimation() else {
+        guard let animation = getToggleAnimation(isTap: false) else {
             return
         }
         currentToggleAnimation = animation
@@ -233,10 +236,7 @@ public class ConnectButton: UIView {
         
         toggleTapGesture.delaysTouchesBegan = true
         toggleTapGesture.delegate = self
-        toggleTapGesture.performHighlight = { [weak self] _, isHighlighted in
-            self?.backgroundView.isHighlighted = isHighlighted
-        }
-        
+
         switchControl.knob.addGestureRecognizer(toggleDragGesture)
         toggleDragGesture.delegate = self
         

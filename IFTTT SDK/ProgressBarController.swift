@@ -78,7 +78,7 @@ final class ProgressBarController {
     /// - Parameters:
     ///   - minimumDuration: The amount of time you would like to wait.
     ///   - completionHandler: Called when the amount of time has passed.
-    func wait(until minimumDuration: TimeInterval, _ completionHandler: @escaping () -> Void) {
+    func wait(until minimumDuration: TimeInterval, _ completionHandler: @escaping VoidClosure) {
         let timeTillMinimumDuration = max(0, minimumDuration - currentDuration)
         DispatchQueue.main.asyncAfter(deadline: .now() + timeTillMinimumDuration) {
             completionHandler()
@@ -89,7 +89,7 @@ final class ProgressBarController {
     /// If the progress animation hasn't finished, this waits then calls the completion handler.
     ///
     /// - Parameter completionHandler: Called when the progress bar reaches the end
-    func finish(extendingDurationBy additionalDuration: TimeInterval = 0, _ completionHandler: @escaping () -> Void) {
+    func finish(extendingDurationBy additionalDuration: TimeInterval = 0, _ completionHandler: @escaping VoidClosure) {
         guard let currentAnimation = currentAnimation else {
             completionHandler()
             return

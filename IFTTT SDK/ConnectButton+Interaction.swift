@@ -57,36 +57,55 @@ extension ConnectButton {
         /// How easy is it to throw the switch into the next position.
         var resistance: Resistance
         
-        /// An optional next button state when toggling the connect button's switch.
-        var toggleTransition: (() -> Transition)?
+        /// An optional next button state when toggling the connect button's switch via dragging the switch.
+        var toggleDragTransition: (() -> Transition)?
         
-        /// An optional callback when the switch is flipped.
-        var onToggle: (() -> Void)?
+        /// An optional next button state when toggling the connect button's switch via tapping the connect button switch.
+        var toggleTapTransition: (() -> Transition)?
         
-        /// An optional callback when the switch is flipped but we reversed the animation to end in the start position.
-        var onReverse: (() -> Void)?
+        /// An optional callback when the switch is flipped via tapping the connection button's switch.
+        var onToggleTap: VoidClosure?
         
+        /// An optional callback when the switch is flipped but we reversed the animation to end in the start position via tapping the connection button's switch.
+        var onReverseTap: VoidClosure?
+        
+        /// An optional callback when the switch is flipped via dragging the switch.
+        var onToggleDrag: VoidClosure?
+        
+        /// An optional callback when the switch is flipped but we reversed the animation to end in the start position via dragging the switch.
+        var onReverseDrag: VoidClosure?
+    
+        /// An optional
         /// Creates a `ToggleInteraction`.
         ///
         /// - Parameters:
         ///   - isTapEnabled: Whether the switch can be tapped. Defaults to false.
         ///   - isDragEnabled: Whether the switch can be dragged. Defaults to false.
         ///   - resistance: How easy is it to throw the switch into the next position. Defaults to light.
-        ///   - toggleTransition: An optional next button state when toggling the connect button's switch. Defaults to nil.
-        ///   - onToggle: An optional callback when the switch is flipped. Defaults to nil.
-        ///   - onReverse: An optional callback when the switch is flipped but we reversed the animation to end in the start position. Defaults to nil.
+        ///   - toggleDragTransition: An optional next button state when toggling the connect button's switch via drag. Defaults to nil.
+        ///   - toggleTapTransition: An optional next button state when toggling the connect button's switch via tap. Defaults to nil.
+        ///   - onToggleTap: An optional callback when the switch is flipped via tap. Defaults to nil.
+        ///   - onReverseTap: An optional callback when the switch is flipped via tap but we reversed the animation to end in the start position. Defaults to nil.
+        ///   - onToggleDrag: An optional callback when the switch is flipped via dragging. Defaults to nil.
+        ///   - onReverseDrag: An optional callback when the switch is flipped via dragging but we reversed the animation to end in the start position. Defaults to nil.
         init(isTapEnabled: Bool = false,
              isDragEnabled: Bool = false,
              resistance: Resistance = .light,
-             toggleTransition: (() -> Transition)? = nil,
-             onToggle: (() -> Void)? = nil,
-             onReverse: (() -> Void)? = nil) {
+             toggleDragTransition: (() -> Transition)? = nil,
+             toggleTapTransition: (() -> Transition)? = nil,
+             onToggleTap: VoidClosure? = nil,
+             onReverseTap: VoidClosure? = nil,
+             onToggleDrag: VoidClosure? = nil,
+             onReverseDrag: VoidClosure? = nil) {
             self.isTapEnabled = isTapEnabled
             self.isDragEnabled = isDragEnabled
             self.resistance = resistance
-            self.toggleTransition = toggleTransition
-            self.onToggle = onToggle
-            self.onReverse = onReverse
+            self.toggleDragTransition = toggleDragTransition
+            self.toggleTapTransition = toggleTapTransition
+            self.onToggleTap = onToggleTap
+            self.onReverseTap = onReverseTap
+            self.onToggleDrag = onToggleDrag
+            self.onReverseDrag = onReverseDrag
         }
     }
     
@@ -104,6 +123,6 @@ extension ConnectButton {
         var isTapEnabled: Bool = false
         
         /// An optional callback when the interaction is tapped.
-        var onSelect: (() -> Void)?
+        var onSelect: VoidClosure?
     }
 }
