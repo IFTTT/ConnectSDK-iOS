@@ -8,6 +8,7 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 - [Installation](#installation)
 - [Setup](#setup)
 - [The Connect Button](#the-connect-button)
+- [Authentication](#authentication)
 - [Advanced](#advanced)
 
 
@@ -106,7 +107,8 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
 * `userToken`: This is the IFTTT user token for your service. This token allows you to get IFTTT user data related to only your service. For example, include this token to get the enabled status of Connections for your user. It is also the same token that is used to make trigger, query, and action requests for Connections on behalf of the user. 
 
 **How to get a `userToken`**
-1) You should retrieve it from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create an endpoint on your own server to access the user's IFTTT service token. See https://platform.ifttt.com/docs/connection_api#get-a-user-token.
+1) You should retrieve it from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create an endpoint on your own server to access the user's IFTTT service token. See [Authentication](#authentication) for more information on this.
+
 2) Additionally, `ConnectButtonControllerDelegate` returns the user token when a connection is activated. 
 You should support both methods to receive the `userToken` since the user may have already connected your service to IFTTT.
 
@@ -234,6 +236,63 @@ public init(connectButton: ConnectButton,
 ```
 
 That's it! You're ready to start activating programmable Connections directly in your app. 
+
+
+## Authentication
+ To enable the SDK to retrieve connection status for a specific user, as well as allowing the SDK to facilitate disabling a connection, it needs to be user-authenticated, which requires an IFTTT user token.
+
+  A user-authenticated request is one that includes an `Authorization` header containing a user-specific token that IFTTT has issued to your service. This approach lets you make calls to the API from places like mobile apps or browsers where it would be inappropriate to expose your service key.
+
+  ### Exchange a user token
+ **URL**: `POST https://connect.ifttt.com/v2/user_token`
+
+  This endpoint can be used to obtain a token for a specific user, allowing you to make user-authenticated requests. 
+
+  ##### Example: Get a user token, Service-authenticated with user ID and OAuth token
+ <div class="example-list">
+   <ul>
+     <li>
+       <span class="example-list-heading">HTTP Request</span>
+       <code>
+ <pre>
+ POST /v2/user_token?user_id=123&access_token=abc
+ Host: connect.ifttt.com
+ IFTTT-Service-Key: 6e7c8978c07a3b5918a237b9b5b1bb70
+ Content-Type: application/json
+ </pre>
+       </code>
+     </li>
+     <li>
+       <span class="example-list-heading">Response</span>
+       <code>
+ <pre>
+ {
+   "type": "user_token",
+   "user_token": "e1hMBWw44mJM902c6ye9mmuS3nd4A_8eTCU99D4a5KQW7cT1"
+ }
+ </pre>
+       </code>
+     </li>
+   </ul>
+ </div>
+
+  To clarify the variables used in this example:
+
+  |Variable|Value|Details|
+ |--------|-----|-------|
+ | `user_id` | `123` | The id of the user on your service, which must match the id provided by your [User information] endpoint |
+ | `access_token` | `abc` | The OAuth access token that you issued to IFTTT on behalf of the user when they connected their IFTTT account to your service |
+ | `IFTTT-Service-Key` | `6e7...` |  Your secret service key |
+ | `user_token` | `e1h...` | The new user token you'll use to make requests to the IFTTT API on behalf of the IFTTT user |
+
+  Within these parameters,
+ * You can find the `IFTTT-Service-Key` in the [API tab](https://platform.ifttt.com/mkt/api) of the IFTTT Platform under the Service Key heading. You can use this approach when you’re making calls from your backend servers to the API.
+ * `access_token` is **the OAuth access token that you issued to IFTTT on behalf of this user** when they connected their IFTTT account to your service. This lets us verify the request more stringently than if you just provided your service key, without making the user go through a redundant OAuth flow.
+
+  ### Important note about exchanging the user token
+ Your IFTTT service key should be kept secret at all time. The service key can be used to make calls on behalf of any user, but a user token is limited to a single user. This makes user tokens much less sensitive. On the other hand, you’d never want to embed your service key into a mobile app because it could be read by end users.
+
+  Because of this, **we strongly encourage you to** call this API on your backend, and return the user token back to your application, instead of making the API call directly within your application.
 
 
 ## Advanced
