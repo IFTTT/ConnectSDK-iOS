@@ -87,8 +87,14 @@ Use the `ConnectionRedirectHandler` to process these redirects.
 **Note:** the `redirectURL` provide must be the same url provided in `ConnectionConfiguration` and used by `ConnectButtonController`.
 
 ```
-func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-	if connectionRedirectHandler.handleApplicationRedirect(url: url, options: options) {
+func application(_ 
+app: UIApplication, 
+open url: URL, 
+options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+	if connectionRedirectHandler.handleApplicationRedirect(
+    url: url, 
+    options: options
+  ) {
 	    // This is an IFTTT SDK redirect, it will take over from here
 	    return true
 	} else {
@@ -117,19 +123,29 @@ You should support both methods to receive the `userToken` since the user may ha
 ```
 struct Credentials: ConnectionCredentialProvider {
     
-    /// Provides the partner's OAuth code for a service during authentication with a `Connection`.
+    /*
+      Provides the partner's OAuth code for a service 
+      during authentication with a `Connection`.
+    */
     var oauthCode: String { 
     	return theOAuthCodeForYourService
     }
     
-    /// Provides the service's token associated with IFTTT.
+    /* 
+      Provides the service's token associated with IFTTT.
+    */
     var userToken: String? { 
     	return yourAppsKeychain["key_for_ifttt_token"]
     }
     
-    /// Provides the invite code for testing an unpublished `Connection`'s services with the IFTTT platform.
+    /* 
+      Provides the invite code for testing an unpublished 
+      `Connection`'s services with the IFTTT platform.
+    */
     var inviteCode: String? { 
-    	return "the invite code from platform.ifttt.com or nil if your service is published"
+    	return """
+      Invite code from platform.ifttt.com or nil if your service is published
+      """
     }
 }
 ```
@@ -191,8 +207,10 @@ func presentingViewController(for connectButtonController: ConnectButtonControll
 When a `Connection` activation finishes, the controller calls this delegate method to inform your app. On success, this method passes back the updated `Connection` and the IFTTT user token. It is important that you save the this token at this point. You'll need to pass it with `ConnectionCredentialProvider`, the next time the user visits a Connection page in your app. 
 
 ```
-func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishActivationWithResult result: Result<ConnectionActivation, ConnectButtonControllerError>) {
+func connectButtonController(_ 
+  connectButtonController: ConnectButtonController,
+  didFinishActivationWithResult 
+  result: Result<ConnectionActivation, ConnectButtonControllerError>) {
     switch result {
         case .success(let activation):
             // A Connection was activated and we received the user IFTTT token
@@ -210,14 +228,16 @@ func connectButtonController(_ connectButtonController: ConnectButtonController,
 Finally there is a callback when a Connection is disabled. You may want to adjust your UI. 
 
 ```
-func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
+func connectButtonController(_ 
+  connectButtonController: ConnectButtonController,
+  didFinishDeactivationWithResult
+  result: Result<Connection, ConnectButtonControllerError>) {
      switch result {
         case .success(let updatedConnection):
             // The user disabled this Connection
             
         case .failure(let error):
-            // Something went wrong while the user attempted to disable the Connection 
+            // Something went wrong while disabling the Connection 
         }
 }
 ```
@@ -304,17 +324,28 @@ You may use `ConnectionNetworkController` directly to fetch a `Connection` from 
 * `Connection.Request` handles creating the necessary `URLRequest`s.
 
 ```
-connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: yourCredentialProvider)) { response
+connectionNetworkController.start(
+  request: .fetchConnection(
+    for: id, 
+    credentialProvider: yourCredentialProvider
+  )
+) { response
 	switch response.result {
 	case .success(let connection):
-		let config = ConnectionConfiguration(connection: connection,
-                                     suggestedUserEmail: yourUsersEmail,
-                                     credentialProvider: yourCredentialProvider,
-                                     connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService)
+		let config = ConnectionConfiguration(
+      connection: connection,
+      suggestedUserEmail: yourUsersEmail,
+      credentialProvider: yourCredentialProvider,
+      connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService
+    )
 				     
-		self.connectButtonController = ConnectButtonController(connectButton: self.connectButton,
-								       connectionConfiguration: config,
-								       delegate: self)
+    let controller = ConnectButtonController(
+      connectButton: self.connectButton,
+      connectionConfiguration: config,
+      delegate: self
+    )
+    
+		self.connectButtonController = controller
 	case .failure(let error):
 		break
 	}
