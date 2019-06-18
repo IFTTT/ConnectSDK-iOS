@@ -199,7 +199,9 @@ This configuration type provides information about the `Connection` that you wis
 We need access to the current view controller periodically to open instances of Safari for OAuth flows.
 In this method, simply return the view controller containing the `ConnectButton`.
 ```
-func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
+func presentingViewController(
+  for connectButtonController: ConnectButtonController
+) -> UIViewController {
 	return theViewControllerContainingTheConnectButton
 }
 ```
