@@ -44,8 +44,6 @@ pod 'ConnectSDK'
 github "IFTTT/ConnectSDK-iOS"
 ```
 
-
-
 ### Manually
 
 #### Embedded Framework
