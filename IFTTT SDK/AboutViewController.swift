@@ -381,8 +381,19 @@ private extension AboutViewController {
         }
         
         func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-            onLinkSelected?(URL)
+            updateLinkText(with: .white, textView: textView)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.updateLinkText(with: Constants.Color.mediumGrey, textView: textView)
+                self.onLinkSelected?(URL)
+            }
             return false
+        }
+        
+        private func updateLinkText(with color: UIColor, textView: UITextView) {
+            textView.linkTextAttributes = [
+                NSAttributedString.Key.foregroundColor: color,
+                NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+            ]
         }
     }
 }
