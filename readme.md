@@ -28,6 +28,14 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 
 ## Installation
 
+### CocoaPods
+
+[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate the Connect SDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+pod 'ConnectSDK'
+```
+
 ### Manually
 
 #### Embedded Framework
