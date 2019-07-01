@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import IFTTT_SDK
+import IFTTTConnectSDK
 
 class ConnectionViewController: UIViewController {
     

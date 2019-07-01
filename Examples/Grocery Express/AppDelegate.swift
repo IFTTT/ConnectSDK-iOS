@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import IFTTT_SDK
+import IFTTTConnectSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

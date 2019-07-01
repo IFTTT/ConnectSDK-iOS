@@ -1,0 +1,6 @@
+module IFTTTConnectSDK {
+  umbrella header "IFTTTConnectSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}
