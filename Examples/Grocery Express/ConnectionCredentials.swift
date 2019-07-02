@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import IFTTT_SDK
+import IFTTTConnectSDK
 
 /// Provides the user's credentials related to IFTTT Connections
 class ConnectionCredentials: ConnectionCredentialProvider, CustomStringConvertible {

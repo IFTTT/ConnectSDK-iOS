@@ -1,0 +1,16 @@
+PODS:
+  - IFTTTConnectSDK (2.0.0-alpha6)
+
+DEPENDENCIES:
+  - IFTTTConnectSDK (from `./../`)
+
+EXTERNAL SOURCES:
+  IFTTTConnectSDK:
+    :path: "./../"
+
+SPEC CHECKSUMS:
+  IFTTTConnectSDK: cdcc839d9a15fcaafd49405cbc2630f2a948cf09
+
+PODFILE CHECKSUM: bce5595f438db763904b33e0c421d5ed51ff3ad8
+
+COCOAPODS: 1.7.3

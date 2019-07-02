@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import IFTTT_SDK
+import IFTTTConnectSDK
 
 /// Access current app settings
 struct Settings {

@@ -10,8 +10,17 @@ import UIKit
 
 @available(iOS 10.0, *)
 extension Bundle {
+    private static let ResourceName = "IFTTTConnectSDK"
+    private static let BundleExtensionName = "bundle"
+    
     static var sdk: Bundle {
-        return Bundle(for: ConnectButton.self)
+        let connectButtonBundle = Bundle(for: ConnectButton.self)
+        guard let urlForBundle = connectButtonBundle.url(forResource: ResourceName, withExtension: BundleExtensionName),
+            let bundle = Bundle(url: urlForBundle) else {
+            fatalError("Bundle missing. Make sure bundle is setup properly for \(ResourceName).")
+        }
+        
+        return bundle
     }
 }
 

@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-  spec.name         = "ConnectSDK"
+  spec.name         = "IFTTTConnectSDK"
   spec.version      = "2.0.0-alpha6"
   spec.summary      = "Allows your users to activate programmable IFTTT Connections directly in your app."
   spec.description  = <<-DESC
@@ -14,5 +14,8 @@ Pod::Spec.new do |spec|
   spec.swift_version = "5.0"
   spec.source       = { :git => "https://github.com/IFTTT/ConnectSDK-iOS.git",  :tag => "#{spec.version}" }
   spec.source_files  = "IFTTT SDK/**/*.swift"
-  spec.resources = ["IFTTT SDK/Assets.xcassets", "IFTTT SDK/Localizable.strings"]
+  spec.resource_bundles = {
+    'IFTTTConnectSDK' => ['IFTTT SDK/Assets.xcassets']
+  }
+  spec.resources = 'IFTTT SDK/Localizable.strings'
 end
