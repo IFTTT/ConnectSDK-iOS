@@ -13,15 +13,11 @@ extension ConnectButton {
     
     /// Adjusts the button for a white or black background
     ///
-    /// - light: Style the button for a white background (Default)
-    /// - dark: Style the button for a black background
+    /// - light: Style the button for a white background
     public enum Style {
         
-        /// Style the button for a white background (Default)
+        /// Style the button for a white background
         case light
-        
-        /// Style the button for a black background
-        case dark
         
         struct Font {
             static let connect = UIFont(name: "AvenirNext-Bold", size: 24)!
@@ -32,10 +28,16 @@ extension ConnectButton {
         var footerColor: UIColor {
             switch self {
             case .light:
-                return UIColor(white: 0, alpha: 0.32)
-            case .dark:
-                return UIColor(white: 1, alpha: 0.32)
+                return lightColorFooter()
             }
+        }
+        
+        private func lightColorFooter() -> UIColor {
+            return UIColor(white: 0, alpha: 0.32)
+        }
+        
+        private func darkColorFooter() -> UIColor {
+            return UIColor(white: 1, alpha: 0.32)
         }
     }
 }

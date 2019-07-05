@@ -15,27 +15,9 @@ import UIKit
 public class ConnectButton: UIView {
     
     /// Adjust the button's style
-    public var style: Style {
+    private var style: Style {
         didSet {
             updateStyle()
-        }
-    }
-    
-    /// When set, the `ConnectButton`'s style is `light`
-    /// Light style is appropriate for use on a light colored background
-    /// When not set, the `ConnectButton`'s style is `dark`
-    /// Dark style is appropriate for use on a dark background
-    /// This wraps `style` for use in Storyboards
-    /// If adjusting programatically, consider using `style`
-    @IBInspectable
-    public var isLightStyle: Bool {
-        get { return style == .light }
-        set {
-            if newValue {
-                style = .light
-            } else {
-                style = .dark
-            }
         }
     }
     
@@ -53,11 +35,11 @@ public class ConnectButton: UIView {
         }
     }
     
+    ///
     /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.
     ///
-    /// - Parameter style: Adjust the buttons background for light and dark backgrounds. Defaults to a light style.
-    public init(style: Style = .light) {
-        self.style = style
+    public init() {
+        style = .light
         super.init(frame: .zero)
         createLayout()
         updateStyle()
@@ -265,29 +247,7 @@ public class ConnectButton: UIView {
         
         switch style {
         case .light:
-            emailConfirmButton.backgroundColor = .black
-            emailConfirmButton.imageView.tintColor = .white
-            emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
-            
-            footerLabelAnimator.primary.label.textColor = style.footerColor
-            footerLabelAnimator.transition.label.textColor = style.footerColor
-            
-            backgroundView.border = .init(color: .clear, width: Layout.borderWidth)
-            
-        case .dark:
-            emailConfirmButton.backgroundColor = .white
-            emailConfirmButton.imageView.tintColor = .black
-            // Add a shadow to the left side of the button to delineate it from the email field background
-            let layer = emailConfirmButton.layer
-            layer.shadowColor = UIColor.black.cgColor
-            layer.shadowOpacity = 0.2
-            layer.shadowRadius = 5
-            layer.shadowOffset = CGSize(width: -2, height: 0)
-            
-            footerLabelAnimator.primary.label.textColor = style.footerColor
-            footerLabelAnimator.transition.label.textColor = style.footerColor
-            
-            backgroundView.border = .init(color: Color.border, width: Layout.borderWidth)
+            applyLightStyle()
         }
     }
     
@@ -696,10 +656,8 @@ private extension ConnectButton {
             self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
             
             switch self.style {
-            case .dark:
-                self.switchControl.knob.backgroundColor = .white
             case .light:
-                self.switchControl.knob.backgroundColor = .black
+                self.updateKnobForLightStyle()
             }
         }, delayFactor: 0.25)
         
@@ -902,5 +860,40 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(updatedValue: .text(message),
                                         insets: .standard,
                                         addingTo: animator)
+    }
+    
+    private func applyLightStyle() {
+        emailConfirmButton.backgroundColor = .black
+        emailConfirmButton.imageView.tintColor = .white
+        emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
+        
+        footerLabelAnimator.primary.label.textColor = style.footerColor
+        footerLabelAnimator.transition.label.textColor = style.footerColor
+        
+        backgroundView.border = .init(color: .clear, width: Layout.borderWidth)
+    }
+    
+    private func applyDarkStyle() {
+        emailConfirmButton.backgroundColor = .white
+        emailConfirmButton.imageView.tintColor = .black
+        // Add a shadow to the left side of the button to delineate it from the email field background
+        let layer = emailConfirmButton.layer
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.2
+        layer.shadowRadius = 5
+        layer.shadowOffset = CGSize(width: -2, height: 0)
+        
+        footerLabelAnimator.primary.label.textColor = style.footerColor
+        footerLabelAnimator.transition.label.textColor = style.footerColor
+        
+        backgroundView.border = .init(color: Color.border, width: Layout.borderWidth)
+    }
+    
+    private func updateKnobForLightStyle() {
+        switchControl.knob.backgroundColor = .black
+    }
+    
+    private func updateKnobForDarkStyle() {
+        switchControl.knob.backgroundColor = .white
     }
 }
