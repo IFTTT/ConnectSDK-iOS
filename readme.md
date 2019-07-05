@@ -178,15 +178,9 @@ The Connect Button provides a consistent and simple way for your users to activa
 ### Layout and customization
 The Connect Button is designed to fit into your UI just like any `UIKit` control. There are a few things you should know when creating the layout. 
 
-1) The `ConnectButton` has 2 styles for placing it on a light or dark background
-- Set this in code with `connectButton.style = .dark` 
-- Or set this in Storyboard by setting `isLightStyle` in the inspector
-
+1) The `ConnectButton` is designed to be placed on a light background.
 *Light style*
 ![Light style](DocumentationAssets/button-light-style.jpeg) 
-
-*Dark style*
-![Dark style](DocumentationAssets/button-dark-style.jpeg)
 
 2) The `ConnectButton` has a fixed height of 70 and a maximum width of 329
 - The actual height of the `ConnectButton` with footer text will be slightly larger than this to accommodate the space for the text. You should allow the `ConnectButton` to calculate its height rather than setting any layout constraints on this as this will result in an invalid layout. 
