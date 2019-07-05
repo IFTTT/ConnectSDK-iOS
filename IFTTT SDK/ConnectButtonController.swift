@@ -153,6 +153,14 @@ public class ConnectButtonController {
     }
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
+        let emailValidator = EmailValidator()
+
+        if !DeepLink.isIftttAppAvailable && !emailValidator.validate(with: connectionConfiguration.suggestedUserEmail) {
+            assertionFailure("Unable to display connect button. This will only occur if the app is not installed and the email address is invalid.")
+            button.isHidden = true
+            return
+        }
+        
         button.minimumFooterLabelHeight = FooterMessages.estimatedMaximumTextHeight
        
         guard let connection = connection else {
