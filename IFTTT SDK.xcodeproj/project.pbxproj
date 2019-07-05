@@ -124,13 +124,8 @@
 		FC2573122139E8CC0065AAD6 /* ConnectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButton.swift; sourceTree = "<group>"; };
 		FC28D7E42225B1E900D84A1B /* ServiceIconsNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceIconsNetworkController.swift; sourceTree = "<group>"; };
 		FC361B60224D872D0078B153 /* ProgressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarController.swift; sourceTree = "<group>"; };
-		FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
-		FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FC425EBA22721F130020967F /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
-		FC50FB1E21E69D67005D4152 /* TokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRequest.swift; sourceTree = "<group>"; };
 		FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectButtonController.swift; sourceTree = "<group>"; };
 		FC75F93B22386626007C2DDB /* ConnectionActivationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionActivationFlow.swift; sourceTree = "<group>"; };
 		FC75F93D22387164007C2DDB /* URLComponents+email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+email.swift"; sourceTree = "<group>"; };
@@ -143,12 +138,7 @@
 		FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IFTTT SDKTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA15FA21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCBA16042138A4EE00EB1BC8 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
-		FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FCBA16172139ACD800EB1BC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FCBA161A2139ACD800EB1BC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		FCBA161C2139ACD800EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCC6DEB1215D90DD008C8405 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
-		FCD3AE7021DE8B1C00962673 /* ConnectionCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionCredentials.swift; sourceTree = "<group>"; };
 		FCF0C4E321B0A97000DEB117 /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkError.swift; sourceTree = "<group>"; };
 		FCF29FC42187C7E0004B1100 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		FCF29FC62187C8C2004B1100 /* Connection+parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+parsing.swift"; sourceTree = "<group>"; };
@@ -272,7 +262,6 @@
 			children = (
 				FCBA15EC21389F7500EB1BC8 /* IFTTT SDK */,
 				FCBA15F721389F7500EB1BC8 /* IFTTT SDKTests */,
-				FCBA160F2139ACD600EB1BC8 /* Grocery Express */,
 				FCBA15EB21389F7500EB1BC8 /* Products */,
 				FCBA16202139ACF500EB1BC8 /* Frameworks */,
 				700EF25497A5559148F1DC20 /* Pods */,
@@ -310,23 +299,6 @@
 				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
 			);
 			path = "IFTTT SDKTests";
-			sourceTree = "<group>";
-		};
-		FCBA160F2139ACD600EB1BC8 /* Grocery Express */ = {
-			isa = PBXGroup;
-			children = (
-				FCBA16102139ACD600EB1BC8 /* AppDelegate.swift */,
-				FCD3AE7021DE8B1C00962673 /* ConnectionCredentials.swift */,
-				FC50FB1E21E69D67005D4152 /* TokenRequest.swift */,
-				FC3E4B6221DD7A0300CF7AB8 /* Settings.swift */,
-				FC3E4B6021DD79EA00CF7AB8 /* SettingsViewController.swift */,
-				FC3E4B5C21DD612400CF7AB8 /* ConnectionViewController.swift */,
-				FC3E4B5A21DD4BEC00CF7AB8 /* Main.storyboard */,
-				FCBA16172139ACD800EB1BC8 /* Assets.xcassets */,
-				FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */,
-				FCBA161C2139ACD800EB1BC8 /* Info.plist */,
-			);
-			path = "Grocery Express";
 			sourceTree = "<group>";
 		};
 		FCBA16202139ACF500EB1BC8 /* Frameworks */ = {
@@ -569,17 +541,6 @@
 			targetProxy = FCBA15F521389F7500EB1BC8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		FCBA16192139ACD800EB1BC8 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FCBA161A2139ACD800EB1BC8 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		FCBA15FC21389F7500EB1BC8 /* Debug */ = {
