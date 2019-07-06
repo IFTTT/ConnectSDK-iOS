@@ -384,7 +384,7 @@ public class ConnectButton: UIView {
         
         let isIpad = (UI_USER_INTERFACE_IDIOM() == .pad)
         
-        if isIpad {
+//        if isIpad {
             // Fallback to the max width
             // If we don't have this then the button will fit exactly to its content
             let maxWidth = stackView.widthAnchor.constraint(equalToConstant: Layout.maximumWidth)
@@ -393,7 +393,7 @@ public class ConnectButton: UIView {
             
             // Finally set the max width
             stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
-        }
+//        }
         
         if !shouldHideFooter {
             addSubview(footerLabelAnimator.transition.view)
