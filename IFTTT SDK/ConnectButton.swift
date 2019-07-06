@@ -382,14 +382,18 @@ public class ConnectButton: UIView {
         leftConstraint.priority = UILayoutPriority(UILayoutPriority.required.rawValue - 2)
         leftConstraint.isActive = true
         
-        // Fallback to the max width
-        // If we don't have this then the button will fit exactly to its content
-        let maxWidth = stackView.widthAnchor.constraint(equalToConstant: Layout.maximumWidth)
-        maxWidth.priority = .defaultHigh
-        maxWidth.isActive = true
+        let isIpad = (UI_USER_INTERFACE_IDIOM() == .pad)
         
-        // Finally set the max width
-        stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
+        if isIpad {
+            // Fallback to the max width
+            // If we don't have this then the button will fit exactly to its content
+            let maxWidth = stackView.widthAnchor.constraint(equalToConstant: Layout.maximumWidth)
+            maxWidth.priority = .defaultHigh
+            maxWidth.isActive = true
+            
+            // Finally set the max width
+            stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.maximumWidth).isActive = true
+        }
         
         if !shouldHideFooter {
             addSubview(footerLabelAnimator.transition.view)
@@ -566,7 +570,7 @@ private extension ConnectButton {
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
        
-        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
@@ -783,7 +787,7 @@ private extension ConnectButton {
     private func transitionToConnected(service: Service, message: String, shouldAnimateKnob: Bool, animator: UIViewPropertyAnimator) {
         stopPulseAnimation() // If we canceled disconnect
         
-        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0

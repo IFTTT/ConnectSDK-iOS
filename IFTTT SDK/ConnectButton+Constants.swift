@@ -15,9 +15,9 @@ extension ConnectButton {
     
     // Layout constants
     struct Layout {
-        static let height: CGFloat = 70
+        static let height: CGFloat = 76
         static let maximumWidth = 4.7 * height
-        static let knobInset: CGFloat = borderWidth + 3
+        static let knobInset: CGFloat = borderWidth
         static let knobDiameter = height - 2 * knobInset
         static let checkmarkDiameter: CGFloat = 42
         static let checkmarkLength: CGFloat = 14
