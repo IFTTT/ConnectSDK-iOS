@@ -89,14 +89,9 @@ class ConnectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let style = Settings().connectButtonStyle
-        let backgroundColor: UIColor = style == .light ? .white : .black
-        let foregroundColor: UIColor = style == .light ? .black : .white
-        
-        connectButton.style = style
-        view.backgroundColor = backgroundColor
-        valuePropsView.tintColor = foregroundColor
-        activityIndicator.color = foregroundColor
+        view.backgroundColor = .white
+        valuePropsView.tintColor = .black
+        activityIndicator.color = .black
         
         fetchConnection(with: Constants.connectionId)
     }

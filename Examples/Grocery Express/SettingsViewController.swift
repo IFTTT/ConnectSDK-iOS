@@ -26,7 +26,6 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var newUserSwitch: UISwitch!
     @IBOutlet weak var fetchConnectionSwitch: UISwitch!
-    @IBOutlet weak var connectButtonStyleControl: UISegmentedControl!
     @IBOutlet weak var loginView: UIStackView!
     @IBOutlet weak var logoutView: UIStackView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -45,9 +44,6 @@ class SettingsViewController: UIViewController {
     }
     @IBAction func fetchConnectionChanged(_ sender: Any) {
         settings.fetchConnectionFlow = fetchConnectionSwitch.isOn
-    }
-    @IBAction func styleChanged(_ sender: Any) {
-        settings.connectButtonStyle = connectButtonStyleControl.selectedSegmentIndex == Constants.lightStyleIndex ? .light : .dark
     }
     @IBAction func loginTapped(_ sender: Any) {
         attemptLogin()
@@ -95,13 +91,6 @@ class SettingsViewController: UIViewController {
             
             loginView.isHidden = false
             logoutView.isHidden = true
-        }
-        
-        switch settings.connectButtonStyle {
-        case .light:
-            connectButtonStyleControl.selectedSegmentIndex = Constants.lightStyleIndex
-        case .dark:
-            connectButtonStyleControl.selectedSegmentIndex = Constants.darkStyleIndex
         }
     }
     
