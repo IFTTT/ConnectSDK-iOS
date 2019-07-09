@@ -73,7 +73,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="3zy-Oq-KUv">
-                                <rect key="frame" x="30" y="94" width="354" height="602"/>
+                                <rect key="frame" x="30" y="94" width="354" height="513.66666666666663"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="vFk-1i-1i3" userLabel="Email">
                                         <rect key="frame" x="0.0" y="0.0" width="354" height="60.333333333333336"/>
@@ -134,29 +134,8 @@
                                             </stackView>
                                         </subviews>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="KKU-fD-FHT" userLabel="Connect button style">
-                                        <rect key="frame" x="0.0" y="181.66666666666669" width="354" height="58.333333333333343"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect button style" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4yg-7I-WpE">
-                                                <rect key="frame" x="0.0" y="0.0" width="354" height="20.333333333333332"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="QbF-qk-Cql">
-                                                <rect key="frame" x="0.0" y="30.333333333333314" width="354" height="29"/>
-                                                <segments>
-                                                    <segment title="Light"/>
-                                                    <segment title="Dark"/>
-                                                </segments>
-                                                <connections>
-                                                    <action selector="styleChanged:" destination="jya-bU-N4g" eventType="valueChanged" id="fCj-zR-mZQ"/>
-                                                </connections>
-                                            </segmentedControl>
-                                        </subviews>
-                                    </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Gzs-So-rk5" userLabel="Login">
-                                        <rect key="frame" x="0.0" y="270" width="354" height="151.66666666666663"/>
+                                        <rect key="frame" x="0.0" y="181.66666666666669" width="354" height="151.66666666666669"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User is not logged into IFTTT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wtn-AT-fpa">
                                                 <rect key="frame" x="59.666666666666671" y="0.0" width="234.66666666666663" height="20.333333333333332"/>
@@ -172,7 +151,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BL5-FY-lL7">
-                                                <rect key="frame" x="158" y="121.66666666666669" width="38" height="30"/>
+                                                <rect key="frame" x="158" y="121.66666666666663" width="38" height="30"/>
                                                 <state key="normal" title="Login"/>
                                                 <connections>
                                                     <action selector="loginTapped:" destination="jya-bU-N4g" eventType="touchUpInside" id="zrf-kg-8NX"/>
@@ -181,11 +160,11 @@
                                         </subviews>
                                     </stackView>
                                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="etB-q3-5Cf">
-                                        <rect key="frame" x="0.0" y="451.66666666666663" width="354" height="37"/>
+                                        <rect key="frame" x="0.0" y="363.33333333333331" width="354" height="37"/>
                                         <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </activityIndicatorView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZBS-iP-tER" userLabel="Logout">
-                                        <rect key="frame" x="0.0" y="518.66666666666663" width="354" height="83.333333333333371"/>
+                                        <rect key="frame" x="0.0" y="430.33333333333337" width="354" height="83.333333333333371"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User is logged into IFTTT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OiM-lg-0oO">
                                                 <rect key="frame" x="75.333333333333329" y="0.0" width="203.66666666666669" height="20.333333333333332"/>
@@ -194,13 +173,13 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Email: user@ifttt.com, Token: xyz" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="acf-Id-yR7">
-                                                <rect key="frame" x="65" y="20.333333333333371" width="224" height="33"/>
+                                                <rect key="frame" x="65" y="20.333333333333258" width="224" height="33"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SvO-Zu-q0B">
-                                                <rect key="frame" x="153" y="53.333333333333371" width="48" height="30"/>
+                                                <rect key="frame" x="153" y="53.333333333333258" width="48" height="30"/>
                                                 <state key="normal" title="Logout"/>
                                                 <connections>
                                                     <action selector="logoutTapped:" destination="jya-bU-N4g" eventType="touchUpInside" id="3zk-q4-wmh"/>
@@ -228,7 +207,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="activityIndicator" destination="etB-q3-5Cf" id="qjg-NW-FOR"/>
-                        <outlet property="connectButtonStyleControl" destination="QbF-qk-Cql" id="c46-4e-45d"/>
                         <outlet property="credentialsTextView" destination="acf-Id-yR7" id="2Cy-St-DGg"/>
                         <outlet property="emailField" destination="mMu-Ek-NQx" id="uXA-5Z-g7P"/>
                         <outlet property="fetchConnectionSwitch" destination="ecF-b0-XYN" id="61L-5H-T3a"/>
@@ -253,7 +231,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="qrA-ee-8My">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="474.66666666666669"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="98.666666666666671"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5rT-0Z-KpB">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="82.666666666666671"/>
@@ -262,19 +240,19 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="82.666666666666671"/>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="We'll deliver when you're at home" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O2e-et-cae">
-                                                        <rect key="frame" x="16" y="15.999999999999998" width="356" height="27.333333333333329"/>
+                                                        <rect key="frame" x="16" y="15.999999999999998" width="358" height="27.333333333333329"/>
                                                         <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="20"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Simply share your calendar" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hhn-K6-Kdn">
-                                                        <rect key="frame" x="16" y="47.333333333333336" width="356" height="19.333333333333336"/>
+                                                        <rect key="frame" x="16" y="47.333333333333336" width="358" height="19.333333333333336"/>
                                                         <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="14"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="251" image="chevron_right" translatesAutoresizingMaskIntoConstraints="NO" id="Dad-km-eAz">
-                                                        <rect key="frame" x="380" y="26" width="18" height="31"/>
+                                                        <rect key="frame" x="382" y="33.333333333333336" width="16" height="16"/>
                                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </imageView>
                                                 </subviews>
@@ -300,7 +278,7 @@
                                                 </connections>
                                             </view>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cart_ui" translatesAutoresizingMaskIntoConstraints="NO" id="iA1-3k-GH1">
-                                                <rect key="frame" x="0.0" y="82.666666666666686" width="414" height="392.00000000000011"/>
+                                                <rect key="frame" x="0.0" y="82.666666666666671" width="414" height="16"/>
                                             </imageView>
                                         </subviews>
                                     </stackView>

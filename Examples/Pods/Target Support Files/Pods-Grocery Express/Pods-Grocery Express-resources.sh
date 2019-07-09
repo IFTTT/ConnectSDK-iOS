@@ -97,11 +97,9 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${PODS_ROOT}/../../IFTTT SDK/Localizable.strings"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/IFTTTConnectSDK/IFTTTConnectSDK.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${PODS_ROOT}/../../IFTTT SDK/Localizable.strings"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/IFTTTConnectSDK/IFTTTConnectSDK.bundle"
 fi
 

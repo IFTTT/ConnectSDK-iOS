@@ -21,9 +21,6 @@ struct Settings {
     /// Signals that we should always use the connection fetching flow
     var fetchConnectionFlow: Bool
     
-    /// The style of the Connect Button (light / dark)
-    var connectButtonStyle: ConnectButton.Style
-    
     /// Gets the current settings
     init() {
         let defaults = UserDefaults.standard
@@ -32,16 +29,10 @@ struct Settings {
             email = settings[Keys.email] as? String ?? ""
             forcesNewUserFlow = settings[Keys.forcesNewUserFlow] as? Bool ?? false
             fetchConnectionFlow = settings[Keys.fetchConnectionFlow] as? Bool ?? false
-            if settings[Keys.isDarkStyle] as? Bool == true {
-                connectButtonStyle = .dark
-            } else {
-                connectButtonStyle = .light
-            }
         } else {
             email = ""
             forcesNewUserFlow = false
             fetchConnectionFlow = false
-            connectButtonStyle = .light
         }
     }
     
@@ -51,7 +42,6 @@ struct Settings {
             Keys.email : email,
             Keys.forcesNewUserFlow : forcesNewUserFlow,
             Keys.fetchConnectionFlow : fetchConnectionFlow,
-            Keys.isDarkStyle : connectButtonStyle == .dark
         ]
         UserDefaults.standard.set(settings, forKey: Keys.settings)
     }
