@@ -8,32 +8,32 @@
 
 /* Begin PBXBuildFile section */
 		CD4BF0577F834DA46CC0229C /* libPods-Grocery Express.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C7E9B7B81023E8803E71CFBC /* libPods-Grocery Express.a */; };
-		DE7B732C22CAAD04000F4023 /* TokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B732122CAAD04000F4023 /* TokenRequest.swift */; };
-		DE7B732D22CAAD04000F4023 /* ConnectionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B732222CAAD04000F4023 /* ConnectionCredentials.swift */; };
-		DE7B732E22CAAD04000F4023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE7B732322CAAD04000F4023 /* Assets.xcassets */; };
-		DE7B732F22CAAD04000F4023 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE7B732422CAAD04000F4023 /* LaunchScreen.storyboard */; };
-		DE7B733022CAAD04000F4023 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE7B732622CAAD04000F4023 /* Main.storyboard */; };
-		DE7B733122CAAD04000F4023 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B732722CAAD04000F4023 /* ConnectionViewController.swift */; };
-		DE7B733222CAAD04000F4023 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B732822CAAD04000F4023 /* Settings.swift */; };
-		DE7B733322CAAD04000F4023 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B732922CAAD04000F4023 /* AppDelegate.swift */; };
-		DE7B733522CAAD04000F4023 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B732B22CAAD04000F4023 /* SettingsViewController.swift */; };
+		DE01067722D54D5E00B2CB47 /* TokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01066C22D54D5E00B2CB47 /* TokenRequest.swift */; };
+		DE01067822D54D5E00B2CB47 /* ConnectionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01066D22D54D5E00B2CB47 /* ConnectionCredentials.swift */; };
+		DE01067922D54D5E00B2CB47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE01066E22D54D5E00B2CB47 /* Assets.xcassets */; };
+		DE01067A22D54D5E00B2CB47 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE01066F22D54D5E00B2CB47 /* LaunchScreen.storyboard */; };
+		DE01067B22D54D5E00B2CB47 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE01067122D54D5E00B2CB47 /* Main.storyboard */; };
+		DE01067C22D54D5E00B2CB47 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067222D54D5E00B2CB47 /* ConnectionViewController.swift */; };
+		DE01067D22D54D5E00B2CB47 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067322D54D5E00B2CB47 /* Settings.swift */; };
+		DE01067E22D54D5E00B2CB47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067422D54D5E00B2CB47 /* AppDelegate.swift */; };
+		DE01068022D54D5E00B2CB47 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1E50F2200F82A42DEACE84AD /* Pods-Grocery Express.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Grocery Express.debug.xcconfig"; path = "Target Support Files/Pods-Grocery Express/Pods-Grocery Express.debug.xcconfig"; sourceTree = "<group>"; };
 		C7E9B7B81023E8803E71CFBC /* libPods-Grocery Express.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Grocery Express.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8E3AD91754C0A77D3B12E00 /* Pods-Grocery Express.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Grocery Express.release.xcconfig"; path = "Target Support Files/Pods-Grocery Express/Pods-Grocery Express.release.xcconfig"; sourceTree = "<group>"; };
+		DE01066C22D54D5E00B2CB47 /* TokenRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenRequest.swift; sourceTree = "<group>"; };
+		DE01066D22D54D5E00B2CB47 /* ConnectionCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCredentials.swift; sourceTree = "<group>"; };
+		DE01066E22D54D5E00B2CB47 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DE01067022D54D5E00B2CB47 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		DE01067122D54D5E00B2CB47 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		DE01067222D54D5E00B2CB47 /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
+		DE01067322D54D5E00B2CB47 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		DE01067422D54D5E00B2CB47 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DE01067522D54D5E00B2CB47 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		DE7B730B22CAACD8000F4023 /* Grocery Express.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Grocery Express.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE7B732122CAAD04000F4023 /* TokenRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenRequest.swift; sourceTree = "<group>"; };
-		DE7B732222CAAD04000F4023 /* ConnectionCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCredentials.swift; sourceTree = "<group>"; };
-		DE7B732322CAAD04000F4023 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		DE7B732522CAAD04000F4023 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		DE7B732622CAAD04000F4023 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		DE7B732722CAAD04000F4023 /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
-		DE7B732822CAAD04000F4023 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		DE7B732922CAAD04000F4023 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DE7B732A22CAAD04000F4023 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DE7B732B22CAAD04000F4023 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,10 +57,27 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		DE01066B22D54D5E00B2CB47 /* GroceryExpress */ = {
+			isa = PBXGroup;
+			children = (
+				DE01066C22D54D5E00B2CB47 /* TokenRequest.swift */,
+				DE01066D22D54D5E00B2CB47 /* ConnectionCredentials.swift */,
+				DE01066E22D54D5E00B2CB47 /* Assets.xcassets */,
+				DE01066F22D54D5E00B2CB47 /* LaunchScreen.storyboard */,
+				DE01067122D54D5E00B2CB47 /* Main.storyboard */,
+				DE01067222D54D5E00B2CB47 /* ConnectionViewController.swift */,
+				DE01067322D54D5E00B2CB47 /* Settings.swift */,
+				DE01067422D54D5E00B2CB47 /* AppDelegate.swift */,
+				DE01067522D54D5E00B2CB47 /* Info.plist */,
+				DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */,
+			);
+			path = GroceryExpress;
+			sourceTree = "<group>";
+		};
 		DE7B730222CAACD8000F4023 = {
 			isa = PBXGroup;
 			children = (
-				DE7B732022CAAD04000F4023 /* Grocery Express */,
+				DE01066B22D54D5E00B2CB47 /* GroceryExpress */,
 				DE7B730C22CAACD8000F4023 /* Products */,
 				8A0A6B951EFB7199233A94C9 /* Pods */,
 				F270D57FE297F3F681F1F732 /* Frameworks */,
@@ -73,23 +90,6 @@
 				DE7B730B22CAACD8000F4023 /* Grocery Express.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		DE7B732022CAAD04000F4023 /* Grocery Express */ = {
-			isa = PBXGroup;
-			children = (
-				DE7B732122CAAD04000F4023 /* TokenRequest.swift */,
-				DE7B732222CAAD04000F4023 /* ConnectionCredentials.swift */,
-				DE7B732322CAAD04000F4023 /* Assets.xcassets */,
-				DE7B732422CAAD04000F4023 /* LaunchScreen.storyboard */,
-				DE7B732622CAAD04000F4023 /* Main.storyboard */,
-				DE7B732722CAAD04000F4023 /* ConnectionViewController.swift */,
-				DE7B732822CAAD04000F4023 /* Settings.swift */,
-				DE7B732922CAAD04000F4023 /* AppDelegate.swift */,
-				DE7B732A22CAAD04000F4023 /* Info.plist */,
-				DE7B732B22CAAD04000F4023 /* SettingsViewController.swift */,
-			);
-			path = "Grocery Express";
 			sourceTree = "<group>";
 		};
 		F270D57FE297F3F681F1F732 /* Frameworks */ = {
@@ -160,9 +160,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE7B733022CAAD04000F4023 /* Main.storyboard in Resources */,
-				DE7B732E22CAAD04000F4023 /* Assets.xcassets in Resources */,
-				DE7B732F22CAAD04000F4023 /* LaunchScreen.storyboard in Resources */,
+				DE01067B22D54D5E00B2CB47 /* Main.storyboard in Resources */,
+				DE01067922D54D5E00B2CB47 /* Assets.xcassets in Resources */,
+				DE01067A22D54D5E00B2CB47 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,22 +215,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE7B732D22CAAD04000F4023 /* ConnectionCredentials.swift in Sources */,
-				DE7B732C22CAAD04000F4023 /* TokenRequest.swift in Sources */,
-				DE7B733222CAAD04000F4023 /* Settings.swift in Sources */,
-				DE7B733322CAAD04000F4023 /* AppDelegate.swift in Sources */,
-				DE7B733122CAAD04000F4023 /* ConnectionViewController.swift in Sources */,
-				DE7B733522CAAD04000F4023 /* SettingsViewController.swift in Sources */,
+				DE01067822D54D5E00B2CB47 /* ConnectionCredentials.swift in Sources */,
+				DE01067722D54D5E00B2CB47 /* TokenRequest.swift in Sources */,
+				DE01067D22D54D5E00B2CB47 /* Settings.swift in Sources */,
+				DE01067E22D54D5E00B2CB47 /* AppDelegate.swift in Sources */,
+				DE01067C22D54D5E00B2CB47 /* ConnectionViewController.swift in Sources */,
+				DE01068022D54D5E00B2CB47 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		DE7B732422CAAD04000F4023 /* LaunchScreen.storyboard */ = {
+		DE01066F22D54D5E00B2CB47 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DE7B732522CAAD04000F4023 /* Base */,
+				DE01067022D54D5E00B2CB47 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -365,7 +365,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "$(SRCROOT)/Grocery Express/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/GroceryExpress/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -387,7 +387,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "$(SRCROOT)/Grocery Express/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/GroceryExpress/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
