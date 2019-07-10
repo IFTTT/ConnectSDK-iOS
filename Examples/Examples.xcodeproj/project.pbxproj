@@ -365,7 +365,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "$(SRCROOT)/GroceryExpress/Info.plist";
+				INFOPLIST_FILE = GroceryExpress/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -387,7 +387,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "$(SRCROOT)/GroceryExpress/Info.plist";
+				INFOPLIST_FILE = GroceryExpress/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
