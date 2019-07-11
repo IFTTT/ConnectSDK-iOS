@@ -299,6 +299,7 @@ public class ConnectButton: UIView {
         $0.textColor = .white
         $0.font = Style.Font.connect
         $0.adjustsFontSizeToFitWidth = true
+        $0.baselineAdjustment = .alignCenters
     }
     
     private let footerLabelAnimator = LabelAnimator {
@@ -566,7 +567,7 @@ private extension ConnectButton {
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
        
-        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController)
         
         animator.addAnimations {
@@ -783,7 +784,7 @@ private extension ConnectButton {
     private func transitionToConnected(service: Service, message: String, shouldAnimateKnob: Bool, animator: UIViewPropertyAnimator) {
         stopPulseAnimation() // If we canceled disconnect
         
-        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
