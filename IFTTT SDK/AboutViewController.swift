@@ -16,11 +16,13 @@ class AboutViewController: UIViewController {
     private let connection: Connection
     private let primaryService: Connection.Service
     private let secondaryService: Connection.Service
+    private let activationFlow: ConnectionHandoffFlow
     
-    init(connection: Connection) {
+    init(connection: Connection, activationFlow: ConnectionHandoffFlow) {
         self.connection = connection
         self.primaryService = connection.primaryService
         self.secondaryService = connection.connectingService
+        self.activationFlow = activationFlow
         
         super.init(nibName: nil, bundle: nil)
         
@@ -174,7 +176,7 @@ class AboutViewController: UIViewController {
     
     private lazy var footerView: UIStackView = {
         let views: [UIView]
-        if DeepLink.isIftttAppAvailable {
+        if ConnectionDeeplinkAction.isIftttAppAvailable {
             switch connection.status {
             case .enabled:
                 views = [deepLinkConnectionButton, legalTermsView]
@@ -214,9 +216,10 @@ class AboutViewController: UIViewController {
         present(viewController, animated: true)
     }
     
-    private func deepLinkToConnection() {
-        let url = DeepLink.connection(connection).url
-        UIApplication.shared.open(url, options: [.universalLinksOnly: true]) { didOpen in
+    private func deepLinkToEditConnection() {
+        guard let url = activationFlow.appHandoffUrl(userId: nil, action: .edit) else { return }
+        
+        UIApplication.shared.open(url, options: [:]) { didOpen in
             if !didOpen {
                 // Fallback to opening in Safari
                 let safari = SFSafariViewController(url: url)
@@ -256,7 +259,7 @@ class AboutViewController: UIViewController {
         downloadOnAppStoreButton.addTarget(self, action: #selector(showAppStorePage), for: .touchUpInside)
         
         deepLinkConnectionButton.onSelect { [weak self] in
-            self?.deepLinkToConnection()
+            self?.deepLinkToEditConnection()
         }
     }
     

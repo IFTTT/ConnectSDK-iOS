@@ -109,6 +109,8 @@ private extension ConnectButtonControllerError {
             return error.localizedDescription 
         case .unknownRedirect, .unknownResponse:
             return "Unknown error"
+        case .userCancelledConfiguration:
+            return "User cancelled configuration of the connection"
         case .canceled:
             return nil
         case .unableToGetConnection:

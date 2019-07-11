@@ -8,8 +8,8 @@
 
 import Foundation
 
-/// A model holding links to portions of the connection flow which happens on web or in the IFTTT app
-struct ConnectionActivationFlow {
+/// A model holding links to portions of the connection handoff flow which happens on web or in the IFTTT app
+struct ConnectionHandoffFlow {
     
     /// The URL for the deeplinking to the connection in the IFTTT app or nil if the app is not installed
     private let baseAppHandoffUrl: URL
@@ -22,8 +22,9 @@ struct ConnectionActivationFlow {
     /// Creates the URL to handoff the connection activation flow to the IFTTT app
     ///
     /// - Parameter userId: The current User or nil if there isn't one
+    /// - Parameter action: The action to perform after the handoff occurs
     /// - Returns: The URL to open handoff in the IFTTT app or nil if handoff cannot be done
-    func appHandoffUrl(userId: User.Id?) -> URL? {
+    func appHandoffUrl(userId: User.Id?, action: ConnectionDeeplinkAction = .activation) -> URL? {
         guard
             UIApplication.shared.canOpenURL(baseAppHandoffUrl),
             var urlComponents = URLComponents(url: baseAppHandoffUrl,
@@ -37,6 +38,7 @@ struct ConnectionActivationFlow {
         if let userId = userId {
             queryItems.append(userQueryItem(for: userId))
         }
+        queryItems.append(URLQueryItem(name: Constants.QueryItem.actionName, value: action.rawValue))
         urlComponents.queryItems = queryItems
         
         return urlComponents.fixingEmailEncoding().url
@@ -47,8 +49,8 @@ struct ConnectionActivationFlow {
     /// - Parameter user: The current User
     /// - Returns: The URL to open in Safari
     func webFlowUrl(user: User) -> URL {
-        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return url
+        guard var urlComponents = URLComponents(url: handoffURL, resolvingAgainstBaseURL: false) else {
+            return handoffURL
         }
         var queryItems = commonQueryItems
         
@@ -66,16 +68,16 @@ struct ConnectionActivationFlow {
         
         urlComponents.queryItems = queryItems
         
-        return urlComponents.fixingEmailEncoding().url ?? url
+        return urlComponents.fixingEmailEncoding().url ?? handoffURL
     }
     
     private let commonQueryItems: [URLQueryItem]
     private let partnerOauthCodeQueryItem: URLQueryItem?
     private let inviteCodeQueryItem: URLQueryItem?
     
-    private let url: URL
+    private let handoffURL: URL
     
-    /// Creates a `ConnectionActivationFlow`
+    /// Creates a `ConnectionHandoffFlow`
     /// Generates URLs for activating a Connection in web or the IFTTT app
     ///
     /// - Parameters:
@@ -86,7 +88,7 @@ struct ConnectionActivationFlow {
          credentialProvider: ConnectionCredentialProvider,
          activationRedirect: URL) {
         
-        url = Constants.url.appendingPathComponent(connectionId)
+        handoffURL = Constants.url.appendingPathComponent(connectionId)
         
         // Creates the query items shared by all URLs
         let commonQueryItems =  [
@@ -144,6 +146,10 @@ struct ConnectionActivationFlow {
         static let url = URL(string: "https://ifttt.com/access/api")!
         
         struct QueryItem {
+            static let actionName = "action"
+            static let editValue = "edit"
+            static let activationValue = "activation"
+            
             static let sdkReturnName = "sdk_return_to"
             static let inviteCodeName = "invite_code"
             static let emailName = "email"
