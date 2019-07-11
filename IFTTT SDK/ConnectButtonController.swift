@@ -30,6 +30,9 @@ public enum ConnectButtonControllerError: Error {
 
     /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
+    
+    /// A user cancelled the configuration of the connection in the IFTTT app.
+    case userCancelledConfiguration
 
     /// Redirect parameters did not match what we expected. This should never happen. Verify you are using the latest SDK.
     case unknownRedirect
@@ -129,7 +132,7 @@ public class ConnectButtonController {
     public private(set) weak var delegate: ConnectButtonControllerDelegate?
 
     private let connectionConfiguration: ConnectionConfiguration
-    private let connectionActivationFlow: ConnectionActivationFlow
+    private let connectionHandoffFlow: ConnectionHandoffFlow
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
     private let reachability = Reachability()
@@ -143,7 +146,7 @@ public class ConnectButtonController {
     public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate) {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
-        self.connectionActivationFlow = ConnectionActivationFlow(connectionId: connectionConfiguration.connectionId,
+        self.connectionHandoffFlow = ConnectionHandoffFlow(connectionId: connectionConfiguration.connectionId,
                                                                  credentialProvider: connectionConfiguration.credentialProvider,
                                                                  activationRedirect: connectionConfiguration.redirectURL)
         self.connection = connectionConfiguration.connection
@@ -155,7 +158,7 @@ public class ConnectButtonController {
     private func setupConnection(for connection: Connection?, animated: Bool) {
         let emailValidator = EmailValidator()
 
-        if !DeepLink.isIftttAppAvailable && !emailValidator.validate(with: connectionConfiguration.suggestedUserEmail) {
+        if !ConnectionDeeplinkAction.isIftttAppAvailable && !emailValidator.validate(with: connectionConfiguration.suggestedUserEmail) {
             assertionFailure("Unable to display connect button. This will only occur if the app is not installed and the email address is invalid.")
             button.isHidden = true
             return
@@ -272,7 +275,7 @@ public class ConnectButtonController {
             assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
-        let aboutViewController = AboutViewController(connection: connection)
+        let aboutViewController = AboutViewController(connection: connection, activationFlow: connectionHandoffFlow)
         present(aboutViewController)
     }
 
@@ -406,6 +409,7 @@ public class ConnectButtonController {
 
         private struct QueryItems {
             static let nextStep = "next_step"
+            static let userCancelledConfiguration = "user_cancelled_configuration"
             static let complete = "complete"
             static let userToken = "user_token"
             static let error = "error"
@@ -456,6 +460,9 @@ public class ConnectButtonController {
                 } else {
                     onRedirect?(.failed(.unknownRedirect))
                 }
+                
+            case QueryItems.userCancelledConfiguration:
+                onRedirect?(.failed(.userCancelledConfiguration))
 
             default:
                 onRedirect?(.failed(.unknownRedirect))
@@ -620,7 +627,7 @@ public class ConnectButtonController {
             guard let self = self else {
                 return initialButtonState
             }
-            if self.connectionActivationFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
+            if self.connectionHandoffFlow.isAppHandoffAvailable || self.credentialProvider.userToken != nil {
                 return .buttonState(.slideToConnect(service: nil, message: "button.state.verifying".localized))
             } else {
                 return .buttonState(.enterEmail(service: connection.connectingService.connectButtonService, suggestedEmail: self.connectionConfiguration.suggestedUserEmail), footerValue: FooterMessages.enterEmail.value, duration: 0.5)
@@ -631,7 +638,7 @@ public class ConnectButtonController {
             guard let self = self else { return }
             if let token = self.credentialProvider.userToken {
                 self.transition(to: .identifyUser(.token(token)))
-            } else if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: nil) {
+            } else if let handoffURL = self.connectionHandoffFlow.appHandoffUrl(userId: nil) {
                 self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: false))
             }
         }
@@ -712,7 +719,7 @@ public class ConnectButtonController {
                     // This is an existing IFTTT user but we don't have a token
                     // Send on to service authentication, web will take care of getting the user signed in
                     progress.finish {
-                        if let handoffURL = self.connectionActivationFlow.appHandoffUrl(userId: user.id) {
+                        if let handoffURL = self.connectionHandoffFlow.appHandoffUrl(userId: user.id) {
                             self.transition(to: .appHandoff(url: handoffURL, redirectImmediately: true))
                         } else {
                             self.transition(to: .activateConnection(user: user, redirectImmediately: true))
@@ -752,7 +759,7 @@ public class ConnectButtonController {
     
 
     private func transitionToActivate(connection: Connection, user: User, redirectImmediately: Bool) {
-        let url = connectionActivationFlow.webFlowUrl(user: user)
+        let url = connectionHandoffFlow.webFlowUrl(user: user)
         
         guard redirectImmediately == false else {
             openActivationURL(url)

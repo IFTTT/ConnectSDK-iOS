@@ -12,7 +12,7 @@
 		085E6DDEF8DC61FE5E43AFF46649950E /* Selectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F949DC7733AA1AE0952A2F70AB57E /* Selectable.swift */; };
 		13B41BB392EA0BA919E812E6E220CF7F /* ConnectButton+Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E625D85EC4879E5754E588170CE2618 /* ConnectButton+Service.swift */; };
 		1F54ED87016D712C492C5608FE89FB36 /* ConnectButton+LabelAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35D4C506043D9D1E6291767E888DBB79 /* ConnectButton+LabelAnimator.swift */; };
-		255BE4F980582CE245D6E97E57701F42 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA57A1119B89334CB521704AE1FF5B /* DeepLink.swift */; };
+		255BE4F980582CE245D6E97E57701F42 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA57A1119B89334CB521704AE1FF5B /* ConnectionDeeplinkAction.swift */; };
 		29ED4411E6ACEC9711F6E318970BEF4C /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FBBDE41E8C73A7F68BA17D9D9954F5 /* ConnectionNetworkController.swift */; };
 		2E4F155FC98C078F164988A71A9D3708 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9BFC4D29DC42AF1965CEAB6AC456F2 /* API.swift */; };
 		33A17DD1272FF58F27743301F5DBE1D6 /* ConnectionCredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2361F51A203D61E0732420DF30C2C97 /* ConnectionCredentialProvider.swift */; };
@@ -85,7 +85,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		007E40367F4CDA378600408252DED6B2 /* libIFTTTConnectSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libIFTTTConnectSDK.a; path = libIFTTTConnectSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		007E40367F4CDA378600408252DED6B2 /* libIFTTTConnectSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIFTTTConnectSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		02F8C55A5CEF3DA61FE63F717F028C31 /* Pods-Grocery Express-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Grocery Express-acknowledgements.plist"; sourceTree = "<group>"; };
 		02FDA2DAAB484A9FACD40F9B539297FB /* ConnectionRedirectHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionRedirectHandler.swift; path = "IFTTT SDK/ConnectionRedirectHandler.swift"; sourceTree = "<group>"; };
 		0F5D3E0E5F1AEC12BE58203BAB10CE61 /* IFTTTConnectSDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IFTTTConnectSDK-prefix.pch"; sourceTree = "<group>"; };
@@ -104,12 +104,12 @@
 		45A56500F8A1EFDE48B3839DAB2FE12B /* JSON.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSON.swift; path = "IFTTT SDK/JSON.swift"; sourceTree = "<group>"; };
 		472A2A28D508CC5731E7AF1C76139584 /* ImageViewNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageViewNetworkController.swift; path = "IFTTT SDK/ImageViewNetworkController.swift"; sourceTree = "<group>"; };
 		4BB906340970BAC4BB92A83A041D960B /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkError.swift; path = "IFTTT SDK/ConnectionNetworkError.swift"; sourceTree = "<group>"; };
-		4BDADA2D71C186ED3611BE03AEF09403 /* readme.md */ = {isa = PBXFileReference; includeInIndex = 1; path = readme.md; sourceTree = "<group>"; };
+		4BDADA2D71C186ED3611BE03AEF09403 /* readme.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		4C2D589CC7880B775D741C72381122D5 /* Localizable.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = "IFTTT SDK/Localizable.strings"; sourceTree = "<group>"; };
 		529016BF977342C046CCD27E9E73F332 /* IFTTTConnectSDK.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = IFTTTConnectSDK.xcconfig; sourceTree = "<group>"; };
 		533CF534EA1008F374F1A720ED0824F9 /* ConnectButton+CheckmarkView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+CheckmarkView.swift"; path = "IFTTT SDK/ConnectButton+CheckmarkView.swift"; sourceTree = "<group>"; };
-		5511A898F1948D0DB38479C5850D8857 /* libPods-Grocery Express.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-Grocery Express.a"; path = "libPods-Grocery Express.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5AD7F47AEA43768AFFD28AA1ED421EBB /* IFTTTConnectSDK.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = IFTTTConnectSDK.bundle; path = "IFTTTConnectSDK-IFTTTConnectSDK.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5511A898F1948D0DB38479C5850D8857 /* libPods-Grocery Express.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Grocery Express.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5AD7F47AEA43768AFFD28AA1ED421EBB /* IFTTTConnectSDK.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IFTTTConnectSDK.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BDF9ED9EE2515C3C5D3DF5D491DEC00 /* Pods-Grocery Express-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Grocery Express-acknowledgements.markdown"; sourceTree = "<group>"; };
 		5CE45648EDE12EAD4BE2CD4387AE2A47 /* PillButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PillButton.swift; path = "IFTTT SDK/PillButton.swift"; sourceTree = "<group>"; };
 		603DBF007F38C7A11FF8F6B587866538 /* LocalizedStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStrings.swift; path = "IFTTT SDK/LocalizedStrings.swift"; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 		6F6F4FE7DA415ED62714C2E641B14D6A /* Pods-Grocery Express.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Grocery Express.modulemap"; sourceTree = "<group>"; };
 		714FA788985C5E0F7A3AE06857BDD6AB /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLSession+JSONTask.swift"; path = "IFTTT SDK/URLSession+JSONTask.swift"; sourceTree = "<group>"; };
 		719CB987697802758E5CF577DF9FA9C9 /* ConnectionActivationFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionActivationFlow.swift; path = "IFTTT SDK/ConnectionActivationFlow.swift"; sourceTree = "<group>"; };
-		71BA57A1119B89334CB521704AE1FF5B /* DeepLink.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DeepLink.swift; path = "IFTTT SDK/DeepLink.swift"; sourceTree = "<group>"; };
+		71BA57A1119B89334CB521704AE1FF5B /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionDeeplinkAction.swift; path = "IFTTT SDK/ConnectionDeeplinkAction.swift"; sourceTree = "<group>"; };
 		765231B2397C8377D32791C688238798 /* EmailValidator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmailValidator.swift; path = "IFTTT SDK/EmailValidator.swift"; sourceTree = "<group>"; };
 		777A9A816C502BCA19F99FF76663F9A8 /* ConstraintsMaker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintsMaker.swift; path = "IFTTT SDK/ConstraintsMaker.swift"; sourceTree = "<group>"; };
 		7CBCCFF92874B906FD26C6C0F015B55E /* Links.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Links.swift; path = "IFTTT SDK/Links.swift"; sourceTree = "<group>"; };
@@ -131,13 +131,13 @@
 		91B8534A1A30C1B5369BC6E58762083D /* Notification+Redirect.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Notification+Redirect.swift"; path = "IFTTT SDK/Notification+Redirect.swift"; sourceTree = "<group>"; };
 		96FBBDE41E8C73A7F68BA17D9D9954F5 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkController.swift; path = "IFTTT SDK/ConnectionNetworkController.swift"; sourceTree = "<group>"; };
 		9925ABD02C3726EB76E85D315A964255 /* PassthroughView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PassthroughView.swift; path = "IFTTT SDK/PassthroughView.swift"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A3F11753849D9A5210914D50E8BDFE23 /* ConnectButton+AnimationState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+AnimationState.swift"; path = "IFTTT SDK/ConnectButton+AnimationState.swift"; sourceTree = "<group>"; };
 		A4E86A13706CB32CD76C4DD07BB9DE94 /* Pods-Grocery Express.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Grocery Express.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1FB1ACF439475A62C5A32B83390A4 /* ImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCache.swift; path = "IFTTT SDK/ImageCache.swift"; sourceTree = "<group>"; };
 		AA734F5374CA118A1E720E594AF400A8 /* LegalTermsText.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LegalTermsText.swift; path = "IFTTT SDK/LegalTermsText.swift"; sourceTree = "<group>"; };
 		AC9F949DC7733AA1AE0952A2F70AB57E /* Selectable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Selectable.swift; path = "IFTTT SDK/Selectable.swift"; sourceTree = "<group>"; };
-		B231BD27B98D22A7D82BC823CC9A9E01 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		B231BD27B98D22A7D82BC823CC9A9E01 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B6EE442A783A79F80B66AC311A0A7ED6 /* ServiceIconsNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceIconsNetworkController.swift; path = "IFTTT SDK/ServiceIconsNetworkController.swift"; sourceTree = "<group>"; };
 		B9424E6370DC6CD6F952795D5C6FA51B /* Connection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Connection.swift; path = "IFTTT SDK/Connection.swift"; sourceTree = "<group>"; };
 		C0538A3E364D0049BE791D2807E17015 /* Connection+Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Request.swift"; path = "IFTTT SDK/Connection+Request.swift"; sourceTree = "<group>"; };
@@ -153,7 +153,7 @@
 		DB636A5EF18614B9C08BA7D9C0D39FAC /* ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist"; sourceTree = "<group>"; };
 		EABB3306ADA8838F5B05CE2A2D89F181 /* ImageDownloader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageDownloader.swift; path = "IFTTT SDK/ImageDownloader.swift"; sourceTree = "<group>"; };
 		EBD700947C2C6AE8CF089F1BA9FE634F /* Result<ValueType,ErrorType>.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Result<ValueType,ErrorType>.swift"; path = "IFTTT SDK/Result<ValueType,ErrorType>.swift"; sourceTree = "<group>"; };
-		ED9842E39E61FD720A9227A6EA7E8E2E /* IFTTTConnectSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = IFTTTConnectSDK.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		ED9842E39E61FD720A9227A6EA7E8E2E /* IFTTTConnectSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = IFTTTConnectSDK.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		F1BF4E55207A783A1C81D9634A293066 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIFont+CommonValues.swift"; path = "IFTTT SDK/UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		F29FFEC4363A892CEA1DE52986C61540 /* ConnectButton+Transition.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Transition.swift"; path = "IFTTT SDK/ConnectButton+Transition.swift"; sourceTree = "<group>"; };
 		F5760F42BC07BB9452D72680C4067088 /* Pods-Grocery Express-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Grocery Express-umbrella.h"; sourceTree = "<group>"; };
@@ -310,7 +310,7 @@
 				4BB906340970BAC4BB92A83A041D960B /* ConnectionNetworkError.swift */,
 				02FDA2DAAB484A9FACD40F9B539297FB /* ConnectionRedirectHandler.swift */,
 				777A9A816C502BCA19F99FF76663F9A8 /* ConstraintsMaker.swift */,
-				71BA57A1119B89334CB521704AE1FF5B /* DeepLink.swift */,
+				71BA57A1119B89334CB521704AE1FF5B /* ConnectionDeeplinkAction.swift */,
 				765231B2397C8377D32791C688238798 /* EmailValidator.swift */,
 				A5F1FB1ACF439475A62C5A32B83390A4 /* ImageCache.swift */,
 				EABB3306ADA8838F5B05CE2A2D89F181 /* ImageDownloader.swift */,
@@ -518,7 +518,7 @@
 				4FE1C984340C4222599990F8CFCB323B /* ConnectionNetworkError.swift in Sources */,
 				A717A2C04328A974D377A213F59D1107 /* ConnectionRedirectHandler.swift in Sources */,
 				B5E5FE16CC22F6050B77A232641B921C /* ConstraintsMaker.swift in Sources */,
-				255BE4F980582CE245D6E97E57701F42 /* DeepLink.swift in Sources */,
+				255BE4F980582CE245D6E97E57701F42 /* ConnectionDeeplinkAction.swift in Sources */,
 				A8204B07CAAF0F01AA754523CBD277FC /* EmailValidator.swift in Sources */,
 				5942AF3CEFFF146677FE794A043E89E7 /* IFTTTConnectSDK-dummy.m in Sources */,
 				CBD192BB6162C989E3F92ECF8190B910 /* ImageCache.swift in Sources */,

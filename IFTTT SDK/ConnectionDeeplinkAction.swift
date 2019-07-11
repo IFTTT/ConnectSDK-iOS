@@ -1,5 +1,5 @@
 //
-//  DeepLink.swift
+//  ConnectionDeeplinkAction.swift
 //  IFTTT SDK
 //
 //  Created by Jon Chmura on 4/25/19.
@@ -8,17 +8,13 @@
 
 import Foundation
 
-enum DeepLink {
-    case connection(Connection)
-    
-    var url: URL {
-        switch self {
-        case .connection(let connection):
-            return connection.url
-        }
-    }
+enum ConnectionDeeplinkAction: String {
+    case view = "view"
+    case edit = "edit"
+    case activation = "activation"
     
     static var isIftttAppAvailable: Bool {
         return UIApplication.shared.canOpenURL(URL(string: API.iftttAppScheme)!)
     }
 }
+
