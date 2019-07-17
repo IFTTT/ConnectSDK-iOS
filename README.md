@@ -266,37 +266,26 @@ That's it! You're ready to start activating programmable Connections directly in
   A user-authenticated request is one that includes an `Authorization` header containing a user-specific token that IFTTT has issued to your service. This approach lets you make calls to the API from places like mobile apps or browsers where it would be inappropriate to expose your service key.
 
   ### Exchange a user token
- **URL**: `POST https://connect.ifttt.com/v2/user_token`
+  **URL**: `POST https://connect.ifttt.com/v2/user_token`
 
   This endpoint can be used to obtain a token for a specific user, allowing you to make user-authenticated requests. 
 
-  ##### Example: Get a user token, Service-authenticated with user ID and OAuth token
- <div class="example-list">
-   <ul>
-     <li>
-       <span class="example-list-heading">HTTP Request</span>
-       <code>
- <pre>
- POST /v2/user_token?user_id=123&access_token=abc
- Host: connect.ifttt.com
- IFTTT-Service-Key: 6e7c8978c07a3b5918a237b9b5b1bb70
- Content-Type: application/json
- </pre>
-       </code>
-     </li>
-     <li>
-       <span class="example-list-heading">Response</span>
-       <code>
- <pre>
- {
-   "type": "user_token",
-   "user_token": "e1hMBWw44mJM902c6ye9mmuS3nd4A_8eTCU99D4a5KQW7cT1"
- }
- </pre>
-       </code>
-     </li>
-   </ul>
- </div>
+  ### Example: Get a user token, Service-authenticated with user ID and OAuth token
+  ##### HTTP Request
+  ```
+  POST /v2/user_token?user_id=123&access_token=abc
+  Host: connect.ifttt.com
+  IFTTT-Service-Key: 6e7c8978c07a3b5918a237b9b5b1bb70
+  Content-Type: application/json
+  ```
+  
+  ##### HTTP Response
+  ```
+  {
+    "type": "user_token",
+    "user_token": "e1hMBWw44mJM902c6ye9mmuS3nd4A_8eTCU99D4a5KQW7cT1"
+  }
+  ```
 
   To clarify the variables used in this example:
 
@@ -316,7 +305,6 @@ That's it! You're ready to start activating programmable Connections directly in
 
   Because of this, **we strongly encourage you to** call this API on your backend, and return the user token back to your application, instead of making the API call directly within your application.
 
-
 ## Advanced
 
 ### Fetching a Connection
@@ -329,18 +317,14 @@ You may use `ConnectionNetworkController` directly to fetch a `Connection` from 
 connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: yourCredentialProvider)) { response
 	switch response.result {
 	case .success(let connection):
-		let config = ConnectionConfiguration(
-      connection: connection,
-      suggestedUserEmail: yourUsersEmail,
-      credentialProvider: yourCredentialProvider,
-      connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService
-    )
+		let config = ConnectionConfiguration(connection: connection, 
+                                         suggestedUserEmail: yourUsersEmail,
+                                         credentialProvider: yourCredentialProvider,
+                                         connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService)
 				     
-    let controller = ConnectButtonController(
-      connectButton: self.connectButton,
-      connectionConfiguration: config,
-      delegate: self
-    )
+    let controller = ConnectButtonController(connectButton: self.connectButton,
+                                             connectionConfiguration: config,
+                                             delegate: self)
     
 		self.connectButtonController = controller
 	case .failure(let error):
