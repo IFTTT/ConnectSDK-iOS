@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "idiom" : "universal",
+      "filename" : "Download_on_the_App_Store_Badge_US-UK_RGB_wht_092917-vector.pdf"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  },
+  "properties" : {
+    "template-rendering-intent" : "original"
+  }
+}
