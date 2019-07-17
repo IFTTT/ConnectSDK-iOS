@@ -1,0 +1,6 @@
+module Pods_Grocery_Express {
+  umbrella header "Pods-Grocery Express-umbrella.h"
+
+  export *
+  module * { export * }
+}
