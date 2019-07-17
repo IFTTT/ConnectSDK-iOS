@@ -2,7 +2,6 @@
 //  ConnectionActivationFlow.swift
 //  IFTTT SDK
 //
-//  Created by Jon Chmura on 3/12/19.
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 

@@ -2,8 +2,7 @@
 //  URLRequest+CommonValues.swift
 //  IFTTT SDK
 //
-//  Created by Michael Amundsen on 11/5/18.
-//  Copyright © 2018 IFTTT. All rights reserved.
+//  Copyright © 2019 IFTTT. All rights reserved.
 //
 
 import Foundation

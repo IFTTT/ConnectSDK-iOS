@@ -2,7 +2,6 @@
 //  EmailValidator.swift
 //  IFTTT SDK
 //
-//  Created by Siddharth Sathyam on 7/5/19.
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 

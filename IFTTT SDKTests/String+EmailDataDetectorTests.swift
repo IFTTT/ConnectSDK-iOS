@@ -2,8 +2,7 @@
 //  String+EmailDataDetectorTests.swift
 //  IFTTT SDKTests
 //
-//  Created by Michael Amundsen on 12/20/18.
-//  Copyright © 2018 IFTTT. All rights reserved.
+//  Copyright © 2019 IFTTT. All rights reserved.
 //
 
 import XCTest

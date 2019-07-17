@@ -2,8 +2,7 @@
 //  Selectable.swift
 //  IFTTT SDK
 //
-//  Created by Jon Chmura on 11/26/18.
-//  Copyright © 2018 IFTTT. All rights reserved.
+//  Copyright © 2019 IFTTT. All rights reserved.
 //
 
 import UIKit

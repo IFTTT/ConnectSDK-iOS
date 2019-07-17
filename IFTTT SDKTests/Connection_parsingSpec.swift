@@ -2,7 +2,6 @@
 //  Connection_parsingSpec.swift
 //  IFTTT SDKTests
 //
-//  Created by Jon Chmura on 4/24/19.
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 

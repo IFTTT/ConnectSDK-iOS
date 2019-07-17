@@ -2,7 +2,6 @@
 //  ConnectionCredentials.swift
 //  SDK Example
 //
-//  Created by Jon Chmura on 1/3/19.
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
@@ -28,10 +27,9 @@ class ConnectionCredentials: ConnectionCredentialProvider, CustomStringConvertib
     /// This is also the token that you use to make requests to the Connection API for triggers, actions, and queries on the user's behalf
     private(set) var userToken: String?
     
-    /// Grocery Express is an unpublished service, therefore we must provide the invite code from https://platform.ifttt.com/services/grocery_express/general
-    /// If your service is in development, you will find your invite code here
+    /// This is required if your service is in development and has not been published. Check the platform to get this code. See SDK readme for more details. 
     var inviteCode: String? {
-        return "213621-90a10d229fbf8177a7ba0e6249847daf"
+        return nil
     }
     
     /// Have we made a successful IFTTT Connection

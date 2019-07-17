@@ -2,7 +2,6 @@
 //  ProgressBarController.swift
 //  IFTTT SDK
 //
-//  Created by Jon Chmura on 3/28/19.
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 

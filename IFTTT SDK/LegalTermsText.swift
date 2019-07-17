@@ -2,8 +2,7 @@
 //  LegalText.swift
 //  IFTTT SDK
 //
-//  Created by Jon Chmura on 12/14/18.
-//  Copyright © 2018 IFTTT. All rights reserved.
+//  Copyright © 2019 IFTTT. All rights reserved.
 //
 
 import Foundation

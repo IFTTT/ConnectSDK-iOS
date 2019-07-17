@@ -2,7 +2,6 @@
 //  TokenRequest.swift
 //  Grocery Express
 //
-//  Created by Jon Chmura on 1/9/19.
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
