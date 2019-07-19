@@ -47,17 +47,16 @@ extension ConnectButton {
         /// - Parameters:
         ///   - service: The `Service` model to used to configure the styling of the knob.
         ///   - networkController: An optional `ImageViewNetworkController` for fetching the service's icon.
-        func configure(with service: Service, networkController: ImageViewNetworkController?) {
+        ///   - trackColor: The color of the track to use in determining what color to make the knob color.
+        func configure(with service: Service, networkController: ImageViewNetworkController?, trackColor: UIColor) {
             networkController?.setImage(with: service.iconURL, for: knob.iconView)
             
             let color = service.brandColor
-            knob.backgroundColor = color
-            
-            // If the knob color is too close to black, draw a border around it
-            if color.distance(from: .black, comparing: .monochrome) < 0.2 {
-                knob.border = .init(color: Color.border, width: Layout.borderWidth)
+            // If the knob color is too close to the track color, set the background color to be a contrasting version of the color
+            if color.distance(from: trackColor, comparing: .monochrome) < 0.2 {
+                knob.backgroundColor = color.contrasting()
             } else {
-                knob.border = .none
+                knob.backgroundColor = color
             }
         }
         
