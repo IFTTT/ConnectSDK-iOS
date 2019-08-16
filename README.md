@@ -64,7 +64,7 @@ The `IFTTT SDK.framework` is automatically added as a target dependency, linked 
 
 ## Setup 
 ### Configure redirect
-During Connection activation, your app will receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the same URL configured on the service tab in Redirects on https://platform.ifttt.com
+During Connection activation, your app will receive redirects intended for the Connect Button SDK. You must configure your app's PLIST file to accept incoming redirects with the same approved URI(s) you provide [here](https://platform.ifttt.com/mkt/embedded_redirects).
 ```
 <key>CFBundleURLTypes</key>
 <array>
