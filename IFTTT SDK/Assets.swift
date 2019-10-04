@@ -16,7 +16,8 @@ extension Bundle {
         let connectButtonBundle = Bundle(for: ConnectButton.self)
         guard let urlForBundle = connectButtonBundle.url(forResource: ResourceName, withExtension: BundleExtensionName),
             let bundle = Bundle(url: urlForBundle) else {
-            fatalError("Bundle missing. Make sure bundle is setup properly for \(ResourceName).")
+                // If we're unable to generate the bundle indicated by `ResourceName`, fall back to returning the bundle for the `ConnectButton` instead.
+                return connectButtonBundle
         }
         
         return bundle
