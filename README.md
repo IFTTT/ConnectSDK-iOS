@@ -126,12 +126,12 @@ func application(_ app: UIApplication,
 * `userToken`: This is the IFTTT user token for your service. This token allows you to get IFTTT user data related to only your service. For example, include this token to get the enabled status of Connections for your user. It is also the same token that is used to make trigger, query, and action requests for Connections on behalf of the user. 
 
 **How to get a `userToken`**
-1) You should retrieve it from a communication between your servers and ours using your `IFTTT-Service-Key`. Never include this key in your app binary, rather create an endpoint on your own server to access the user's IFTTT service token. See [Authentication](#authentication) for more information on this.
 
-2) Additionally, `ConnectButtonControllerDelegate` returns the user token when a connection is activated. 
-You should support both methods to receive the `userToken` since the user may have already connected your service to IFTTT.
+1) See [Authentication](#authentication) for more information on exchanging a user-specific token to make user-authenticated requests.
 
-* `inviteCode`: This value is only required if your service is not published. You can find it on https://platform.ifttt.com on the Service tab in General under invite URL. If your service is published, return nil.
+2) Note that `ConnectButtonControllerDelegate` returns the user token when a connection is activated. You should support both methods to receive the `userToken` since the user may have already connected your service to IFTTT.
+
+* `inviteCode`: This value is only required if your service is not published. You can find it [here](http://platform.ifttt.com/mkt/general#partners_service_invite_url) in the IFTTT Platform. If your service is published, return nil.
 
 ```
 struct Credentials: ConnectionCredentialProvider {  
@@ -261,7 +261,7 @@ That's it! You're ready to start activating programmable Connections directly in
 
 
 ## Authentication
- To enable the SDK to retrieve connection status for a specific user, as well as allowing the SDK to facilitate disabling a connection, it needs to be user-authenticated, which requires an IFTTT user token.
+ To enable the SDK to retrieve connection status for a specific user, as well as allowing the SDK to facilitate disabling a connection, it needs to be user-authenticated, which requires an IFTTT user token. This token is identical to the token returned by your service when a user authenticates via the [service authentication flow](https://platform.ifttt.com/docs/api_reference#authentication-flow).
 
   A user-authenticated request is one that includes an `Authorization` header containing a user-specific token that IFTTT has issued to your service. This approach lets you make calls to the API from places like mobile apps or browsers where it would be inappropriate to expose your service key.
 
