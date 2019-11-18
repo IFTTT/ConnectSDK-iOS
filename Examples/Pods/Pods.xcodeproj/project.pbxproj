@@ -103,12 +103,11 @@
 		277248A466FE77F22A0EF9FD679DD795 /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkError.swift; path = "IFTTT SDK/ConnectionNetworkError.swift"; sourceTree = "<group>"; };
 		2830DED3043F0464C021F411B89AC698 /* ConnectionRedirectHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionRedirectHandler.swift; path = "IFTTT SDK/ConnectionRedirectHandler.swift"; sourceTree = "<group>"; };
 		285D992525420031209D5BE25C36FD2A /* Links.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Links.swift; path = "IFTTT SDK/Links.swift"; sourceTree = "<group>"; };
+		2D02A9F737AE86ACFB346F71EBD3EE18 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		2E329FF75C833FAF6031F243E9EFB06C /* Pods-Grocery Express-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Grocery Express-resources.sh"; sourceTree = "<group>"; };
 		32074DC7F7449932B0DA4B3514393F4E /* Pods-Grocery Express-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Grocery Express-dummy.m"; sourceTree = "<group>"; };
 		36456F9D604F7BD2513477E99E8AB5A8 /* Pods-Grocery Express.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Grocery Express.release.xcconfig"; sourceTree = "<group>"; };
 		39A1CAC3A3CD80E3EF1FD0CB3F120A9B /* API.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = API.swift; path = "IFTTT SDK/API.swift"; sourceTree = "<group>"; };
-		3ACEAA485CBB2525363CF2A66B2A75B4 /* readme.md */ = {isa = PBXFileReference; includeInIndex = 1; path = readme.md; sourceTree = "<group>"; };
-		416202DF60EC2EA19BE715A3CBBDEE26 /* IFTTTConnectSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = IFTTTConnectSDK.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		41BC658AA3BC7D5BED0A00C2AE038968 /* ConnectButtonController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectButtonController.swift; path = "IFTTT SDK/ConnectButtonController.swift"; sourceTree = "<group>"; };
 		444EEB958D4DA2D4BF42B69E0B6D55E1 /* Localizable.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = "IFTTT SDK/Localizable.strings"; sourceTree = "<group>"; };
 		47A2A39470576BBB9DC71B417C1AD5CB /* Selectable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Selectable.swift; path = "IFTTT SDK/Selectable.swift"; sourceTree = "<group>"; };
@@ -126,6 +125,7 @@
 		6E70FAC569FD07D2D0D5B8B921C687B4 /* ConnectButton+Transition.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Transition.swift"; path = "IFTTT SDK/ConnectButton+Transition.swift"; sourceTree = "<group>"; };
 		6E9FF793F631DBD2B6617C32D0DF28DF /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "IFTTT SDK/Assets.xcassets"; sourceTree = "<group>"; };
 		6F6F4FE7DA415ED62714C2E641B14D6A /* Pods-Grocery Express.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Grocery Express.modulemap"; sourceTree = "<group>"; };
+		7C8BA0C60157FCAF436EFFC55536ABDC /* IFTTTConnectSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = IFTTTConnectSDK.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		836D5755BC8C5D398BA46441C50E5366 /* Color.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Color.swift; path = "IFTTT SDK/Color.swift"; sourceTree = "<group>"; };
 		8484F95E4AE44F737395E2C6459B08C6 /* PassthroughView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PassthroughView.swift; path = "IFTTT SDK/PassthroughView.swift"; sourceTree = "<group>"; };
 		8736BC5D247A3F7900B13BBB9CD14058 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkController.swift; path = "IFTTT SDK/ConnectionNetworkController.swift"; sourceTree = "<group>"; };
@@ -134,7 +134,6 @@
 		9AC4DD55EC98B5EEDC8D4ADDD5734367 /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIKit+ConvenienceInit.swift"; path = "IFTTT SDK/UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
 		9AC858DEDDD2D47D73233DCCFE6820E3 /* LegalTermsText.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LegalTermsText.swift; path = "IFTTT SDK/LegalTermsText.swift"; sourceTree = "<group>"; };
 		9AEF4909DDF92E489EC5E8B29E6522DA /* ConnectButton+CheckmarkView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+CheckmarkView.swift"; path = "IFTTT SDK/ConnectButton+CheckmarkView.swift"; sourceTree = "<group>"; };
-		9C942B142DBFCE76BABA6451C0A0A45B /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9EF0FD6AD2B6180F3C7C36D6C8BE8D5A /* ServiceIconsNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceIconsNetworkController.swift; path = "IFTTT SDK/ServiceIconsNetworkController.swift"; sourceTree = "<group>"; };
 		A4A73A81EADD849BA44040F151DA2FCD /* ConnectButton+LabelValue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+LabelValue.swift"; path = "IFTTT SDK/ConnectButton+LabelValue.swift"; sourceTree = "<group>"; };
@@ -155,6 +154,7 @@
 		E8CB27AEF8D94BD0EFA72DCCB056A090 /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLRequest+CommonValues.swift"; path = "IFTTT SDK/URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
 		EAB68E41413279F0C8404A5CD9DDF074 /* Connection+Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Request.swift"; path = "IFTTT SDK/Connection+Request.swift"; sourceTree = "<group>"; };
 		EBA108C652DC4C8497869CBAF0E2A051 /* Connection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Connection.swift; path = "IFTTT SDK/Connection.swift"; sourceTree = "<group>"; };
+		ECD069A4A867D2103BE5FD240A7B4FDA /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		F22FA0897CF0B21A52E79CECA11A99D5 /* ConnectionActivationFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionActivationFlow.swift; path = "IFTTT SDK/ConnectionActivationFlow.swift"; sourceTree = "<group>"; };
 		F28CCB2ED51C275F96E37CD0E5475CC5 /* IFTTTConnectSDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IFTTTConnectSDK-prefix.pch"; sourceTree = "<group>"; };
 		F5760F42BC07BB9452D72680C4067088 /* Pods-Grocery Express-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Grocery Express-umbrella.h"; sourceTree = "<group>"; };
@@ -187,16 +187,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		105C487C514AB85A6BF33C6F4966778C /* Pod */ = {
-			isa = PBXGroup;
-			children = (
-				416202DF60EC2EA19BE715A3CBBDEE26 /* IFTTTConnectSDK.podspec */,
-				9C942B142DBFCE76BABA6451C0A0A45B /* LICENSE */,
-				3ACEAA485CBB2525363CF2A66B2A75B4 /* readme.md */,
-			);
-			name = Pod;
-			sourceTree = "<group>";
-		};
 		371DE65FAB88612DCF35072382085E7B /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,7 +276,7 @@
 				E8CB27AEF8D94BD0EFA72DCCB056A090 /* URLRequest+CommonValues.swift */,
 				AFB270BDA45E78A7148995B615EB1280 /* URLSession+JSONTask.swift */,
 				5654046B1444864860CC57EC138237C2 /* User.swift */,
-				105C487C514AB85A6BF33C6F4966778C /* Pod */,
+				D737AF211553C1F8F4EAAAF14761E92A /* Pod */,
 				C757CBCA35E3D155B063FE1B3D3B94A4 /* Resources */,
 				4D3447F177DA1D4DC851BC060340F1B3 /* Support Files */,
 			);
@@ -334,6 +324,16 @@
 				44AF3C2F5AB8BBA97387DC9AC7F289A3 /* Products */,
 				CE0AE8C21331049977A05C79BA56C57B /* Targets Support Files */,
 			);
+			sourceTree = "<group>";
+		};
+		D737AF211553C1F8F4EAAAF14761E92A /* Pod */ = {
+			isa = PBXGroup;
+			children = (
+				7C8BA0C60157FCAF436EFFC55536ABDC /* IFTTTConnectSDK.podspec */,
+				2D02A9F737AE86ACFB346F71EBD3EE18 /* LICENSE */,
+				ECD069A4A867D2103BE5FD240A7B4FDA /* README.md */,
+			);
+			name = Pod;
 			sourceTree = "<group>";
 		};
 		D89477F20FB1DE18A04690586D7808C4 /* Frameworks */ = {
@@ -434,6 +434,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = 44AF3C2F5AB8BBA97387DC9AC7F289A3 /* Products */;
@@ -644,12 +645,13 @@
 			};
 			name = Debug;
 		};
-		5B9E9AE11130816E38EAFBAAC016648B /* Debug */ = {
+		4558B34BB2734C85C70292C46F9453F7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CDDCE668055838CDDF5B2C368F661437 /* IFTTTConnectSDK.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
+				IBSC_MODULE = IFTTTConnectSDK;
 				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				PRODUCT_NAME = IFTTTConnectSDK;
@@ -658,7 +660,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = bundle;
 			};
-			name = Debug;
+			name = Release;
 		};
 		60F4C2FA4CFD52A55DF0E522CD4B2696 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -687,12 +689,13 @@
 			};
 			name = Release;
 		};
-		762A3EC2FD6C39D6EC47AC90EE1C9772 /* Release */ = {
+		AE39D5D213ABB8777CD0C7CFDB7A106D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CDDCE668055838CDDF5B2C368F661437 /* IFTTTConnectSDK.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
+				IBSC_MODULE = IFTTTConnectSDK;
 				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				PRODUCT_NAME = IFTTTConnectSDK;
@@ -701,7 +704,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = bundle;
 			};
-			name = Release;
+			name = Debug;
 		};
 		B01D14FDC83DCF9D4BE53066BEA96D05 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -869,8 +872,8 @@
 		C99150E4DC4248B8F49F7A2AE39B4FB7 /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5B9E9AE11130816E38EAFBAAC016648B /* Debug */,
-				762A3EC2FD6C39D6EC47AC90EE1C9772 /* Release */,
+				AE39D5D213ABB8777CD0C7CFDB7A106D /* Debug */,
+				4558B34BB2734C85C70292C46F9453F7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
