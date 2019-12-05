@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
 extension Bundle {
     private static let ResourceName = "IFTTTConnectSDK"
     private static let BundleExtensionName = "bundle"
@@ -24,7 +23,6 @@ extension Bundle {
     }
 }
 
-@available(iOS 10.0, *)
 struct Assets {
     struct Button {
         static let emailConfirm = UIImage.iftttAsset(named: "email_confirm")
@@ -40,7 +38,6 @@ struct Assets {
     }
 }
 
-@available(iOS 10.0, *)
 private extension UIImage {
     static func iftttAsset(named: String) -> UIImage {
         return UIImage(named: named, in: Bundle.sdk, compatibleWith: nil)!

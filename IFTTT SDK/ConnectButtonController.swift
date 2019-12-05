@@ -27,7 +27,7 @@ public enum ConnectButtonControllerError: Error {
     /// Some generic networking error occurred.
     case networkError(ConnectionNetworkError)
 
-    /// A user canceled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
+    /// A user cancelled the service authentication with the `Connection`. This happens when the user cancels from the sign in process on an authorization page in a safari view controller.
     case canceled
     
     /// A user cancelled the configuration of the connection in the IFTTT app.
@@ -47,7 +47,6 @@ public enum ConnectButtonControllerError: Error {
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
-@available(iOS 10.0, *)
 public protocol ConnectButtonControllerDelegate: class {
 
     /// The `ConnectButtonController` needs to present a view controller. This includes the About IFTTT page and Safari VC during Connection activation.
@@ -86,7 +85,6 @@ public protocol ConnectButtonControllerDelegate: class {
 }
 
 /// A controller that handles the `ConnectButton` when authenticating a `Connection`. It is mandatory that you interact with the ConnectButton only through this controller.
-@available(iOS 10.0, *)
 public class ConnectButtonController {
 
     /// The connect button in this interaction
@@ -135,6 +133,7 @@ public class ConnectButtonController {
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
     private let reachability = Reachability()
+    private let connectionVerificationSession: ConnectionVerificationSession
 
     /// Creates a new `ConnectButtonController`.
     ///
@@ -150,8 +149,34 @@ public class ConnectButtonController {
                                                                  activationRedirect: connectionConfiguration.redirectURL)
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
+        self.connectionVerificationSession = ConnectionVerificationSession()
         setupConnection(for: connection, animated: false)
-        beginRedirectObserving()
+        setupVerification()
+    }
+    
+    private func setupVerification() {
+        connectionVerificationSession.completionHandler =  { [weak self] (outcome) in
+            self?.handleOutcome(outcome)
+        }
+    }
+    
+    private func handleOutcome(_ outcome: ConnectionVerificationSession.Outcome) {
+        connectionVerificationSession.dismiss { [weak self] in
+            // Determine the next step based on the redirect result
+            let nextStep: ActivationStep = {
+                switch outcome {
+                case .error(let error):
+                    return .failed(error)
+                    
+                case .token(let userToken):
+                    return .activationComplete(userToken: userToken)
+                    
+                case .email:
+                    return .enterEmail
+                }
+            }()
+            self?.transition(to: nextStep)
+        }
     }
 
     private func setupConnection(for connection: Connection?, animated: Bool) {
@@ -366,171 +391,6 @@ public class ConnectButtonController {
             }
         }
     }
-    
-    
-    // MARK: - Safari VC delegate (cancelation handling)
-
-    /// Delegate object for Safari VC
-    /// Handles user cancelation in the web flow
-    private final class SafariDelegate: NSObject, SFSafariViewControllerDelegate {
-        /// Callback when the Safari VC is dismissed by the user
-        /// This triggers a cancelation event
-        let onCancelation: VoidClosure
-
-        /// Create a new SafariDelegate
-        ///
-        /// - Parameter onCancelation: The cancelation handler
-        init(onCancelation: @escaping VoidClosure) {
-            self.onCancelation = onCancelation
-        }
-
-        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            onCancelation()
-        }
-    }
-
-    /// This objects acts as the Safari VC delegate
-    private var safariDelegate: SafariDelegate?
-
-    private func handleCancelation(lookupMethod: User.LookupMethod) {
-        switch lookupMethod {
-        case .email:
-            transition(to: .enterEmail)
-        case .token:
-            transition(to: .canceled)
-        }
-    }
-
-
-    // MARK: - Safari VC redirect handling
-
-    private final class RedirectObserving {
-
-        private struct QueryItems {
-            static let nextStep = "next_step"
-            static let userCancelledConfiguration = "user_cancelled_configuration"
-            static let complete = "complete"
-            static let userToken = "user_token"
-            static let error = "error"
-            static let errorType = "error_type"
-            static let errorTypeAccountCreation = "account_creation"
-        }
-
-        /// Authorization redirect encodes some information about what comes next in the flow
-        ///
-        /// - complete: The Connection is complete. If the user token was present in the redirect, it is returned here. This is optional to allow future flexibility.
-        /// - failed: An error occurred on web, aborting the flow.
-        enum Outcome {
-            case complete(userToken: String?)
-            case failed(ConnectButtonControllerError)
-        }
-
-        var onRedirect: ((Outcome) -> Void)?
-
-        init() {
-            NotificationCenter.default.addObserver(forName: .connectionRedirect, object: nil, queue: .main) { [weak self] notification in
-                self?.handleRedirect(notification)
-            }
-        }
-
-        deinit {
-            NotificationCenter.default.removeObserver(self)
-        }
-        
-        private func handleRedirect(_ notification: Notification) {
-            guard
-                let url = notification.object as? URL,
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                let queryItems = components.queryItems,
-                let nextStep = queryItems.first(where: { $0.name == QueryItems.nextStep })?.value
-                else {
-                    onRedirect?(.failed(.unknownRedirect))
-                    return
-            }
-
-            switch nextStep {
-            case QueryItems.complete:
-                let userToken = queryItems.first(where: { $0.name == QueryItems.userToken })?.value
-                onRedirect?(.complete(userToken: userToken))
-
-            case QueryItems.error:
-                if let reason = queryItems.first(where: { $0.name == QueryItems.errorType })?.value, reason == QueryItems.errorTypeAccountCreation {
-                    onRedirect?(.failed(.iftttAccountCreationFailed))
-                } else {
-                    onRedirect?(.failed(.unknownRedirect))
-                }
-                
-            case QueryItems.userCancelledConfiguration:
-                onRedirect?(.failed(.userCancelledConfiguration))
-
-            default:
-                onRedirect?(.failed(.unknownRedirect))
-            }
-        }
-    }
-
-    private let redirectObserving = RedirectObserving()
-
-    /// Starts monitoring for connection flow redirects
-    private func beginRedirectObserving() {
-        redirectObserving.onRedirect = { [weak self] outcome in
-            self?.handleRedirect(outcome)
-        }
-    }
-    
-    private func handleRedirect(_ outcome: RedirectObserving.Outcome) {
-
-        // Before we continue and handle this redirect, we must dismiss the active Safari VC
-        guard currentSafariViewController == nil else {
-            // Redirect doesn't automatically dismiss Safari VC
-            // Do that first
-            currentSafariViewController?.dismiss(animated: true) {
-                self.currentSafariViewController = nil
-                self.handleRedirect(outcome)
-            }
-            return
-        }
-
-        // Determine the next step based on the redirect result
-        let nextStep: ActivationStep = {
-            switch outcome {
-            case .failed(let error):
-                return .failed(error)
-
-            case .complete(let userToken):
-                return .activationComplete(userToken: userToken)
-            }
-        }()
-
-        transition(to: nextStep)
-    }
-
-
-    // MARK: - Web flow (IFTTT log in and service activation)
-
-    private var currentSafariViewController: SFSafariViewController?
-
-    private func openActivationURL(_ url: URL) {
-        let controller = SFSafariViewController(url: url, entersReaderIfAvailable: false)
-        controller.delegate = safariDelegate
-        if #available(iOS 11.0, *) {
-            controller.dismissButtonStyle = .cancel
-        }
-        currentSafariViewController = controller
-        present(controller)
-    }
-
-    /// Creates a `RedirectObserving` and a `SafariDelegate` to track interaction in the web portion of the activation flow
-    private func prepareActivationWebFlow(lookupMethod: User.LookupMethod) {
-        safariDelegate = SafariDelegate { [weak self] in
-            self?.handleCancelation(lookupMethod: lookupMethod)
-        }
-    }
-
-    /// Once activation is finished or canceled, tear down redirect and cancelation observing
-    private func endActivationWebFlow() {
-        safariDelegate = nil
-    }
 
     // MARK: - Connection activation & deactivation
 
@@ -607,7 +467,7 @@ public class ConnectButtonController {
     }
     
     private func transitionToInitalization(connection: Connection, animated: Bool) {
-        endActivationWebFlow()
+        connectionVerificationSession.endActivationWebFlow()
 
         button.footerInteraction.isTapEnabled = true
         button.footerInteraction.onSelect = { [weak self] in
@@ -697,7 +557,7 @@ public class ConnectButtonController {
     }
     
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
-        prepareActivationWebFlow(lookupMethod: lookupMethod)
+        connectionVerificationSession.beginObservingSafariRedirects(with: lookupMethod)
         button.animator(for: .buttonState(.verifying(message: "button.state.verifying".localized), footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
         button.footerInteraction.isTapEnabled = true
@@ -760,8 +620,13 @@ public class ConnectButtonController {
     private func transitionToActivate(connection: Connection, user: User, redirectImmediately: Bool) {
         let url = connectionHandoffFlow.webFlowUrl(user: user)
         
-        guard redirectImmediately == false else {
-            openActivationURL(url)
+        guard let viewController = delegate?.presentingViewController(for: self) else {
+            assertionFailure("It is expected for the web flow to implement the `presentingViewController(for connectButtonController: ConnectButtonController)` delegate method of `ConnectButtonControllerDelegate`.")
+            return
+        }
+        
+        if redirectImmediately {
+            connectionVerificationSession.start(from: viewController, with: url)
             return
         }
         
@@ -776,7 +641,7 @@ public class ConnectButtonController {
         button.showProgress(duration: timeout).startAnimation()
         
         Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] timer in
-            self?.openActivationURL(url)
+            self?.connectionVerificationSession.start(from: viewController, with: url)
             timer.invalidate()
         }
     }
@@ -918,14 +783,12 @@ public class ConnectButtonController {
 
 // MARK: - Convenience
 
-@available(iOS 10.0, *)
 private extension Connection.Service {
     var connectButtonService: ConnectButton.Service {
         return ConnectButton.Service(iconURL: templateIconURL, brandColor: brandColor)
     }
 }
 
-@available(iOS 10.0, *)
 private extension UIViewPropertyAnimator {
     func perform(animated: Bool = true) {
         if animated {

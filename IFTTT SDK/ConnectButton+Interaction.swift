@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// A structure to wrap various properties associated with the ability to tap or drag the connect button on and off.

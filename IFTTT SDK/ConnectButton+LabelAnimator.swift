@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// A clas that wraps the ability to animate a `UILabel` to and from a value.

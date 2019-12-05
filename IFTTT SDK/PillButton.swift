@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
 class PillButton: PillView {
     
     let label = UILabel()

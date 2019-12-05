@@ -8,7 +8,6 @@
 import Foundation
 
 /// Factory for building `NSAttributedString` with links for Terms of Use and our Privacy Policy
-@available(iOS 10.0, *)
 struct LegalTermsText {
     
     /// The link text for our Privacy & Terms of Use

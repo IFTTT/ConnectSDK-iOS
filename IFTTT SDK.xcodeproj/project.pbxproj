@@ -34,6 +34,8 @@
 		DE3BEFCA22CAAA8C0020B425 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFC922CAAA8C0020B425 /* Localizable.strings */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
 		DE4C5FFA22CFE570009C7AF9 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */; };
+		DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */; };
+		DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */; };
 		FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */; };
 		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
@@ -107,6 +109,8 @@
 		DE3BEFC922CAAA8C0020B425 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailValidator.swift; sourceTree = "<group>"; };
+		DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionVerificationSession.swift; sourceTree = "<group>"; };
+		DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationSession.swift; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -315,6 +319,8 @@
 				1D7918402227202700429936 /* Reachability.swift */,
 				FC361B60224D872D0078B153 /* ProgressBarController.swift */,
 				DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */,
+				DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */,
+				DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -468,6 +474,7 @@
 				1D453EDC2297213E001994FF /* ConnectButton+Service.swift in Sources */,
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
 				1D453EE62297236C001994FF /* ConnectButton+LabelAnimator.swift in Sources */,
+				DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */,
 				1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */,
 				FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,
@@ -492,6 +499,7 @@
 				1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
+				DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */,
 				1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */,
 				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
 				FCF29FC72187C8C2004B1100 /* Connection+parsing.swift in Sources */,
@@ -584,7 +592,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -641,7 +649,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

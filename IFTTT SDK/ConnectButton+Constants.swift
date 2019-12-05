@@ -9,7 +9,6 @@ import Foundation
 
 typealias VoidClosure = () -> Void
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     // Layout constants

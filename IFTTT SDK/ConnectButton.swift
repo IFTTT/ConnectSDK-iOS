@@ -9,7 +9,6 @@ import UIKit
 
 // MARK: - Connect Button
 
-@available(iOS 10.0, *)
 @IBDesignable
 public class ConnectButton: UIView {
     
@@ -464,7 +463,6 @@ public class ConnectButton: UIView {
 
 // MARK: Gesture recognizer delegate (Toggle interaction)
 
-@available(iOS 10.0, *)
 extension ConnectButton: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // Prevents the tap gesture from interfering with scrolling when it is placed in a scroll view
@@ -475,7 +473,6 @@ extension ConnectButton: UIGestureRecognizerDelegate {
 
 // MARK: Text field delegate (email)
 
-@available(iOS 10.0, *)
 extension ConnectButton: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         confirmEmail()
@@ -485,7 +482,6 @@ extension ConnectButton: UITextFieldDelegate {
 
 // MARK: Progress bar
 
-@available(iOS 10.0, *)
 extension ConnectButton: ProgressBar {
     func showProgress(from start: CGFloat = 0, to end: CGFloat = 1,
                       duration: TimeInterval, curve: UIView.AnimationCurve = .linear) -> UIViewPropertyAnimator {
@@ -498,7 +494,6 @@ extension ConnectButton: ProgressBar {
 
 // MARK: Button state
 
-@available(iOS 10.0, *)
 private extension ConnectButton {
     
     private func animation(for animationState: AnimationState, with animator: UIViewPropertyAnimator) {
@@ -781,7 +776,7 @@ private extension ConnectButton {
     }
     
     private func transitionToConnected(service: Service, message: String, shouldAnimateKnob: Bool, animator: UIViewPropertyAnimator) {
-        stopPulseAnimation() // If we canceled disconnect
+        stopPulseAnimation() // If we Cancelled disconnect
         
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
         

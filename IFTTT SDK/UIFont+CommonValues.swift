@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
 extension UIFont {
     
     /// The weight options available for the app's custom fonts.

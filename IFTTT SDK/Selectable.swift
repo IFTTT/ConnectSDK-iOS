@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
 class Selectable: NSObject, UIGestureRecognizerDelegate {
     var isEnabled: Bool {
         get { return gesture.isEnabled }
