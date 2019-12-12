@@ -22,7 +22,11 @@ final class ConnectionVerificationSession {
     /// - Parameters:
     ///     - completion: A closure that gets called after the dismissal is complete.
     func dismiss(completion: @escaping VoidClosure) {
-        guard let authProvider = authProvider else { return }
+        guard let authProvider = authProvider else {
+            // If we don't have an auth provider, call the completion handler right away.
+            completion()
+            return
+        }
         switch authProvider {
         case .authSession(let authSession):
             authSession.cancel()
