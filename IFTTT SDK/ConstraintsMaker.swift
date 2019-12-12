@@ -8,7 +8,6 @@
 import UIKit
 
 /// Provides a consistent way to access layout anchors between `UIView` and `UILayoutGuide`
-@available(iOS 10.0, *)
 protocol LayoutGuide {
     var topAnchor: NSLayoutYAxisAnchor { get }
     var leftAnchor: NSLayoutXAxisAnchor { get }
@@ -20,13 +19,10 @@ protocol LayoutGuide {
     var centerYAnchor: NSLayoutYAxisAnchor { get }
 }
 
-@available(iOS 10.0, *)
 extension UIView: LayoutGuide { }
 
-@available(iOS 10.0, *)
 extension UILayoutGuide: LayoutGuide { }
 
-@available(iOS 10.0, *)
 extension LayoutGuide {
     
     /// Returns a `ConstraintsMaker` for this view
@@ -37,7 +33,6 @@ extension LayoutGuide {
 
 /// A factory for `NSLayoutConstraint`
 /// Creates layout regarding a single target view
-@available(iOS 10.0, *)
 struct ConstraintsMaker {
     
     struct Axis: OptionSet {

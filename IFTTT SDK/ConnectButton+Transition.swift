@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// Groups button State and footer value into a single state transition

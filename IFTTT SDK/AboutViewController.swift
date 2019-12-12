@@ -9,7 +9,6 @@ import UIKit
 import SafariServices
 import StoreKit
 
-@available(iOS 10.0, *)
 class AboutViewController: UIViewController {
     
     private let connection: Connection
@@ -270,7 +269,6 @@ class AboutViewController: UIViewController {
 
 // MARK: - Service icons header view
 
-@available(iOS 10.0, *)
 private extension AboutViewController {
     /// Presents the primary and secondary service icons with an arrow connecting the two
     final class ServiceIconsView: UIView {
@@ -309,7 +307,6 @@ private extension AboutViewController {
 
 // MARK: - Value proposition view
 
-@available(iOS 10.0, *)
 private extension AboutViewController {
     final class ValuePropositionView: UIView {
         init(icon: UIImage, text: String) {
@@ -349,7 +346,6 @@ private extension AboutViewController {
 
 // MARK: - Legal terms view
 
-@available(iOS 10.0, *)
 private extension AboutViewController {
     final class LegalTermsView: UIView, UITextViewDelegate {
         

@@ -8,7 +8,6 @@
 import UIKit
 
 /// Interface for a `ProgressBar` view to use in conjunction with a `ProgressBarCoordinator`
-@available(iOS 10.0, *)
 protocol ProgressBar {
     
     /// Shows the `ProgressBar`.
@@ -24,7 +23,6 @@ protocol ProgressBar {
 }
 
 /// Coordinators the animation of a `ProgressBar` during a long running operation
-@available(iOS 10.0, *)
 final class ProgressBarController {
     
     struct Constants {

@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// A `UIView` subclass composed of a knob and track that represents the switch of the connect button.

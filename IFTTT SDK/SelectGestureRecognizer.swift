@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
 class SelectGestureRecognizer: UIGestureRecognizer {
     
     typealias HighlightHandler = ((UIView?, Bool) -> Void)

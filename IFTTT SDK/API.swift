@@ -14,7 +14,7 @@ struct API {
     /// The unique id for IFTTT's App Store listing
     static let iftttAppStoreId = "660944635"
     
-    static let sdkVersion = "2.0.0-rc1"
+    static let sdkVersion = Bundle.sdk.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     static let sdkPlatform = "ios"
     
     /// An installation id for this instance of the SDK. This id remains static from installation to deletion of the partner app.

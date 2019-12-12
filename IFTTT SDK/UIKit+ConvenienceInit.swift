@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 10.0, *)
 extension UILabel {
     convenience init(_ text: String? = nil, _ configure: ((UILabel) -> Void)? = nil) {
         self.init()
@@ -23,7 +22,6 @@ extension UILabel {
     }
 }
 
-@available(iOS 10.0, *)
 extension UIStackView {
     convenience init(_ views: [UIView] = [], _ configure: ((UIStackView) -> Void)) {
         self.init(arrangedSubviews: views)

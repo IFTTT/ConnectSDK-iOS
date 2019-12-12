@@ -9,7 +9,6 @@ import UIKit
 
 /// A UI view with circular endcaps
 /// Each end cap may be configured individually to be square or rounded
-@available(iOS 10.0, *)
 class PillView: UIView {
     
     init() {
@@ -175,7 +174,6 @@ class PillView: UIView {
     }
 }
 
-@available(iOS 10.0, *)
 private extension PillView {
     
     /// A half circle view for drawing the end caps

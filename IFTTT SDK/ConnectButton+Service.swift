@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// Wraps various information for configuring the connect button based on the service it is connecting.

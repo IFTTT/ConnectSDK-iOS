@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// Adjusts the button for a white or black background

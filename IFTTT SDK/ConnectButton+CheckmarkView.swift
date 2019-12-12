@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension ConnectButton {
     
     /// A `UIView` subclass that is used to draw a checkmark when completing activation.
@@ -101,7 +100,6 @@ extension ConnectButton {
     }
 }
 
-@available(iOS 10.0, *)
 extension ConnectButton.CheckmarkView {
     
     /// Draws the checkmark.
@@ -127,7 +125,6 @@ extension ConnectButton.CheckmarkView {
     }
 }
 
-@available(iOS 10.0, *)
 extension ConnectButton.CheckmarkView: CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if anim is CAKeyframeAnimation {
