@@ -530,6 +530,21 @@ public class ConnectButtonController {
                 self.transition(to: .failed(.iftttAppRedirectFailed))
             }
         }
+        
+        // Resets the button state after a app handoff
+        // Should the user return without completing the flow, they can just start over
+        // We will handle initial -> complete transition via the redirect
+        var token: Any?
+        token = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+                                                       object: nil,
+                                                       queue: .main) { _ in
+                                                        self.transition(to: .initial(animated: false))
+                                                        if let token = token {
+                                                            // This is one-time use. Remove it immediately.
+                                                            NotificationCenter.default.removeObserver(token)
+                                                        }
+        }
+        
         guard redirectImmediately == false else {
             redirect()
             return
@@ -540,20 +555,6 @@ public class ConnectButtonController {
             redirect()
         }
         progress.startAnimation()
-        
-        // Resets the button state after a app handoff
-        // Should the user return without completing the flow, they can just start over
-        // We will handle initial -> complete transition via the redirect
-        var token: Any?
-        token = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
-                                               object: nil,
-                                               queue: .main) { _ in
-                                                self.transition(to: .initial(animated: false))
-                                                if let token = token {
-                                                    // This is one-time use. Remove it immediately.
-                                                    NotificationCenter.default.removeObserver(token)
-                                                }
-        }
     }
     
     private func transitionToIdentifyUser(connection: Connection, lookupMethod: User.LookupMethod) {
@@ -615,7 +616,6 @@ public class ConnectButtonController {
             self.emailInteractionConfirmation(email: email)
         }
     }
-    
 
     private func transitionToActivate(connection: Connection, user: User, redirectImmediately: Bool) {
         let url = connectionHandoffFlow.webFlowUrl(user: user)
