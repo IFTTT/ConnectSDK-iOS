@@ -82,6 +82,12 @@ public protocol ConnectButtonControllerDelegate: class {
     ///   - result: A result of the connection deactivation request.
     func connectButtonController(_ connectButtonController: ConnectButtonController,
                                  didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
+    
+    /// This is required as of iOS 13 to go through an authentication flow as a part of connection activation. This flow is shown if the user does not have the IFTTT app installed.
+    ///
+    /// - Returns: A `UIWindow` to show the web authentication flow on.
+    @available(iOS 13.0, *)
+    func webAuthenticationPresentationAnchor() -> UIWindow
 }
 
 /// A controller that handles the `ConnectButton` when authenticating a `Connection`. It is mandatory that you interact with the ConnectButton only through this controller.
@@ -619,14 +625,9 @@ public class ConnectButtonController {
 
     private func transitionToActivate(connection: Connection, user: User, redirectImmediately: Bool) {
         let url = connectionHandoffFlow.webFlowUrl(user: user)
-        
-        guard let viewController = delegate?.presentingViewController(for: self) else {
-            assertionFailure("It is expected for the web flow to implement the `presentingViewController(for connectButtonController: ConnectButtonController)` delegate method of `ConnectButtonControllerDelegate`.")
-            return
-        }
-        
+    
         if redirectImmediately {
-            connectionVerificationSession.start(from: viewController, with: url)
+            startWebConnectionVerification(with: url)
             return
         }
         
@@ -641,8 +642,26 @@ public class ConnectButtonController {
         button.showProgress(duration: timeout).startAnimation()
         
         Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] timer in
-            self?.connectionVerificationSession.start(from: viewController, with: url)
+            self?.startWebConnectionVerification(with: url)
             timer.invalidate()
+        }
+    }
+    
+    private func startWebConnectionVerification(with url: URL) {
+        if #available(iOS 13.0, *) {
+            guard let presentationContext = delegate?.webAuthenticationPresentationAnchor() else {
+                assertionFailure("It is expected for the web flow in iOS versions >= 13.0 to implement the `webAuthenticationPresentationAnchor()` delegate method of `ConnectButtonControllerDelegate`.")
+                return
+            }
+            
+            connectionVerificationSession.start(with: url, in: presentationContext)
+        } else {
+            guard let viewController = delegate?.presentingViewController(for: self) else {
+                assertionFailure("It is expected for the web flow in iOS versions < 12 to implement the `presentingViewController(for connectButtonController: ConnectButtonController)` delegate method of `ConnectButtonControllerDelegate`.")
+                return
+            }
+           
+            connectionVerificationSession.start(from: viewController, with: url)
         }
     }
 

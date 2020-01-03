@@ -7,6 +7,7 @@
 
 import Foundation
 import SafariServices
+import AuthenticationServices
 
 /// Handles verification of the connection in the web flow. For iOS 10, the flow defaults to ocurring in a `SFSafariViewController. For iOS 11, the flow occurs in a `ASWebAuthenticationSession`. For iOS 12 and up, the flow occurs in a `SFAuthenticationSession`.
 /// We use these sessions instead of showing in `SFSafariViewController` as we can leverage cookies from previous connection verifications or a currently logged in IFTTT account and not have to worry about going through the verification flow multiple times.
@@ -40,8 +41,32 @@ final class ConnectionVerificationSession {
     /// This will prompt the user's permission if necessary.
     ///
     /// - Parameters:
+    ///     - url: The url to kick off the connection verification with.
+    ///     - presentationContext: The `UIWindow` instance to use in presenting the web auth flow. The system may present an alert.
+    @available(iOS 13.0, *)
+    func start(with url: URL, in presentationContext: UIWindow) {
+        let authenticationSession = AuthenticationSession(url: url, callbackURLScheme: nil, presentationContext: presentationContext) { [weak self] (result) in
+            switch result {
+            case .success(let url):
+                self?.redirectHandler.handleRedirect(url: url)
+            case .failure(let error):
+                switch error {
+                case .userCanceled:
+                    self?.redirectHandler.handleUserCancelled()
+                }
+            }
+        }
+        authenticationSession.start()
+        authProvider = .authSession(authenticationSession)
+    }
+    
+    /// Begins the connection verification session
+    /// This will prompt the user's permission if necessary.
+    ///
+    /// - Parameters:
     ///     - viewController: The view controller initiating this session. We may present an alert or a Safari VC.
-    ///     - url: The url to kick off the connection verificiation with.
+    ///     - url: The url to kick off the connection verification with.
+    @available(iOS, obsoleted: 13, message: "API is obsoleted in iOS 13. Please use `start(with url: URL, in presentationContext: UIWindow)` instead.")
     func start(from viewController: UIViewController, with url: URL) {
         if #available(iOS 11, *) {
             let authenticationSession = AuthenticationSession(url: url, callbackURLScheme: nil) { [weak self] (result) in
@@ -67,6 +92,7 @@ final class ConnectionVerificationSession {
             viewController.present(safari, animated: true, completion: nil)
         }
     }
+    
     
     // MARK: - State tracking
     
