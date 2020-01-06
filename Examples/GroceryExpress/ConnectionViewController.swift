@@ -121,6 +121,11 @@ private extension ConnectButtonControllerError {
 }
 
 extension ConnectionViewController: ConnectButtonControllerDelegate {
+    @available(iOS 13.0, *)
+    func webAuthenticationPresentationAnchor() -> ASPresentationAnchor {
+        return view.window ?? ASPresentationAnchor()
+    }
+    
     func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
         return self
     }
