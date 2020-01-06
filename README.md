@@ -24,7 +24,7 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 ## Requirements
 
 * iOS 10.0+
-* Xcode 10+
+* Xcode 11+
 * Swift 4.0
 
 ## Installation
@@ -202,7 +202,15 @@ This configuration type provides information about the `Connection` that you wis
 #### ConnectButtonControllerDelegate
 `ConnectButtonControllerDelegate` communicates important information back to your app.
 
-We need access to the current view controller periodically to open instances of Safari for OAuth flows.
+On iOS 13 and up, we need access to a `UIWindow` to show OAuth flows if the user doesn't have the IFTTT app installed. 
+This is done by implenting the method:
+```
+func webAuthenticationPresentationAnchor() -> UIWindow {
+  return theWindowToShowTheOAuthFlowOn
+}
+```
+
+On iOS 12 and lower, we need access to the current view controller periodically to open instances of Safari for OAuth flows.
 In this method, simply return the view controller containing the `ConnectButton`.
 ```
 func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController {
