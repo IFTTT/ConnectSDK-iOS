@@ -7,6 +7,7 @@
 
 import UIKit
 import IFTTTConnectSDK
+import AuthenticationServices
 
 class ConnectionViewController: UIViewController {
     

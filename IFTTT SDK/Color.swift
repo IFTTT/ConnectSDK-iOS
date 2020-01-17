@@ -25,7 +25,6 @@ extension UIColor {
         static let b = HSBA(rawValue: 1 << 2)
         static let a = HSBA(rawValue: 1 << 2)
         
-        static let monochrome: HSBA = [.s, .b]
         static let all: HSBA = [.h, .s, .b, .a]
     }
     

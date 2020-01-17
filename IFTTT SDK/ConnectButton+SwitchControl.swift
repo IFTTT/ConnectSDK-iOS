@@ -51,8 +51,8 @@ extension ConnectButton {
             networkController?.setImage(with: service.iconURL, for: knob.iconView)
             
             let color = service.brandColor
-            // If the knob color is too close to the track color, set the background color to be a contrasting version of the color
-            if color.distance(from: trackColor, comparing: .monochrome) < 0.2 {
+            // If the B component of the knob color is too close to the track color, set the background color to be a contrasting version of the color
+            if color.distance(from: trackColor, comparing: .b) < 0.2 {
                 knob.backgroundColor = color.contrasting()
             } else {
                 knob.backgroundColor = color
