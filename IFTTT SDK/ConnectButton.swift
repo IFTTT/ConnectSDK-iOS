@@ -285,6 +285,7 @@ public class ConnectButton: UIView {
         let field = UITextField(frame: .zero)
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
+        field.returnKeyType = .done
         field.font = Style.Font.email
         field.textColor = Color.mediumGrey
         return field
@@ -296,7 +297,7 @@ public class ConnectButton: UIView {
         $0.textAlignment = .center
         $0.textColor = .white
         $0.font = Style.Font.connect
-        $0.adjustsFontSizeToFitWidth = true
+        $0.numberOfLines = 2
         $0.baselineAdjustment = .alignCenters
     }
     
@@ -563,6 +564,7 @@ private extension ConnectButton {
         let trackColor: UIColor = .black
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController, trackColor: trackColor)
+        emailConfirmButton.backgroundColor = service.brandColor
         
         animator.addAnimations {
             self.progressBar.alpha = 0
@@ -649,11 +651,6 @@ private extension ConnectButton {
             self.switchControl.knob.maskedEndCaps = .right // Morph into the email button
             self.switchControl.knob.iconView.alpha = 0
             self.switchControl.knob.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-            
-            switch self.style {
-            case .light:
-                self.updateKnobForLightStyle()
-            }
         }, delayFactor: 0.25)
         
         animator.addAnimations({

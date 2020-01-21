@@ -18,7 +18,7 @@ extension ConnectButton {
         case light
         
         struct Font {
-            static let connect = UIFont(name: "AvenirNext-Bold", size: 27)!
+            static let connect = UIFont(name: "AvenirNext-Bold", size: 22)!
             static let email = UIFont(name: "AvenirNext-DemiBold", size: 18)!
         }
         
