@@ -53,7 +53,7 @@ extension ConnectButton {
             let color = service.brandColor
             // If the B component of the knob color is too close to the track color, set the background color to be a contrasting version of the color
             if color.distance(from: trackColor, comparing: .b) < 0.2 {
-                knob.backgroundColor = color.contrasting()
+                knob.backgroundColor = color.contrasting(brighteningAdjustment: 0.25)
             } else {
                 knob.backgroundColor = color
             }
