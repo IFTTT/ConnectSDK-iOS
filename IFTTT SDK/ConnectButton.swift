@@ -297,7 +297,7 @@ public class ConnectButton: UIView {
         $0.textAlignment = .center
         $0.textColor = .white
         $0.font = Style.Font.connect
-        $0.numberOfLines = 2
+        $0.adjustsFontSizeToFitWidth = true
         $0.baselineAdjustment = .alignCenters
     }
     

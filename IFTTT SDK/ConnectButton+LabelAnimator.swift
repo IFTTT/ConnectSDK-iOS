@@ -57,10 +57,10 @@ extension ConnectButton {
             static let standard = Insets(left: standardInsetValue, right: standardInsetValue)
             
             /// An inset to avoid the connect button knob on the left.
-            static let avoidLeftKnob = Insets(left: Layout.knobDiameter - 5, right: standardInsetValue)
+            static let avoidLeftKnob = Insets(left: Layout.knobDiameter, right: standardInsetValue)
             
             /// An inset to avoid the connect button knob on the right.
-            static let avoidRightKnob = Insets(left: standardInsetValue, right: Layout.knobDiameter - 5)
+            static let avoidRightKnob = Insets(left: standardInsetValue, right: Layout.knobDiameter)
             
             fileprivate func apply(_ view: UIStackView) {
                 view.layoutMargins.left = left
