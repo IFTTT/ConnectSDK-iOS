@@ -30,6 +30,9 @@
 		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
 		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
+		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
+		DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */; };
+		DE3074A923DB50A800A3C71F /* Analytics+DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3074A823DB50A800A3C71F /* Analytics+DataStructures.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
 		DE3BEFCA22CAAA8C0020B425 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFC922CAAA8C0020B425 /* Localizable.strings */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
@@ -105,6 +108,9 @@
 		1DFE020C2190E3DB00856ABC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
 		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
+		DE25265523D8C49D0019C9CB /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsNetworkController.swift; sourceTree = "<group>"; };
+		DE3074A823DB50A800A3C71F /* Analytics+DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+DataStructures.swift"; sourceTree = "<group>"; };
 		DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDeeplinkAction.swift; sourceTree = "<group>"; };
 		DE3BEFC922CAAA8C0020B425 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -193,6 +199,16 @@
 				1DFE020A2190E39B00856ABC /* Connection+Request.swift */,
 			);
 			name = Connection;
+			sourceTree = "<group>";
+		};
+		DE3074A523DB505400A3C71F /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				DE25265523D8C49D0019C9CB /* Analytics.swift */,
+				DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */,
+				DE3074A823DB50A800A3C71F /* Analytics+DataStructures.swift */,
+			);
+			name = Analytics;
 			sourceTree = "<group>";
 		};
 		FC425EBC227233A10020967F /* Extensions */ = {
@@ -305,6 +321,7 @@
 			isa = PBXGroup;
 			children = (
 				1DFE020C2190E3DB00856ABC /* API.swift */,
+				DE3074A523DB505400A3C71F /* Analytics */,
 				FC425EBC227233A10020967F /* Extensions */,
 				FC84B85121C437FB00BAF7ED /* Pages */,
 				FC84B85021C437E900BAF7ED /* Images */,
@@ -474,6 +491,7 @@
 				1D453EDC2297213E001994FF /* ConnectButton+Service.swift in Sources */,
 				FC2573132139E8CC0065AAD6 /* ConnectButton.swift in Sources */,
 				1D453EE62297236C001994FF /* ConnectButton+LabelAnimator.swift in Sources */,
+				DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */,
 				DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */,
 				1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */,
 				FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */,
@@ -512,10 +530,12 @@
 				DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				FC28D7E52225B1E900D84A1B /* ServiceIconsNetworkController.swift in Sources */,
+				DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */,
 				FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */,
 				FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
+				DE3074A923DB50A800A3C71F /* Analytics+DataStructures.swift in Sources */,
 				FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */,
 				FC75F93C22386626007C2DDB /* ConnectionActivationFlow.swift in Sources */,
 			);

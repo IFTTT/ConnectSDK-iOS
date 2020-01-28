@@ -28,11 +28,20 @@ struct API {
         }
     }
     
+    static let standard: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+        f.timeZone = TimeZone(identifier: "UTC")
+        return f
+    }()
+    
     private struct URLConstants {
         static let base = "https://api.ifttt.com/v2"
         static let findEmail = "/account/find"
         static let emailName = "email"
         static let me = "/me"
+        static let analytics = "/logger"
     }
 
     static let base = URL(string: API.URLConstants.base)!
@@ -45,6 +54,7 @@ struct API {
     }
     
     static let findUserByToken = URL(string: "\(API.URLConstants.base)\(API.URLConstants.me)")!
+    static let submitAnalytics = URL(string: "\(API.URLConstants.base)\(API.URLConstants.analytics)")!
     
     private struct Keys {
         static let anonymousIdKey = "com.ifttt.sdk.analytics.anonymous_id"
