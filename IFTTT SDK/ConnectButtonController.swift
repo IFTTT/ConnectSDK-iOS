@@ -420,7 +420,6 @@ public class ConnectButtonController {
     /// - failed: The `Connection` could not be authorized due to some error.
     /// - canceled: The `Connection` authorization was canceled.
     /// - connected: The `Connection` was successfully authorized.
-    /// - confirmDisconnect: The "Slide to disconnect" state, asking for the user's confirmation to disable the `Connection`.
     /// - processDisconnect: Disable the `Connection`.
     /// - disconnected: The `Connection` was disabled.
     enum ActivationStep {
@@ -433,7 +432,6 @@ public class ConnectButtonController {
         case failed(ConnectButtonControllerError)
         case canceled
         case connected(animated: Bool)
-        case confirmDisconnect
         case processDisconnect
         case disconnected
     }
@@ -471,10 +469,8 @@ public class ConnectButtonController {
             transitionToCanceled(connection: connection)
         case .connected(let animated):
             transitionToConnected(connection: connection, animated: animated)
-        case .confirmDisconnect:
-            transitionToConfirmDisconnect()
         case .processDisconnect:
-            transitionToProccessDisconnect()
+            transitionToProcessDisconnect()
         case .disconnected:
             handleDeactivationFinished()
             transitionToDisconnected(connection: connection)
@@ -712,57 +708,33 @@ public class ConnectButtonController {
         button.toggleInteraction.isDragEnabled = true
         button.toggleInteraction.resistance = .heavy
         
-        button.toggleInteraction.toggleTapTransition = {
-            return .buttonState(.slideToDisconnect(message: "button.state.disconnect".localized),
-                                footerValue: FooterMessages.worksWithIFTTT.value)
-        }
-        
-        button.toggleInteraction.toggleDragTransition = {
+        let toggleTransition: () -> ConnectButton.Transition = {
             return .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                footerValue: FooterMessages.worksWithIFTTT.value)
+            footerValue: FooterMessages.worksWithIFTTT.value)
         }
         
-        button.toggleInteraction.onToggleTap = { [weak self] in
-            self?.transition(to: .confirmDisconnect)
-        }
-        
-        button.toggleInteraction.onToggleDrag = { [weak self] in
+        let onToggleProcess: VoidClosure = { [weak self] in
             self?.transition(to: .processDisconnect)
         }
+        
+        button.toggleInteraction.toggleTapTransition = toggleTransition
+        button.toggleInteraction.toggleDragTransition = toggleTransition
+        
+        button.toggleInteraction.onToggleTap = onToggleProcess
+        button.toggleInteraction.onToggleDrag = onToggleProcess
         
         button.toggleInteraction.onReverseDrag = { [weak self] in
             self?.transition(to: .connected(animated: false))
         }
     }
-    
-    private func transitionToConfirmDisconnect() {
-        let timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] timer in
-            // Revert state if user doesn't follow through
-            self?.transition(to: .connected(animated: false))
-            timer.invalidate()
-        }
-        
-        // The user must slide to deactivate the Connection
-        button.toggleInteraction = .init(isTapEnabled: false,
-                                         isDragEnabled: true,
-                                         resistance: .heavy,
-                                         toggleDragTransition: {
-                                            .buttonState(.disconnecting(message: "button.state.disconnecting".localized),
-                                                         footerValue: FooterMessages.worksWithIFTTT.value) },
-                                         onToggleDrag: { [weak self] in
-                                            self?.transition(to: .processDisconnect)
-                                            timer.invalidate() },
-                                         onReverseDrag: { [weak self] in
-                                            self?.transition(to: .connected(animated: false))
-                                            timer.invalidate() })
-        
-    }
 
-    private func transitionToProccessDisconnect() {
+    private func transitionToProcessDisconnect() {
         guard let connection = connection else {
             assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
+        
+        button.toggleInteraction = .init()
 
         let progress = ProgressBarController(progressBar: button)
         progress.begin()
