@@ -28,7 +28,7 @@ final class Analytics {
     private var hasBeenStarted = false
     
     /// Determines whether or not Analytics logging should be printed to console or not.
-    private static var loggingEnabled: Bool = true
+    private static var loggingEnabled: Bool = false
     
     private struct Constants {
         /// The label of the dispatch queue used to handle queuing, uploading, and batching of events in the foreground.
