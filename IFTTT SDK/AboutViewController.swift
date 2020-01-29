@@ -116,7 +116,14 @@ class AboutViewController: UIViewController {
     }
     
     private lazy var serviceIconsView = ServiceIconsView(primaryIcon: primaryService.templateIconURL,
-                                                         secondaryIcon: secondaryService.templateIconURL)
+                                                         secondaryIcon: secondaryService.templateIconURL,
+                                                         primaryIconTapped: { [weak self] in
+                                                            guard let self = self else { return }
+                                                            self.open(url: self.primaryService.url)
+                                                         }, secondaryIconTapped: { [weak self] in
+                                                            guard let self = self else { return }
+                                                            self.open(url: self.secondaryService.url)
+                                                         })
     
     /// The page title
     private lazy var titleLabel = UILabel(Constants.Text.titleText(connects: primaryService, with: secondaryService)) {
@@ -187,13 +194,19 @@ class AboutViewController: UIViewController {
         return UIStackView(views) {
             $0.axis = .vertical
             $0.alignment = .center
+            $0.distribution = .fillEqually
             $0.spacing = Constants.Layout.footerSpacing
         }
     }()
     
     private func open(url: URL) {
-        let controller = SFSafariViewController(url: url)
-        present(controller, animated: true, completion: nil)
+        UIApplication.shared.open(url, options: [.universalLinksOnly: NSNumber(booleanLiteral: true)]) { [weak self] (opened) in
+            guard let self = self else { return }
+            if !opened {
+                let controller = SFSafariViewController(url: url)
+                self.present(controller, animated: true, completion: nil)
+            }
+        }
     }
     
     /// Acts as the delegate for displaying the IFTTT app store page
@@ -272,8 +285,10 @@ class AboutViewController: UIViewController {
 private extension AboutViewController {
     /// Presents the primary and secondary service icons with an arrow connecting the two
     final class ServiceIconsView: UIView {
+        private var primaryIconSelectable: Selectable?
+        private var secondaryIconSelectable: Selectable?
         
-        init(primaryIcon: URL, secondaryIcon: URL) {
+        init(primaryIcon: URL, secondaryIcon: URL, primaryIconTapped: @escaping VoidClosure, secondaryIconTapped: @escaping VoidClosure) {
             super.init(frame: .zero)
             
             let primaryIconView = UIImageView()
@@ -295,6 +310,9 @@ private extension AboutViewController {
             let serviceIconsDownloader = ServiceIconsNetworkController()
             serviceIconsDownloader.setImage(with: primaryIcon, for: primaryIconView)
             serviceIconsDownloader.setImage(with: secondaryIcon, for: secondaryIconView)
+            
+            primaryIconSelectable = Selectable(primaryIconView, onSelect: primaryIconTapped)
+            secondaryIconSelectable = Selectable(secondaryIconView, onSelect: secondaryIconTapped)
         }
         
         @available(*, unavailable)
