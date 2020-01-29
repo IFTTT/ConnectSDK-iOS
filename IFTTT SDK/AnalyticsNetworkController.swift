@@ -46,11 +46,7 @@ final class AnalyticsNetworkController {
     @discardableResult
     private func start(urlRequest: URLRequest, completionHandler: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) -> URLSessionDataTask {
         let dataTask = task(urlRequest: urlRequest, completionHandler: completionHandler, errorHandler: errorHandler)
-//        dataTask.resume()
-        var g = SystemRandomNumberGenerator()
-        let y = Int.random(in: 1...100, using: &g)
-        let isFailure = y % 2 == 0
-        completionHandler(isFailure)
+        dataTask.resume()
         return dataTask
     }
 

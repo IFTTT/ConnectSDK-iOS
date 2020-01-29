@@ -41,7 +41,7 @@ struct API {
         static let findEmail = "/account/find"
         static let emailName = "email"
         static let me = "/me"
-        static let analytics = "/logger"
+        static let analytics = "/sdk/events"
     }
 
     static let base = URL(string: API.URLConstants.base)!
