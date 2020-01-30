@@ -37,7 +37,7 @@ struct API {
     }()
     
     private struct URLConstants {
-        static let base = "https://api.ifttt.com/v2"
+        static let base = "https://connect.ifttt.com/v2"
         static let findEmail = "/account/find"
         static let emailName = "email"
         static let me = "/me"
