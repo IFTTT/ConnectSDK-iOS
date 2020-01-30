@@ -36,6 +36,6 @@
 "about.control" = "Control which services access your data and how they use it";
 "about.security" = "Protect and monitor your data";
 "about.manage" = "Unplug any time";
-"about.connection-deep-link" = "Manage this connection";
+"about.connection-deep-link" = "Manage";
 "about.legal.prefix" = "By using this connection you agree to our ";
 "about.legal.link" = "Privacy & Terms";

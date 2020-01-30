@@ -132,6 +132,8 @@ class AboutViewController: UIViewController {
         $0.numberOfLines = 0
     }
     
+    private var titleLabelSelectable: Selectable?
+    
     /// Contains all the header components
     private lazy var headerView = UIStackView([serviceIconsView, titleLabel]) {
         $0.spacing = Constants.Layout.headerSpacing
@@ -272,6 +274,11 @@ class AboutViewController: UIViewController {
         deepLinkConnectionButton.onSelect { [weak self] in
             self?.deepLinkToEditConnection()
         }
+        
+        titleLabelSelectable = Selectable(titleLabel, onSelect: { [weak self] in
+            guard let self = self else { return }
+            self.open(url: self.connection.url)
+        })
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
