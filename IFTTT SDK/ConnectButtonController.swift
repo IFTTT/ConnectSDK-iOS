@@ -100,7 +100,7 @@ public class ConnectButtonController {
     public private(set) var connection: Connection?
     
     /// Controls whether or not analytics events should be sent from the connect button.
-    public var analyticsEnabled: Bool {
+    public static var analyticsEnabled: Bool {
         set {
             Analytics.shared.enabled = newValue
         }
@@ -165,8 +165,7 @@ public class ConnectButtonController {
     ///   - connectButton: The `ConnectButton` that the controller is handling interaction for.
     ///   - connectionConfiguration: The `ConnectionConfiguration` with information for authenticating a `Connection`.
     ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
-    ///   - analyticsEnabled: A boolean value that determines whether or not analytics collection is enabled in the connect button.
-    public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate, analyticsEnabled: Bool = true) {
+    public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate) {
         self.button = connectButton
         self.connectionConfiguration = connectionConfiguration
         self.connectionHandoffFlow = ConnectionHandoffFlow(connectionId: connectionConfiguration.connectionId,
@@ -175,7 +174,6 @@ public class ConnectButtonController {
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         self.connectionVerificationSession = ConnectionVerificationSession()
-        self.analyticsEnabled = analyticsEnabled
         setupConnection(for: connection, animated: false)
         setupVerification()
     }
