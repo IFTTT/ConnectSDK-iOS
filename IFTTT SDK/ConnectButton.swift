@@ -7,6 +7,12 @@
 
 import UIKit
 
+/// Delegate methods for the display of the connect button.
+protocol ConnectButtonDisplayDelegate: class {
+    /// Called when the connect button is about to appear in its superview.
+    func willAppear()
+}
+
 // MARK: - Connect Button
 
 @IBDesignable
@@ -32,6 +38,9 @@ public class ConnectButton: UIView {
             minimumFooterHeightConstraint?.constant = minimumFooterLabelHeight
         }
     }
+    
+    /// The display delegate for this connect button.
+    weak var displayDelegate: ConnectButtonDisplayDelegate?
     
     ///
     /// Create a `Connection`'s connect button. This is primarily an internal type. This is the only public method. Use with `ConnectButtonController`.
@@ -258,6 +267,13 @@ public class ConnectButton: UIView {
         primaryLabelAnimator.configure(.text("Connect"), insets: .avoidLeftKnob)
         let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
         footerLabelAnimator.configure(.attributed(initialFooterText))
+    }
+    
+    public override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        guard newWindow != nil else { return }
+        
+        displayDelegate?.willAppear()
     }
     
     private let backgroundView = PillView()

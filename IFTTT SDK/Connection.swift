@@ -175,3 +175,17 @@ public struct Connection: Equatable {
         return lhs.id == rhs.id
     }
 }
+
+extension Connection: AnalyticsTrackable {
+    var type: String {
+        return "connection"
+    }
+    
+    var identifier: String? {
+        return id
+    }
+    
+    var attributes: AnalyticsData? {
+        return ["object_status": status.rawValue]
+    }
+}

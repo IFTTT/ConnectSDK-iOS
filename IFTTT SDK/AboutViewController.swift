@@ -33,6 +33,14 @@ class AboutViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        Analytics.shared.track(.Impression,
+                               location: Location(type: "connect_button", identifier: connection.id),
+                               object: AnalyticsObject.about)
+    }
+    
     private struct Constants {
         struct Color {
             static let mediumGrey = UIColor(hex: 0x666666)
@@ -119,9 +127,15 @@ class AboutViewController: UIViewController {
                                                          secondaryIcon: secondaryService.templateIconURL,
                                                          primaryIconTapped: { [weak self] in
                                                             guard let self = self else { return }
+                                                            Analytics.shared.track(.Click,
+                                                                                   location: Location(type: "connect_button", identifier: self.connection.id),
+                                                                                   object: AnalyticsObject.button(identifier: self.primaryService.name))
                                                             self.open(url: self.primaryService.url)
                                                          }, secondaryIconTapped: { [weak self] in
                                                             guard let self = self else { return }
+                                                            Analytics.shared.track(.Click,
+                                                                                   location: Location(type: "connect_button", identifier: self.connection.id),
+                                                                                   object: AnalyticsObject.button(identifier: self.secondaryService.name))
                                                             self.open(url: self.secondaryService.url)
                                                          })
     
@@ -166,6 +180,9 @@ class AboutViewController: UIViewController {
     // MARK: - Links
     
     private lazy var legalTermsView = LegalTermsView(text: Constants.Text.legalTermsText) { [weak self] url in
+        Analytics.shared.track(.Click,
+                               location: Location(type: "connect_button", identifier: self?.connection.id),
+                               object: AnalyticsObject.privacyPolicy)
         self?.open(url: url)
     }
     
@@ -230,6 +247,10 @@ class AboutViewController: UIViewController {
     }
     
     private func deepLinkToEditConnection() {
+        Analytics.shared.track(.Click,
+                               location: Location(type: "connect_button", identifier: connection.id),
+                               object: AnalyticsObject.button(identifier: "manage"))
+        
         guard let url = activationFlow.appHandoffUrl(userId: nil, action: .edit) else { return }
         
         UIApplication.shared.open(url, options: [:]) { didOpen in
@@ -277,6 +298,9 @@ class AboutViewController: UIViewController {
         
         titleLabelSelectable = Selectable(titleLabel, onSelect: { [weak self] in
             guard let self = self else { return }
+            Analytics.shared.track(.Click,
+                                   location: Location(type: "connect_button", identifier: self.connection.id),
+                                   object: AnalyticsObject.button(identifier: self.connection.name))
             self.open(url: self.connection.url)
         })
     }

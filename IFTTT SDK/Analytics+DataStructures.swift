@@ -13,7 +13,7 @@ protocol AnalyticsTrackable {
     var type: String { get }
     
     /// The id for this object
-    var id: String? { get }
+    var identifier: String? { get }
     
     /// An optional `AnalyticsData` that corresponds to any extra fields that should be tracked for this object.
     var attributes: AnalyticsData? { get }
@@ -58,7 +58,7 @@ enum AnalyticsState: String {
 /// Represents an analytics event.
 enum AnalyticsEvent: String, AnalyticsEventRepresentable {
     var prefix: String? {
-        return "ios"
+        return "sdk"
     }
        
     var delimiter: String? {
@@ -91,5 +91,46 @@ extension UIApplication.State {
         case .inactive: return "inactive"
         @unknown default: return "unknown"
         }
+    }
+}
+
+/// An implementation of `AnalyticsTrackable` that corresponds to any context that is to be sent on a analytics event.
+struct AnalyticsObject: AnalyticsTrackable {
+    let identifier: String?
+    let type: String
+    let attributes: AnalyticsData?
+    
+    static let worksWithIFTTT = AnalyticsObject(identifier: "button", type: "works_with_ifttt", attributes: nil)
+    
+    static let email = AnalyticsObject(identifier: nil, type: "connection_email", attributes: nil)
+    
+    static let about = AnalyticsObject(identifier: "connect_information", type: "modal", attributes: nil)
+    
+    static let privacyPolicy = AnalyticsObject(identifier: "privacy_policy", type: "button", attributes: nil)
+    
+    static func button(identifier: String?) -> AnalyticsObject {
+        return AnalyticsObject(identifier: identifier, type: "button", attributes: nil)
+    }
+}
+
+extension Location {
+    /// The `Location` for the connect button impression analytics event
+    ///
+    /// - Returns: The `Location` that corresponds to this analytics event.
+    static var connectButtonImpression: Location {
+        var locationIdentifier: String? = nil
+        if let appName = Bundle.main.appName {
+           locationIdentifier = "\(appName)"
+        }
+        return Location(type: "connect_button", identifier: locationIdentifier)
+    }
+    
+    /// The `Location` for the connect button connection analytics event
+    ///
+    /// - Returns: The `Location` that corresponds to this analytics event.
+    static func connectButtonLocation(_ connection: Connection?) -> Location? {
+        guard let connection = connection else { return nil }
+        
+        return Location(type: "connect_button", identifier: connection.id)
     }
 }
