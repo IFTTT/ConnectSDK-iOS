@@ -21,6 +21,10 @@ extension Bundle {
         
         return bundle
     }
+    
+    var appName: String? {
+        return object(forInfoDictionaryKey: "CFBundleName") as? String
+    }
 }
 
 struct Assets {

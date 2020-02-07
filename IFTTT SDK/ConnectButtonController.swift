@@ -114,8 +114,16 @@ public class ConnectButtonController {
     private var user: User?
     
     private func handleActivationFinished(userToken: String?) {
+        var state: AnalyticsState? = nil
+        if let status = connection?.status {
+            state = (status == .initial) ? .Created : .Enabled
+        }
         connection?.status = .enabled
+        
         if let connection = connection {
+            Analytics.shared.track(.StateChange,
+                                   object: connection,
+                                   state: state)
             let activation = ConnectionActivation(userToken: userToken,
                                                   connection: connection)
             delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
@@ -212,6 +220,8 @@ public class ConnectButtonController {
             fetchConnection(for: connectionConfiguration.connectionId)
             return
         }
+        
+        Analytics.shared.track(.Impression, location: .connectButtonImpression, object: connection)
 
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
@@ -314,6 +324,13 @@ public class ConnectButtonController {
             assertionFailure("It is expected and required that we have a non nil connection in this state.")
             return
         }
+        
+        Analytics.shared.track(.Click,
+                               location: Location(type: "connect_button", identifier: nil),
+                               sourceLocation: nil,
+                               object: AnalyticsObject.worksWithIFTTT,
+                               state: nil)
+        
         let aboutViewController = AboutViewController(connection: connection, activationFlow: connectionHandoffFlow)
         present(aboutViewController)
     }
@@ -629,6 +646,10 @@ public class ConnectButtonController {
     }
 
     private func transitionToActivate(connection: Connection, user: User, redirectImmediately: Bool) {
+        Analytics.shared.track(.Click,
+                               location: .connectButtonLocation(connection),
+                               object: connection)
+        
         let url = connectionHandoffFlow.webFlowUrl(user: user)
     
         if redirectImmediately {
@@ -671,6 +692,9 @@ public class ConnectButtonController {
     }
 
     private func transitionToActivationComplete(service: Connection.Service) {
+        Analytics.shared.track(.PageView,
+                               location: .connectButtonLocation(connection))
+        
         button.animator(for: .buttonState(.connecting(service: service.connectButtonService, message: "button.state.connecting".localized),
                                           footerValue: FooterMessages.worksWithIFTTT.value)).perform()
 
@@ -734,6 +758,10 @@ public class ConnectButtonController {
             return
         }
         
+        Analytics.shared.track(.Click,
+                               location: .connectButtonLocation(connection),
+                               object: connection)
+        
         button.toggleInteraction = .init()
 
         let progress = ProgressBarController(progressBar: button)
@@ -766,6 +794,10 @@ public class ConnectButtonController {
         emailFooterTimer?.invalidate()
         emailFooterTimer = nil
 
+        Analytics.shared.track(.Click,
+                               location: .connectButtonLocation(connection),
+                               object: AnalyticsObject.email)
+        
         if email.isValidEmail {
             self.transition(to: .identifyUser(.email(email)))
         } else {

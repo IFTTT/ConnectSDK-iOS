@@ -16,6 +16,7 @@ struct API {
     
     static let sdkVersion = Bundle.sdk.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     static let sdkPlatform = "ios"
+    static let osVersion = UIDevice.current.systemVersion
     
     /// An installation id for this instance of the SDK. This id remains static from installation to deletion of the partner app.
     static var anonymousId: String {
@@ -27,14 +28,6 @@ struct API {
             return id
         }
     }
-    
-    static let standard: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US")
-        f.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-        f.timeZone = TimeZone(identifier: "UTC")
-        return f
-    }()
     
     private struct URLConstants {
         static let base = "https://api.ifttt.com/v2"

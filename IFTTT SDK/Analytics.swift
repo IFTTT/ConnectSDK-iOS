@@ -119,7 +119,9 @@ final class Analytics {
     /// An instance of `AnalyticsData` that contains some default parameters sent on every analytics request.
     private static var defaultParameters: AnalyticsData {
         let params: AnalyticsData = [
-            "timestamp": API.standard.string(from: Date())
+            "timestamp": Int64((Date().timeIntervalSince1970 * 1000).rounded()),
+            "system_version": API.osVersion,
+            "sdk_version": API.sdkVersion
         ]
         return params
     }
@@ -221,39 +223,43 @@ final class Analytics {
         
         if let object = object {
             sanitizedData["object_type"] = object.type
-            sanitizedData["object_id"] = object.id
+            sanitizedData["object_id"] = object.identifier
+            if let objectAttributes = object.attributes {
+                sanitizedData = objectAttributes.merging(sanitizedData) { (_, new) in new }
+            }
         }
         
         if let state = state {
             sanitizedData["state"] = state.rawValue
         }
         
-        sanitizedData["name"] = event.name
-        
-        return Analytics.defaultParameters.merging(sanitizedData) { (_, new) in new }
+        let properties = Analytics.defaultParameters.merging(sanitizedData) { (_, new) in new }
+        return [
+            "name": event.name,
+            "properties": properties
+        ]
     }
     
     /// Tracks analytics data.
     ///
     /// - Parameters:
     ///     - event: An instance of `AnalyticsEvent` corresponding to the event that is to be tracked.
-    ///     - location: An optional `Location` corresponding to the location the event occurred at.
+    ///     - location: An `Location` corresponding to the location the event occurred at.
     ///     - sourceLocation: An optional `Location` corresponding the source location of the event.
     ///     - object: An optional `AnalyticsTrackable` to provide context for the event.
     ///     - state: An optional `AnalyticsState` corresponding to the state of the event.
     /// - Returns: An instance of `AnalyticsData` with all of the parameters transformed.
     func track(_ event: AnalyticsEvent,
-                      location: Location?,
+                      location: Location? = nil,
                       sourceLocation: Location? = nil,
                       object: AnalyticsTrackable? = nil,
                       state: AnalyticsState? = nil) {
         guard enabled else { return }
-        Analytics.log("IFTTT analytics received - Event \(event), Location: \(String(describing: location)), Source Location: \(String(describing: sourceLocation)), Object: \(String(describing: object)), State: \(String(describing: state))")
         let eventData = transform(event: event,
-                                         location: location,
-                                         sourceLocation: sourceLocation,
-                                         object: object,
-                                         state: state)
+                                  location: location,
+                                  sourceLocation: sourceLocation,
+                                  object: object,
+                                  state: state)
         Analytics.log("Enqueueing data: \(eventData)")
         run { [weak self] in
             self?.queuePayload(eventData)

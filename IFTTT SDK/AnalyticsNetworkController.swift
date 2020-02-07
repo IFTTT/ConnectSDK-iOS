@@ -109,7 +109,9 @@ extension URLSession {
     /// The `URLSession` used to submit analytics data.
     static let analyticsURLSession: URLSession =  {
         let configuration = URLSessionConfiguration.ephemeral
-        configuration.httpAdditionalHeaders = ["Accept" : "application/json"]
+        configuration.httpAdditionalHeaders = [
+            "content-type" : "application/json"
+        ]
         return URLSession(configuration: configuration)
     }()
 }
