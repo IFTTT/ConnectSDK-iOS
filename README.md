@@ -80,6 +80,13 @@ During Connection activation, your app will receive redirects intended for the C
 	</dict>
 </array>
 ```
+### Configuring analytics
+To enable analytics data collection, set:
+```
+ConnectButtonController.analyticsEnabled = true
+```
+ Analytics data collection is disabled by default. 
+
 ### Supporting returning user flows
 When the user making the connection is already a user on IFTTT, the activation flow may redirect outside of your app to verify the user's account. 
 - If the IFTTT app is installed, the Connect Button SDK opens it to process a Connection activation flow. 
