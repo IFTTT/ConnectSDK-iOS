@@ -118,12 +118,9 @@ final class Analytics {
     
     /// An instance of `AnalyticsData` that contains some default parameters sent on every analytics request.
     private static var defaultParameters: AnalyticsData {
-        let params: AnalyticsData = [
+        return [
             "timestamp": Int64((Date().timeIntervalSince1970 * 1000).rounded()),
-            "system_version": API.osVersion,
-            "sdk_version": API.sdkVersion
         ]
-        return params
     }
     
     /// Runs the parameter closure on the appropriate `DispatchQueue`.
