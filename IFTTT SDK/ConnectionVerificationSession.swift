@@ -45,14 +45,17 @@ final class ConnectionVerificationSession {
     ///     - presentationContext: The `UIWindow` instance to use in presenting the web auth flow. The system may present an alert.
     @available(iOS 13.0, *)
     func start(with url: URL, in presentationContext: UIWindow) {
-        let authenticationSession = AuthenticationSession(url: url, callbackURLScheme: nil, presentationContext: presentationContext) { [weak self] (result) in
+        let authenticationMethod = AuthenticationSession.AuthenticationMethod.oauth(url: url, callbackURLScheme: nil)
+        let authenticationSession = AuthenticationSession(method: authenticationMethod, presentationContext: presentationContext) { [weak self] (result) in
             switch result {
-            case .success(let url):
-                self?.redirectHandler.handleRedirect(url: url)
+            case .success(let result):
+                self?.handleAuthenticationResult(result)
             case .failure(let error):
                 switch error {
                 case .userCanceled:
                     self?.redirectHandler.handleUserCancelled()
+                default:
+                    self?.redirectHandler.handleUnknown()
                 }
             }
         }
@@ -74,10 +77,7 @@ final class ConnectionVerificationSession {
                 case .success(let url):
                     self?.redirectHandler.handleRedirect(url: url)
                 case .failure(let error):
-                    switch error {
-                    case .userCanceled:
-                        self?.redirectHandler.handleUserCancelled()
-                    }
+                    self?.handleAuthenticationError(error)
                 }
             }
             authenticationSession.start()
@@ -93,6 +93,33 @@ final class ConnectionVerificationSession {
         }
     }
     
+    /// Handles authentication success.
+    ///
+    /// - Parameters:
+    ///     - result: An instance of `AuthenticationSession.AuthenticationResult` that gets returned from a successful authentication.
+    @available(iOS 11.0, *)
+    private func handleAuthenticationResult(_ result: AuthenticationSession.AuthenticationResult) {
+        switch result {
+        case .redirectURL(let url):
+            redirectHandler.handleRedirect(url: url)
+        default:
+            redirectHandler.handleUnknown()
+        }
+    }
+    
+    /// Handles authentication error.
+    ///
+    /// - Parameters:
+    ///     - result: An instance of `AuthenticationSession.AuthenticationError` that gets returned from an authentication error.
+    @available(iOS 11.0, *)
+    private func handleAuthenticationError(_ error: AuthenticationSession.AuthenticationError) {
+        switch error {
+        case .userCanceled:
+            redirectHandler.handleUserCancelled()
+        default:
+            redirectHandler.handleUnknown()
+        }
+    }
     
     // MARK: - State tracking
     
@@ -205,6 +232,11 @@ private extension ConnectionVerificationSession {
         /// Handles a user cancellation during the web flow.
         func handleUserCancelled() {
             completionHandler?(.error(.canceled))
+        }
+        
+        /// Handles unknown responses and failed responses
+        func handleUnknown() {
+            completionHandler?(.error(.unknownResponse))
         }
         
         /// Handles a user cancellation with a lookup method that was used to find the user.
