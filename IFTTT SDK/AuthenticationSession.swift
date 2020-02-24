@@ -220,12 +220,12 @@ final class AuthenticationSession {
         func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
             switch authorization.credential {
             case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                guard let authorizationCodeData = appleIDCredential.authorizationCode,
-                    let authorizationCodeString = String(data: authorizationCodeData, encoding: .utf8) else {
+                guard let identityTokenData = appleIDCredential.identityToken,
+                    let identitityCodeString = String(data: identityTokenData, encoding: .utf8) else {
                     completion(.failure(.invalidResponse))
                     return
                 }
-                completion(.success(.signInWithApple(authorizationCodeString)))
+                completion(.success(.signInWithApple(identitityCodeString)))
             default:
                 completion(.failure(.invalidResponse))
             }
