@@ -23,7 +23,7 @@ public struct Connection: Equatable {
         case disabled = "disabled"
         
         /// It is in an unexpected state.
-        case unknown = ""
+        case unknown = "unknown"
     }
     
     /// Information about a Connection's service.
