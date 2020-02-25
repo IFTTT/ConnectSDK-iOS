@@ -343,3 +343,13 @@ connectionNetworkController.start(request: .fetchConnection(for: id, credentialP
 ```
 
 Once you have a `Connection`, you can use an alternative initializer for `ConnectionConfiguration` that takes a `Connection`. Doing this will skip the loading state. 
+
+### Tracking
+In order to continually innovate and improve our SDK, IFTTT may collect certain usage statistics from the software including but not limited to an anonymized unique identifier, version number of the software, and user interactions with elements of the UI provided by the SDK. It is common practice, and your responsibility as a user of the IFTTT SDK, to inform your customers that they may opt-out of information collection. The instructions in this section explain how you can enable opt-out. When properly implemented by you, if consent is withheld, the information will not be collected.
+
+The data collected is examined in the aggregate to improve the SDK and IFTTT’s associated services, and is maintained in accordance with IFTTT's [Privacy Policy](https://ifttt.com/terms).
+
+#### Anonymous ID
+By default, the SDK will track user interactions when users interact with the ConnectButton. In order to distinguish unique installs, we randomly generate a UUID per application installation (“anonymous id”), and send it along with the event requests.
+
+#### Disable tracking
