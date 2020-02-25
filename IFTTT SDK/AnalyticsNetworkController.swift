@@ -110,7 +110,7 @@ extension URLSession {
     static let analyticsURLSession: URLSession =  {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpAdditionalHeaders = [
-            "content-type" : "application/json"
+            "Content-Type" : "application/json"
         ]
         return URLSession(configuration: configuration)
     }()

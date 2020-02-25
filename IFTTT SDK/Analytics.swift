@@ -7,6 +7,13 @@
 
 import Foundation
 
+private extension Date {
+    /// Returns the number of milliseconds between `self` and 00:00:00 UTC on 1 January 1970. Rounded to remove any trailing decimals.
+    var roundedMillisecondsSince1970: String {
+        return "\(Int64((timeIntervalSince1970 * 1000).rounded()))"
+    }
+}
+
 /// Handles sending analytics events for the SDK.
 final class Analytics {
     // MARK: - Configurable
@@ -116,13 +123,6 @@ final class Analytics {
         }
     }
     
-    /// An instance of `AnalyticsData` that contains some default parameters sent on every analytics request.
-    private static var defaultParameters: AnalyticsData {
-        return [
-            "timestamp": Int64((Date().timeIntervalSince1970 * 1000).rounded()),
-        ]
-    }
-    
     /// Runs the parameter closure on the appropriate `DispatchQueue`.
     ///
     /// - Parameters:
@@ -230,10 +230,10 @@ final class Analytics {
             sanitizedData["state"] = state.rawValue
         }
         
-        let properties = Analytics.defaultParameters.merging(sanitizedData) { (_, new) in new }
         return [
             "name": event.name,
-            "properties": properties
+            "properties": sanitizedData,
+            "timestamp": Date().roundedMillisecondsSince1970
         ]
     }
     
