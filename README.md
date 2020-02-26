@@ -353,3 +353,4 @@ The data collected is examined in the aggregate to improve the SDK and IFTTT’s
 By default, the SDK will track user interactions when users interact with the ConnectButton. In order to distinguish unique installs, we randomly generate a UUID per application installation (“anonymous id”), and send it along with the event requests.
 
 #### Disable tracking
+You may set `ConnectButtonController.analyticsEnabled = false` if you wish to opt-out from tracking. After this method is called, all tracking will be disabled for all of the ConnectButton instances within the app for as long as it is in-memory. If you want to persist the user's preference for disabling tracking, you should store the preference within your persistent storage, and set this variable every time the app is started.
