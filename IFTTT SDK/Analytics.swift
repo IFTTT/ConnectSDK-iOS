@@ -17,8 +17,8 @@ private extension Date {
 /// Handles sending analytics events for the SDK.
 final class Analytics {
     // MARK: - Configurable
-    /// Boolean value that enables or disables analytics collection. By default, this value is set to `false`.
-    var enabled: Bool = false {
+    /// Boolean value that enables or disables analytics collection. By default, this value is set to `true`.
+    var enabled: Bool = true {
         didSet {
             if !enabled {
                 stop()
@@ -148,7 +148,7 @@ final class Analytics {
     
     /// Starts the analytics collection. Safe to be run from a background thread.
     private func start() {
-        guard !hasBeenStarted else { return }
+        if hasBeenStarted { return }
         hasBeenStarted = true
         
         Analytics.log("Starting...")
@@ -166,7 +166,7 @@ final class Analytics {
     
     /// Stops analytics collection.
     private func stop() {
-        guard hasBeenStarted else { return }
+        if !hasBeenStarted { return }
         hasBeenStarted = false
         
         Analytics.log("Stopping...")
