@@ -174,6 +174,9 @@ public class ConnectButtonController {
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         self.connectionVerificationSession = ConnectionVerificationSession()
+        
+        self.button.analyticsDelegate = self
+        
         setupConnection(for: connection, animated: false)
         setupVerification()
     }
@@ -219,7 +222,9 @@ public class ConnectButtonController {
             return
         }
         
-        Analytics.shared.track(.Impression, location: .connectButtonImpression, object: connection)
+        Analytics.shared.track(.Impression,
+                               location: .connectButtonImpression,
+                               object: connection)
 
         button.imageViewNetworkController = serviceIconNetworkController
         serviceIconNetworkController.prefetchImages(for: connection)
@@ -810,6 +815,13 @@ public class ConnectButtonController {
     }
 }
 
+extension ConnectButtonController: ConnectButtonAnalyticsDelegate {
+    func trackSuggestedEmailImpression() {
+        Analytics.shared.track(.Impression,
+                               location: .connectButtonLocation(connection),
+                               object: AnalyticsObject.email)
+    }
+}
 
 // MARK: - Convenience
 
