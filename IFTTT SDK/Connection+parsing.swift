@@ -30,8 +30,10 @@ extension Connection {
         
         self.coverImages = CoverImage.images(with: parser["cover_image"])
         
-        self.valuePropositions = parser["value_propositions"].compactMap {
-            Connection.ValueProposition(parser: $0)
+        self.valuePropositionsParser = parser["value_propositions"]
+        
+        self.features = parser["features"].compactMap {
+            Connection.Feature(parser: $0)
         }
     }
     static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {
@@ -72,14 +74,15 @@ extension Connection.Service {
     }
 }
 
-private extension Connection.ValueProposition {
+private extension Connection.Feature {
     init?(parser: Parser) {
         guard
-            let description = parser["description"].string,
+            let title = parser["title"].string,
             let iconURL = parser["icon_url"].url else {
                 return nil
         }
-        self.details = description
+        self.details = parser["description"].string
+        self.title = title
         self.iconURL = iconURL
     }
 }
