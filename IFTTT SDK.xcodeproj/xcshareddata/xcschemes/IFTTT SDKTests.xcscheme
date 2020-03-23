@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1020"
+   LastUpgradeVersion = "1130"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -9,14 +9,14 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FCBA15E921389F7500EB1BC8"
-               BuildableName = "IFTTT_SDK.framework"
-               BlueprintName = "IFTTT SDK"
+               BlueprintIdentifier = "FCBA15F221389F7500EB1BC8"
+               BuildableName = "IFTTT SDKTests.xctest"
+               BlueprintName = "IFTTT SDKTests"
                ReferencedContainer = "container:IFTTT SDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FCBA15F221389F7500EB1BC8"
+               BuildableName = "IFTTT SDKTests.xctest"
+               BlueprintName = "IFTTT SDKTests"
+               ReferencedContainer = "container:IFTTT SDK.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -40,15 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "FCBA15E921389F7500EB1BC8"
-            BuildableName = "IFTTT_SDK.framework"
-            BlueprintName = "IFTTT SDK"
-            ReferencedContainer = "container:IFTTT SDK.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -59,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "FCBA15E921389F7500EB1BC8"
-            BuildableName = "IFTTT_SDK.framework"
-            BlueprintName = "IFTTT SDK"
+            BlueprintIdentifier = "FCBA15F221389F7500EB1BC8"
+            BuildableName = "IFTTT SDKTests.xctest"
+            BlueprintName = "IFTTT SDKTests"
             ReferencedContainer = "container:IFTTT SDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

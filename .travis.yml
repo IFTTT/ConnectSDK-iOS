@@ -1,0 +1,4 @@
+language: swift
+xcode_project: IFTTT SDK.xcodeproj # path to your xcodeproj folder
+xcode_scheme: IFTTT SDKTests
+xcode_destination: platform=iOS Simulator,OS=13.3,name=iPhone 11
