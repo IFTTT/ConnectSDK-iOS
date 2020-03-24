@@ -201,6 +201,11 @@ public struct Connection: Equatable {
         return worksWithServices.first ?? primaryService
     }
     
+    // MARK:- Native Services
+    /// The set of active native service triggers for this Connection.
+    let activeTriggers: Set<Trigger>
+    let activePermissions: Set<NativePermission>
+
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
     }
