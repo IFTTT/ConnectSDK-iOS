@@ -12,7 +12,7 @@ import AuthenticationServices
 class ConnectionViewController: UIViewController {
     
     struct Constants {
-        static let connectionId = "fWj4fxYg"
+        static let connectionId = "zG58W2uC"
     }
     
     // MARK: - UI
