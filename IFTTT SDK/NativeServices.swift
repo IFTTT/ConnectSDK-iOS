@@ -8,10 +8,11 @@
 import Foundation
 import CoreLocation
 
+/// Enumerates supported native service triggers
 enum Trigger: Equatable, Hashable, CaseIterable {
     static var allCases: [Trigger] {
         return [
-            .location(.init())
+            .location(region: .init())
         ]
     }
     
@@ -19,8 +20,13 @@ enum Trigger: Equatable, Hashable, CaseIterable {
         static let LocationIdentifer = "location"
     }
     
-    case location(CLCircularRegion)
+    /// Describes a location trigger. Currently only region exit and/or entry are supported.
+    ///
+    /// - Parameters:
+    ///     - region: A `CLCircularRegion` that corresponds to the region to monitor.
+    case location(region: CLCircularRegion)
 
+    /// Uniquely identifies this trigger.
     var identifier: String {
         switch self {
         case .location:
@@ -28,13 +34,18 @@ enum Trigger: Equatable, Hashable, CaseIterable {
         }
     }
     
-    init?(json: JSON) {
+    /// Creates an instance of `Trigger`
+    ///
+    /// - Parameters:
+    ///     - json: The `JSON` object corresponding to the trigger
+    ///     - triggerId: A value that uniquely identifies this trigger. Used in registering multiple unique triggers with the system.
+    init?(json: JSON, triggerId: String) {
         guard let fieldId = json["field_id"] as? String else { return nil }
         
         switch fieldId {
         case Constants.LocationIdentifer:
-            guard let region = CLCircularRegion(json: json) else { return nil }
-            self = .location(region)
+            guard let region = CLCircularRegion(json: json, triggerId: triggerId) else { return nil }
+            self = .location(region: region)
         default:
             return nil
         }
@@ -49,7 +60,10 @@ enum Trigger: Equatable, Hashable, CaseIterable {
     }
 }
 
+/// Enumerates permissions to be requested from the user. Determined by the triggers for a Connection.
 enum NativePermission: CaseIterable, Equatable {
+    
+    /// Describes an always required location permission.
     case location
 }
 

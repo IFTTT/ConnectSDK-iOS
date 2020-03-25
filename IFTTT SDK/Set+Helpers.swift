@@ -9,6 +9,10 @@ import Foundation
 
 extension Set {
     func map<U>(transform: (Element) -> U) -> Set<U> {
-        return Set<U>(self.lazy.map(transform))
+        return Set<U>(lazy.map(transform))
+    }
+    
+    func compactMap<U>(_ transform: (Element) -> U?) -> Set<U> {
+        return Set<U>(lazy.compactMap(transform))
     }
 }
