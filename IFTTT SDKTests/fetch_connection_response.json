@@ -52,10 +52,10 @@
             "user_fields": [],
             "user_feature_triggers": [{
                 "feature_trigger_id": "f3gtkmjkgf",
+                "user_trigger_id": "somecoolidentifier",
                 "user_fields": [{
                     "field_id": "location",
                     "value": {
-                        "user_trigger_id": "somecoolidentifier",
                         "lat": 12.45678920,
                         "lng": -98.5432112,
                         "radius": 123.4567890,
