@@ -64,7 +64,7 @@ extension Connection {
             
             let userFeatureTriggers = userFeatures.compactMap { $0["user_feature_triggers"] as? [JSON] }.reduce([], +)
             let allTriggers = userFeatureTriggers.compactMap { (userFeatureTrigger) -> [Trigger] in
-                guard let userTriggerId = userFeatureTrigger["user_trigger_id"] as? String else { return [] }
+                guard let userTriggerId = userFeatureTrigger["id"] as? String else { return [] }
                 guard let userFields = userFeatureTrigger["user_fields"] as? [JSON] else { return [] }
                 return userFields.compactMap { Trigger(json: $0, triggerId: userTriggerId) }
             }.reduce([], +)
