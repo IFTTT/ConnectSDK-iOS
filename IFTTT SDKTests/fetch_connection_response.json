@@ -52,7 +52,7 @@
             "user_fields": [],
             "user_feature_triggers": [{
                 "feature_trigger_id": "f3gtkmjkgf",
-                "user_trigger_id": "somecoolidentifier",
+                "id": "somecoolidentifier",
                 "user_fields": [{
                     "field_id": "location",
                     "value": {
