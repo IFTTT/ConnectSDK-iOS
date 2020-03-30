@@ -11,12 +11,11 @@ import CoreLocation
 extension CLCircularRegion {
     private static let locationManager = CLLocationManager()
     
-    convenience init?(json: JSON) {
+    convenience init?(json: JSON, triggerId: String) {
         let parser = Parser(content: json)
         let locationParser = parser["value"]
 
-        guard let triggerId = locationParser["user_trigger_id"].string,
-            let latitude = locationParser["lat"].double,
+        guard let latitude = locationParser["lat"].double,
             let longitude = locationParser["lng"].double,
             var radius = locationParser["radius"].double else {
                 return nil

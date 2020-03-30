@@ -1,5 +1,5 @@
 //
-//  Connection_internal.swift
+//  Connection+Parsing.swift
 //  IFTTT SDK
 //
 //  Copyright © 2019 IFTTT. All rights reserved.
@@ -63,9 +63,13 @@ extension Connection {
             guard let userFeatures = json["user_features"] as? [JSON] else { return [] }
             
             let userFeatureTriggers = userFeatures.compactMap { $0["user_feature_triggers"] as? [JSON] }.reduce([], +)
-            let allTriggers = userFeatureTriggers.compactMap { $0["user_fields"] as? [JSON] }.reduce([], +)
+            let allTriggers = userFeatureTriggers.compactMap { (userFeatureTrigger) -> [Trigger] in
+                guard let userTriggerId = userFeatureTrigger["id"] as? String else { return [] }
+                guard let userFields = userFeatureTrigger["user_fields"] as? [JSON] else { return [] }
+                return userFields.compactMap { Trigger(json: $0, triggerId: userTriggerId) }
+            }.reduce([], +)
             
-            return Set(allTriggers.compactMap { Trigger(json: $0) })
+            return Set(allTriggers)
         default:
             return []
         }
