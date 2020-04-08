@@ -13,7 +13,6 @@ import CoreLocation
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let locationManager = CLLocationManager()
     
     static let connectionRedirectURL = URL(string: "groceryexpress://connect_callback")!
     
