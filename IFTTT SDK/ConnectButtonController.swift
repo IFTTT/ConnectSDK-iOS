@@ -118,10 +118,11 @@ public class ConnectButtonController {
         if let status = connection?.status {
             state = (status == .initial) ? .Created : .Enabled
         }
+        Keychain.set(value: userToken, for: Keychain.Key.UserToken)
         connection?.status = .enabled
         
         if let connection = connection {
-            fetchConnection(for: connection.id, updateConnectButton: false, isAuthenticated: userToken != nil)
+            ConnectionsRegistry.shared.update(with: connection)
             Analytics.shared.track(.StateChange,
                                    object: connection,
                                    state: state)
@@ -139,7 +140,7 @@ public class ConnectButtonController {
         connection?.status = .disabled
         
         if let connection = connection {
-            ConnectionsMonitor.shared.update(with: connection)
+            ConnectionsRegistry.shared.update(with: connection)
             delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
     }
@@ -180,8 +181,14 @@ public class ConnectButtonController {
         
         self.button.analyticsDelegate = self
         
+        setupKeychain(for: connectionConfiguration.credentialProvider)
         setupConnection(for: connection, animated: false)
         setupVerification()
+    }
+    
+    private func setupKeychain(for credentialProvider: ConnectionCredentialProvider) {
+        Keychain.set(value: credentialProvider.userToken, for: Keychain.Key.UserToken)
+        Keychain.set(value: credentialProvider.inviteCode, for: Keychain.Key.InviteCode)
     }
     
     private func setupVerification() {
@@ -225,7 +232,6 @@ public class ConnectButtonController {
             return
         }
         
-        ConnectionsMonitor.shared.update(with: connection)
         Analytics.shared.track(.Impression,
                                location: .connectButtonImpression,
                                object: connection)
@@ -251,9 +257,7 @@ public class ConnectButtonController {
     
     private func fetchConnection(for id: String,
                                  numberOfRetries: Int = 3,
-                                 retryCount: Int = 0,
-                                 updateConnectButton: Bool = true,
-                                 isAuthenticated: Bool = false) {
+                                 retryCount: Int = 0) {
         button.animator(for: .buttonState(.loading(message: "button.state.loading".localized))).perform(animated: true)
         button.animator(for: .footerValue(FooterMessages.worksWithIFTTT.value)).perform(animated: false)
         connectionFetchingDataTask?.cancel()
@@ -265,12 +269,7 @@ public class ConnectButtonController {
             switch response.result {
             case .success(let connection):
                 self.connection = connection
-                if isAuthenticated {
-                    ConnectionsMonitor.shared.update(with: connection)
-                }
-                if updateConnectButton {
-                    self.setupConnection(for: connection, animated: true)
-                }
+                self.setupConnection(for: connection, animated: true)
 
             case .failure:
                 if retryCount < numberOfRetries {
@@ -279,16 +278,14 @@ public class ConnectButtonController {
                         self.fetchConnection(for: id, retryCount: count)
                     }
                 } else {
-                    if updateConnectButton {
-                        let footer = ConnectButtonController.FooterMessages.loadingFailed.value
-                        self.button.animator(for: .buttonState(.loadingFailed, footerValue: footer)).perform(animated: true)
-                        self.button.footerInteraction.isTapEnabled = true
-                        self.button.footerInteraction.onSelect = { [weak self] in
-                            self?.fetchConnection(for: id)
-                            self?.reachability?.stopNotifier()
-                        }
-                        self.setupReachabilityForConnectionLoading(id: id)
+                    let footer = ConnectButtonController.FooterMessages.loadingFailed.value
+                    self.button.animator(for: .buttonState(.loadingFailed, footerValue: footer)).perform(animated: true)
+                    self.button.footerInteraction.isTapEnabled = true
+                    self.button.footerInteraction.onSelect = { [weak self] in
+                        self?.fetchConnection(for: id)
+                        self?.reachability?.stopNotifier()
                     }
+                    self.setupReachabilityForConnectionLoading(id: id)
                 }
             }
         }

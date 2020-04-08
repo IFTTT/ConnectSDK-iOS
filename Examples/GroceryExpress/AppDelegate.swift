@@ -7,11 +7,13 @@
 
 import UIKit
 import IFTTTConnectSDK
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    let locationManager = CLLocationManager()
     
     static let connectionRedirectURL = URL(string: "groceryexpress://connect_callback")!
     
@@ -21,7 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         ConnectButtonController.analyticsEnabled = true
+        ConnectionsSynchronizer.shared.applicationDidFinishLaunching()
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        ConnectionsSynchronizer.shared.applicationDidEnterBackground()
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -32,5 +39,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // This is unrelated to the IFTTT SDK
             return false
         }
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if let aps = userInfo["aps"] as? [String: Any],
+            let isSilentPushNotification = aps["content-available"] as? Bool,
+            isSilentPushNotification {
+            ConnectionsSynchronizer.shared.didReceiveSilentRemoteNotification(backgroundFetchCompletion: completionHandler)
+        }
+    }
+    
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        ConnectionsSynchronizer.shared.didReceiveSilentRemoteNotification(backgroundFetchCompletion: completionHandler)
     }
 }

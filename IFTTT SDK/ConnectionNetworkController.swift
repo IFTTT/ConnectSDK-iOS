@@ -41,6 +41,11 @@ public final class ConnectionNetworkController {
     ///
     /// - Parameter response: The `Response` object from the completed request.
     public typealias CompletionHandler = (_ response: Response) -> Void
+    
+    /// Cancels any in-flight requests that were sent from this network controller
+    public func cancel() {
+        urlSession.invalidateAndCancel()
+    }
 
     /// Starts a task to fetch information about a `Connection`.
     ///

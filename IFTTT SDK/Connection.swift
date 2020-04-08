@@ -8,7 +8,7 @@
 import Foundation
 
 /// A structure representing a Connection created using the IFTTT Platform.
-public struct Connection: Equatable {
+public struct Connection: Equatable, Hashable {
     
     /// Represents the various states a `Connection` can be in based on interaction.
     public enum Status: String {
@@ -208,6 +208,10 @@ public struct Connection: Equatable {
 
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 
