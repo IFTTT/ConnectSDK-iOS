@@ -54,7 +54,7 @@ class Connection_parsingSpec: XCTestCase {
             XCTAssertEqual(region.radius, 123.4567890)
             XCTAssertEqual(region.center.latitude, 12.45678920)
             XCTAssertEqual(region.center.longitude, -98.5432112)
-            XCTAssertEqual(region.identifier, "somecoolidentifier")
+            XCTAssertEqual(region.identifier, "ifttt_somecoolidentifier")
         default:
             XCTFail("Expecting a location trigger")
         }
@@ -71,7 +71,7 @@ class Connection_parsingSpec: XCTestCase {
             XCTAssertEqual(firstRegion.radius, 123.4567890)
             XCTAssertEqual(firstRegion.center.latitude, 12.45678920)
             XCTAssertEqual(firstRegion.center.longitude, -98.5432112)
-            XCTAssertEqual(firstRegion.identifier, "somecoolidentifier")
+            XCTAssertEqual(firstRegion.identifier, "ifttt_somecoolidentifier")
         } else {
             XCTFail("Expecting a region to be returned")
         }

@@ -7,6 +7,11 @@
 
 import Foundation
 
+extension NSNotification.Name {
+    /// Notification that gets emitted whenever the user's connections change.
+    static let ConnectionsChangedNotification = NSNotification.Name("ConnectionsChangedNotification")
+}
+
 /// Stores connection information to be able to use in synchronizations.
 final class ConnectionsRegistry {
     /// The shared instance that should be used in creating an instance of the registry.

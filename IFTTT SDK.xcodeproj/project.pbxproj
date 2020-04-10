@@ -44,6 +44,8 @@
 		DE328DC2243E1DED00603EAC /* LocationMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC1243E1DED00603EAC /* LocationMonitor.swift */; };
 		DE328DC4243E1E1200603EAC /* VisitsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */; };
 		DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */; };
+		DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */; };
+		DE328DCC2440CEA500603EAC /* EventPublisher_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCB2440CEA500603EAC /* EventPublisher_spec.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
 		DE3BEFCA22CAAA8C0020B425 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFC922CAAA8C0020B425 /* Localizable.strings */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
@@ -140,6 +142,8 @@
 		DE328DC1243E1DED00603EAC /* LocationMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMonitor.swift; sourceTree = "<group>"; };
 		DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitsMonitor.swift; sourceTree = "<group>"; };
 		DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronizationTriggerEvent.swift; sourceTree = "<group>"; };
+		DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLRegion+Parsing_spec.swift"; sourceTree = "<group>"; };
+		DE328DCB2440CEA500603EAC /* EventPublisher_spec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPublisher_spec.swift; sourceTree = "<group>"; };
 		DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDeeplinkAction.swift; sourceTree = "<group>"; };
 		DE3BEFC922CAAA8C0020B425 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -372,6 +376,8 @@
 				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
 				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
+				DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */,
+				DE328DCB2440CEA500603EAC /* EventPublisher_spec.swift */,
 			);
 			path = "IFTTT SDKTests";
 			sourceTree = "<group>";
@@ -633,7 +639,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */,
 				1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */,
+				DE328DCC2440CEA500603EAC /* EventPublisher_spec.swift in Sources */,
 				FC1F491422710B62008A1B21 /* Connection_parsingSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

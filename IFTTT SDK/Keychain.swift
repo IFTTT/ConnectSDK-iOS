@@ -2,15 +2,10 @@
 //  Keychain.swift
 //  IFTTT SDK
 //
-//  Created by Siddharth Sathyam on 4/8/20.
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
 import Foundation
-
-extension NSNotification.Name {
-    static let ConnectionsChangedNotification = NSNotification.Name("ConnectionsChangedNotification")
-}
 
 final class Keychain {
     struct Key {
