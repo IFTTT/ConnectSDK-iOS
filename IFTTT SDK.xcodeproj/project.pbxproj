@@ -20,7 +20,7 @@
 		1D453EEC2297246C001994FF /* ConnectButton+CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */; };
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
-		1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */; };
+		1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */; };
 		1D7918412227202700429936 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7918402227202700429936 /* Reachability.swift */; };
 		1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */; };
 		1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */; };
@@ -45,7 +45,8 @@
 		DE328DC4243E1E1200603EAC /* VisitsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */; };
 		DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */; };
 		DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */; };
-		DE328DCC2440CEA500603EAC /* EventPublisher_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCB2440CEA500603EAC /* EventPublisher_spec.swift */; };
+		DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */; };
+		DE328DCE2440E89600603EAC /* ConnectionsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
 		DE3BEFCA22CAAA8C0020B425 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFC922CAAA8C0020B425 /* Localizable.strings */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
@@ -63,7 +64,7 @@
 		FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */; };
 		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
-		FC1F491422710B62008A1B21 /* Connection_parsingSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1F491322710B62008A1B21 /* Connection_parsingSpec.swift */; };
+		FC1F491422710B62008A1B21 /* Connection_ParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */; };
 		FC1F491622710BE4008A1B21 /* fetch_connection_response.json in Resources */ = {isa = PBXBuildFile; fileRef = FC1F491522710BE4008A1B21 /* fetch_connection_response.json */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
@@ -118,7 +119,7 @@
 		1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkController.swift; sourceTree = "<group>"; };
 		1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionConfiguration.swift; sourceTree = "<group>"; };
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EmailDataDetectorTests.swift"; sourceTree = "<group>"; };
+		1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String_EmailDataDetectorTests.swift; sourceTree = "<group>"; };
 		1D7918402227202700429936 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ValueType,ErrorType>.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionCredentialProvider.swift; sourceTree = "<group>"; };
@@ -143,7 +144,8 @@
 		DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitsMonitor.swift; sourceTree = "<group>"; };
 		DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronizationTriggerEvent.swift; sourceTree = "<group>"; };
 		DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLRegion+Parsing_spec.swift"; sourceTree = "<group>"; };
-		DE328DCB2440CEA500603EAC /* EventPublisher_spec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPublisher_spec.swift; sourceTree = "<group>"; };
+		DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPublisherTests.swift; sourceTree = "<group>"; };
+		DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsRegistryTests.swift; sourceTree = "<group>"; };
 		DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDeeplinkAction.swift; sourceTree = "<group>"; };
 		DE3BEFC922CAAA8C0020B425 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -161,7 +163,7 @@
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
-		FC1F491322710B62008A1B21 /* Connection_parsingSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_parsingSpec.swift; sourceTree = "<group>"; };
+		FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_ParsingTests.swift; sourceTree = "<group>"; };
 		FC1F491522710BE4008A1B21 /* fetch_connection_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = fetch_connection_response.json; sourceTree = "<group>"; };
 		FC22B19321ACA54000738023 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		FC22B19521ACA54A00738023 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
@@ -371,13 +373,14 @@
 		FCBA15F721389F7500EB1BC8 /* IFTTT SDKTests */ = {
 			isa = PBXGroup;
 			children = (
-				1D6E554621CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift */,
-				FC1F491322710B62008A1B21 /* Connection_parsingSpec.swift */,
+				1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */,
+				FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */,
 				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
 				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
 				DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */,
-				DE328DCB2440CEA500603EAC /* EventPublisher_spec.swift */,
+				DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */,
+				DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */,
 			);
 			path = "IFTTT SDKTests";
 			sourceTree = "<group>";
@@ -640,9 +643,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */,
-				1D6E554721CBF4F200FE66F0 /* String+EmailDataDetectorTests.swift in Sources */,
-				DE328DCC2440CEA500603EAC /* EventPublisher_spec.swift in Sources */,
-				FC1F491422710B62008A1B21 /* Connection_parsingSpec.swift in Sources */,
+				1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */,
+				DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */,
+				DE328DCE2440E89600603EAC /* ConnectionsRegistryTests.swift in Sources */,
+				FC1F491422710B62008A1B21 /* Connection_ParsingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

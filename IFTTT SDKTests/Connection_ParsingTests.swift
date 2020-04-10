@@ -1,5 +1,5 @@
 //
-//  Connection_parsingSpec.swift
+//  Connection_ParsingTests.swift
 //  IFTTT SDKTests
 //
 //  Copyright © 2019 IFTTT. All rights reserved.
@@ -8,12 +8,12 @@
 import XCTest
 @testable import IFTTT_SDK
 
-class Connection_parsingSpec: XCTestCase {
+class Connection_ParsingTests: XCTestCase {
     
     var connection: Connection!
     
     override func setUp() {
-        let bundle = Bundle(for: Connection_parsingSpec.self)
+        let bundle = Bundle(for: Connection_ParsingTests.self)
         if let path = bundle.url(forResource: "fetch_connection_response",
                                  withExtension: "json"),
             let json = try? Data(contentsOf: path) {

@@ -1,5 +1,5 @@
 //
-//  EventPublisher_spec.swift
+//  EventPublisherTests.swift
 //  IFTTT SDKTests
 //
 //  Copyright © 2020 IFTTT. All rights reserved.
@@ -9,7 +9,7 @@ import XCTest
 
 @testable import IFTTT_SDK
 
-class EventPublisher_spec: XCTestCase {
+class EventPublisherTests: XCTestCase {
     var publisher: EventPublisher<Int>!
     
     override func setUp() {
