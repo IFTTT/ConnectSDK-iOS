@@ -21,7 +21,7 @@ final class AuthenticationSession {
         /// Represents a standard OAuth flow.
         /// - url: The base url for the oauth flow
         /// - callbackURLScheme: An optional url scheme to use in checking for a callback
-        /// - prefersEphemeralWebBrowserSession: A boolean that determines whether or not the authentication session should be ephermeral or not. If this is set to true, Safari cookies will be used in the authentication. `
+        /// - prefersEphemeralWebBrowserSession: A boolean that determines whether or not the authentication session should be ephermeral or not. If this is set to `false`, Safari cookies will be used in the authentication.
         case oauth(url: URL, callbackURLScheme: String?, prefersEphemeralWebBrowserSession: Bool)
         
         /// Represents the sign in with apple flow. This technically uses OAuth underneath the hood but uses system API's to get any relevant tokens.
