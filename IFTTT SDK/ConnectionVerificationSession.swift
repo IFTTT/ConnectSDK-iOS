@@ -45,7 +45,7 @@ final class ConnectionVerificationSession {
     ///     - presentationContext: The `UIWindow` instance to use in presenting the web auth flow. The system may present an alert.
     @available(iOS 13.0, *)
     func start(with url: URL, in presentationContext: UIWindow) {
-        let authenticationMethod = AuthenticationSession.AuthenticationMethod.oauth(url: url, callbackURLScheme: nil)
+        let authenticationMethod = AuthenticationSession.AuthenticationMethod.oauth(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: true)
         let authenticationSession = AuthenticationSession(method: authenticationMethod, presentationContext: presentationContext) { [weak self] (result) in
             switch result {
             case .success(let result):
