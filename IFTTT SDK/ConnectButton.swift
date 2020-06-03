@@ -568,12 +568,22 @@ private extension ConnectButton {
         stopPulseAnimation()
     }
     
+    private func resetEmailState() {
+        emailEntryField.text = nil
+        emailEntryField.alpha = 0.0
+        emailConfirmButton.transform = .identity
+        emailConfirmButton.maskedEndCaps = .all
+        emailConfirmButton.alpha = 0
+    }
+    
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
         let trackColor: UIColor = .black
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController, trackColor: trackColor)
         emailConfirmButton.backgroundColor = service.brandColor
+        
+        resetEmailState()
         
         animator.addAnimations {
             self.progressBar.alpha = 0
