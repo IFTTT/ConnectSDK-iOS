@@ -21,8 +21,9 @@ final class ConnectionVerificationSession {
     /// Dismisses a authentication session in progress. Call this once after the redirect is complete.
     ///
     /// - Parameters:
+    ///     - isUserCancelled: True if the dismissal was user initiated.
     ///     - completion: A closure that gets called after the dismissal is complete.
-    func dismiss(completion: @escaping VoidClosure) {
+    func dismiss(isUserCancelled: Bool, completion: @escaping VoidClosure) {
         guard let authProvider = authProvider else {
             // If we don't have an auth provider, call the completion handler right away.
             completion()
@@ -30,7 +31,9 @@ final class ConnectionVerificationSession {
         }
         switch authProvider {
         case .authSession(let authSession):
-            authSession.cancel()
+            if !isUserCancelled {
+                authSession.cancel()
+            }
             completion()
         case .safari(let safariViewController):
             safariViewController.dismiss(animated: true, completion: completion)
