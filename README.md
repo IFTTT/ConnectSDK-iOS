@@ -352,7 +352,7 @@ The data collected is examined in the aggregate to improve the SDK and IFTTT’s
 ### Localization
 The Connect Button and the corresponding flow can display translated text that is different from the user's current locale. To pass in a different locale, pass in a Swift `Locale` object for the `locale` parameter of the `ConnectButtonController` initializer. For example, if the Connect Button is to be displayed in Latin American Spanish:
 ```
-let locale = Locale("es-419")
+let locale = Locale(identifier: "es-419")
 let config = ConnectionConfiguration(connection: connection, 
                                       suggestedUserEmail: yourUsersEmail,
                                       credentialProvider: yourCredentialProvider,
