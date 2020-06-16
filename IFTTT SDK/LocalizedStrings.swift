@@ -29,7 +29,7 @@ extension String {
                                      comment: "")
         }
         else {
-            print("A strings file with \(table) doesn't exist in the bundle. Will fallback to the Localizable.strings file. Try reinstalling the SDK and then perform a clean/rebuild")
+            print("The key \(self) wasn't found in a strings file with name \(table) in the the bundle. Will fallback to the Localizable.strings file. Try reinstalling the SDK and then perform a clean/rebuild")
             return NSLocalizedString(self, bundle: bundle, value: "", comment: "")
         }
     }

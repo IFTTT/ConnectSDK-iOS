@@ -29,6 +29,8 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var logoutView: UIStackView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var credentialsTextView: UITextView!
+    @IBOutlet weak var localeOverrideTextField: UITextField!
+    private let localePickerView = UIPickerView()
     
     @IBAction func doneTapped(_ sender: Any) {
         settings.save()
@@ -96,6 +98,33 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        localePickerView.delegate = self
+        localePickerView.dataSource = self
+        
+        localeOverrideTextField.inputView = localePickerView
+        localeOverrideTextField.text = settings.locale.identifier
+        localeOverrideTextField.spellCheckingType = .no
+        
         update()
+    }
+}
+
+extension SettingsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return Locale.availableIdentifiers.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let selectedIdentifier = Locale.availableIdentifiers[row]
+        localeOverrideTextField.text = selectedIdentifier
+        settings.locale = Locale(identifier: selectedIdentifier)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return Locale.availableIdentifiers[row]
     }
 }
