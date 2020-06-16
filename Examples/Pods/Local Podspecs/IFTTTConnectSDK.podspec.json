@@ -22,8 +22,10 @@
   "source_files": "IFTTT SDK/**/*.swift",
   "resource_bundles": {
     "IFTTTConnectSDK": [
-      "IFTTT SDK/Assets.xcassets",
-      "IFTTT SDK/Localizable.strings"
+      "IFTTT SDK/Assets.xcassets"
+    ],
+    "IFTTTConnectSDK-Localizations": [
+      "IFTTT SDK/*.strings"
     ]
   },
   "swift_version": "5.0"

@@ -95,6 +95,9 @@ public class ConnectButtonController {
 
     /// The connect button in this interaction
     public let button: ConnectButton
+    
+    /// The locale that will be used for localizing the flow.
+    public static var locale: Locale = Locale.current
 
     /// The `Connection` the controller is handling. The controller may change the `Connection.Status` of the `Connection`.
     public private(set) var connection: Connection?
@@ -167,10 +170,16 @@ public class ConnectButtonController {
     /// - Parameters:
     ///   - connectButton: The `ConnectButton` that the controller is handling interaction for.
     ///   - connectionConfiguration: The `ConnectionConfiguration` with information for authenticating a `Connection`.
+    ///   - locale: An overridable `Locale` that will get used to display strings in the SDK. The default is `nil`. If this parameter is set to `nil`, the user's current will be used.
     ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
-    public init(connectButton: ConnectButton, connectionConfiguration: ConnectionConfiguration, delegate: ConnectButtonControllerDelegate) {
+    public init(connectButton: ConnectButton,
+                connectionConfiguration: ConnectionConfiguration,
+                locale: Locale = Locale.current,
+                delegate: ConnectButtonControllerDelegate) {
         self.button = connectButton
+
         self.connectionConfiguration = connectionConfiguration
+        ConnectButtonController.locale = locale
         self.connectionHandoffFlow = ConnectionHandoffFlow(connectionId: connectionConfiguration.connectionId,
                                                                  credentialProvider: connectionConfiguration.credentialProvider,
                                                                  activationRedirect: connectionConfiguration.redirectURL)

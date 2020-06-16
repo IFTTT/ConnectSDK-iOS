@@ -29,8 +29,8 @@ public class ConnectionsMonitor {
     ///
     /// - Returns: An initialized instance of `ConnectionsMonitor`.
     private init() {
-        let location = LocationService(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
-        self.subscribers = [location]
+        // Don't register any subscribers for the time being.
+        self.subscribers = []
     }
     
     /// Updates subscribers with this connection.

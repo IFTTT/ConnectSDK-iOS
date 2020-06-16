@@ -94,7 +94,9 @@ struct ConnectionHandoffFlow {
             URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
             URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
             URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform),
-            URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
+            URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId),
+            URLQueryItem(name: Constants.QueryItem.sdkLocale, value: ConnectButtonController.locale.identifier)
+        ]
         
         let partnerOauthCodeQueryItem: URLQueryItem?
         if !credentialProvider.oauthCode.isEmpty {
@@ -148,6 +150,7 @@ struct ConnectionHandoffFlow {
             static let actionName = "action"
             static let editValue = "edit"
             static let activationValue = "activation"
+            static let sdkLocale = "locale"
             
             static let sdkReturnName = "sdk_return_to"
             static let inviteCodeName = "invite_code"

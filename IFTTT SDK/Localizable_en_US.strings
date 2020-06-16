@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"common.cancel" = "Cancel";
+
+"button.state.loading" = "Loading...";
+"button.state.connect" = "Connect %@";
+"button.state.verifying" = "Verifying…";
+"button.state.creating_account" = "Creating account…";
+"button.state.sign_in" = "Going to %@...";
+"button.state.sign_in.brief" = "Sign in";
+"button.state.saving_configuration" = "Saving settings…";
+"button.state.connecting" = "Connecting…";
+"button.state.connected" = "Connected";
+"button.state.disconnect" = "Slide to disconnect";
+"button.state.disconnecting" = "Disconnecting…";
+"button.state.disconnected" = "Disconnected";
+
+"button.email.placeholder" = "Your email";
+
+"button.footer.works_with" = "WORKS WITH ";
+"button.footer.email.invalid" = "Enter valid email";
+"button.footer.loading.failed.prefix" = "Make sure your phone has internet connection.";
+"button.footer.loading.failed.postfix" = "Retry";
+"button.footer.email.prefix" = "Secured with ";
+"button.footer.email.postfix" = "Learn more";
+"button.footer.accountCreation.prefix" = "New ";
+"button.footer.accountCreation.postfix" = "account for %@";
+
+"about.title" = " connects %@ and %@";
+"about.connect" = "Unlock new features when your favorite things work together";
+"about.control" = "Control which services access your data and how they use it";
+"about.security" = "Protect and monitor your data";
+"about.manage" = "Unplug any time";
+"about.connection-deep-link" = "Manage";
+"about.legal.prefix" = "By using this connection you agree to our ";
+"about.legal.link" = "Privacy & Terms";
