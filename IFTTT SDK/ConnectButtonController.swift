@@ -95,9 +95,6 @@ public class ConnectButtonController {
 
     /// The connect button in this interaction
     public let button: ConnectButton
-    
-    /// The locale that will be used for localizing the flow.
-    public static var locale: Locale = Locale.current
 
     /// The `Connection` the controller is handling. The controller may change the `Connection.Status` of the `Connection`.
     public private(set) var connection: Connection?
@@ -164,6 +161,9 @@ public class ConnectButtonController {
     private let serviceIconNetworkController = ServiceIconsNetworkController()
     private let reachability = Reachability()
     private let connectionVerificationSession: ConnectionVerificationSession
+    
+    /// The locale that will be used for localizing the flow.
+    static var locale: Locale = Locale.current
 
     /// Creates a new `ConnectButtonController`.
     ///
