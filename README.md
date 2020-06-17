@@ -349,6 +349,21 @@ In order to continually innovate and improve our SDK, IFTTT may collect certain 
 
 The data collected is examined in the aggregate to improve the SDK and IFTTT’s associated services, and is maintained in accordance with IFTTT's [Privacy Policy](https://ifttt.com/terms).
 
+### Localization
+The Connect Button and the corresponding flow can display translated text that is different from the user's current locale. To pass in a different locale, pass in a Swift `Locale` object for the `locale` parameter of the `ConnectButtonController` initializer. For example, if the Connect Button is to be displayed in Latin American Spanish:
+```
+let locale = Locale(identifier: "es-419")
+let config = ConnectionConfiguration(connection: connection, 
+                                      suggestedUserEmail: yourUsersEmail,
+                                      credentialProvider: yourCredentialProvider,
+                                      connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService)
+let controller = ConnectButtonController(connectButton: self.connectButton,
+                                         connectionConfiguration: config,
+                                         locale: locale,
+                                         delegate: self)
+```
+If no translations are found for a locale passed in for this parameter, the Connect Button and the corresponding flow will be displayed in English. If no value is provided for the `locale` parameter, a default value of `Locale.current` will be used.
+
 #### Anonymous ID
 By default, the SDK will track user interactions when users interact with the ConnectButton. In order to distinguish unique installs, we randomly generate a UUID per application installation (“anonymous id”), and send it along with the event requests.
 

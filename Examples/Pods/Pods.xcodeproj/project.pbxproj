@@ -7,80 +7,81 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02568099ABD39A01A974E4EB92D43834 /* IFTTTConnectSDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6827B064BC2CCBD86A6A15DDD97C4A5E /* IFTTTConnectSDK-dummy.m */; };
-		02875A0E0D5B8A3B2F365E700E617832 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B22EE3522B8ADF1411BF3349205E2B9 /* LocationService.swift */; };
+		002CA0ED1A142F3AF6A91ACBD4ABB5D8 /* ProgressBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D716FAAA17F11AB38EE92AE49ECD11FD /* ProgressBarController.swift */; };
 		038275CDB982C8D0E225D759426C940D /* Pods-Grocery Express-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F5760F42BC07BB9452D72680C4067088 /* Pods-Grocery Express-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		081EB67B64AB2BC0D7BA5B3C694EC543 /* ConnectButton+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241B2E4F3D2E7C873627FA0767953748 /* ConnectButton+Constants.swift */; };
-		090C10D3882C75E17AE10B625FF346D9 /* ConstraintsMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005D96F36ED8EE27CE92D1B5DAF0A1C7 /* ConstraintsMaker.swift */; };
-		09FB471B89AF2F4DD33BF8A0294BCA91 /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC19CDF69CFFB3AF32762185A8B23312 /* PillButton.swift */; };
-		10E6AC3EAA27C750A7CBBFC67A823447 /* ConnectButton+Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085E4F84133D6E76C30FBD93F5104C0D /* ConnectButton+Transition.swift */; };
-		1201FEC453252A234F1C5B47144650C2 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68E53D3CD20C486EC016857ADF08FC2 /* EmailValidator.swift */; };
-		1CAD3460F4DBB119D6742CD6A06F721D /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDE4E08C55DB5B90E3843BFB88C6574 /* Assets.swift */; };
-		1CC3E2C05A00976A0E0C464ADC6D9648 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7077051C0B233ADCD8CE7C4E82D6FF /* UIFont+CommonValues.swift */; };
-		1F282785D14AD67C1820A22C1999C634 /* ConnectionNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AEE6F70B5E020E02CE57CDDAC69FD04 /* ConnectionNetworkError.swift */; };
-		263266BCB8D27A86F72ECB6A93AD2AEA /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3953CDBAE690356A03901B57AF1641F4 /* Notification+Redirect.swift */; };
-		2BD1428D4BDDA6BCE573DFAD2D334937 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691AE8DA0BC33449E9C4DADA311EC3F0 /* ImageDownloader.swift */; };
-		31C201EC51852D653509A815EE693D61 /* Selectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF7A2612FA366825265835A0AC7BF98 /* Selectable.swift */; };
-		3F642CF17B4207DAF7C331FA5141BED5 /* IFTTTConnectSDK-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EECCCA7B3BC5AB34C8BA15585823E72 /* IFTTTConnectSDK-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		40AB464F5DE0E0C0CB055CD728DDDCD3 /* Set+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101CBBCD22F729FA8D5CD8B4C9FBF74C /* Set+Helpers.swift */; };
-		40EF3C67FD1D9AB6C720C52B012B5BA1 /* Analytics+DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7418DE7FE52E64F16DDCCF72A29E792A /* Analytics+DataStructures.swift */; };
-		422E351F9516CF6F34A3753495617E9A /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C73B6975B6C246D5424CCE36EEA1 /* URLSession+JSONTask.swift */; };
-		4BB3A3A87B1806CCA66F0B792DDFC401 /* NativeServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E758E55566DD57E8DA036AA6684B69 /* NativeServices.swift */; };
-		4C63570874967A0144C718411F3CC00F /* ConnectionActivationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D825AE106A04EA7BBF4BA6260E60DB /* ConnectionActivationFlow.swift */; };
-		519B9F59C5215502E1BF67815CFF6746 /* PassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F356664D983082FF3DD3A8F2616AAFA4 /* PassthroughView.swift */; };
-		5215BEE23B4855559FD42C17256D6E4C /* ConnectButton+LabelAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BF71E9E8AA5C222A66C7EB923D8F86 /* ConnectButton+LabelAnimator.swift */; };
-		56CE4F43A704533CF429A0A105F51697 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E913CC1093083C207DE997968B4D431C /* PillView.swift */; };
-		5987B80ECB0F93BBA9E80C7A661BCED2 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69253C68ADEA80AFF8F58C2BEA9B06ED /* Color.swift */; };
-		5CF24261C570A60C35FC067DAC2FC075 /* Connection+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CE05F94FB4D7F405BCD4DBFB6F0E4D /* Connection+Request.swift */; };
-		5FADC9F4C9E7314BE0F7A5C72BC8C282 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5951D62E2CA8FE93F16F8779C464E180 /* ConnectionNetworkController.swift */; };
-		60FBE96A388F058EFEF2F0AD37720175 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9F9C9DD374BDC4E6F16318116FC26E /* Connection+Parsing.swift */; };
-		65BF8C697020A6F4AF92B9298674E510 /* ConnectButton+CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F8A4D70F88EC11A46F40B5C9900774 /* ConnectButton+CheckmarkView.swift */; };
-		6D3C414B5F29221A9803A250BB73FEC8 /* ConnectionRedirectHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470A7F54109C4D7D50A58E326E2B2D5C /* ConnectionRedirectHandler.swift */; };
-		6F4D34F47A471F289DAFDC03A4903152 /* ConnectButton+ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED74CB1CEC05771E4C1A1C0E34545FC5 /* ConnectButton+ProgressBar.swift */; };
-		72591488D98CBC64BD5D537315B759CF /* UIKit+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AEBC4EF251CAA93B1F89D768D1011D /* UIKit+ConvenienceInit.swift */; };
-		7A33B26DF3170C1A7485E36810A37BAC /* ConnectionCredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA330338628792596391EF315AD46AB /* ConnectionCredentialProvider.swift */; };
-		7F226C2EA670CBCA368EDB2DF15C0269 /* ServiceIconsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308BD331D3E15E787B8BA7793CFC7ADE /* ServiceIconsNetworkController.swift */; };
-		80F35B8D81043FE45469BE9F70040E6A /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B79AFDA7BADDB44DD3D090F3C214C08 /* ConnectButton.swift */; };
-		8108B05B978047164173687BE64580F8 /* ConnectButton+SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467D9D1379902B0D4D75C529B581AC51 /* ConnectButton+SwitchControl.swift */; };
-		81D7F73AEDC662C292B8919082E53713 /* ConnectButton+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22456CC96EF5682560FB068C20DAD211 /* ConnectButton+Interaction.swift */; };
-		8372BB9344AA5D9377173B74766B5A87 /* ConnectButton+Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1C7C32A0ACF66D4EBC86EB4364E46B /* ConnectButton+Service.swift */; };
-		8387659C764D8455CFB0DC7611F0249C /* ConnectButton+LabelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D67B7A7413AD25EE0969122C1625BB /* ConnectButton+LabelValue.swift */; };
-		898A668F877DD140DCBF2F74E6082985 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661BEF7980409FDEAA305AE804086C1 /* ConnectionDeeplinkAction.swift */; };
-		8CAA0CD58A6B6B5BBE7447B3022F929F /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2B68BB9AC3F519D0EBBB2BE2B2BED1 /* JSON.swift */; };
-		8FDFFC90E263291396FAD30F5FDA4D97 /* Result<ValueType,ErrorType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFBBFB60A1C62A228CB0F3162D1174D /* Result<ValueType,ErrorType>.swift */; };
-		91B2E926C83EEF5B6762120EE322A2B8 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CFD1F3A6B2AACF7BCCAEFD9AE4167A4 /* Analytics.swift */; };
-		9473C2233A4A8DAEBA0ED0C0FCD4A145 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A9D259E44AD484550020A6A66B376A /* ConnectionConfiguration.swift */; };
-		9606F16742EF2E6DCD41DBF334A594F2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DBADDF26FBCAC3DD6EFDE2FF886C8E48 /* Localizable.strings */; };
-		A1601882FC5515BCD806499C8ACB5BF7 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0DA37757A3D232C4213A8FC00FF83 /* LocalizedStrings.swift */; };
+		064741AB32AEC81069483B63DD634C37 /* Bundle+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0E6C2666201F87F55E231E4A13B274 /* Bundle+Helpers.swift */; };
+		075E9B279DFBC8DF3E9227F258F74198 /* URLComponents+email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0170BF2E873C354018D1E1AB15DEF1B9 /* URLComponents+email.swift */; };
+		0BECA371F2E0BC78C97F32A9EDB5FD02 /* Connection+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9EB2C3BFC205E86D37A215EB1A251B /* Connection+Request.swift */; };
+		0EF9A8B2CCB8467E2BF71F761A5615FE /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591C4376E1D5E1099F92FC722A2434EA /* JSON.swift */; };
+		10502741C0E4C626F4377E073776F250 /* ConnectionCredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F5EE89A056009894EE87E3F5F47819 /* ConnectionCredentialProvider.swift */; };
+		18CDFDB3689ACEF6D730457481731B71 /* ConnectButton+LabelAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A43532129D939C73F58CABA71A90AC /* ConnectButton+LabelAnimator.swift */; };
+		1959903A77B57A1A6B799599D0B990A7 /* ConnectionActivationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA6C57A1E44A27D0D4EC54029E48A8D /* ConnectionActivationFlow.swift */; };
+		20BDB723D07872A5DBF72A5FB934B9A6 /* ConnectButton+Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8343CAFD6A40FD0A5DB7240D36F53A7E /* ConnectButton+Transition.swift */; };
+		243931B54D3B7E6338BEC5594BF70CF6 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59364EB50425D279D6B0BD0ADDAD97B9 /* ConnectionNetworkController.swift */; };
+		2C3DE68C47B093006423387140D00311 /* NativeServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90190542A97A8EB749B026811EC37FB7 /* NativeServices.swift */; };
+		32785F460F86B4BC5F5A9FB65C6F4694 /* SelectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4067C4E978C592605DF923C70CBE5E87 /* SelectGestureRecognizer.swift */; };
+		32BA2C6582E78EA22F24A91D5DBC1712 /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C2484B134D4B82166A0FE70F1415E4 /* PillButton.swift */; };
+		34032ADE7FE45F99B4E534D4D35200BC /* ConstraintsMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134A746BB956A2E73DF90288B0CE6E49 /* ConstraintsMaker.swift */; };
+		36A15965A72D33F9CCF39CD948656964 /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2707DFE71393DC94BE022F4FCA771A /* URLRequest+CommonValues.swift */; };
+		3FCD6FA11111D8B6DB03A404B1DA4B3B /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61CE610A8A93FA946B93E926D076B48 /* ConnectionConfiguration.swift */; };
+		4263659CE89824D5AF8D3FA6E600F65D /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37F87BD1A6FAFFF48D760C2387937F5C /* Reachability.swift */; };
+		458376AD8CAD55A4B3937C1CD0F4D91C /* AnalyticsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADC6FB65A26B708430CF4C6E37AAF73 /* AnalyticsNetworkController.swift */; };
+		46499C3532C5C4B38F0173111127A57C /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7216AA046BD9220089804F7A0D87732 /* Color.swift */; };
+		47DC872E90E065417C7597792F6B1466 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F03BFA074A3E4293CF2FA350FB4A75 /* EmailValidator.swift */; };
+		49D45531DE71E616CFCC18B1ED13E4E5 /* ConnectButton+AnimationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F472C9449AC16B53A527D6216EE90C /* ConnectButton+AnimationState.swift */; };
+		4EDE841082BA15631BA00F19DF154508 /* CLCircularRegion+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCCC0907DCAB2363A3C87C287E05DD2 /* CLCircularRegion+Parsing.swift */; };
+		51EAF598ACB96746001BC04F6EA825D6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4753F4D2307644E5B27A5ED10C4E69C /* User.swift */; };
+		53C5296D3DED93DB2A4C308AADFF1499 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE07ADA50D0AF31349D514188AAB3963 /* LocalizedStrings.swift */; };
+		5AD2D75F2C290804E271F63C2EF73F3E /* ConnectionNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D77C741D85F8D3330658B4F8259E7F /* ConnectionNetworkError.swift */; };
+		5F63C8DF214390157D75AB0ACE8B9BD8 /* ServiceIconsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646720FE187D2FC4F78504DE3F973035 /* ServiceIconsNetworkController.swift */; };
+		6B46093DFD81FD23A3F63CE095BF0FF5 /* ImageViewNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1153FAB9FCF0C969FBFF3E832D32A8 /* ImageViewNetworkController.swift */; };
+		6BE3586A43DCE396458A769489896478 /* ConnectButton+LabelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E97D73930017C662B7F3FB5B4C432FC /* ConnectButton+LabelValue.swift */; };
+		6E2BDF11537E3D11D46C1ED20729A5B2 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F771B48B87BDD90A05927B8D8E90907 /* LocationService.swift */; };
+		79896B3EF49F3794C664BD9651227AF6 /* ConnectButton+Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A9C37984F89F7428F9121B3B831413 /* ConnectButton+Service.swift */; };
+		7A1AA03D04E90F64CE24DC3907FA0326 /* ConnectButton+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E4898E9EC73CD7A1A3BEDECEC069CB /* ConnectButton+Interaction.swift */; };
+		80CD3AAAF1516A9E462289E105075A2F /* ConnectionRedirectHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E664B835FA92F14E56BA102F852BA852 /* ConnectionRedirectHandler.swift */; };
+		8496D95D321C0975DC9CE96932F04F00 /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02445C44AD32D43C66A2D7E5EA66 /* Connection+Location.swift */; };
+		85F3F5EE871D1ABFF5EB37EEC41108F0 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BD655E05E72B49F1D40114AEAD0E3 /* ConnectionVerificationSession.swift */; };
+		8C4BCCAC005998EC892356D9E5322118 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F107A4FE2EDC3817E6040C94EF9E3F3 /* UIFont+CommonValues.swift */; };
+		9222CEB9EC524648D3EFAF435302EA69 /* ConnectButton+ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C60F4D33AFCDC075F2973ADB7DAFE8E /* ConnectButton+ProgressBar.swift */; };
+		93E895D474C95C11E2CC0DD8953125AF /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7C26F6832CED081CB63E2A2412FF34 /* ImageCache.swift */; };
+		9AA7CF159436A4534B9A3C9F7297F6DE /* ConnectionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3E25993ED9083508238A804CD05223 /* ConnectionsMonitor.swift */; };
+		9E78A55923EAE8B5688588EA088587C1 /* ConnectButton+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 133DEE505126E778A5F417E2EB52991C /* ConnectButton+Constants.swift */; };
+		A33015B15A6756B7C202A6A19B444BE0 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A07C3AF7D80219D52FE08365F1314 /* ImageDownloader.swift */; };
+		A56016723854A5462151EFACD686F669 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC25720D5C18490B098E32061A5C728 /* Analytics.swift */; };
 		A59498AD323D61F8FE58239CD3B7FEA7 /* Pods-Grocery Express-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 32074DC7F7449932B0DA4B3514393F4E /* Pods-Grocery Express-dummy.m */; };
-		AEF280E358F7A52E50C48CD9C9198751 /* CLCircularRegion+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9615F3F861078DD19DE96310E1021082 /* CLCircularRegion+Parsing.swift */; };
-		B1A8A2DDBA962AFF0A0160B114D990EB /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78844614F051245C5EE8B6C932FF6936 /* API.swift */; };
-		B567DB8FF292BF26D108F83873BC49CE /* ProgressBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA8BA2381232E486D8F977959F1E57D /* ProgressBarController.swift */; };
-		B77B16370D97FFC53792F6346B3853C4 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90FB80B9A598DF7F0C901335284BC4F /* Connection.swift */; };
-		B989E517C05245FA88CD8F03E72D9023 /* URLComponents+email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291529914C2AF868A18C909E2A3811C /* URLComponents+email.swift */; };
-		BD32346DE2CC0AE1EA6D4E3131384A56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60AE701802F0602977D94680B422765D /* Assets.xcassets */; };
-		BD6708B6E6FF97D98837759215D93B26 /* ConnectButton+AnimationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9DE807B0891F545047E6C58D3ADB5A /* ConnectButton+AnimationState.swift */; };
-		BFAC2B925779AD595E19B207EB9CE492 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6B79FE68B2F15EDC2BAF47F46EFA8D /* ConnectButtonController.swift */; };
-		C16E44FE381EB02BC6A61C377F4D3030 /* ImageViewNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7D0978EA5451AE4492DF6379324166 /* ImageViewNetworkController.swift */; };
-		C3C800C12484A7EC7E143DDD3ABBA8FE /* ConnectButton+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = A872FEFC78CD1EA8B50A9FE4452DEF3B /* ConnectButton+Style.swift */; };
-		C940F626A8A9CF66D74B0142C400A2BE /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471581E920F2A9927CA17504EFCF2B32 /* ConnectionVerificationSession.swift */; };
-		CB6FE37E3633DD5D4980640FFCD2AB38 /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25247C696F791426A58F90A58134465 /* Connection+Location.swift */; };
-		CE5A8E549064C6DA33D8EBD5364940FA /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13B9EE89FFF92052DCE51101921691A8 /* Reachability.swift */; };
-		D3C74FF611EE30E234A33452FAAC06AE /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A73F7B7D677ABD30B2BC9A3EE06450 /* AuthenticationSession.swift */; };
-		D43116ED30F34369AB4B0192686E79D6 /* AnalyticsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60A65427DB69717A392A25ABD887D91 /* AnalyticsNetworkController.swift */; };
-		DE71F9CAC0C761194DBCA1ADF6AA7A3A /* Links.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E2C7A4B1D2598F24623B3B4C585E6D /* Links.swift */; };
-		E5F3962D91C31FB953DC00E68D26D678 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBEBE445E1698C455D71EFA101E127 /* AboutViewController.swift */; };
-		E9D6B385A992970C6CB4E64A4D52001D /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8F8D904B8A04E3D19785F3BD12EEC6 /* URLRequest+CommonValues.swift */; };
-		EA450BE9CD8EA8827CAACDB4FE70A40F /* SelectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2921C65AB17A55FA1A485978AB99F9E /* SelectGestureRecognizer.swift */; };
-		EF57DF09E0D5F377318223E79441353A /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54933E73F52E7BC6119A9AE279C97080 /* ImageCache.swift */; };
-		F0CCBE236F6899A2C7BC07B1742DECBB /* ConnectionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D1DF9761929D0B53CA9E9DFF72DD4 /* ConnectionsMonitor.swift */; };
-		F43EF2D1F4CABDBA8F35DACE3C7AA910 /* LegalTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36113EFFB5983E73AEF2E027AC483D3C /* LegalTermsText.swift */; };
-		FA0805385087DD33664AB4A825534413 /* Bundle+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B037306D005DA2830A2E1B40181E75 /* Bundle+Helpers.swift */; };
-		FB0584869A2CA4E329D6B08159F3AE60 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF262B9EB5867B01B2BE80547D10695 /* User.swift */; };
+		A766B166C7616AA290F45E584FD2ADFB /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160362F5B4B3674D550193142A8DBF6F /* URLSession+JSONTask.swift */; };
+		AB4C57D8F6521C7BEC8BB26F79C07C4A /* Set+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55539EFD2638E023397F6870E655D1BA /* Set+Helpers.swift */; };
+		AB624D429E435238D7E55F583A79D9E6 /* ConnectButton+CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B397AF3E25E9B4DD0D17090561DD958 /* ConnectButton+CheckmarkView.swift */; };
+		AEE4D69A2AE8AFF62CD2544811EB5E5A /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495E268B5F75EAB087A2B319D99EFD56 /* Assets.swift */; };
+		AFCE67399783C609CA020C18112802C3 /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D0B3E46CDD056F8DD8DACEA3AA7C63 /* Notification+Redirect.swift */; };
+		AFE7E8F26E5C9F888E122AEDE8130090 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFD7525E4B347D430310AF96B662207 /* PillView.swift */; };
+		B50265C434AA39CD6465585EC162FD2A /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5745A321E0F15D7E82315FBAF13D1B65 /* AboutViewController.swift */; };
+		B650DB5FF1B222DB391E95DFA1C4671A /* ConnectButton+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15FC8C9A72549356CB8E9AC3F1D28BAE /* ConnectButton+Style.swift */; };
+		BA9E8D2DEC4FC27E9BB2139ACF1AFC5E /* Analytics+DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E801CE1C8CB4E0FC8B621CA07AC3AC2 /* Analytics+DataStructures.swift */; };
+		C2FC64271C408A6D6E0B40D3710EFDE7 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8E469C09B90900096AA32893D10B0 /* API.swift */; };
+		C3F85931BD0383AA2366C7987A89B670 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08913E8CBB0E94BD967BB17C0E8C70A3 /* ConnectionDeeplinkAction.swift */; };
+		C405894C6D8F00C43F19AB202FB80911 /* Links.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A8166F928BC9611547A464B19A0651 /* Links.swift */; };
+		C63266D23C001CD7652478DDFBBE9BA6 /* ConnectButton+SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C286C2546A4997F547398265D361993 /* ConnectButton+SwitchControl.swift */; };
+		C6DAAF1B42D09D26B632F1484D423F9E /* ConnectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E87AB4732A80E4DDF97C06C185A2A90 /* ConnectButton.swift */; };
+		C9445E23A9498BE5DB7BCDC2CFFA6C64 /* Localizable_en_US.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7715BC2E94FC440F725DDE37547EB23D /* Localizable_en_US.strings */; };
+		CA0FE6B165E764ACFF4191AD5BB04AAA /* Result<ValueType,ErrorType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE451267580DA16A97A9B5217BA706 /* Result<ValueType,ErrorType>.swift */; };
+		D1F299F7BAD825ADB21C443E8DD29690 /* IFTTTConnectSDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AA242936F7A0F5E25ED12043EE75FA6 /* IFTTTConnectSDK-dummy.m */; };
+		D3D116C36B524DE430DE83A7193E7235 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAE6310FC08F34B3776676E3C75902D /* Connection+Parsing.swift */; };
+		D484327A8264D089E89DF0D7761DCEE5 /* ConnectButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FCB678237F8EB4FDF6A619FD27D50F /* ConnectButtonController.swift */; };
+		D841C80F84123BCA1D66DD46301F1AD8 /* PassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7CDF4CE6430A8438C814BCDEC32627 /* PassthroughView.swift */; };
+		DD2922A0F1D86CA1597BF2B86EF76142 /* IFTTTConnectSDK-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FDA535582F234858449B1CDC856A39E /* IFTTTConnectSDK-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		E3C2B26BDB212EB5FC88F9298EF850AE /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AAF631F25E102F845B067C42961B3A4 /* Connection.swift */; };
+		E6470EFB16F8C776021644B8CE3B4DB1 /* LegalTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A8B2120EA07453ED78E66F4948DE6B /* LegalTermsText.swift */; };
+		F01CF811215537B657D9CB3B16CB1810 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 389074A5A04A719C5CD652B37CF4AE84 /* Assets.xcassets */; };
+		F0A50FEA72405A744765D47CEEF027F3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8DB6A3775784DF96E8252238D4A44496 /* Localizable.strings */; };
+		F2D93EAAF8A71395FE28E4122FB7F575 /* Selectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47221266B756D3EBE6936F4C487A69B /* Selectable.swift */; };
+		F4DCB8C7FD7FCA91EC09B1E28300F5F6 /* UIKit+ConvenienceInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E280A0F8C5B67A8B64D89D3A976295C /* UIKit+ConvenienceInit.swift */; };
+		F8B8C940306B98C47422340629F31853 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B96C91AFFDD510C8707A7448FD3D3 /* AuthenticationSession.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0C2E91DC28F13D7742E7A5FA1655348B /* PBXContainerItemProxy */ = {
+		06EA46F6449C21B236563D73B4D57B04 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
@@ -94,99 +95,116 @@
 			remoteGlobalIDString = B5959D1178163890A9C5A480671F6C4C;
 			remoteInfo = IFTTTConnectSDK;
 		};
+		4AEA3CC96B3CD3073F5135590BD4DA51 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7C0C0802E972DF00A1A90727B4887492;
+			remoteInfo = "IFTTTConnectSDK-IFTTTConnectSDK-Localizations";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		005D96F36ED8EE27CE92D1B5DAF0A1C7 /* ConstraintsMaker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintsMaker.swift; path = "IFTTT SDK/ConstraintsMaker.swift"; sourceTree = "<group>"; };
 		007E40367F4CDA378600408252DED6B2 /* libIFTTTConnectSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libIFTTTConnectSDK.a; path = libIFTTTConnectSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0170BF2E873C354018D1E1AB15DEF1B9 /* URLComponents+email.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLComponents+email.swift"; path = "IFTTT SDK/URLComponents+email.swift"; sourceTree = "<group>"; };
 		02F8C55A5CEF3DA61FE63F717F028C31 /* Pods-Grocery Express-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Grocery Express-acknowledgements.plist"; sourceTree = "<group>"; };
-		085E4F84133D6E76C30FBD93F5104C0D /* ConnectButton+Transition.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Transition.swift"; path = "IFTTT SDK/ConnectButton+Transition.swift"; sourceTree = "<group>"; };
-		101CBBCD22F729FA8D5CD8B4C9FBF74C /* Set+Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Set+Helpers.swift"; path = "IFTTT SDK/Set+Helpers.swift"; sourceTree = "<group>"; };
-		10CE05F94FB4D7F405BCD4DBFB6F0E4D /* Connection+Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Request.swift"; path = "IFTTT SDK/Connection+Request.swift"; sourceTree = "<group>"; };
-		13B9EE89FFF92052DCE51101921691A8 /* Reachability.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = "IFTTT SDK/Reachability.swift"; sourceTree = "<group>"; };
-		14B037306D005DA2830A2E1B40181E75 /* Bundle+Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Bundle+Helpers.swift"; path = "IFTTT SDK/Bundle+Helpers.swift"; sourceTree = "<group>"; };
-		15D67B7A7413AD25EE0969122C1625BB /* ConnectButton+LabelValue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+LabelValue.swift"; path = "IFTTT SDK/ConnectButton+LabelValue.swift"; sourceTree = "<group>"; };
-		183FAAB24D7041BA5CB6C9EB0448585B /* IFTTTConnectSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = IFTTTConnectSDK.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		19A9D259E44AD484550020A6A66B376A /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionConfiguration.swift; path = "IFTTT SDK/ConnectionConfiguration.swift"; sourceTree = "<group>"; };
-		1B22EE3522B8ADF1411BF3349205E2B9 /* LocationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocationService.swift; path = "IFTTT SDK/LocationService.swift"; sourceTree = "<group>"; };
-		1B79AFDA7BADDB44DD3D090F3C214C08 /* ConnectButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectButton.swift; path = "IFTTT SDK/ConnectButton.swift"; sourceTree = "<group>"; };
-		22456CC96EF5682560FB068C20DAD211 /* ConnectButton+Interaction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Interaction.swift"; path = "IFTTT SDK/ConnectButton+Interaction.swift"; sourceTree = "<group>"; };
-		241B2E4F3D2E7C873627FA0767953748 /* ConnectButton+Constants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Constants.swift"; path = "IFTTT SDK/ConnectButton+Constants.swift"; sourceTree = "<group>"; };
+		04A8166F928BC9611547A464B19A0651 /* Links.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Links.swift; path = "IFTTT SDK/Links.swift"; sourceTree = "<group>"; };
+		08913E8CBB0E94BD967BB17C0E8C70A3 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionDeeplinkAction.swift; path = "IFTTT SDK/ConnectionDeeplinkAction.swift"; sourceTree = "<group>"; };
+		0AD8E469C09B90900096AA32893D10B0 /* API.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = API.swift; path = "IFTTT SDK/API.swift"; sourceTree = "<group>"; };
+		10A9C37984F89F7428F9121B3B831413 /* ConnectButton+Service.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Service.swift"; path = "IFTTT SDK/ConnectButton+Service.swift"; sourceTree = "<group>"; };
+		133DEE505126E778A5F417E2EB52991C /* ConnectButton+Constants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Constants.swift"; path = "IFTTT SDK/ConnectButton+Constants.swift"; sourceTree = "<group>"; };
+		134A746BB956A2E73DF90288B0CE6E49 /* ConstraintsMaker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintsMaker.swift; path = "IFTTT SDK/ConstraintsMaker.swift"; sourceTree = "<group>"; };
+		15FC8C9A72549356CB8E9AC3F1D28BAE /* ConnectButton+Style.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Style.swift"; path = "IFTTT SDK/ConnectButton+Style.swift"; sourceTree = "<group>"; };
+		160362F5B4B3674D550193142A8DBF6F /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLSession+JSONTask.swift"; path = "IFTTT SDK/URLSession+JSONTask.swift"; sourceTree = "<group>"; };
+		16209DB86AA1E15F913FB1C7757D5FCC /* IFTTTConnectSDK.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = IFTTTConnectSDK.modulemap; sourceTree = "<group>"; };
+		18FE451267580DA16A97A9B5217BA706 /* Result<ValueType,ErrorType>.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Result<ValueType,ErrorType>.swift"; path = "IFTTT SDK/Result<ValueType,ErrorType>.swift"; sourceTree = "<group>"; };
+		1F107A4FE2EDC3817E6040C94EF9E3F3 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIFont+CommonValues.swift"; path = "IFTTT SDK/UIFont+CommonValues.swift"; sourceTree = "<group>"; };
+		1F771B48B87BDD90A05927B8D8E90907 /* LocationService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocationService.swift; path = "IFTTT SDK/LocationService.swift"; sourceTree = "<group>"; };
+		21A8B2120EA07453ED78E66F4948DE6B /* LegalTermsText.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LegalTermsText.swift; path = "IFTTT SDK/LegalTermsText.swift"; sourceTree = "<group>"; };
+		262B96C91AFFDD510C8707A7448FD3D3 /* AuthenticationSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthenticationSession.swift; path = "IFTTT SDK/AuthenticationSession.swift"; sourceTree = "<group>"; };
+		2A0E6C2666201F87F55E231E4A13B274 /* Bundle+Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Bundle+Helpers.swift"; path = "IFTTT SDK/Bundle+Helpers.swift"; sourceTree = "<group>"; };
+		2B397AF3E25E9B4DD0D17090561DD958 /* ConnectButton+CheckmarkView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+CheckmarkView.swift"; path = "IFTTT SDK/ConnectButton+CheckmarkView.swift"; sourceTree = "<group>"; };
+		2B808D636BC1FCDEF1A8E71DDC315C67 /* ResourceBundle-IFTTTConnectSDK-Localizations-IFTTTConnectSDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-IFTTTConnectSDK-Localizations-IFTTTConnectSDK-Info.plist"; sourceTree = "<group>"; };
 		2E329FF75C833FAF6031F243E9EFB06C /* Pods-Grocery Express-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Grocery Express-resources.sh"; sourceTree = "<group>"; };
-		308BD331D3E15E787B8BA7793CFC7ADE /* ServiceIconsNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceIconsNetworkController.swift; path = "IFTTT SDK/ServiceIconsNetworkController.swift"; sourceTree = "<group>"; };
-		30D825AE106A04EA7BBF4BA6260E60DB /* ConnectionActivationFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionActivationFlow.swift; path = "IFTTT SDK/ConnectionActivationFlow.swift"; sourceTree = "<group>"; };
 		32074DC7F7449932B0DA4B3514393F4E /* Pods-Grocery Express-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Grocery Express-dummy.m"; sourceTree = "<group>"; };
-		36113EFFB5983E73AEF2E027AC483D3C /* LegalTermsText.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LegalTermsText.swift; path = "IFTTT SDK/LegalTermsText.swift"; sourceTree = "<group>"; };
 		36456F9D604F7BD2513477E99E8AB5A8 /* Pods-Grocery Express.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Grocery Express.release.xcconfig"; sourceTree = "<group>"; };
-		3661BEF7980409FDEAA305AE804086C1 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionDeeplinkAction.swift; path = "IFTTT SDK/ConnectionDeeplinkAction.swift"; sourceTree = "<group>"; };
-		3953CDBAE690356A03901B57AF1641F4 /* Notification+Redirect.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Notification+Redirect.swift"; path = "IFTTT SDK/Notification+Redirect.swift"; sourceTree = "<group>"; };
-		39E2C7A4B1D2598F24623B3B4C585E6D /* Links.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Links.swift; path = "IFTTT SDK/Links.swift"; sourceTree = "<group>"; };
-		3A9DE807B0891F545047E6C58D3ADB5A /* ConnectButton+AnimationState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+AnimationState.swift"; path = "IFTTT SDK/ConnectButton+AnimationState.swift"; sourceTree = "<group>"; };
-		467D9D1379902B0D4D75C529B581AC51 /* ConnectButton+SwitchControl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+SwitchControl.swift"; path = "IFTTT SDK/ConnectButton+SwitchControl.swift"; sourceTree = "<group>"; };
-		470A7F54109C4D7D50A58E326E2B2D5C /* ConnectionRedirectHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionRedirectHandler.swift; path = "IFTTT SDK/ConnectionRedirectHandler.swift"; sourceTree = "<group>"; };
-		471581E920F2A9927CA17504EFCF2B32 /* ConnectionVerificationSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionVerificationSession.swift; path = "IFTTT SDK/ConnectionVerificationSession.swift"; sourceTree = "<group>"; };
-		4DA0DA37757A3D232C4213A8FC00FF83 /* LocalizedStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStrings.swift; path = "IFTTT SDK/LocalizedStrings.swift"; sourceTree = "<group>"; };
-		52A73F7B7D677ABD30B2BC9A3EE06450 /* AuthenticationSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthenticationSession.swift; path = "IFTTT SDK/AuthenticationSession.swift"; sourceTree = "<group>"; };
-		54933E73F52E7BC6119A9AE279C97080 /* ImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCache.swift; path = "IFTTT SDK/ImageCache.swift"; sourceTree = "<group>"; };
+		37F87BD1A6FAFFF48D760C2387937F5C /* Reachability.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = "IFTTT SDK/Reachability.swift"; sourceTree = "<group>"; };
+		389074A5A04A719C5CD652B37CF4AE84 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "IFTTT SDK/Assets.xcassets"; sourceTree = "<group>"; };
+		39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = IFTTTConnectSDK.xcconfig; sourceTree = "<group>"; };
+		3AA6C57A1E44A27D0D4EC54029E48A8D /* ConnectionActivationFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionActivationFlow.swift; path = "IFTTT SDK/ConnectionActivationFlow.swift"; sourceTree = "<group>"; };
+		3C286C2546A4997F547398265D361993 /* ConnectButton+SwitchControl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+SwitchControl.swift"; path = "IFTTT SDK/ConnectButton+SwitchControl.swift"; sourceTree = "<group>"; };
+		3FAE6310FC08F34B3776676E3C75902D /* Connection+Parsing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Parsing.swift"; path = "IFTTT SDK/Connection+Parsing.swift"; sourceTree = "<group>"; };
+		4067C4E978C592605DF923C70CBE5E87 /* SelectGestureRecognizer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectGestureRecognizer.swift; path = "IFTTT SDK/SelectGestureRecognizer.swift"; sourceTree = "<group>"; };
+		495E268B5F75EAB087A2B319D99EFD56 /* Assets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Assets.swift; path = "IFTTT SDK/Assets.swift"; sourceTree = "<group>"; };
+		4E1153FAB9FCF0C969FBFF3E832D32A8 /* ImageViewNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageViewNetworkController.swift; path = "IFTTT SDK/ImageViewNetworkController.swift"; sourceTree = "<group>"; };
 		5511A898F1948D0DB38479C5850D8857 /* libPods-Grocery Express.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-Grocery Express.a"; path = "libPods-Grocery Express.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5951D62E2CA8FE93F16F8779C464E180 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkController.swift; path = "IFTTT SDK/ConnectionNetworkController.swift"; sourceTree = "<group>"; };
+		55539EFD2638E023397F6870E655D1BA /* Set+Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Set+Helpers.swift"; path = "IFTTT SDK/Set+Helpers.swift"; sourceTree = "<group>"; };
+		5745A321E0F15D7E82315FBAF13D1B65 /* AboutViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AboutViewController.swift; path = "IFTTT SDK/AboutViewController.swift"; sourceTree = "<group>"; };
+		591C4376E1D5E1099F92FC722A2434EA /* JSON.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSON.swift; path = "IFTTT SDK/JSON.swift"; sourceTree = "<group>"; };
+		59364EB50425D279D6B0BD0ADDAD97B9 /* ConnectionNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkController.swift; path = "IFTTT SDK/ConnectionNetworkController.swift"; sourceTree = "<group>"; };
+		598BD655E05E72B49F1D40114AEAD0E3 /* ConnectionVerificationSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionVerificationSession.swift; path = "IFTTT SDK/ConnectionVerificationSession.swift"; sourceTree = "<group>"; };
 		5AD7F47AEA43768AFFD28AA1ED421EBB /* IFTTTConnectSDK.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = IFTTTConnectSDK.bundle; path = "IFTTTConnectSDK-IFTTTConnectSDK.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BDF9ED9EE2515C3C5D3DF5D491DEC00 /* Pods-Grocery Express-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Grocery Express-acknowledgements.markdown"; sourceTree = "<group>"; };
-		5EECCCA7B3BC5AB34C8BA15585823E72 /* IFTTTConnectSDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IFTTTConnectSDK-umbrella.h"; sourceTree = "<group>"; };
-		60AE701802F0602977D94680B422765D /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "IFTTT SDK/Assets.xcassets"; sourceTree = "<group>"; };
-		67F8A4D70F88EC11A46F40B5C9900774 /* ConnectButton+CheckmarkView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+CheckmarkView.swift"; path = "IFTTT SDK/ConnectButton+CheckmarkView.swift"; sourceTree = "<group>"; };
-		6827B064BC2CCBD86A6A15DDD97C4A5E /* IFTTTConnectSDK-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "IFTTTConnectSDK-dummy.m"; sourceTree = "<group>"; };
-		6891C73B6975B6C246D5424CCE36EEA1 /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLSession+JSONTask.swift"; path = "IFTTT SDK/URLSession+JSONTask.swift"; sourceTree = "<group>"; };
-		691AE8DA0BC33449E9C4DADA311EC3F0 /* ImageDownloader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageDownloader.swift; path = "IFTTT SDK/ImageDownloader.swift"; sourceTree = "<group>"; };
-		69253C68ADEA80AFF8F58C2BEA9B06ED /* Color.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Color.swift; path = "IFTTT SDK/Color.swift"; sourceTree = "<group>"; };
-		6F2D1DF9761929D0B53CA9E9DFF72DD4 /* ConnectionsMonitor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionsMonitor.swift; path = "IFTTT SDK/ConnectionsMonitor.swift"; sourceTree = "<group>"; };
+		5E87AB4732A80E4DDF97C06C185A2A90 /* ConnectButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectButton.swift; path = "IFTTT SDK/ConnectButton.swift"; sourceTree = "<group>"; };
+		61E4898E9EC73CD7A1A3BEDECEC069CB /* ConnectButton+Interaction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Interaction.swift"; path = "IFTTT SDK/ConnectButton+Interaction.swift"; sourceTree = "<group>"; };
+		646720FE187D2FC4F78504DE3F973035 /* ServiceIconsNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServiceIconsNetworkController.swift; path = "IFTTT SDK/ServiceIconsNetworkController.swift"; sourceTree = "<group>"; };
+		6A2707DFE71393DC94BE022F4FCA771A /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLRequest+CommonValues.swift"; path = "IFTTT SDK/URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
+		6E801CE1C8CB4E0FC8B621CA07AC3AC2 /* Analytics+DataStructures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Analytics+DataStructures.swift"; path = "IFTTT SDK/Analytics+DataStructures.swift"; sourceTree = "<group>"; };
+		6E97D73930017C662B7F3FB5B4C432FC /* ConnectButton+LabelValue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+LabelValue.swift"; path = "IFTTT SDK/ConnectButton+LabelValue.swift"; sourceTree = "<group>"; };
 		6F6F4FE7DA415ED62714C2E641B14D6A /* Pods-Grocery Express.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Grocery Express.modulemap"; sourceTree = "<group>"; };
-		7291529914C2AF868A18C909E2A3811C /* URLComponents+email.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLComponents+email.swift"; path = "IFTTT SDK/URLComponents+email.swift"; sourceTree = "<group>"; };
-		7418DE7FE52E64F16DDCCF72A29E792A /* Analytics+DataStructures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Analytics+DataStructures.swift"; path = "IFTTT SDK/Analytics+DataStructures.swift"; sourceTree = "<group>"; };
-		78844614F051245C5EE8B6C932FF6936 /* API.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = API.swift; path = "IFTTT SDK/API.swift"; sourceTree = "<group>"; };
-		8088DC53CB5C4AA2871C8F753DEA2028 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
-		80BF71E9E8AA5C222A66C7EB923D8F86 /* ConnectButton+LabelAnimator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+LabelAnimator.swift"; path = "IFTTT SDK/ConnectButton+LabelAnimator.swift"; sourceTree = "<group>"; };
-		827F12179F35ED7E5296971A9A4E0592 /* IFTTTConnectSDK.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = IFTTTConnectSDK.xcconfig; sourceTree = "<group>"; };
-		8AEE6F70B5E020E02CE57CDDAC69FD04 /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkError.swift; path = "IFTTT SDK/ConnectionNetworkError.swift"; sourceTree = "<group>"; };
-		8CFD1F3A6B2AACF7BCCAEFD9AE4167A4 /* Analytics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Analytics.swift; path = "IFTTT SDK/Analytics.swift"; sourceTree = "<group>"; };
-		8DF7A2612FA366825265835A0AC7BF98 /* Selectable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Selectable.swift; path = "IFTTT SDK/Selectable.swift"; sourceTree = "<group>"; };
-		8EA330338628792596391EF315AD46AB /* ConnectionCredentialProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionCredentialProvider.swift; path = "IFTTT SDK/ConnectionCredentialProvider.swift"; sourceTree = "<group>"; };
-		946350D493C41053D73E58AB8EA5108A /* IFTTTConnectSDK.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = IFTTTConnectSDK.modulemap; sourceTree = "<group>"; };
-		9615F3F861078DD19DE96310E1021082 /* CLCircularRegion+Parsing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "CLCircularRegion+Parsing.swift"; path = "IFTTT SDK/CLCircularRegion+Parsing.swift"; sourceTree = "<group>"; };
-		9AFBBFB60A1C62A228CB0F3162D1174D /* Result<ValueType,ErrorType>.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Result<ValueType,ErrorType>.swift"; path = "IFTTT SDK/Result<ValueType,ErrorType>.swift"; sourceTree = "<group>"; };
-		9C8F8D904B8A04E3D19785F3BD12EEC6 /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLRequest+CommonValues.swift"; path = "IFTTT SDK/URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
+		714A07C3AF7D80219D52FE08365F1314 /* ImageDownloader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageDownloader.swift; path = "IFTTT SDK/ImageDownloader.swift"; sourceTree = "<group>"; };
+		7715BC2E94FC440F725DDE37547EB23D /* Localizable_en_US.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = Localizable_en_US.strings; path = "IFTTT SDK/Localizable_en_US.strings"; sourceTree = "<group>"; };
+		773C7B1CCBC3D89E0FBD02746ECDBE8A /* IFTTTConnectSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = IFTTTConnectSDK.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		7AA242936F7A0F5E25ED12043EE75FA6 /* IFTTTConnectSDK-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "IFTTTConnectSDK-dummy.m"; sourceTree = "<group>"; };
+		7AAF631F25E102F845B067C42961B3A4 /* Connection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Connection.swift; path = "IFTTT SDK/Connection.swift"; sourceTree = "<group>"; };
+		7C60F4D33AFCDC075F2973ADB7DAFE8E /* ConnectButton+ProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+ProgressBar.swift"; path = "IFTTT SDK/ConnectButton+ProgressBar.swift"; sourceTree = "<group>"; };
+		7CB8C24A0B058F815EC4F308F1C141BD /* IFTTTConnectSDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IFTTTConnectSDK-prefix.pch"; sourceTree = "<group>"; };
+		7CC4427C68FB6EB254DB4B322F276B66 /* IFTTTConnectSDK-Localizations.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "IFTTTConnectSDK-Localizations.bundle"; path = "IFTTTConnectSDK-IFTTTConnectSDK-Localizations.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E280A0F8C5B67A8B64D89D3A976295C /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIKit+ConvenienceInit.swift"; path = "IFTTT SDK/UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
+		7FDA535582F234858449B1CDC856A39E /* IFTTTConnectSDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IFTTTConnectSDK-umbrella.h"; sourceTree = "<group>"; };
+		8343CAFD6A40FD0A5DB7240D36F53A7E /* ConnectButton+Transition.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Transition.swift"; path = "IFTTT SDK/ConnectButton+Transition.swift"; sourceTree = "<group>"; };
+		83A43532129D939C73F58CABA71A90AC /* ConnectButton+LabelAnimator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+LabelAnimator.swift"; path = "IFTTT SDK/ConnectButton+LabelAnimator.swift"; sourceTree = "<group>"; };
+		85C2484B134D4B82166A0FE70F1415E4 /* PillButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PillButton.swift; path = "IFTTT SDK/PillButton.swift"; sourceTree = "<group>"; };
+		8DB6A3775784DF96E8252238D4A44496 /* Localizable.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = "IFTTT SDK/Localizable.strings"; sourceTree = "<group>"; };
+		90190542A97A8EB749B026811EC37FB7 /* NativeServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NativeServices.swift; path = "IFTTT SDK/NativeServices.swift"; sourceTree = "<group>"; };
+		91785BB5EEAAE29151E4CBFB4F5111CC /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		97F03BFA074A3E4293CF2FA350FB4A75 /* EmailValidator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmailValidator.swift; path = "IFTTT SDK/EmailValidator.swift"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A2921C65AB17A55FA1A485978AB99F9E /* SelectGestureRecognizer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectGestureRecognizer.swift; path = "IFTTT SDK/SelectGestureRecognizer.swift"; sourceTree = "<group>"; };
+		A04B5340B5644052A73AD14D09C81CC7 /* ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist"; sourceTree = "<group>"; };
+		A47221266B756D3EBE6936F4C487A69B /* Selectable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Selectable.swift; path = "IFTTT SDK/Selectable.swift"; sourceTree = "<group>"; };
 		A4E86A13706CB32CD76C4DD07BB9DE94 /* Pods-Grocery Express.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Grocery Express.debug.xcconfig"; sourceTree = "<group>"; };
-		A60A65427DB69717A392A25ABD887D91 /* AnalyticsNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsNetworkController.swift; path = "IFTTT SDK/AnalyticsNetworkController.swift"; sourceTree = "<group>"; };
-		A872FEFC78CD1EA8B50A9FE4452DEF3B /* ConnectButton+Style.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Style.swift"; path = "IFTTT SDK/ConnectButton+Style.swift"; sourceTree = "<group>"; };
-		B25247C696F791426A58F90A58134465 /* Connection+Location.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Location.swift"; path = "IFTTT SDK/Connection+Location.swift"; sourceTree = "<group>"; };
-		BE2B68BB9AC3F519D0EBBB2BE2B2BED1 /* JSON.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSON.swift; path = "IFTTT SDK/JSON.swift"; sourceTree = "<group>"; };
-		BE9F9C9DD374BDC4E6F16318116FC26E /* Connection+Parsing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Parsing.swift"; path = "IFTTT SDK/Connection+Parsing.swift"; sourceTree = "<group>"; };
-		BF6B79FE68B2F15EDC2BAF47F46EFA8D /* ConnectButtonController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectButtonController.swift; path = "IFTTT SDK/ConnectButtonController.swift"; sourceTree = "<group>"; };
-		C8AEBC4EF251CAA93B1F89D768D1011D /* UIKit+ConvenienceInit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIKit+ConvenienceInit.swift"; path = "IFTTT SDK/UIKit+ConvenienceInit.swift"; sourceTree = "<group>"; };
-		CAA8BA2381232E486D8F977959F1E57D /* ProgressBarController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProgressBarController.swift; path = "IFTTT SDK/ProgressBarController.swift"; sourceTree = "<group>"; };
-		CC7D0978EA5451AE4492DF6379324166 /* ImageViewNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageViewNetworkController.swift; path = "IFTTT SDK/ImageViewNetworkController.swift"; sourceTree = "<group>"; };
-		D1E758E55566DD57E8DA036AA6684B69 /* NativeServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NativeServices.swift; path = "IFTTT SDK/NativeServices.swift"; sourceTree = "<group>"; };
-		DBADDF26FBCAC3DD6EFDE2FF886C8E48 /* Localizable.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = "IFTTT SDK/Localizable.strings"; sourceTree = "<group>"; };
-		DD7077051C0B233ADCD8CE7C4E82D6FF /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIFont+CommonValues.swift"; path = "IFTTT SDK/UIFont+CommonValues.swift"; sourceTree = "<group>"; };
-		DEDE4E08C55DB5B90E3843BFB88C6574 /* Assets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Assets.swift; path = "IFTTT SDK/Assets.swift"; sourceTree = "<group>"; };
-		E1BBEBE445E1698C455D71EFA101E127 /* AboutViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AboutViewController.swift; path = "IFTTT SDK/AboutViewController.swift"; sourceTree = "<group>"; };
-		E913CC1093083C207DE997968B4D431C /* PillView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PillView.swift; path = "IFTTT SDK/PillView.swift"; sourceTree = "<group>"; };
-		EA1C7C32A0ACF66D4EBC86EB4364E46B /* ConnectButton+Service.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+Service.swift"; path = "IFTTT SDK/ConnectButton+Service.swift"; sourceTree = "<group>"; };
-		ECC3938EDFB553778E6414202C7E4987 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
-		ED74CB1CEC05771E4C1A1C0E34545FC5 /* ConnectButton+ProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+ProgressBar.swift"; path = "IFTTT SDK/ConnectButton+ProgressBar.swift"; sourceTree = "<group>"; };
-		F1D768214DB7C8E8C53A242BB4733AE9 /* ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist"; sourceTree = "<group>"; };
-		F356664D983082FF3DD3A8F2616AAFA4 /* PassthroughView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PassthroughView.swift; path = "IFTTT SDK/PassthroughView.swift"; sourceTree = "<group>"; };
+		A61CE610A8A93FA946B93E926D076B48 /* ConnectionConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionConfiguration.swift; path = "IFTTT SDK/ConnectionConfiguration.swift"; sourceTree = "<group>"; };
+		A7216AA046BD9220089804F7A0D87732 /* Color.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Color.swift; path = "IFTTT SDK/Color.swift"; sourceTree = "<group>"; };
+		AADC6FB65A26B708430CF4C6E37AAF73 /* AnalyticsNetworkController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsNetworkController.swift; path = "IFTTT SDK/AnalyticsNetworkController.swift"; sourceTree = "<group>"; };
+		AAFD7525E4B347D430310AF96B662207 /* PillView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PillView.swift; path = "IFTTT SDK/PillView.swift"; sourceTree = "<group>"; };
+		B3CBFCDA0A090378AED069E58669ADC7 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		BEAA02445C44AD32D43C66A2D7E5EA66 /* Connection+Location.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Location.swift"; path = "IFTTT SDK/Connection+Location.swift"; sourceTree = "<group>"; };
+		C6FCB678237F8EB4FDF6A619FD27D50F /* ConnectButtonController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectButtonController.swift; path = "IFTTT SDK/ConnectButtonController.swift"; sourceTree = "<group>"; };
+		CE07ADA50D0AF31349D514188AAB3963 /* LocalizedStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalizedStrings.swift; path = "IFTTT SDK/LocalizedStrings.swift"; sourceTree = "<group>"; };
+		CEC25720D5C18490B098E32061A5C728 /* Analytics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Analytics.swift; path = "IFTTT SDK/Analytics.swift"; sourceTree = "<group>"; };
+		D4753F4D2307644E5B27A5ED10C4E69C /* User.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = User.swift; path = "IFTTT SDK/User.swift"; sourceTree = "<group>"; };
+		D5F5EE89A056009894EE87E3F5F47819 /* ConnectionCredentialProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionCredentialProvider.swift; path = "IFTTT SDK/ConnectionCredentialProvider.swift"; sourceTree = "<group>"; };
+		D716FAAA17F11AB38EE92AE49ECD11FD /* ProgressBarController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProgressBarController.swift; path = "IFTTT SDK/ProgressBarController.swift"; sourceTree = "<group>"; };
+		DBCCC0907DCAB2363A3C87C287E05DD2 /* CLCircularRegion+Parsing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "CLCircularRegion+Parsing.swift"; path = "IFTTT SDK/CLCircularRegion+Parsing.swift"; sourceTree = "<group>"; };
+		E664B835FA92F14E56BA102F852BA852 /* ConnectionRedirectHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionRedirectHandler.swift; path = "IFTTT SDK/ConnectionRedirectHandler.swift"; sourceTree = "<group>"; };
+		E9D77C741D85F8D3330658B4F8259E7F /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionNetworkError.swift; path = "IFTTT SDK/ConnectionNetworkError.swift"; sourceTree = "<group>"; };
+		E9F472C9449AC16B53A527D6216EE90C /* ConnectButton+AnimationState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ConnectButton+AnimationState.swift"; path = "IFTTT SDK/ConnectButton+AnimationState.swift"; sourceTree = "<group>"; };
+		EC7C26F6832CED081CB63E2A2412FF34 /* ImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageCache.swift; path = "IFTTT SDK/ImageCache.swift"; sourceTree = "<group>"; };
+		ED9EB2C3BFC205E86D37A215EB1A251B /* Connection+Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Connection+Request.swift"; path = "IFTTT SDK/Connection+Request.swift"; sourceTree = "<group>"; };
+		F1D0B3E46CDD056F8DD8DACEA3AA7C63 /* Notification+Redirect.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Notification+Redirect.swift"; path = "IFTTT SDK/Notification+Redirect.swift"; sourceTree = "<group>"; };
 		F5760F42BC07BB9452D72680C4067088 /* Pods-Grocery Express-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Grocery Express-umbrella.h"; sourceTree = "<group>"; };
-		F68E53D3CD20C486EC016857ADF08FC2 /* EmailValidator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmailValidator.swift; path = "IFTTT SDK/EmailValidator.swift"; sourceTree = "<group>"; };
-		F6B75707478A4443B25F85B2C77C59CC /* IFTTTConnectSDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IFTTTConnectSDK-prefix.pch"; sourceTree = "<group>"; };
-		F90FB80B9A598DF7F0C901335284BC4F /* Connection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Connection.swift; path = "IFTTT SDK/Connection.swift"; sourceTree = "<group>"; };
-		FC19CDF69CFFB3AF32762185A8B23312 /* PillButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PillButton.swift; path = "IFTTT SDK/PillButton.swift"; sourceTree = "<group>"; };
-		FFF262B9EB5867B01B2BE80547D10695 /* User.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = User.swift; path = "IFTTT SDK/User.swift"; sourceTree = "<group>"; };
+		FD3E25993ED9083508238A804CD05223 /* ConnectionsMonitor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConnectionsMonitor.swift; path = "IFTTT SDK/ConnectionsMonitor.swift"; sourceTree = "<group>"; };
+		FD7CDF4CE6430A8438C814BCDEC32627 /* PassthroughView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PassthroughView.swift; path = "IFTTT SDK/PassthroughView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2621DE960989C1BBB24006534D8A1F90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4DA26BDFE396E2EC9838424DBC5F53A1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -194,14 +212,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D1158F730042EEC639F03F1E3A230284 /* Frameworks */ = {
+		67A91F58AC13B9328CB7E6987DD01CC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FB72A5C1FCA6D08ED32E40445E82F2BC /* Frameworks */ = {
+		A14C5872885DE345AC38D89C8824E2E3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -211,6 +229,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		031822B30EF7E8C524D9AFE0BA3A3321 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5AD7F47AEA43768AFFD28AA1ED421EBB /* IFTTTConnectSDK.bundle */,
+				7CC4427C68FB6EB254DB4B322F276B66 /* IFTTTConnectSDK-Localizations.bundle */,
+				007E40367F4CDA378600408252DED6B2 /* libIFTTTConnectSDK.a */,
+				5511A898F1948D0DB38479C5850D8857 /* libPods-Grocery Express.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3DF6BBB94D0ACD3F5CEC51A4CBB35416 /* Pods-Grocery Express */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,46 +256,22 @@
 			path = "Target Support Files/Pods-Grocery Express";
 			sourceTree = "<group>";
 		};
-		44AF3C2F5AB8BBA97387DC9AC7F289A3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5AD7F47AEA43768AFFD28AA1ED421EBB /* IFTTTConnectSDK.bundle */,
-				007E40367F4CDA378600408252DED6B2 /* libIFTTTConnectSDK.a */,
-				5511A898F1948D0DB38479C5850D8857 /* libPods-Grocery Express.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		77F5E1A46A25C7A0D69CE2DAE0D32E3C /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DF169AB021E966F414DDB95BE5322A90 /* IFTTTConnectSDK */,
+				F965A5621D9829C76895257C504B6445 /* IFTTTConnectSDK */,
 			);
 			name = "Development Pods";
 			sourceTree = "<group>";
 		};
-		80C3E93BBCCB2AF7CA72F365E55F22CF /* Pod */ = {
+		9F9205B46792D827A5932CA382DE55CC /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				183FAAB24D7041BA5CB6C9EB0448585B /* IFTTTConnectSDK.podspec */,
-				ECC3938EDFB553778E6414202C7E4987 /* LICENSE */,
-				8088DC53CB5C4AA2871C8F753DEA2028 /* README.md */,
+				773C7B1CCBC3D89E0FBD02746ECDBE8A /* IFTTTConnectSDK.podspec */,
+				91785BB5EEAAE29151E4CBFB4F5111CC /* LICENSE */,
+				B3CBFCDA0A090378AED069E58669ADC7 /* README.md */,
 			);
 			name = Pod;
-			sourceTree = "<group>";
-		};
-		9798A6686ACC4C84C8E9713CBB1750D1 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				946350D493C41053D73E58AB8EA5108A /* IFTTTConnectSDK.modulemap */,
-				827F12179F35ED7E5296971A9A4E0592 /* IFTTTConnectSDK.xcconfig */,
-				6827B064BC2CCBD86A6A15DDD97C4A5E /* IFTTTConnectSDK-dummy.m */,
-				F6B75707478A4443B25F85B2C77C59CC /* IFTTTConnectSDK-prefix.pch */,
-				5EECCCA7B3BC5AB34C8BA15585823E72 /* IFTTTConnectSDK-umbrella.h */,
-				F1D768214DB7C8E8C53A242BB4733AE9 /* ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist */,
-			);
-			name = "Support Files";
-			path = "Examples/Pods/Target Support Files/IFTTTConnectSDK";
 			sourceTree = "<group>";
 		};
 		CE0AE8C21331049977A05C79BA56C57B /* Targets Support Files */ = {
@@ -283,7 +288,7 @@
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				77F5E1A46A25C7A0D69CE2DAE0D32E3C /* Development Pods */,
 				D89477F20FB1DE18A04690586D7808C4 /* Frameworks */,
-				44AF3C2F5AB8BBA97387DC9AC7F289A3 /* Products */,
+				031822B30EF7E8C524D9AFE0BA3A3321 /* Products */,
 				CE0AE8C21331049977A05C79BA56C57B /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
@@ -295,88 +300,104 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DF169AB021E966F414DDB95BE5322A90 /* IFTTTConnectSDK */ = {
+		DF0B7DDDD6F0515AA420484CE4B8E95B /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				E1BBEBE445E1698C455D71EFA101E127 /* AboutViewController.swift */,
-				8CFD1F3A6B2AACF7BCCAEFD9AE4167A4 /* Analytics.swift */,
-				7418DE7FE52E64F16DDCCF72A29E792A /* Analytics+DataStructures.swift */,
-				A60A65427DB69717A392A25ABD887D91 /* AnalyticsNetworkController.swift */,
-				78844614F051245C5EE8B6C932FF6936 /* API.swift */,
-				DEDE4E08C55DB5B90E3843BFB88C6574 /* Assets.swift */,
-				52A73F7B7D677ABD30B2BC9A3EE06450 /* AuthenticationSession.swift */,
-				14B037306D005DA2830A2E1B40181E75 /* Bundle+Helpers.swift */,
-				9615F3F861078DD19DE96310E1021082 /* CLCircularRegion+Parsing.swift */,
-				69253C68ADEA80AFF8F58C2BEA9B06ED /* Color.swift */,
-				1B79AFDA7BADDB44DD3D090F3C214C08 /* ConnectButton.swift */,
-				3A9DE807B0891F545047E6C58D3ADB5A /* ConnectButton+AnimationState.swift */,
-				67F8A4D70F88EC11A46F40B5C9900774 /* ConnectButton+CheckmarkView.swift */,
-				241B2E4F3D2E7C873627FA0767953748 /* ConnectButton+Constants.swift */,
-				22456CC96EF5682560FB068C20DAD211 /* ConnectButton+Interaction.swift */,
-				80BF71E9E8AA5C222A66C7EB923D8F86 /* ConnectButton+LabelAnimator.swift */,
-				15D67B7A7413AD25EE0969122C1625BB /* ConnectButton+LabelValue.swift */,
-				ED74CB1CEC05771E4C1A1C0E34545FC5 /* ConnectButton+ProgressBar.swift */,
-				EA1C7C32A0ACF66D4EBC86EB4364E46B /* ConnectButton+Service.swift */,
-				A872FEFC78CD1EA8B50A9FE4452DEF3B /* ConnectButton+Style.swift */,
-				467D9D1379902B0D4D75C529B581AC51 /* ConnectButton+SwitchControl.swift */,
-				085E4F84133D6E76C30FBD93F5104C0D /* ConnectButton+Transition.swift */,
-				BF6B79FE68B2F15EDC2BAF47F46EFA8D /* ConnectButtonController.swift */,
-				F90FB80B9A598DF7F0C901335284BC4F /* Connection.swift */,
-				B25247C696F791426A58F90A58134465 /* Connection+Location.swift */,
-				BE9F9C9DD374BDC4E6F16318116FC26E /* Connection+Parsing.swift */,
-				10CE05F94FB4D7F405BCD4DBFB6F0E4D /* Connection+Request.swift */,
-				30D825AE106A04EA7BBF4BA6260E60DB /* ConnectionActivationFlow.swift */,
-				19A9D259E44AD484550020A6A66B376A /* ConnectionConfiguration.swift */,
-				8EA330338628792596391EF315AD46AB /* ConnectionCredentialProvider.swift */,
-				3661BEF7980409FDEAA305AE804086C1 /* ConnectionDeeplinkAction.swift */,
-				5951D62E2CA8FE93F16F8779C464E180 /* ConnectionNetworkController.swift */,
-				8AEE6F70B5E020E02CE57CDDAC69FD04 /* ConnectionNetworkError.swift */,
-				470A7F54109C4D7D50A58E326E2B2D5C /* ConnectionRedirectHandler.swift */,
-				6F2D1DF9761929D0B53CA9E9DFF72DD4 /* ConnectionsMonitor.swift */,
-				471581E920F2A9927CA17504EFCF2B32 /* ConnectionVerificationSession.swift */,
-				005D96F36ED8EE27CE92D1B5DAF0A1C7 /* ConstraintsMaker.swift */,
-				F68E53D3CD20C486EC016857ADF08FC2 /* EmailValidator.swift */,
-				54933E73F52E7BC6119A9AE279C97080 /* ImageCache.swift */,
-				691AE8DA0BC33449E9C4DADA311EC3F0 /* ImageDownloader.swift */,
-				CC7D0978EA5451AE4492DF6379324166 /* ImageViewNetworkController.swift */,
-				BE2B68BB9AC3F519D0EBBB2BE2B2BED1 /* JSON.swift */,
-				36113EFFB5983E73AEF2E027AC483D3C /* LegalTermsText.swift */,
-				39E2C7A4B1D2598F24623B3B4C585E6D /* Links.swift */,
-				4DA0DA37757A3D232C4213A8FC00FF83 /* LocalizedStrings.swift */,
-				1B22EE3522B8ADF1411BF3349205E2B9 /* LocationService.swift */,
-				D1E758E55566DD57E8DA036AA6684B69 /* NativeServices.swift */,
-				3953CDBAE690356A03901B57AF1641F4 /* Notification+Redirect.swift */,
-				F356664D983082FF3DD3A8F2616AAFA4 /* PassthroughView.swift */,
-				FC19CDF69CFFB3AF32762185A8B23312 /* PillButton.swift */,
-				E913CC1093083C207DE997968B4D431C /* PillView.swift */,
-				CAA8BA2381232E486D8F977959F1E57D /* ProgressBarController.swift */,
-				13B9EE89FFF92052DCE51101921691A8 /* Reachability.swift */,
-				9AFBBFB60A1C62A228CB0F3162D1174D /* Result<ValueType,ErrorType>.swift */,
-				8DF7A2612FA366825265835A0AC7BF98 /* Selectable.swift */,
-				A2921C65AB17A55FA1A485978AB99F9E /* SelectGestureRecognizer.swift */,
-				308BD331D3E15E787B8BA7793CFC7ADE /* ServiceIconsNetworkController.swift */,
-				101CBBCD22F729FA8D5CD8B4C9FBF74C /* Set+Helpers.swift */,
-				DD7077051C0B233ADCD8CE7C4E82D6FF /* UIFont+CommonValues.swift */,
-				C8AEBC4EF251CAA93B1F89D768D1011D /* UIKit+ConvenienceInit.swift */,
-				7291529914C2AF868A18C909E2A3811C /* URLComponents+email.swift */,
-				9C8F8D904B8A04E3D19785F3BD12EEC6 /* URLRequest+CommonValues.swift */,
-				6891C73B6975B6C246D5424CCE36EEA1 /* URLSession+JSONTask.swift */,
-				FFF262B9EB5867B01B2BE80547D10695 /* User.swift */,
-				80C3E93BBCCB2AF7CA72F365E55F22CF /* Pod */,
-				EF2FF190C109E6D4C449D44C9F7E47F0 /* Resources */,
-				9798A6686ACC4C84C8E9713CBB1750D1 /* Support Files */,
+				16209DB86AA1E15F913FB1C7757D5FCC /* IFTTTConnectSDK.modulemap */,
+				39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */,
+				7AA242936F7A0F5E25ED12043EE75FA6 /* IFTTTConnectSDK-dummy.m */,
+				7CB8C24A0B058F815EC4F308F1C141BD /* IFTTTConnectSDK-prefix.pch */,
+				7FDA535582F234858449B1CDC856A39E /* IFTTTConnectSDK-umbrella.h */,
+				A04B5340B5644052A73AD14D09C81CC7 /* ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist */,
+				2B808D636BC1FCDEF1A8E71DDC315C67 /* ResourceBundle-IFTTTConnectSDK-Localizations-IFTTTConnectSDK-Info.plist */,
+			);
+			name = "Support Files";
+			path = "Examples/Pods/Target Support Files/IFTTTConnectSDK";
+			sourceTree = "<group>";
+		};
+		EFAB825983804E24F19CA0DA6154DAE1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				389074A5A04A719C5CD652B37CF4AE84 /* Assets.xcassets */,
+				8DB6A3775784DF96E8252238D4A44496 /* Localizable.strings */,
+				7715BC2E94FC440F725DDE37547EB23D /* Localizable_en_US.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		F965A5621D9829C76895257C504B6445 /* IFTTTConnectSDK */ = {
+			isa = PBXGroup;
+			children = (
+				5745A321E0F15D7E82315FBAF13D1B65 /* AboutViewController.swift */,
+				CEC25720D5C18490B098E32061A5C728 /* Analytics.swift */,
+				6E801CE1C8CB4E0FC8B621CA07AC3AC2 /* Analytics+DataStructures.swift */,
+				AADC6FB65A26B708430CF4C6E37AAF73 /* AnalyticsNetworkController.swift */,
+				0AD8E469C09B90900096AA32893D10B0 /* API.swift */,
+				495E268B5F75EAB087A2B319D99EFD56 /* Assets.swift */,
+				262B96C91AFFDD510C8707A7448FD3D3 /* AuthenticationSession.swift */,
+				2A0E6C2666201F87F55E231E4A13B274 /* Bundle+Helpers.swift */,
+				DBCCC0907DCAB2363A3C87C287E05DD2 /* CLCircularRegion+Parsing.swift */,
+				A7216AA046BD9220089804F7A0D87732 /* Color.swift */,
+				5E87AB4732A80E4DDF97C06C185A2A90 /* ConnectButton.swift */,
+				E9F472C9449AC16B53A527D6216EE90C /* ConnectButton+AnimationState.swift */,
+				2B397AF3E25E9B4DD0D17090561DD958 /* ConnectButton+CheckmarkView.swift */,
+				133DEE505126E778A5F417E2EB52991C /* ConnectButton+Constants.swift */,
+				61E4898E9EC73CD7A1A3BEDECEC069CB /* ConnectButton+Interaction.swift */,
+				83A43532129D939C73F58CABA71A90AC /* ConnectButton+LabelAnimator.swift */,
+				6E97D73930017C662B7F3FB5B4C432FC /* ConnectButton+LabelValue.swift */,
+				7C60F4D33AFCDC075F2973ADB7DAFE8E /* ConnectButton+ProgressBar.swift */,
+				10A9C37984F89F7428F9121B3B831413 /* ConnectButton+Service.swift */,
+				15FC8C9A72549356CB8E9AC3F1D28BAE /* ConnectButton+Style.swift */,
+				3C286C2546A4997F547398265D361993 /* ConnectButton+SwitchControl.swift */,
+				8343CAFD6A40FD0A5DB7240D36F53A7E /* ConnectButton+Transition.swift */,
+				C6FCB678237F8EB4FDF6A619FD27D50F /* ConnectButtonController.swift */,
+				7AAF631F25E102F845B067C42961B3A4 /* Connection.swift */,
+				BEAA02445C44AD32D43C66A2D7E5EA66 /* Connection+Location.swift */,
+				3FAE6310FC08F34B3776676E3C75902D /* Connection+Parsing.swift */,
+				ED9EB2C3BFC205E86D37A215EB1A251B /* Connection+Request.swift */,
+				3AA6C57A1E44A27D0D4EC54029E48A8D /* ConnectionActivationFlow.swift */,
+				A61CE610A8A93FA946B93E926D076B48 /* ConnectionConfiguration.swift */,
+				D5F5EE89A056009894EE87E3F5F47819 /* ConnectionCredentialProvider.swift */,
+				08913E8CBB0E94BD967BB17C0E8C70A3 /* ConnectionDeeplinkAction.swift */,
+				59364EB50425D279D6B0BD0ADDAD97B9 /* ConnectionNetworkController.swift */,
+				E9D77C741D85F8D3330658B4F8259E7F /* ConnectionNetworkError.swift */,
+				E664B835FA92F14E56BA102F852BA852 /* ConnectionRedirectHandler.swift */,
+				FD3E25993ED9083508238A804CD05223 /* ConnectionsMonitor.swift */,
+				598BD655E05E72B49F1D40114AEAD0E3 /* ConnectionVerificationSession.swift */,
+				134A746BB956A2E73DF90288B0CE6E49 /* ConstraintsMaker.swift */,
+				97F03BFA074A3E4293CF2FA350FB4A75 /* EmailValidator.swift */,
+				EC7C26F6832CED081CB63E2A2412FF34 /* ImageCache.swift */,
+				714A07C3AF7D80219D52FE08365F1314 /* ImageDownloader.swift */,
+				4E1153FAB9FCF0C969FBFF3E832D32A8 /* ImageViewNetworkController.swift */,
+				591C4376E1D5E1099F92FC722A2434EA /* JSON.swift */,
+				21A8B2120EA07453ED78E66F4948DE6B /* LegalTermsText.swift */,
+				04A8166F928BC9611547A464B19A0651 /* Links.swift */,
+				CE07ADA50D0AF31349D514188AAB3963 /* LocalizedStrings.swift */,
+				1F771B48B87BDD90A05927B8D8E90907 /* LocationService.swift */,
+				90190542A97A8EB749B026811EC37FB7 /* NativeServices.swift */,
+				F1D0B3E46CDD056F8DD8DACEA3AA7C63 /* Notification+Redirect.swift */,
+				FD7CDF4CE6430A8438C814BCDEC32627 /* PassthroughView.swift */,
+				85C2484B134D4B82166A0FE70F1415E4 /* PillButton.swift */,
+				AAFD7525E4B347D430310AF96B662207 /* PillView.swift */,
+				D716FAAA17F11AB38EE92AE49ECD11FD /* ProgressBarController.swift */,
+				37F87BD1A6FAFFF48D760C2387937F5C /* Reachability.swift */,
+				18FE451267580DA16A97A9B5217BA706 /* Result<ValueType,ErrorType>.swift */,
+				A47221266B756D3EBE6936F4C487A69B /* Selectable.swift */,
+				4067C4E978C592605DF923C70CBE5E87 /* SelectGestureRecognizer.swift */,
+				646720FE187D2FC4F78504DE3F973035 /* ServiceIconsNetworkController.swift */,
+				55539EFD2638E023397F6870E655D1BA /* Set+Helpers.swift */,
+				1F107A4FE2EDC3817E6040C94EF9E3F3 /* UIFont+CommonValues.swift */,
+				7E280A0F8C5B67A8B64D89D3A976295C /* UIKit+ConvenienceInit.swift */,
+				0170BF2E873C354018D1E1AB15DEF1B9 /* URLComponents+email.swift */,
+				6A2707DFE71393DC94BE022F4FCA771A /* URLRequest+CommonValues.swift */,
+				160362F5B4B3674D550193142A8DBF6F /* URLSession+JSONTask.swift */,
+				D4753F4D2307644E5B27A5ED10C4E69C /* User.swift */,
+				9F9205B46792D827A5932CA382DE55CC /* Pod */,
+				EFAB825983804E24F19CA0DA6154DAE1 /* Resources */,
+				DF0B7DDDD6F0515AA420484CE4B8E95B /* Support Files */,
 			);
 			name = IFTTTConnectSDK;
 			path = ../..;
-			sourceTree = "<group>";
-		};
-		EF2FF190C109E6D4C449D44C9F7E47F0 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				60AE701802F0602977D94680B422765D /* Assets.xcassets */,
-				DBADDF26FBCAC3DD6EFDE2FF886C8E48 /* Localizable.strings */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -390,11 +411,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		90A02B27008D52CB92766ED09A33D4A1 /* Headers */ = {
+		891540F99F2A614692DB9730F9A6D3C5 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F642CF17B4207DAF7C331FA5141BED5 /* IFTTTConnectSDK-umbrella.h in Headers */,
+				DD2922A0F1D86CA1597BF2B86EF76142 /* IFTTTConnectSDK-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,19 +440,37 @@
 			productReference = 5511A898F1948D0DB38479C5850D8857 /* libPods-Grocery Express.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		B5959D1178163890A9C5A480671F6C4C /* IFTTTConnectSDK */ = {
+		7C0C0802E972DF00A1A90727B4887492 /* IFTTTConnectSDK-IFTTTConnectSDK-Localizations */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B82B4824BA89D61418102CDB5D510D5E /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK" */;
+			buildConfigurationList = 378A57066D86E3F195B9F6436E9E5F5F /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK-Localizations" */;
 			buildPhases = (
-				90A02B27008D52CB92766ED09A33D4A1 /* Headers */,
-				0781DB0BCA2E5FC0435A6F2C094D57C3 /* Sources */,
-				D1158F730042EEC639F03F1E3A230284 /* Frameworks */,
-				4D94A12985829A7448558477DB04D95C /* Copy generated compatibility header */,
+				C677A886FC1B7507D19DF319A7DB4AFA /* Sources */,
+				A14C5872885DE345AC38D89C8824E2E3 /* Frameworks */,
+				92640CC383B8C0D24A7DCBDB2C7A7543 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D9DD1EE6CE3033F7CB37917210910821 /* PBXTargetDependency */,
+			);
+			name = "IFTTTConnectSDK-IFTTTConnectSDK-Localizations";
+			productName = "IFTTTConnectSDK-IFTTTConnectSDK-Localizations";
+			productReference = 7CC4427C68FB6EB254DB4B322F276B66 /* IFTTTConnectSDK-Localizations.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		B5959D1178163890A9C5A480671F6C4C /* IFTTTConnectSDK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8ABF99634A4675AD57D19F7C1209683D /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK" */;
+			buildPhases = (
+				891540F99F2A614692DB9730F9A6D3C5 /* Headers */,
+				BC4D95FE93CB67C5EF3833D252B0289E /* Sources */,
+				2621DE960989C1BBB24006534D8A1F90 /* Frameworks */,
+				54B46042682B7401CDFCDB62AB672034 /* Copy generated compatibility header */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC50154D97C7F038C27768307DEBE710 /* PBXTargetDependency */,
+				1AAD98A3B8E58A2C4F630B68B72FAD76 /* PBXTargetDependency */,
 			);
 			name = IFTTTConnectSDK;
 			productName = IFTTTConnectSDK;
@@ -440,11 +479,11 @@
 		};
 		E613B5330DAE11B16489CCE5E17990B3 /* IFTTTConnectSDK-IFTTTConnectSDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7EF656811ACF3394EA129C7E3C1ED400 /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK" */;
+			buildConfigurationList = 3060B5D8535A9E192C35477FE840D6FF /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK" */;
 			buildPhases = (
-				6F0DC16577A5EC278724D8F9581BFA28 /* Sources */,
-				FB72A5C1FCA6D08ED32E40445E82F2BC /* Frameworks */,
-				5B80D0752BE91F912EC1532A2C6309C5 /* Resources */,
+				C93A27864ADF7DEA029F92B0A334346D /* Sources */,
+				67A91F58AC13B9328CB7E6987DD01CC4 /* Frameworks */,
+				7349EB651C6DAB8434A4C7309593A22B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -473,31 +512,40 @@
 				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = 44AF3C2F5AB8BBA97387DC9AC7F289A3 /* Products */;
+			productRefGroup = 031822B30EF7E8C524D9AFE0BA3A3321 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				B5959D1178163890A9C5A480671F6C4C /* IFTTTConnectSDK */,
 				E613B5330DAE11B16489CCE5E17990B3 /* IFTTTConnectSDK-IFTTTConnectSDK */,
+				7C0C0802E972DF00A1A90727B4887492 /* IFTTTConnectSDK-IFTTTConnectSDK-Localizations */,
 				3153C6389CAD121323A8445244994B12 /* Pods-Grocery Express */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		5B80D0752BE91F912EC1532A2C6309C5 /* Resources */ = {
+		7349EB651C6DAB8434A4C7309593A22B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD32346DE2CC0AE1EA6D4E3131384A56 /* Assets.xcassets in Resources */,
-				9606F16742EF2E6DCD41DBF334A594F2 /* Localizable.strings in Resources */,
+				F01CF811215537B657D9CB3B16CB1810 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		92640CC383B8C0D24A7DCBDB2C7A7543 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0A50FEA72405A744765D47CEEF027F3 /* Localizable.strings in Resources */,
+				C9445E23A9498BE5DB7BCDC2CFFA6C64 /* Localizable_en_US.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4D94A12985829A7448558477DB04D95C /* Copy generated compatibility header */ = {
+		54B46042682B7401CDFCDB62AB672034 /* Copy generated compatibility header */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -524,85 +572,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0781DB0BCA2E5FC0435A6F2C094D57C3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E5F3962D91C31FB953DC00E68D26D678 /* AboutViewController.swift in Sources */,
-				40EF3C67FD1D9AB6C720C52B012B5BA1 /* Analytics+DataStructures.swift in Sources */,
-				91B2E926C83EEF5B6762120EE322A2B8 /* Analytics.swift in Sources */,
-				D43116ED30F34369AB4B0192686E79D6 /* AnalyticsNetworkController.swift in Sources */,
-				B1A8A2DDBA962AFF0A0160B114D990EB /* API.swift in Sources */,
-				1CAD3460F4DBB119D6742CD6A06F721D /* Assets.swift in Sources */,
-				D3C74FF611EE30E234A33452FAAC06AE /* AuthenticationSession.swift in Sources */,
-				FA0805385087DD33664AB4A825534413 /* Bundle+Helpers.swift in Sources */,
-				AEF280E358F7A52E50C48CD9C9198751 /* CLCircularRegion+Parsing.swift in Sources */,
-				5987B80ECB0F93BBA9E80C7A661BCED2 /* Color.swift in Sources */,
-				BD6708B6E6FF97D98837759215D93B26 /* ConnectButton+AnimationState.swift in Sources */,
-				65BF8C697020A6F4AF92B9298674E510 /* ConnectButton+CheckmarkView.swift in Sources */,
-				081EB67B64AB2BC0D7BA5B3C694EC543 /* ConnectButton+Constants.swift in Sources */,
-				81D7F73AEDC662C292B8919082E53713 /* ConnectButton+Interaction.swift in Sources */,
-				5215BEE23B4855559FD42C17256D6E4C /* ConnectButton+LabelAnimator.swift in Sources */,
-				8387659C764D8455CFB0DC7611F0249C /* ConnectButton+LabelValue.swift in Sources */,
-				6F4D34F47A471F289DAFDC03A4903152 /* ConnectButton+ProgressBar.swift in Sources */,
-				8372BB9344AA5D9377173B74766B5A87 /* ConnectButton+Service.swift in Sources */,
-				C3C800C12484A7EC7E143DDD3ABBA8FE /* ConnectButton+Style.swift in Sources */,
-				8108B05B978047164173687BE64580F8 /* ConnectButton+SwitchControl.swift in Sources */,
-				10E6AC3EAA27C750A7CBBFC67A823447 /* ConnectButton+Transition.swift in Sources */,
-				80F35B8D81043FE45469BE9F70040E6A /* ConnectButton.swift in Sources */,
-				BFAC2B925779AD595E19B207EB9CE492 /* ConnectButtonController.swift in Sources */,
-				CB6FE37E3633DD5D4980640FFCD2AB38 /* Connection+Location.swift in Sources */,
-				60FBE96A388F058EFEF2F0AD37720175 /* Connection+Parsing.swift in Sources */,
-				5CF24261C570A60C35FC067DAC2FC075 /* Connection+Request.swift in Sources */,
-				B77B16370D97FFC53792F6346B3853C4 /* Connection.swift in Sources */,
-				4C63570874967A0144C718411F3CC00F /* ConnectionActivationFlow.swift in Sources */,
-				9473C2233A4A8DAEBA0ED0C0FCD4A145 /* ConnectionConfiguration.swift in Sources */,
-				7A33B26DF3170C1A7485E36810A37BAC /* ConnectionCredentialProvider.swift in Sources */,
-				898A668F877DD140DCBF2F74E6082985 /* ConnectionDeeplinkAction.swift in Sources */,
-				5FADC9F4C9E7314BE0F7A5C72BC8C282 /* ConnectionNetworkController.swift in Sources */,
-				1F282785D14AD67C1820A22C1999C634 /* ConnectionNetworkError.swift in Sources */,
-				6D3C414B5F29221A9803A250BB73FEC8 /* ConnectionRedirectHandler.swift in Sources */,
-				F0CCBE236F6899A2C7BC07B1742DECBB /* ConnectionsMonitor.swift in Sources */,
-				C940F626A8A9CF66D74B0142C400A2BE /* ConnectionVerificationSession.swift in Sources */,
-				090C10D3882C75E17AE10B625FF346D9 /* ConstraintsMaker.swift in Sources */,
-				1201FEC453252A234F1C5B47144650C2 /* EmailValidator.swift in Sources */,
-				02568099ABD39A01A974E4EB92D43834 /* IFTTTConnectSDK-dummy.m in Sources */,
-				EF57DF09E0D5F377318223E79441353A /* ImageCache.swift in Sources */,
-				2BD1428D4BDDA6BCE573DFAD2D334937 /* ImageDownloader.swift in Sources */,
-				C16E44FE381EB02BC6A61C377F4D3030 /* ImageViewNetworkController.swift in Sources */,
-				8CAA0CD58A6B6B5BBE7447B3022F929F /* JSON.swift in Sources */,
-				F43EF2D1F4CABDBA8F35DACE3C7AA910 /* LegalTermsText.swift in Sources */,
-				DE71F9CAC0C761194DBCA1ADF6AA7A3A /* Links.swift in Sources */,
-				A1601882FC5515BCD806499C8ACB5BF7 /* LocalizedStrings.swift in Sources */,
-				02875A0E0D5B8A3B2F365E700E617832 /* LocationService.swift in Sources */,
-				4BB3A3A87B1806CCA66F0B792DDFC401 /* NativeServices.swift in Sources */,
-				263266BCB8D27A86F72ECB6A93AD2AEA /* Notification+Redirect.swift in Sources */,
-				519B9F59C5215502E1BF67815CFF6746 /* PassthroughView.swift in Sources */,
-				09FB471B89AF2F4DD33BF8A0294BCA91 /* PillButton.swift in Sources */,
-				56CE4F43A704533CF429A0A105F51697 /* PillView.swift in Sources */,
-				B567DB8FF292BF26D108F83873BC49CE /* ProgressBarController.swift in Sources */,
-				CE5A8E549064C6DA33D8EBD5364940FA /* Reachability.swift in Sources */,
-				8FDFFC90E263291396FAD30F5FDA4D97 /* Result<ValueType,ErrorType>.swift in Sources */,
-				31C201EC51852D653509A815EE693D61 /* Selectable.swift in Sources */,
-				EA450BE9CD8EA8827CAACDB4FE70A40F /* SelectGestureRecognizer.swift in Sources */,
-				7F226C2EA670CBCA368EDB2DF15C0269 /* ServiceIconsNetworkController.swift in Sources */,
-				40AB464F5DE0E0C0CB055CD728DDDCD3 /* Set+Helpers.swift in Sources */,
-				1CC3E2C05A00976A0E0C464ADC6D9648 /* UIFont+CommonValues.swift in Sources */,
-				72591488D98CBC64BD5D537315B759CF /* UIKit+ConvenienceInit.swift in Sources */,
-				B989E517C05245FA88CD8F03E72D9023 /* URLComponents+email.swift in Sources */,
-				E9D6B385A992970C6CB4E64A4D52001D /* URLRequest+CommonValues.swift in Sources */,
-				422E351F9516CF6F34A3753495617E9A /* URLSession+JSONTask.swift in Sources */,
-				FB0584869A2CA4E329D6B08159F3AE60 /* User.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6F0DC16577A5EC278724D8F9581BFA28 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BAE66643DEB7E5FD46734E1DA56A8D47 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -611,27 +580,119 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BC4D95FE93CB67C5EF3833D252B0289E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B50265C434AA39CD6465585EC162FD2A /* AboutViewController.swift in Sources */,
+				BA9E8D2DEC4FC27E9BB2139ACF1AFC5E /* Analytics+DataStructures.swift in Sources */,
+				A56016723854A5462151EFACD686F669 /* Analytics.swift in Sources */,
+				458376AD8CAD55A4B3937C1CD0F4D91C /* AnalyticsNetworkController.swift in Sources */,
+				C2FC64271C408A6D6E0B40D3710EFDE7 /* API.swift in Sources */,
+				AEE4D69A2AE8AFF62CD2544811EB5E5A /* Assets.swift in Sources */,
+				F8B8C940306B98C47422340629F31853 /* AuthenticationSession.swift in Sources */,
+				064741AB32AEC81069483B63DD634C37 /* Bundle+Helpers.swift in Sources */,
+				4EDE841082BA15631BA00F19DF154508 /* CLCircularRegion+Parsing.swift in Sources */,
+				46499C3532C5C4B38F0173111127A57C /* Color.swift in Sources */,
+				49D45531DE71E616CFCC18B1ED13E4E5 /* ConnectButton+AnimationState.swift in Sources */,
+				AB624D429E435238D7E55F583A79D9E6 /* ConnectButton+CheckmarkView.swift in Sources */,
+				9E78A55923EAE8B5688588EA088587C1 /* ConnectButton+Constants.swift in Sources */,
+				7A1AA03D04E90F64CE24DC3907FA0326 /* ConnectButton+Interaction.swift in Sources */,
+				18CDFDB3689ACEF6D730457481731B71 /* ConnectButton+LabelAnimator.swift in Sources */,
+				6BE3586A43DCE396458A769489896478 /* ConnectButton+LabelValue.swift in Sources */,
+				9222CEB9EC524648D3EFAF435302EA69 /* ConnectButton+ProgressBar.swift in Sources */,
+				79896B3EF49F3794C664BD9651227AF6 /* ConnectButton+Service.swift in Sources */,
+				B650DB5FF1B222DB391E95DFA1C4671A /* ConnectButton+Style.swift in Sources */,
+				C63266D23C001CD7652478DDFBBE9BA6 /* ConnectButton+SwitchControl.swift in Sources */,
+				20BDB723D07872A5DBF72A5FB934B9A6 /* ConnectButton+Transition.swift in Sources */,
+				C6DAAF1B42D09D26B632F1484D423F9E /* ConnectButton.swift in Sources */,
+				D484327A8264D089E89DF0D7761DCEE5 /* ConnectButtonController.swift in Sources */,
+				8496D95D321C0975DC9CE96932F04F00 /* Connection+Location.swift in Sources */,
+				D3D116C36B524DE430DE83A7193E7235 /* Connection+Parsing.swift in Sources */,
+				0BECA371F2E0BC78C97F32A9EDB5FD02 /* Connection+Request.swift in Sources */,
+				E3C2B26BDB212EB5FC88F9298EF850AE /* Connection.swift in Sources */,
+				1959903A77B57A1A6B799599D0B990A7 /* ConnectionActivationFlow.swift in Sources */,
+				3FCD6FA11111D8B6DB03A404B1DA4B3B /* ConnectionConfiguration.swift in Sources */,
+				10502741C0E4C626F4377E073776F250 /* ConnectionCredentialProvider.swift in Sources */,
+				C3F85931BD0383AA2366C7987A89B670 /* ConnectionDeeplinkAction.swift in Sources */,
+				243931B54D3B7E6338BEC5594BF70CF6 /* ConnectionNetworkController.swift in Sources */,
+				5AD2D75F2C290804E271F63C2EF73F3E /* ConnectionNetworkError.swift in Sources */,
+				80CD3AAAF1516A9E462289E105075A2F /* ConnectionRedirectHandler.swift in Sources */,
+				9AA7CF159436A4534B9A3C9F7297F6DE /* ConnectionsMonitor.swift in Sources */,
+				85F3F5EE871D1ABFF5EB37EEC41108F0 /* ConnectionVerificationSession.swift in Sources */,
+				34032ADE7FE45F99B4E534D4D35200BC /* ConstraintsMaker.swift in Sources */,
+				47DC872E90E065417C7597792F6B1466 /* EmailValidator.swift in Sources */,
+				D1F299F7BAD825ADB21C443E8DD29690 /* IFTTTConnectSDK-dummy.m in Sources */,
+				93E895D474C95C11E2CC0DD8953125AF /* ImageCache.swift in Sources */,
+				A33015B15A6756B7C202A6A19B444BE0 /* ImageDownloader.swift in Sources */,
+				6B46093DFD81FD23A3F63CE095BF0FF5 /* ImageViewNetworkController.swift in Sources */,
+				0EF9A8B2CCB8467E2BF71F761A5615FE /* JSON.swift in Sources */,
+				E6470EFB16F8C776021644B8CE3B4DB1 /* LegalTermsText.swift in Sources */,
+				C405894C6D8F00C43F19AB202FB80911 /* Links.swift in Sources */,
+				53C5296D3DED93DB2A4C308AADFF1499 /* LocalizedStrings.swift in Sources */,
+				6E2BDF11537E3D11D46C1ED20729A5B2 /* LocationService.swift in Sources */,
+				2C3DE68C47B093006423387140D00311 /* NativeServices.swift in Sources */,
+				AFCE67399783C609CA020C18112802C3 /* Notification+Redirect.swift in Sources */,
+				D841C80F84123BCA1D66DD46301F1AD8 /* PassthroughView.swift in Sources */,
+				32BA2C6582E78EA22F24A91D5DBC1712 /* PillButton.swift in Sources */,
+				AFE7E8F26E5C9F888E122AEDE8130090 /* PillView.swift in Sources */,
+				002CA0ED1A142F3AF6A91ACBD4ABB5D8 /* ProgressBarController.swift in Sources */,
+				4263659CE89824D5AF8D3FA6E600F65D /* Reachability.swift in Sources */,
+				CA0FE6B165E764ACFF4191AD5BB04AAA /* Result<ValueType,ErrorType>.swift in Sources */,
+				F2D93EAAF8A71395FE28E4122FB7F575 /* Selectable.swift in Sources */,
+				32785F460F86B4BC5F5A9FB65C6F4694 /* SelectGestureRecognizer.swift in Sources */,
+				5F63C8DF214390157D75AB0ACE8B9BD8 /* ServiceIconsNetworkController.swift in Sources */,
+				AB4C57D8F6521C7BEC8BB26F79C07C4A /* Set+Helpers.swift in Sources */,
+				8C4BCCAC005998EC892356D9E5322118 /* UIFont+CommonValues.swift in Sources */,
+				F4DCB8C7FD7FCA91EC09B1E28300F5F6 /* UIKit+ConvenienceInit.swift in Sources */,
+				075E9B279DFBC8DF3E9227F258F74198 /* URLComponents+email.swift in Sources */,
+				36A15965A72D33F9CCF39CD948656964 /* URLRequest+CommonValues.swift in Sources */,
+				A766B166C7616AA290F45E584FD2ADFB /* URLSession+JSONTask.swift in Sources */,
+				51EAF598ACB96746001BC04F6EA825D6 /* User.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C677A886FC1B7507D19DF319A7DB4AFA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C93A27864ADF7DEA029F92B0A334346D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1AAD98A3B8E58A2C4F630B68B72FAD76 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "IFTTTConnectSDK-IFTTTConnectSDK-Localizations";
+			target = 7C0C0802E972DF00A1A90727B4887492 /* IFTTTConnectSDK-IFTTTConnectSDK-Localizations */;
+			targetProxy = 4AEA3CC96B3CD3073F5135590BD4DA51 /* PBXContainerItemProxy */;
+		};
 		2935A60C90501830213883A2A41277E8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = IFTTTConnectSDK;
 			target = B5959D1178163890A9C5A480671F6C4C /* IFTTTConnectSDK */;
 			targetProxy = 3726C1683B54D07E97102477D42F7344 /* PBXContainerItemProxy */;
 		};
-		D9DD1EE6CE3033F7CB37917210910821 /* PBXTargetDependency */ = {
+		CC50154D97C7F038C27768307DEBE710 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "IFTTTConnectSDK-IFTTTConnectSDK";
 			target = E613B5330DAE11B16489CCE5E17990B3 /* IFTTTConnectSDK-IFTTTConnectSDK */;
-			targetProxy = 0C2E91DC28F13D7742E7A5FA1655348B /* PBXContainerItemProxy */;
+			targetProxy = 06EA46F6449C21B236563D73B4D57B04 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0AB349FD13F078BE195AE4D585814A4B /* Release */ = {
+		14C15AB68513E647DDFBC5314B1E1685 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 827F12179F35ED7E5296971A9A4E0592 /* IFTTTConnectSDK.xcconfig */;
+			baseConfigurationReference = 39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -720,31 +781,56 @@
 			};
 			name = Debug;
 		};
-		96523BF3112ACB677DE518533F24BAA8 /* Debug */ = {
+		2F729B23AFFC363CF1B0BBF102F8D760 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 827F12179F35ED7E5296971A9A4E0592 /* IFTTTConnectSDK.xcconfig */;
+			baseConfigurationReference = 39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/IFTTTConnectSDK/IFTTTConnectSDK-prefix.pch";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
+				IBSC_MODULE = IFTTTConnectSDK;
+				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-Localizations-IFTTTConnectSDK-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MODULEMAP_FILE = Headers/Public/IFTTTConnectSDK/IFTTTConnectSDK.modulemap;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = IFTTTConnectSDK;
-				PRODUCT_NAME = IFTTTConnectSDK;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "IFTTTConnectSDK-Localizations";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		351C6392D13D0B976145C860468EACC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
+				IBSC_MODULE = IFTTTConnectSDK;
+				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				PRODUCT_NAME = IFTTTConnectSDK;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
+		};
+		9EF9A4E4A63F03002F1876E7B065F0D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
+				IBSC_MODULE = IFTTTConnectSDK;
+				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				PRODUCT_NAME = IFTTTConnectSDK;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
 		};
 		B01D14FDC83DCF9D4BE53066BEA96D05 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -806,6 +892,32 @@
 			};
 			name = Release;
 		};
+		B57775B62AB47D3FCB62AAEAFEEAEDF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/IFTTTConnectSDK/IFTTTConnectSDK-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MODULEMAP_FILE = Headers/Public/IFTTTConnectSDK/IFTTTConnectSDK.modulemap;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = IFTTTConnectSDK;
+				PRODUCT_NAME = IFTTTConnectSDK;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		BC9944040BE6FA0C52F70752132B0895 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 36456F9D604F7BD2513477E99E8AB5A8 /* Pods-Grocery Express.release.xcconfig */;
@@ -830,39 +942,22 @@
 			};
 			name = Release;
 		};
-		DB93F4980CFAF1267B3DF3638E4494B8 /* Debug */ = {
+		DCC8BDA67E02926E8C4CCC652B58D35F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 827F12179F35ED7E5296971A9A4E0592 /* IFTTTConnectSDK.xcconfig */;
+			baseConfigurationReference = 39C513A1E79D97C3991A8FC9A9350A12 /* IFTTTConnectSDK.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
 				IBSC_MODULE = IFTTTConnectSDK;
-				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-Localizations-IFTTTConnectSDK-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				PRODUCT_NAME = IFTTTConnectSDK;
+				PRODUCT_NAME = "IFTTTConnectSDK-Localizations";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
-		};
-		ECDC90C1D07531CF8632C59C0AB425F0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 827F12179F35ED7E5296971A9A4E0592 /* IFTTTConnectSDK.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IFTTTConnectSDK";
-				IBSC_MODULE = IFTTTConnectSDK;
-				INFOPLIST_FILE = "Target Support Files/IFTTTConnectSDK/ResourceBundle-IFTTTConnectSDK-IFTTTConnectSDK-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				PRODUCT_NAME = IFTTTConnectSDK;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
 		};
 		F7475A402CBB80BF85A32D615743E23F /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -890,6 +985,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3060B5D8535A9E192C35477FE840D6FF /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				351C6392D13D0B976145C860468EACC5 /* Debug */,
+				9EF9A4E4A63F03002F1876E7B065F0D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		378A57066D86E3F195B9F6436E9E5F5F /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK-Localizations" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCC8BDA67E02926E8C4CCC652B58D35F /* Debug */,
+				2F729B23AFFC363CF1B0BBF102F8D760 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -899,11 +1012,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7EF656811ACF3394EA129C7E3C1ED400 /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK-IFTTTConnectSDK" */ = {
+		8ABF99634A4675AD57D19F7C1209683D /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DB93F4980CFAF1267B3DF3638E4494B8 /* Debug */,
-				ECDC90C1D07531CF8632C59C0AB425F0 /* Release */,
+				B57775B62AB47D3FCB62AAEAFEEAEDF3 /* Debug */,
+				14C15AB68513E647DDFBC5314B1E1685 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -913,15 +1026,6 @@
 			buildConfigurations = (
 				F7475A402CBB80BF85A32D615743E23F /* Debug */,
 				BC9944040BE6FA0C52F70752132B0895 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B82B4824BA89D61418102CDB5D510D5E /* Build configuration list for PBXNativeTarget "IFTTTConnectSDK" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				96523BF3112ACB677DE518533F24BAA8 /* Debug */,
-				0AB349FD13F078BE195AE4D585814A4B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

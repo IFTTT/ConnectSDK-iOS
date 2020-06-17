@@ -39,6 +39,7 @@ class ConnectionViewController: UIViewController {
         
         connectButtonController = ConnectButtonController(connectButton: connectButton,
                                                           connectionConfiguration: configuration,
+                                                          locale: settings.locale,
                                                           delegate: self)
     }
     
