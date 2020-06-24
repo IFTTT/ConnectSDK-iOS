@@ -182,7 +182,8 @@ public class ConnectButtonController {
         ConnectButtonController.locale = locale
         self.connectionHandoffFlow = ConnectionHandoffFlow(connectionId: connectionConfiguration.connectionId,
                                                                  credentialProvider: connectionConfiguration.credentialProvider,
-                                                                 activationRedirect: connectionConfiguration.redirectURL)
+                                                                 activationRedirect: connectionConfiguration.redirectURL,
+                                                                 skipConnectionConfiguration: connectionConfiguration.skipConnectionConfiguration)
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         self.connectionVerificationSession = ConnectionVerificationSession()
