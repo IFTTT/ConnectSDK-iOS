@@ -54,7 +54,7 @@ class ConnectionViewController: UIViewController {
                                                                   suggestedUserEmail: self.connectionCredentials.email,
                                                                   credentialProvider: self.connectionCredentials,
                                                                   redirectURL: AppDelegate.connectionRedirectURL,
-                                                                  skipConnectionConfiguration: true)
+                                                                  skipConnectionConfiguration: settings.skipConnectionConfiguration)
             self.setupConnectButtonController(connectionConfiguration)
         } else {
             activityIndicator.startAnimating()
@@ -70,7 +70,7 @@ class ConnectionViewController: UIViewController {
                                                                           suggestedUserEmail: self.connectionCredentials.email,
                                                                           credentialProvider: self.connectionCredentials,
                                                                           redirectURL: AppDelegate.connectionRedirectURL,
-                                                                          skipConnectionConfiguration: true)
+                                                                          skipConnectionConfiguration: self.settings.skipConnectionConfiguration)
                     self.setupConnectButtonController(connectionConfiguration)
                     
                 case .failure:
