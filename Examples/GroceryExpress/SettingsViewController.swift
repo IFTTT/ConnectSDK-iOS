@@ -23,6 +23,7 @@ class SettingsViewController: UIViewController {
     }
     
     @IBOutlet weak var emailField: UITextField!
+    @IBOutlet weak var skipConfigSwitch: UISwitch!
     @IBOutlet weak var newUserSwitch: UISwitch!
     @IBOutlet weak var fetchConnectionSwitch: UISwitch!
     @IBOutlet weak var loginView: UIStackView!
@@ -39,6 +40,9 @@ class SettingsViewController: UIViewController {
     
     @IBAction func emailChanged(_ sender: Any) {
         settings.email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    }
+    @IBAction func skipConfigChanged(_ sender: Any) {
+        settings.skipConnectionConfiguration = skipConfigSwitch.isOn
     }
     @IBAction func newUserChanged(_ sender: Any) {
         settings.forcesNewUserFlow = newUserSwitch.isOn
@@ -67,6 +71,8 @@ class SettingsViewController: UIViewController {
     
     private func update() {
         let credentials = connectionCredentials
+        
+        skipConfigSwitch.isOn = settings.skipConnectionConfiguration
         if credentials.isLoggedIn {
             emailField.text = credentials.email
             emailField.isEnabled = false
