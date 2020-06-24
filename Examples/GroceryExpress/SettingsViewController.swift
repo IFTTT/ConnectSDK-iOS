@@ -101,11 +101,22 @@ class SettingsViewController: UIViewController {
         localePickerView.delegate = self
         localePickerView.dataSource = self
         
+        localeOverrideTextField.delegate = self
         localeOverrideTextField.inputView = localePickerView
         localeOverrideTextField.text = settings.locale.identifier
         localeOverrideTextField.spellCheckingType = .no
         
         update()
+    }
+}
+
+extension SettingsViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text {
+            let updatedText = (text as NSString).replacingCharacters(in: range, with: string)
+            settings.locale = Locale(identifier: updatedText)
+        }
+        return true
     }
 }
 
