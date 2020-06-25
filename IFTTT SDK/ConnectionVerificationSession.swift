@@ -132,6 +132,15 @@ final class ConnectionVerificationSession {
         case authSession(AuthenticationSession)
         
         case safari(SFSafariViewController)
+        
+        func cancel() {
+            switch self {
+            case .authSession(let session):
+                session.cancel()
+            case .safari(let vc):
+                vc.dismiss(animated: true, completion: nil)
+            }
+        }
     }
     
     /// Hold on to the instance of the authentication session so it is not deallocated
@@ -165,6 +174,8 @@ final class ConnectionVerificationSession {
     private var cancellationObserver: CancellationObserver?
     
     deinit {
+        authProvider?.cancel()
+        authProvider = nil
         NotificationCenter.default.removeObserver(self)
     }
 }
