@@ -31,14 +31,23 @@
 		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
+		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
+		DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F52492429404200EF986A /* Connection+Location.swift */; };
+		DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */; };
 		DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */; };
 		DE3074A923DB50A800A3C71F /* Analytics+DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3074A823DB50A800A3C71F /* Analytics+DataStructures.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
-		DE3BEFCA22CAAA8C0020B425 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFC922CAAA8C0020B425 /* Localizable.strings */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
 		DE4C5FFA22CFE570009C7AF9 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */; };
 		DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */; };
 		DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */; };
+		DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FEF2429469C007D7039 /* NativeServices.swift */; };
+		DEC08FF2242948C3007D7039 /* Set+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF1242948C3007D7039 /* Set+Helpers.swift */; };
+		DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */; };
+		DEC08FFC242BAB25007D7039 /* Bundle+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */; };
+		DEC8803D242BB0BA00E0286C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8803C242BB0BA00E0286C /* LocationService.swift */; };
+		DED00F9524990BBD00C8E618 /* Localizable_en-US.strings in Resources */ = {isa = PBXBuildFile; fileRef = DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */; };
+		DED00F9724990C3800C8E618 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DED00F9624990C3800C8E618 /* Localizable.strings */; };
 		FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */; };
 		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
@@ -69,7 +78,6 @@
 		FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCC6DEB1215D90DD008C8405 /* Assets.swift */; };
 		FCF0C4E421B0A97000DEB117 /* ConnectionNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF0C4E321B0A97000DEB117 /* ConnectionNetworkError.swift */; };
 		FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC42187C7E0004B1100 /* JSON.swift */; };
-		FCF29FC72187C8C2004B1100 /* Connection+parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FC62187C8C2004B1100 /* Connection+parsing.swift */; };
 		FCF29FCB2187D0E3004B1100 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF29FCA2187D0E3004B1100 /* User.swift */; };
 /* End PBXBuildFile section */
 
@@ -109,14 +117,23 @@
 		1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
 		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
 		DE25265523D8C49D0019C9CB /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Connection+Parsing.swift"; sourceTree = "<group>"; };
+		DE2F52492429404200EF986A /* Connection+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Location.swift"; sourceTree = "<group>"; };
+		DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLCircularRegion+Parsing.swift"; sourceTree = "<group>"; };
 		DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsNetworkController.swift; sourceTree = "<group>"; };
 		DE3074A823DB50A800A3C71F /* Analytics+DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+DataStructures.swift"; sourceTree = "<group>"; };
 		DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDeeplinkAction.swift; sourceTree = "<group>"; };
-		DE3BEFC922CAAA8C0020B425 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailValidator.swift; sourceTree = "<group>"; };
 		DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionVerificationSession.swift; sourceTree = "<group>"; };
 		DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationSession.swift; sourceTree = "<group>"; };
+		DEC08FEF2429469C007D7039 /* NativeServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeServices.swift; sourceTree = "<group>"; };
+		DEC08FF1242948C3007D7039 /* Set+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+Helpers.swift"; sourceTree = "<group>"; };
+		DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsMonitor.swift; sourceTree = "<group>"; };
+		DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Helpers.swift"; sourceTree = "<group>"; };
+		DEC8803C242BB0BA00E0286C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = "Localizable_en-US.strings"; sourceTree = "<group>"; };
+		DED00F9624990C3800C8E618 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -150,7 +167,6 @@
 		FCC6DEB1215D90DD008C8405 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
 		FCF0C4E321B0A97000DEB117 /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkError.swift; sourceTree = "<group>"; };
 		FCF29FC42187C7E0004B1100 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
-		FCF29FC62187C8C2004B1100 /* Connection+parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+parsing.swift"; sourceTree = "<group>"; };
 		FCF29FCA2187D0E3004B1100 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -211,12 +227,23 @@
 			name = Analytics;
 			sourceTree = "<group>";
 		};
+		DED28CE72425455B006A8DA7 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				DEC8803C242BB0BA00E0286C /* LocationService.swift */,
+			);
+			name = Location;
+			sourceTree = "<group>";
+		};
 		FC425EBC227233A10020967F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				1DFE02062190E2E600856ABC /* Notification+Redirect.swift */,
 				1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */,
 				1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */,
+				DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */,
+				DEC08FF1242948C3007D7039 /* Set+Helpers.swift */,
+				DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -240,10 +267,12 @@
 			children = (
 				DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */,
 				FCF29FC42187C7E0004B1100 /* JSON.swift */,
-				FCF29FC62187C8C2004B1100 /* Connection+parsing.swift */,
 				FC75F93B22386626007C2DDB /* ConnectionActivationFlow.swift */,
 				FC75F93D22387164007C2DDB /* URLComponents+email.swift */,
 				FCF29FCA2187D0E3004B1100 /* User.swift */,
+				DE2F52492429404200EF986A /* Connection+Location.swift */,
+				DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */,
+				DEC08FEF2429469C007D7039 /* NativeServices.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -321,6 +350,7 @@
 			isa = PBXGroup;
 			children = (
 				1DFE020C2190E3DB00856ABC /* API.swift */,
+				DED28CE72425455B006A8DA7 /* Location */,
 				DE3074A523DB505400A3C71F /* Analytics */,
 				FC425EBC227233A10020967F /* Extensions */,
 				FC84B85121C437FB00BAF7ED /* Pages */,
@@ -345,8 +375,9 @@
 		FCF29FC82187CF33004B1100 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DED00F9624990C3800C8E618 /* Localizable.strings */,
+				DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */,
 				DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */,
-				DE3BEFC922CAAA8C0020B425 /* Localizable.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -359,6 +390,7 @@
 				FC74F1D72152AE4D00035A66 /* ConnectButtonController.swift */,
 				1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */,
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
+				DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */,
 				1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */,
 				1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */,
 				1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */,
@@ -423,7 +455,7 @@
 		FCBA15E121389F7500EB1BC8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1000;
+				LastSwiftUpdateCheck = 1140;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = IFTTT;
 				TargetAttributes = {
@@ -461,8 +493,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DED00F9524990BBD00C8E618 /* Localizable_en-US.strings in Resources */,
+				DED00F9724990C3800C8E618 /* Localizable.strings in Resources */,
 				DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */,
-				DE3BEFCA22CAAA8C0020B425 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +516,8 @@
 			files = (
 				FC75F93E22387164007C2DDB /* URLComponents+email.swift in Sources */,
 				FCF29FCB2187D0E3004B1100 /* User.swift in Sources */,
+				DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */,
+				DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */,
 				FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */,
 				FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */,
 				FC361B61224D872D0078B153 /* ProgressBarController.swift in Sources */,
@@ -507,6 +542,7 @@
 				FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */,
 				1DFE02092190E35300856ABC /* ConnectionRedirectHandler.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */,
+				DEC8803D242BB0BA00E0286C /* LocationService.swift in Sources */,
 				1D453EE02297218E001994FF /* ConnectButton+Transition.swift in Sources */,
 				1D453EE8229723CA001994FF /* ConnectButton+ProgressBar.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
@@ -516,11 +552,13 @@
 				FCF0C4E421B0A97000DEB117 /* ConnectionNetworkError.swift in Sources */,
 				1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
+				DEC08FFC242BAB25007D7039 /* Bundle+Helpers.swift in Sources */,
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
+				DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */,
 				DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */,
 				1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */,
+				DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */,
 				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
-				FCF29FC72187C8C2004B1100 /* Connection+parsing.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
 				1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */,
 				FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */,
@@ -529,12 +567,14 @@
 				1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */,
 				DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
+				DEC08FF2242948C3007D7039 /* Set+Helpers.swift in Sources */,
 				FC28D7E52225B1E900D84A1B /* ServiceIconsNetworkController.swift in Sources */,
 				DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */,
 				FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */,
 				FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
+				DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */,
 				DE3074A923DB50A800A3C71F /* Analytics+DataStructures.swift in Sources */,
 				FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */,
 				FC75F93C22386626007C2DDB /* ConnectionActivationFlow.swift in Sources */,

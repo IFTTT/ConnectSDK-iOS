@@ -37,10 +37,34 @@
         "2880w_url": "https://ifttt.com/2880w",
         "4320w_url": "https://ifttt.com/4320w"
     },
-    "value_propositions": [
-        {
-            "description": "Automatically sync your Netflix favorites to your seat",
-            "icon_url": "https://ifttt.com/value-prop-icons/heart.png"
-        }
-    ]
+    "features": [{
+        "id": "qharvmtjdh",
+        "title": "Effortlessly track time spent at work",
+        "description": "Some random description for this feature",
+        "icon_url": "https://ifttt.com/value-prop-icons/clock.png",
+        "field_options_url": "https://connect.ifttt.com/v2/connections/zG58W2uC/features/qharvmtjdh/field_options",
+        "fields": []
+    }],
+    "user_connection": {
+        "user_features": [{
+            "id": "ab12345m8ef",
+            "feature_id": "qharvmtjdh",
+            "user_fields": [],
+            "user_feature_triggers": [{
+                "feature_trigger_id": "f3gtkmjkgf",
+                "id": "somecoolidentifier",
+                "user_fields": [{
+                    "field_id": "location",
+                    "value": {
+                        "lat": 12.45678920,
+                        "lng": -98.5432112,
+                        "radius": 123.4567890,
+                        "address": "123 W North Ave Chicago IL 60647 United States",
+                        "description": "123 W North Ave Chicago IL 60647 United States",
+                        "zoom": null
+                    }
+                }]
+            }]
+        }]
+    }
 }

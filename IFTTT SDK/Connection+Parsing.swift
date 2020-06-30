@@ -1,5 +1,5 @@
 //
-//  Connection_internal.swift
+//  Connection+Parsing.swift
 //  IFTTT SDK
 //
 //  Copyright © 2019 IFTTT. All rights reserved.
@@ -30,10 +30,17 @@ extension Connection {
         
         self.coverImages = CoverImage.images(with: parser["cover_image"])
         
-        self.valuePropositions = parser["value_propositions"].compactMap {
-            Connection.ValueProposition(parser: $0)
+        self.valuePropositionsParser = parser["value_propositions"]
+
+        self.features = parser["features"].compactMap {
+            Connection.Feature(parser: $0)
         }
+        
+        let activeTriggers = Connection.parseTriggers(parser)
+        self.activeTriggers = activeTriggers
+        self.activePermissions = Connection.generateActivePermissions(activeTriggers)
     }
+    
     static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {
         if let type = parser["type"].string {
             switch type {
@@ -48,6 +55,32 @@ extension Connection {
             }
         }
         return nil
+    }
+    
+    static func parseTriggers(_ parser: Parser) -> Set<Trigger> {
+        switch parser["user_connection"] {
+        case .dictionary(let json):
+            guard let userFeatures = json["user_features"] as? [JSON] else { return [] }
+            
+            let userFeatureTriggers = userFeatures.compactMap { $0["user_feature_triggers"] as? [JSON] }.reduce([], +)
+            let allTriggers = userFeatureTriggers.compactMap { (userFeatureTrigger) -> [Trigger] in
+                guard let userTriggerId = userFeatureTrigger["id"] as? String else { return [] }
+                guard let userFields = userFeatureTrigger["user_fields"] as? [JSON] else { return [] }
+                return userFields.compactMap { Trigger(json: $0, triggerId: userTriggerId) }
+            }.reduce([], +)
+            
+            return Set(allTriggers)
+        default:
+            return []
+        }
+    }
+    
+    static func generateActivePermissions(_ activeTriggers: Set<Trigger>) -> Set<NativePermission> {
+        return activeTriggers.map { trigger -> NativePermission in
+            switch trigger {
+            case .location: return .location
+            }
+        }
     }
 }
 
@@ -72,14 +105,15 @@ extension Connection.Service {
     }
 }
 
-private extension Connection.ValueProposition {
+private extension Connection.Feature {
     init?(parser: Parser) {
         guard
-            let description = parser["description"].string,
+            let title = parser["title"].string,
             let iconURL = parser["icon_url"].url else {
                 return nil
         }
-        self.details = description
+        self.details = parser["description"].string
+        self.title = title
         self.iconURL = iconURL
     }
 }

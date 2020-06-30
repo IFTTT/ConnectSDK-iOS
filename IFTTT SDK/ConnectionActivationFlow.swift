@@ -83,18 +83,26 @@ struct ConnectionHandoffFlow {
     ///   - connectionId: The identifier of the Connection to activate
     ///   - credentialProvider: A `CredentialProvider` for the user
     ///   - activationRedirect: The redirect back to this application
+    ///   - skipConnectionConfiguration: A `Bool` that is used to skip the configuration of the Connection when it's activated in either the IFTTT app or the web flow.
     init(connectionId: String,
          credentialProvider: ConnectionCredentialProvider,
-         activationRedirect: URL) {
+         activationRedirect: URL,
+         skipConnectionConfiguration: Bool) {
         
         handoffURL = Constants.url.appendingPathComponent(connectionId)
         
         // Creates the query items shared by all URLs
-        let commonQueryItems =  [
+        var commonQueryItems =  [
             URLQueryItem(name: Constants.QueryItem.sdkReturnName, value: activationRedirect.absoluteString),
             URLQueryItem(name: Constants.QueryItem.sdkVersionName, value: API.sdkVersion),
             URLQueryItem(name: Constants.QueryItem.sdkPlatformName, value: API.sdkPlatform),
-            URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId)]
+            URLQueryItem(name: Constants.QueryItem.sdkAnonymousId, value: API.anonymousId),
+            URLQueryItem(name: Constants.QueryItem.sdkLocale, value: ConnectButtonController.locale.identifier)
+        ]
+        
+        if skipConnectionConfiguration {
+            commonQueryItems.append(URLQueryItem(name: Constants.QueryItem.sdkSkipConnectionConfiguration, value: "true"))
+        }
         
         let partnerOauthCodeQueryItem: URLQueryItem?
         if !credentialProvider.oauthCode.isEmpty {
@@ -148,6 +156,7 @@ struct ConnectionHandoffFlow {
             static let actionName = "action"
             static let editValue = "edit"
             static let activationValue = "activation"
+            static let sdkLocale = "locale"
             
             static let sdkReturnName = "sdk_return_to"
             static let inviteCodeName = "invite_code"
@@ -159,6 +168,7 @@ struct ConnectionHandoffFlow {
             static let sdkVersionName = "sdk_version"
             static let sdkPlatformName = "sdk_platform"
             static let sdkAnonymousId = "sdk_anonymous_id"
+            static let sdkSkipConnectionConfiguration = "skip_config"
             static let availableEmailScheme = "available_email_app_schemes[]"
         }
     }

@@ -1,2 +1,3 @@
 ${PODS_ROOT}/Target Support Files/Pods-Grocery Express/Pods-Grocery Express-resources.sh
 ${PODS_CONFIGURATION_BUILD_DIR}/IFTTTConnectSDK/IFTTTConnectSDK.bundle
+${PODS_CONFIGURATION_BUILD_DIR}/IFTTTConnectSDK/IFTTTConnectSDK-Localizations.bundle

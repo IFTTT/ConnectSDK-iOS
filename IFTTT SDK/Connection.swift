@@ -99,6 +99,7 @@ public struct Connection: Equatable {
     
     /// A value proposition for this Connection as defined on platform.iftt.com
     /// Consists of detail text and an image asset
+    @available(*, deprecated, message: "Use Feature instead.")
     public struct ValueProposition {
         
         /// The text details for this value proposition
@@ -106,6 +107,21 @@ public struct Connection: Equatable {
         public let details: String
         
         /// The URl for the icon asset
+        public let iconURL: URL?
+    }
+    
+    /// A feature for this Connection as defined on platform.iftt.com
+    /// Consists of title text, detail text, and an image asset
+    public struct Feature {
+        
+        /// The title for this value proposition
+        public let title: String
+        
+        /// The text details for this value proposition
+        /// Known as description on the IFTTT platform
+        public let details: String?
+        
+        /// The URL for the icon asset
         public let iconURL: URL?
     }
     
@@ -150,8 +166,22 @@ public struct Connection: Equatable {
         return coverImages[.closest(to: estimatedLayoutWidth * scale)]
     }
     
-    /// An array of `ValueProposition` for this Connection as defined on platform.ifttt.com
-    public let valuePropositions: [ValueProposition]
+    // An array of `ValueProposition` for this Connection as defined on platform.ifttt.com
+    @available(*, deprecated, message: "Use features property of Connection instead.")
+    public var valuePropositions: [ValueProposition] {
+        return valuePropositionsParser.compactMap {
+            guard
+                let details = $0["description"].string,
+                let iconURL = $0["icon_url"].url else {
+                    return nil
+            }
+            return Connection.ValueProposition(details: details, iconURL: iconURL)
+        }
+    }
+    internal let valuePropositionsParser: Parser
+    
+    /// An array of `Feature` for this Connection as defined on platform.ifttt.com
+    public let features: [Feature]
     
     /// An array of `Service`s associated with the `Connection`.
     public let services: [Service]
@@ -171,6 +201,11 @@ public struct Connection: Equatable {
         return worksWithServices.first ?? primaryService
     }
     
+    // MARK:- Native Services
+    /// The set of active native service triggers for this Connection.
+    let activeTriggers: Set<Trigger>
+    let activePermissions: Set<NativePermission>
+
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
     }

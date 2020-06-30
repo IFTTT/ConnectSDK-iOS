@@ -23,12 +23,15 @@ class SettingsViewController: UIViewController {
     }
     
     @IBOutlet weak var emailField: UITextField!
+    @IBOutlet weak var skipConfigSwitch: UISwitch!
     @IBOutlet weak var newUserSwitch: UISwitch!
     @IBOutlet weak var fetchConnectionSwitch: UISwitch!
     @IBOutlet weak var loginView: UIStackView!
     @IBOutlet weak var logoutView: UIStackView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var credentialsTextView: UITextView!
+    @IBOutlet weak var localeOverrideTextField: UITextField!
+    private let localePickerView = UIPickerView()
     
     @IBAction func doneTapped(_ sender: Any) {
         settings.save()
@@ -37,6 +40,9 @@ class SettingsViewController: UIViewController {
     
     @IBAction func emailChanged(_ sender: Any) {
         settings.email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    }
+    @IBAction func skipConfigChanged(_ sender: Any) {
+        settings.skipConnectionConfiguration = skipConfigSwitch.isOn
     }
     @IBAction func newUserChanged(_ sender: Any) {
         settings.forcesNewUserFlow = newUserSwitch.isOn
@@ -65,6 +71,8 @@ class SettingsViewController: UIViewController {
     
     private func update() {
         let credentials = connectionCredentials
+        
+        skipConfigSwitch.isOn = settings.skipConnectionConfiguration
         if credentials.isLoggedIn {
             emailField.text = credentials.email
             emailField.isEnabled = false
@@ -96,6 +104,44 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        localePickerView.delegate = self
+        localePickerView.dataSource = self
+        
+        localeOverrideTextField.delegate = self
+        localeOverrideTextField.inputView = localePickerView
+        localeOverrideTextField.text = settings.locale.identifier
+        localeOverrideTextField.spellCheckingType = .no
+        
         update()
+    }
+}
+
+extension SettingsViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text {
+            let updatedText = (text as NSString).replacingCharacters(in: range, with: string)
+            settings.locale = Locale(identifier: updatedText)
+        }
+        return true
+    }
+}
+
+extension SettingsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return Locale.availableIdentifiers.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let selectedIdentifier = Locale.availableIdentifiers[row]
+        localeOverrideTextField.text = selectedIdentifier
+        settings.locale = Locale(identifier: selectedIdentifier)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return Locale.availableIdentifiers[row]
     }
 }
