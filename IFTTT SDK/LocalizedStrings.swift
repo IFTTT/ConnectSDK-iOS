@@ -20,7 +20,7 @@ extension String {
         // String files are suffixed with the locale identifier. Try to grab the strings file and check to see if it exists.
         let table = "Localizable_\(localeIdentifier)"
         
-        if let tablePath = bundle.path(forResource: table, ofType: ".strings"),
+        if let tablePath = bundle.path(forResource: table, ofType: "strings"),
             FileManager.default.fileExists(atPath: tablePath){
             return NSLocalizedString(self,
                                      tableName: table,
