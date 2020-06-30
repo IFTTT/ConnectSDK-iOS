@@ -201,7 +201,12 @@ public class ConnectButtonController {
     }
     
     private func handleOutcome(_ outcome: ConnectionVerificationSession.Outcome) {
-        connectionVerificationSession.dismiss { [weak self] in
+        var isUserCancelled = false
+        if case .error(let innerError) = outcome,
+            case .canceled = innerError {
+            isUserCancelled = true
+        }
+        connectionVerificationSession.dismiss(isUserCancelled: isUserCancelled) { [weak self] in
             // Determine the next step based on the redirect result
             let nextStep: ActivationStep = {
                 switch outcome {
