@@ -199,7 +199,7 @@ This configuration type provides information about the `Connection` that you wis
 2) `suggestedUserEmail`: The email address that your user uses for your service. This allows us to prefill the email. 
 3) `credentialProvider`: The `ConnectionCredentialProvider` you set up in [Setup](#setup)
 4) `redirectURL`: The redirect URL you configured in [Setup](#setup)
-5) `skipConnectionConfiguration`: A boolean vlue that allows for the connection configuration to be skipped. See [Configuration skipping](#Configuration skipping) for more information.
+5) `skipConnectionConfiguration`: A boolean vlue that allows for the connection configuration to be skipped. See [Configuration skipping](https://github.com/IFTTT/ConnectSDK-iOS#configuration-skipping) for more information.
 
 #### ConnectButtonControllerDelegate
 `ConnectButtonControllerDelegate` communicates important information back to your app.
