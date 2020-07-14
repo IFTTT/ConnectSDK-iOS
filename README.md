@@ -350,6 +350,12 @@ In order to continually innovate and improve our SDK, IFTTT may collect certain 
 
 The data collected is examined in the aggregate to improve the SDK and IFTTT’s associated services, and is maintained in accordance with IFTTT's [Privacy Policy](https://ifttt.com/terms).
 
+#### Anonymous ID
+By default, the SDK will track user interactions when users interact with the ConnectButton. In order to distinguish unique installs, we randomly generate a UUID per application installation (“anonymous id”), and send it along with the event requests.
+
+#### Disable tracking
+You may set `ConnectButtonController.analyticsEnabled = false` if you wish to opt-out from tracking. After this method is called, all tracking will be disabled for all of the ConnectButton instances within the app for as long as it is in-memory. If you want to persist the user's preference for disabling tracking, you should store the preference within your persistent storage, and set this variable every time the app is started.
+
 ### Localization
 The Connect Button and the corresponding flow can display translated text that is different from the user's current locale. To pass in a different locale, pass in a Swift `Locale` object for the `locale` parameter of the `ConnectButtonController` initializer. For example, if the Connect Button is to be displayed in Latin American Spanish:
 ```
@@ -365,11 +371,29 @@ let controller = ConnectButtonController(connectButton: self.connectButton,
 ```
 If no translations are found for a locale passed in for this parameter, the Connect Button and the corresponding flow will be displayed in English. If no value is provided for the `locale` parameter, a default value of `Locale.current` will be used.
 
-#### Anonymous ID
-By default, the SDK will track user interactions when users interact with the ConnectButton. In order to distinguish unique installs, we randomly generate a UUID per application installation (“anonymous id”), and send it along with the event requests.
-
-#### Disable tracking
-You may set `ConnectButtonController.analyticsEnabled = false` if you wish to opt-out from tracking. After this method is called, all tracking will be disabled for all of the ConnectButton instances within the app for as long as it is in-memory. If you want to persist the user's preference for disabling tracking, you should store the preference within your persistent storage, and set this variable every time the app is started.
+Text translation is supported for the following languages:
+* English (Default)
+* English - United Kingdom (en-rGB)
+* Czech (cs)
+* Danish (da)
+* German (de)
+* Spanish (es)
+* Spanish - United States (es-rUS)
+* Finnish (fi)
+* French (fr)
+* French - Canada (fr-rCA)
+* Italian (it)
+* Japanese (ja)
+* Korean (ko)
+* Norwegian-Bokmål (nb)
+* Dutch (nl)
+* Polish (pl)
+* Portuguese - Brazil (pt-rBR)
+* Portuguese - Portugal (pt-rPT)
+* Russian (ru)
+* Swedish (sv)
+* Simplified Chinese (zh-rCN)
+* Traditional Chinese (zh-rTW)
 
 ### Configuration skipping
 You can use the `skipConnectionConfiguration` parameter on the `ConnectionConfiguration` initializer if you want to use your own connection configuration UI. Setting this parameter to `true` will instruct IFTTT to skip the connection configuration screen. This parameter defaults to `false`. Once a user clicks the connect button they will be taken through the usual connection flow however they will not see the connection configuration screen but will be redirected back to your app instead. After that you will be able to use the [field options endpoint](http://platform.ifttt.me/docs/connect_api#field-options) and the [update a connection endpoint](http://platform.ifttt.me/docs/connect_api#update-a-connection) to support your UI and allow the user to configure the connection. A user connection created with `skipConnectionConfiguration=true` is considered pending and will not fire it's triggers or allow you to run it's actions or queries until it's updated using the [update a connection endpoint](http://platform.ifttt.me/docs/connect_api#update-a-connection). This feature is available <a href="mailto:platform-support+via-docs-connection-api@ifttt.com" class="open_intercom_messenger">upon request</a>.
