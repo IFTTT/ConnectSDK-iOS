@@ -1,20 +1,13 @@
-/* 
-  Localizable.strings
-  IFTTT SDK
-
-  Copyright © 2018 IFTTT. All rights reserved.
-*/
-
 "button.state.loading" = "正在加载...";
 "button.footer.works_with" = "使用";
 "button.state.verifying" = "正在验证...";
 "button.state.creating_account" = "正在创建帐户...";
-"button.footer.accountCreation" = "%@ 的新 IFTTT 帐户";
+"button.footer.accountCreation" = "为 %@ 新建 IFTTT 帐户";
 "button.state.sign_in" = "正在转到 %@...";
 "button.state.sign_in.brief" = "登录";
 "button.state.saving_configuration" = "正在保存设置...";
 "button.state.connected" = "已连接";
-"button.state.disconnect" = "滑动以断开连接";
+"button.state.disconnect" = "滑动即可断开";
 "button.state.disconnecting" = "正在断开连接...";
 "button.state.disconnected" = "已断开连接";
 "button.email.placeholder" = "您的邮箱";

@@ -1,10 +1,3 @@
-/* 
-  Localizable.strings
-  IFTTT SDK
-
-  Copyright © 2018 IFTTT. All rights reserved.
-*/
-
 "button.state.loading" = "Chargement...";
 "button.footer.works_with" = "FONCTIONNE AVEC";
 "button.state.verifying" = "Vérification...";
@@ -28,7 +21,7 @@
 "about.control" = "Contrôlez quels services accèdent à vos données et comment ils les utilisent";
 "about.security" = "Protégez et surveillez vos données";
 "about.manage" = "Débranchez à tout moment";
-"about.legal.full" = "En utilisant cette connexion, vous acceptez nos Conditions de confidentialité";
+"about.legal.full" = "En utilisant cette connexion, vous acceptez nos Confidentialité et conditions";
 "button.footer.loading.failed.prefix" = "Assurez-vous que votre téléphone dispose d'une connexion Internet";
 "about.connection-deep-link" = "Gérer";
 "about.legal.link" = "Confidentialité et conditions";

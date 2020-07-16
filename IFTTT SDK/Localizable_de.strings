@@ -1,10 +1,3 @@
-/* 
-  Localizable.strings
-  IFTTT SDK
-
-  Copyright © 2018 IFTTT. All rights reserved.
-*/
-
 "button.state.loading" = "Laden…";
 "button.footer.works_with" = "FUNKTIONIERT MIT";
 "button.state.verifying" = "Wird bestätigt ...";
@@ -13,18 +6,18 @@
 "button.state.sign_in" = "Navigieren zu %@ ...";
 "button.state.sign_in.brief" = "Anmelden";
 "button.state.saving_configuration" = "Einstellungen werden gespeichert ...";
-"button.state.connected" = "Verbunden";
+"button.state.connected" = "verbunden";
 "button.state.disconnect" = "Zum Trennen wischen";
 "button.state.disconnecting" = "Wird getrennt ...";
 "button.state.disconnected" = "Verbindung getrennt";
 "button.email.placeholder" = "Ihre E-Mail-Adresse";
 "button.footer.email.invalid" = "Geben Sie eine gültige E-Mail-Adresse ein.";
 "button.footer.loading.failed.postfix" = "Wiederholen";
-"button.state.connect" = "%@ verbinden";
+"button.state.connect" = "Verbinden %@";
 "button.state.connecting" = "Wird verbunden";
 "button.footer.email.prefix" = "Mit IFTTT gesichert Weitere Informationen";
 "about.title_full" = "IFTTT verbindet %@ mit %@.";
-"about.connect" = "Schalten Sie neue Funktionen frei, indem Sie Ihre Lieblings-Apps zusammenarbeiten lassen.";
+"about.connect" = "Schalten Sie neue Funktion frei, indem Sie Ihre Lieblingsapps zusammenarbeiten lassen.";
 "about.control" = "Steuern Sie, welche Dienste auf Ihre Daten zugreifen und wie sie diese verwenden.";
 "about.security" = "Schützen und überwachen Sie Ihre Daten.";
 "about.manage" = "Trennen jederzeit möglich";

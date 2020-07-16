@@ -1,10 +1,3 @@
-/* 
-  Localizable.strings
-  IFTTT SDK
-
-  Copyright © 2018 IFTTT. All rights reserved.
-*/
-
 "button.state.loading" = "Laster inn ...";
 "button.footer.works_with" = "FUNGERER MED";
 "button.state.verifying" = "Kontrollerer ...";
@@ -22,14 +15,14 @@
 "button.footer.loading.failed.postfix" = "Prøv igjen";
 "button.state.connect" = "Koble til %@";
 "button.state.connecting" = "Kobler til";
-"button.footer.email.prefix" = "IFTTT gir beskyttelse. Finn ut mer";
+"button.footer.email.prefix" = "Sikret med IFTTT. Finn ut mer";
 "about.title_full" = "IFTTT kobler %@ til %@";
 "about.connect" = "Lås opp nye funksjoner når favorittingene dine samarbeider";
 "about.control" = "Kontroller hvilke tjenester som har tilgang til dataene dine og hvordan de bruker dem";
 "about.security" = "Beskytt og overvåk dataene dine";
-"about.manage" = "Koble fra strømmen når som helst";
-"about.legal.full" = "Ved å bruke denne koblingen, godtar du våre retningslinjer for personvern og vilkår";
-"button.footer.loading.failed.prefix" = "Kontroller at telefonen har tilkobling til internett";
+"about.manage" = "Koble ut når som helst";
+"about.legal.full" = "Ved å bruke denne koblingen, godtar du våre retningslinjer for Personvern og vilkår";
+"button.footer.loading.failed.prefix" = "Kontroller at telefonen har tilkobling til Internett";
 "about.connection-deep-link" = "Administrer";
 "about.legal.link" = "Personvern og vilkår";
 "button.footer.email.postfix" = "Finn ut mer";

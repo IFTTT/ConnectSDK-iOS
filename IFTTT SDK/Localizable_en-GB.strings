@@ -1,10 +1,3 @@
-/* 
-  Localizable.strings
-  IFTTT SDK
-
-  Copyright © 2018 IFTTT. All rights reserved.
-*/
-
 "button.state.loading" = "Loading...";
 "button.footer.works_with" = "WORKS WITH";
 "button.state.verifying" = "Verifying...";
@@ -13,7 +6,7 @@
 "button.state.sign_in" = "Going to %@...";
 "button.state.sign_in.brief" = "Sign in";
 "button.state.saving_configuration" = "Saving settings...";
-"button.state.connected" = "Connected";
+"button.state.connected" = "Connected ";
 "button.state.disconnect" = "Slide to disconnect";
 "button.state.disconnecting" = "Disconnecting...";
 "button.state.disconnected" = "Disconnected";
@@ -29,8 +22,7 @@
 "about.security" = "Protect and monitor your data";
 "about.manage" = "Unplug any time";
 "about.legal.full" = "By using this connection, you agree to our Privacy & Terms";
-"button.footer.loading.failed.prefix" = "Make sure your phone is connected to the internet";
+"button.footer.loading.failed.prefix" = "Make sure your phone has internet connection";
 "about.connection-deep-link" = "Manage";
 "about.legal.link" = "Privacy & Terms";
 "button.footer.email.postfix" = "Learn more";
-

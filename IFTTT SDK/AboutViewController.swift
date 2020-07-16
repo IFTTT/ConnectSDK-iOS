@@ -95,7 +95,7 @@ class AboutViewController: UIViewController {
             
             /// The text for legal terms
             static var legalTermsText: NSAttributedString {
-                return LegalTermsText.string(withPrefix: "",
+                return LegalTermsText.string(withPrefix: "about.legal.full".localized,
                                              attributes: [.foregroundColor : Color.mediumGrey,
                                                           .font : UIFont.body(weight: .demiBold)])
             }

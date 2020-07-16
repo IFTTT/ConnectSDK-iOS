@@ -20,7 +20,7 @@ struct LegalTermsText {
     static func string(withPrefix prefix: String, activateLinks: Bool = true, attributes: [NSAttributedString.Key : Any]) -> NSAttributedString {
         let text = NSMutableAttributedString(string: prefix, attributes: attributes)
         
-        text.addLink(text: "about.legal.full".localized,
+        text.addLink(text: "about.legal.link".localized,
                      to: Links.privacyAndTerms,
                      activateLinks: activateLinks,
                      attributes: attributes)
@@ -34,12 +34,10 @@ private extension NSMutableAttributedString {
     /// Adds a link to a url for a text snippet
     ///
     /// - Parameters:
-    ///   - text: The text for the link
+    ///   - text: The text that have a link added to.
     ///   - activateLinks: Adds the link attribute to the string
     ///   - url: The URL to link to
     func addLink(text: String, to url: URL, activateLinks: Bool, attributes: [NSAttributedString.Key : Any]) {
-        append(NSAttributedString(string: text, attributes: attributes))
-        
         let range = mutableString.range(of: text)
         assert(range.location != NSNotFound, "This should never happen but if it does, the `text` may include some special characters.")
         if range.location != NSNotFound {

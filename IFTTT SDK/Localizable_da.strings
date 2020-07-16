@@ -1,10 +1,3 @@
-/* 
-  Localizable.strings
-  IFTTT SDK
-
-  Copyright © 2018 IFTTT. All rights reserved.
-*/
-
 "button.state.loading" = "Indlæser...";
 "button.footer.works_with" = "VIRKER MED";
 "button.state.verifying" = "Bekræfter...";
@@ -24,7 +17,7 @@
 "button.state.connecting" = "Tilslutning";
 "button.footer.email.prefix" = "Sikret med IFTTT. Få flere oplysninger";
 "about.title_full" = "IFTTT opretter forbindelse mellem %@ og %@";
-"about.connect" = "Lås op for nye funktioner, når dine favoritting fungerer sammen";
+"about.connect" = "Lås op for nye funktioner, når dine foretrukne ting fungerer sammen";
 "about.control" = "Styr, hvilke tjenester der har adgang til dine data, og hvordan de bruger dem";
 "about.security" = "Beskyt og overvåg dine data";
 "about.manage" = "Du kan afbryde forbindelsen når som helst";
