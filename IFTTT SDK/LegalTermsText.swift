@@ -10,9 +10,6 @@ import Foundation
 /// Factory for building `NSAttributedString` with links for Terms of Use and our Privacy Policy
 struct LegalTermsText {
     
-    /// The link text for our Privacy & Terms of Use
-    private static let privacyAndTerms = "about.legal.link".localized
-    
     /// Creates a string with links to IFTTT's terms of service and privacy policy
     /// Prefix text is added before the links in the format "[prefix text] Terms_of_Use and Privacy_Policy"
     ///
@@ -23,7 +20,7 @@ struct LegalTermsText {
     static func string(withPrefix prefix: String, activateLinks: Bool = true, attributes: [NSAttributedString.Key : Any]) -> NSAttributedString {
         let text = NSMutableAttributedString(string: prefix, attributes: attributes)
         
-        text.addLink(text: privacyAndTerms,
+        text.addLink(text: "about.legal.full".localized,
                      to: Links.privacyAndTerms,
                      activateLinks: activateLinks,
                      attributes: attributes)

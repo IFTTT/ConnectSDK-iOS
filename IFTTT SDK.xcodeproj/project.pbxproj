@@ -134,6 +134,27 @@
 		DEC8803C242BB0BA00E0286C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = "Localizable_en-US.strings"; sourceTree = "<group>"; };
 		DED00F9624990C3800C8E618 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		DEF16C0C24C0AAE70094D33B /* Localizable_cs.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_cs.strings; sourceTree = "<group>"; };
+		DEF16C0D24C0AAF90094D33B /* Localizable_da.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_da.strings; sourceTree = "<group>"; };
+		DEF16C0E24C0AB040094D33B /* Localizable_de.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_de.strings; sourceTree = "<group>"; };
+		DEF16C0F24C0AB0B0094D33B /* Localizable_en-GB.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_en-GB.strings"; sourceTree = "<group>"; };
+		DEF16C1024C0AB160094D33B /* Localizable_es-419.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_es-419.strings"; sourceTree = "<group>"; };
+		DEF16C1124C0AB230094D33B /* Localizable_es.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_es.strings; sourceTree = "<group>"; };
+		DEF16C1224C0AB2B0094D33B /* Localizable_fi.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_fi.strings; sourceTree = "<group>"; };
+		DEF16C1324C0AB380094D33B /* Localizable_fr-CA.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_fr-CA.strings"; sourceTree = "<group>"; };
+		DEF16C1424C0AB480094D33B /* Localizable_fr.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_fr.strings; sourceTree = "<group>"; };
+		DEF16C1524C0AB4F0094D33B /* Localizable_it.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_it.strings; sourceTree = "<group>"; };
+		DEF16C1624C0AB5F0094D33B /* Localizable_ja.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_ja.strings; sourceTree = "<group>"; };
+		DEF16C1724C0AB680094D33B /* Localizable_ko.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_ko.strings; sourceTree = "<group>"; };
+		DEF16C1824C0AB6F0094D33B /* Localizable_nb.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_nb.strings; sourceTree = "<group>"; };
+		DEF16C1924C0AB7A0094D33B /* Localizable_nl.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_nl.strings; sourceTree = "<group>"; };
+		DEF16C1A24C0AB8D0094D33B /* Localizable_pl.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_pl.strings; sourceTree = "<group>"; };
+		DEF16C1B24C0AB950094D33B /* Localizable_pt-BR.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_pt-BR.strings"; sourceTree = "<group>"; };
+		DEF16C1C24C0ABA10094D33B /* Localizable_pt-PT.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_pt-PT.strings"; sourceTree = "<group>"; };
+		DEF16C1D24C0ABAB0094D33B /* Localizable_ru.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_ru.strings; sourceTree = "<group>"; };
+		DEF16C1F24C0ABBA0094D33B /* Localizable_sv.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_sv.strings; sourceTree = "<group>"; };
+		DEF16C2024C0ABC80094D33B /* Localizable_zh-Hans.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_zh-Hans.strings"; sourceTree = "<group>"; };
+		DEF16C2124C0ABD90094D33B /* Localizable_zh-Hant.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_zh-Hant.strings"; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -377,6 +398,27 @@
 			children = (
 				DED00F9624990C3800C8E618 /* Localizable.strings */,
 				DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */,
+				DEF16C0C24C0AAE70094D33B /* Localizable_cs.strings */,
+				DEF16C0D24C0AAF90094D33B /* Localizable_da.strings */,
+				DEF16C0E24C0AB040094D33B /* Localizable_de.strings */,
+				DEF16C0F24C0AB0B0094D33B /* Localizable_en-GB.strings */,
+				DEF16C1024C0AB160094D33B /* Localizable_es-419.strings */,
+				DEF16C1124C0AB230094D33B /* Localizable_es.strings */,
+				DEF16C1224C0AB2B0094D33B /* Localizable_fi.strings */,
+				DEF16C1324C0AB380094D33B /* Localizable_fr-CA.strings */,
+				DEF16C1424C0AB480094D33B /* Localizable_fr.strings */,
+				DEF16C1524C0AB4F0094D33B /* Localizable_it.strings */,
+				DEF16C1624C0AB5F0094D33B /* Localizable_ja.strings */,
+				DEF16C1724C0AB680094D33B /* Localizable_ko.strings */,
+				DEF16C1824C0AB6F0094D33B /* Localizable_nb.strings */,
+				DEF16C1924C0AB7A0094D33B /* Localizable_nl.strings */,
+				DEF16C1A24C0AB8D0094D33B /* Localizable_pl.strings */,
+				DEF16C1B24C0AB950094D33B /* Localizable_pt-BR.strings */,
+				DEF16C1C24C0ABA10094D33B /* Localizable_pt-PT.strings */,
+				DEF16C1D24C0ABAB0094D33B /* Localizable_ru.strings */,
+				DEF16C1F24C0ABBA0094D33B /* Localizable_sv.strings */,
+				DEF16C2024C0ABC80094D33B /* Localizable_zh-Hans.strings */,
+				DEF16C2124C0ABD90094D33B /* Localizable_zh-Hant.strings */,
 				DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */,
 			);
 			name = Resources;
