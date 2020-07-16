@@ -372,28 +372,28 @@ let controller = ConnectButtonController(connectButton: self.connectButton,
 If no translations are found for a locale passed in for this parameter, the Connect Button and the corresponding flow will be displayed in English. If no value is provided for the `locale` parameter, a default value of `Locale.current` will be used.
 
 Text translation is supported for the following languages:
-* English (Default)
-* English - United Kingdom (en_GB)
+* English - United States (en-US)
+* English - United Kingdom (en-GB)
 * Czech (cs)
 * Danish (da)
 * German (de)
 * Spanish (es)
-* Spanish - United States (es_US)
+* Spanish - United States (es-US)
 * Finnish (fi)
 * French (fr)
-* French - Canada (fr_CA)
+* French - Canada (fr-CA)
 * Italian (it)
 * Japanese (ja)
 * Korean (ko)
 * Norwegian-Bokmål (nb)
 * Dutch (nl)
 * Polish (pl)
-* Portuguese - Brazil (pt_BR)
-* Portuguese - Portugal (pt_PT)
+* Portuguese - Brazil (pt-BR)
+* Portuguese - Portugal (pt-PT)
 * Russian (ru)
 * Swedish (sv)
-* Simplified Chinese (zh_Hans)
-* Traditional Chinese (zh_Hant)
+* Simplified Chinese (zh-Hans)
+* Traditional Chinese (zh-Hant)
 
 ### Configuration skipping
 You can use the `skipConnectionConfiguration` parameter on the `ConnectionConfiguration` initializer if you want to use your own connection configuration UI. Setting this parameter to `true` will instruct IFTTT to skip the connection configuration screen. This parameter defaults to `false`. Once a user clicks the connect button they will be taken through the usual connection flow however they will not see the connection configuration screen but will be redirected back to your app instead. After that you will be able to use the [field options endpoint](https://platform.ifttt.com/docs/connect_api#field-options) and the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection) to support your UI and allow the user to configure the connection. A user connection created with `skipConnectionConfiguration=true` is considered pending 
