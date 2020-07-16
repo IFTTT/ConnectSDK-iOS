@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Indlæser...";
+"button.footer.works_with" = "VIRKER MED";
+"button.state.verifying" = "Bekræfter...";
+"button.state.creating_account" = "Opretter konto...";
+"button.footer.accountCreation" = "Ny IFTTT-konto til %@";
+"button.state.sign_in" = "Går til %@...";
+"button.state.sign_in.brief" = "Log på";
+"button.state.saving_configuration" = "Gemmer indstillinger...";
+"button.state.connected" = "Tilsluttede ";
+"button.state.disconnect" = "Skub for afbryde forbindelsen";
+"button.state.disconnecting" = "Afbryder forbindelsen...";
+"button.state.disconnected" = "Forbindelsen er afbrudt.";
+"button.email.placeholder" = "Din e-mail";
+"button.footer.email.invalid" = "Indtast gyldig e-mail";
+"button.footer.loading.failed.postfix" = "Nyt forsøg";
+"button.state.connect" = "Opret forbindelse til %@";
+"button.state.connecting" = "Tilslutning";
+"button.footer.email.prefix" = "Sikret med IFTTT. Få flere oplysninger";
+"about.title_full" = "IFTTT opretter forbindelse mellem %@ og %@";
+"about.connect" = "Lås op for nye funktioner, når dine foretrukne ting fungerer sammen";
+"about.control" = "Styr, hvilke tjenester der har adgang til dine data, og hvordan de bruger dem";
+"about.security" = "Beskyt og overvåg dine data";
+"about.manage" = "Du kan afbryde forbindelsen når som helst";
+"about.legal.full" = "Ved at bruge denne forbindelse accepterer du vores Fortrolighedspolitik og vilkår.";
+"button.footer.loading.failed.prefix" = "Sørg for, at din telefon har internetforbindelse";
+"about.connection-deep-link" = "Administrer";
+"about.legal.link" = "Fortrolighedspolitik og vilkår";
+"button.footer.email.postfix" = "Få flere oplysninger";

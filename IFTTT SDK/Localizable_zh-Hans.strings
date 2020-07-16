@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "正在加载...";
+"button.footer.works_with" = "使用";
+"button.state.verifying" = "正在验证...";
+"button.state.creating_account" = "正在创建帐户...";
+"button.footer.accountCreation" = "为 %@ 新建 IFTTT 帐户";
+"button.state.sign_in" = "正在转到 %@...";
+"button.state.sign_in.brief" = "登录";
+"button.state.saving_configuration" = "正在保存设置...";
+"button.state.connected" = "已连接";
+"button.state.disconnect" = "滑动即可断开";
+"button.state.disconnecting" = "正在断开连接...";
+"button.state.disconnected" = "已断开连接";
+"button.email.placeholder" = "您的邮箱";
+"button.footer.email.invalid" = "输入有效的邮箱";
+"button.footer.loading.failed.postfix" = "重试";
+"button.state.connect" = "连接 %@";
+"button.state.connecting" = "正在连接";
+"button.footer.email.prefix" = "IFTTT 提供保护。了解更多";
+"about.title_full" = "IFTTT 将 %@ 连接至 %@";
+"about.connect" = "常用工具齐登场，助力解锁新功能。";
+"about.control" = "控制可访问您数据的服务，并管理其使用方式";
+"about.security" = "保护和监控您的数据";
+"about.manage" = "可随时断电";
+"about.legal.full" = "使用此连接，即表示您同意我们的隐私条款";
+"button.footer.loading.failed.prefix" = "确保您的手机已连接互联网";
+"about.connection-deep-link" = "管理";
+"about.legal.link" = "隐私条款";
+"button.footer.email.postfix" = "了解更多";

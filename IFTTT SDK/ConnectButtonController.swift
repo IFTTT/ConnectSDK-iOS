@@ -411,15 +411,19 @@ public class ConnectButtonController {
 
             switch self {
             case .worksWithIFTTT:
-                let text = NSMutableAttributedString(string: "button.footer.works_with".localized,
+                let string = "button.footer.works_with".localized + " "
+                let text = NSMutableAttributedString(string: string,
                                                      attributes: [.font : Constants.footnoteFont])
                 text.append(iftttWordmark)
                 return text
                 
             case .enterEmail:
-                let text = NSMutableAttributedString(string: "button.footer.email.prefix".localized,
+                let string = "button.footer.email.prefix".localized + " "
+                let text = NSMutableAttributedString(string: string,
                                                      attributes: [.font : Constants.footnoteFont])
-                text.append(iftttWordmark)
+                let iftttRange = (string as NSString).range(of: "IFTTT")
+                text.replaceCharacters(in: iftttRange, with: iftttWordmark)
+                
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.email.postfix".localized,
                                                attributes: [.font : Constants.footnoteFont,
@@ -433,13 +437,11 @@ public class ConnectButtonController {
                                                        .foregroundColor : Constants.errorTextColor])
                 
             case let .creatingAccount(email):
-                let text = NSMutableAttributedString(string: "button.footer.accountCreation.prefix".localized,
+                let string = "button.footer.accountCreation".localized(with: email)
+                let text = NSMutableAttributedString(string: string,
                                                      attributes: [.font : Constants.footnoteFont])
-                text.append(iftttWordmark)
-                text.append(NSAttributedString(string: " "))
-                text.append(NSMutableAttributedString(string: "button.footer.accountCreation.postfix".localized(with: email),
-                                                      attributes: [.font : Constants.footnoteFont]))
-                
+                let iftttRange = (string as NSString).range(of: "IFTTT")
+                text.replaceCharacters(in: iftttRange, with: iftttWordmark)
                 return text
                 
             case .loadingFailed:

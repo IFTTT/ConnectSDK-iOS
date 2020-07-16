@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Caricamento...";
+"button.footer.works_with" = "FUNZIONA CON";
+"button.state.verifying" = "Verifica in corso...";
+"button.state.creating_account" = "Creazione dell'account...";
+"button.footer.accountCreation" = "Nuovo account IFTTT per %@";
+"button.state.sign_in" = "Spostamento verso %@...";
+"button.state.sign_in.brief" = "Accedi";
+"button.state.saving_configuration" = "Salvataggio delle impostazioni in corso...";
+"button.state.connected" = "Collegato a";
+"button.state.disconnect" = "Scorri per scollegare";
+"button.state.disconnecting" = "Scollegamento in corso...";
+"button.state.disconnected" = "Scollegato";
+"button.email.placeholder" = "La tua email";
+"button.footer.email.invalid" = "Inserisci un indirizzo e-mail valido";
+"button.footer.loading.failed.postfix" = "Riprova";
+"button.state.connect" = "Collega %@";
+"button.state.connecting" = "Connessione";
+"button.footer.email.prefix" = "Protetto con IFTTT. Per saperne di più";
+"about.title_full" = "IFTTT si collega a %@ per %@";
+"about.connect" = "Sblocca nuove funzioni quando i tuoi elementi preferiti funzionano assieme";
+"about.control" = "Controlla quali servizi accedono ai tuoi dati e come li utilizzano";
+"about.security" = "Proteggi e monitora i tuoi dati";
+"about.manage" = "Scollegati quando vuoi";
+"about.legal.full" = "Utilizzando questo collegamento, l'utente accetta la nostra Informativa sulla privacy e termini";
+"button.footer.loading.failed.prefix" = "Assicurati che il tuo telefono sia collegato a Internet";
+"about.connection-deep-link" = "Gestisci";
+"about.legal.link" = "Informativa sulla privacy e termini";
+"button.footer.email.postfix" = "Per saperne di più";

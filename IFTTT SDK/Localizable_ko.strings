@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "로드 중...";
+"button.footer.works_with" = "함께 사용 가능";
+"button.state.verifying" = "확인 중...";
+"button.state.creating_account" = "계정을 만드는 중...";
+"button.footer.accountCreation" = "%@을(를) 위한 새 IFTTT 계정";
+"button.state.sign_in" = "%@(으)로 이동하는 중...";
+"button.state.sign_in.brief" = "로그인";
+"button.state.saving_configuration" = "설정 저장 중...";
+"button.state.connected" = "연결된 ";
+"button.state.disconnect" = "옆으로 밀어 연결 해제";
+"button.state.disconnecting" = "연결을 해제하는 중...";
+"button.state.disconnected" = "연결 해제됨";
+"button.email.placeholder" = "사용자 이메일";
+"button.footer.email.invalid" = "올바른 이메일 입력";
+"button.footer.loading.failed.postfix" = "재시도";
+"button.state.connect" = "%@에 연결";
+"button.state.connecting" = "연결 중";
+"button.footer.email.prefix" = "IFTTT로 보안 처리되었습니다. 자세히 알아보기";
+"about.title_full" = "IFTTT는 %@을(를) %@에 연결합니다.";
+"about.connect" = "즐겨 사용하는 장치를 함께 사용할 때 새 기능 잠금 해제";
+"about.control" = "데이터에 액세스하는 서비스와 사용하는 방법 제어";
+"about.security" = "데이터 보호 및 모니터링";
+"about.manage" = "언제든지 플러그 분리";
+"about.legal.full" = "이 연결 사용 시 당사의 개인정보 개인정보 및 약관";
+"button.footer.loading.failed.prefix" = "전화가 인터넷에 연결되었는지 확인";
+"about.connection-deep-link" = "관리";
+"about.legal.link" = "개인정보 및 약관";
+"button.footer.email.postfix" = "자세히 알아보기";

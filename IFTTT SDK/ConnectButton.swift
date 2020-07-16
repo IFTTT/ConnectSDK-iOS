@@ -311,7 +311,7 @@ public class ConnectButton: UIView {
     }
     
     private let footerLabelAnimator = LabelAnimator {
-        $0.numberOfLines = 1
+        $0.numberOfLines = 0
         $0.textAlignment = .center
         $0.lineBreakMode = .byTruncatingMiddle
     }    

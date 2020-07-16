@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Загрузка...";
+"button.footer.works_with" = "РАБОТАЕТ С";
+"button.state.verifying" = "Проверка...";
+"button.state.creating_account" = "Создание учетной записи...";
+"button.footer.accountCreation" = "Новая учетная запись IFTTT для %@";
+"button.state.sign_in" = "Переход к %@...";
+"button.state.sign_in.brief" = "Войти";
+"button.state.saving_configuration" = "Сохранение настроек...";
+"button.state.connected" = "Подключено: ";
+"button.state.disconnect" = "Проведите для отключения";
+"button.state.disconnecting" = "Отключение...";
+"button.state.disconnected" = "Отключено";
+"button.email.placeholder" = "Ваш адрес электронной почты";
+"button.footer.email.invalid" = "Введите действительный адрес";
+"button.footer.loading.failed.postfix" = "Повторить попытку";
+"button.state.connect" = "Подключить %@";
+"button.state.connecting" = "Подключение";
+"button.footer.email.prefix" = "Под защитой IFTTT. Узнайте больше";
+"about.title_full" = "IFTTT подключает %@ к %@";
+"about.connect" = "Откройте новые возможности благодаря взаимодействию ваших любимых вещей";
+"about.control" = "Контролируйте доступ различных служб к вашим данным и их использование";
+"about.security" = "Защищайте и отслеживайте свои данные";
+"about.manage" = "Вы можете отключиться в любой момент!";
+"about.legal.full" = "Используя это подключение, вы принимаете наши Политику конфиденциальности и Условия";
+"button.footer.loading.failed.prefix" = "Убедитесь, что телефон подключен к Интернету";
+"about.connection-deep-link" = "Управление";
+"about.legal.link" = "конфиденциальности и Условия";
+"button.footer.email.postfix" = "Узнайте больше";

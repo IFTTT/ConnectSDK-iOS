@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Laster inn ...";
+"button.footer.works_with" = "FUNGERER MED";
+"button.state.verifying" = "Kontrollerer ...";
+"button.state.creating_account" = "Oppretter konto ...";
+"button.footer.accountCreation" = "Ny IFTTT-konto for %@";
+"button.state.sign_in" = "Går til %@ ...";
+"button.state.sign_in.brief" = "Logg på";
+"button.state.saving_configuration" = "Lagrer innstillinger ...";
+"button.state.connected" = "Tilkoblet";
+"button.state.disconnect" = "Skyv for å koble fra";
+"button.state.disconnecting" = "Kobler fra ...";
+"button.state.disconnected" = "Frakoblet";
+"button.email.placeholder" = "E-postadressen din";
+"button.footer.email.invalid" = "Angi en gyldig e-postadresse";
+"button.footer.loading.failed.postfix" = "Prøv igjen";
+"button.state.connect" = "Koble til %@";
+"button.state.connecting" = "Kobler til";
+"button.footer.email.prefix" = "Sikret med IFTTT. Finn ut mer";
+"about.title_full" = "IFTTT kobler %@ til %@";
+"about.connect" = "Lås opp nye funksjoner når favorittingene dine samarbeider";
+"about.control" = "Kontroller hvilke tjenester som har tilgang til dataene dine og hvordan de bruker dem";
+"about.security" = "Beskytt og overvåk dataene dine";
+"about.manage" = "Koble ut når som helst";
+"about.legal.full" = "Ved å bruke denne koblingen, godtar du våre retningslinjer for Personvern og vilkår";
+"button.footer.loading.failed.prefix" = "Kontroller at telefonen har tilkobling til Internett";
+"about.connection-deep-link" = "Administrer";
+"about.legal.link" = "Personvern og vilkår";
+"button.footer.email.postfix" = "Finn ut mer";

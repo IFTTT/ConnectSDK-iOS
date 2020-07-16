@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Ladataan...";
+"button.footer.works_with" = "TOIMII SEURAAVIEN KANSSA:";
+"button.state.verifying" = "Vahvistetaan...";
+"button.state.creating_account" = "Tiliä luodaan...";
+"button.footer.accountCreation" = "Uusi IFTTT-tili käyttäjälle %@";
+"button.state.sign_in" = "Siirrytään kohteeseen %@...";
+"button.state.sign_in.brief" = "Kirjaudu";
+"button.state.saving_configuration" = "Asetuksia tallennetaan...";
+"button.state.connected" = "Yhdistetty: ";
+"button.state.disconnect" = "Katkaise yhteys liu'uttamalla";
+"button.state.disconnecting" = "Yhteys katkaistaan...";
+"button.state.disconnected" = "Yhteys katkaistu";
+"button.email.placeholder" = "Sähköpostiosoitteesi";
+"button.footer.email.invalid" = "Anna kelvollinen sähköpostiosoite";
+"button.footer.loading.failed.postfix" = "Yritä uudelleen";
+"button.state.connect" = "Yhdistä %@";
+"button.state.connecting" = "Yhdistetään";
+"button.footer.email.prefix" = "IFTTT-suojattu. Lisätietoja";
+"about.title_full" = "IFTTT yhdistää kohteen %@ kohteeseen %@";
+"about.connect" = "Kun lempiasiasi toimivat yhdessä, voit hyödyntää uusia ominaisuuksia";
+"about.control" = "Määritä, mitkä palvelut voivat käyttää tietojasi ja miten";
+"about.security" = "Suojaa ja tarkastele tietojasi";
+"about.manage" = "Poista käytöstä koska tahansa";
+"about.legal.full" = "Käyttämällä tätä yhteyttä hyväksyt Yksityisyys ja ehdot";
+"button.footer.loading.failed.prefix" = "Varmista, että puhelimesi on yhteydessä internetiin";
+"about.connection-deep-link" = "Hallinnoi";
+"about.legal.link" = "Yksityisyys ja ehdot";
+"button.footer.email.postfix" = "Lisätietoja";

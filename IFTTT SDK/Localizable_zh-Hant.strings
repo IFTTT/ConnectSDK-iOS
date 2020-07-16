@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "正在載入...";
+"button.footer.works_with" = "搭配使用";
+"button.state.verifying" = "驗證中...";
+"button.state.creating_account" = "正在建立帳戶...";
+"button.footer.accountCreation" = "%@​ 的 IFTTT 新帳戶";
+"button.state.sign_in" = "正在前往 %@...";
+"button.state.sign_in.brief" = "登入";
+"button.state.saving_configuration" = "正在儲存設定...";
+"button.state.connected" = "已連線";
+"button.state.disconnect" = "滑動以中斷連線";
+"button.state.disconnecting" = "正在中斷連線...";
+"button.state.disconnected" = "已中斷連線";
+"button.email.placeholder" = "您的電子郵件";
+"button.footer.email.invalid" = "輸入有效的電子郵件";
+"button.footer.loading.failed.postfix" = "重試";
+"button.state.connect" = "連線 %@";
+"button.state.connecting" = "正在連線";
+"button.footer.email.prefix" = "透過 IFTTT 保護。了解更多";
+"about.title_full" = "IFTTT 會將 %@ 連線至 %@";
+"about.connect" = "讓您喜愛的事物彼此合作，就能發掘出新功能";
+"about.control" = "控制哪些服務可存取您的資料，以及使用資料的方式";
+"about.security" = "保護並監控您的資料";
+"about.manage" = "隨時斷開";
+"about.legal.full" = "使用此連線，即表示您同意我們的隱私權與條款";
+"button.footer.loading.failed.prefix" = "請確定您的手機有網際網路連線";
+"about.connection-deep-link" = "管理";
+"about.legal.link" = "隱私權與條款";
+"button.footer.email.postfix" = "了解更多";
