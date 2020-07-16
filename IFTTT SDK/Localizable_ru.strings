@@ -1,3 +1,10 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
 "button.state.loading" = "Загрузка...";
 "button.footer.works_with" = "РАБОТАЕТ С";
 "button.state.verifying" = "Проверка...";

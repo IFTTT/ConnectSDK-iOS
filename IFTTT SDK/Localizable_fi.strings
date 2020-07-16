@@ -1,3 +1,10 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
 "button.state.loading" = "Ladataan...";
 "button.footer.works_with" = "TOIMII SEURAAVIEN KANSSA:";
 "button.state.verifying" = "Vahvistetaan...";

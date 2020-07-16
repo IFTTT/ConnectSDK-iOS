@@ -1,3 +1,10 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
 "button.state.loading" = "正在載入...";
 "button.footer.works_with" = "搭配使用";
 "button.state.verifying" = "驗證中...";

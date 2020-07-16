@@ -1,3 +1,10 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
 "button.state.loading" = "Caricamento...";
 "button.footer.works_with" = "FUNZIONA CON";
 "button.state.verifying" = "Verifica in corso...";
