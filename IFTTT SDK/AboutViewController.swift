@@ -358,7 +358,7 @@ private extension AboutViewController {
 
 private extension AboutViewController {
     final class ValuePropositionView: UIView {
-        init(icon: UIImage, text: String) {
+        init(icon: UIImage?, text: String) {
             super.init(frame: .zero)
             
             let iconView = UIImageView(image: icon)

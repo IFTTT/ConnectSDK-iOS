@@ -285,7 +285,7 @@ public class ConnectButton: UIView {
     /// - Parameters:
     ///   - placeholderText: The placeholder text for the email field when it is empty
     ///   - confirmButtonImage: The image asset to use for the email confirm button
-    func configureEmailField(placeholderText: String, confirmButtonAsset: UIImage) {
+    func configureEmailField(placeholderText: String, confirmButtonAsset: UIImage?) {
         emailEntryField.placeholder = placeholderText
         emailConfirmButton.imageView.image = confirmButtonAsset
     }
