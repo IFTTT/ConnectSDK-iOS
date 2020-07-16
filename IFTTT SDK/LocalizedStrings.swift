@@ -21,7 +21,7 @@ extension String {
         let table = "Localizable_\(localeIdentifier)"
         
         if let tablePath = bundle.path(forResource: table, ofType: "strings"),
-            FileManager.default.fileExists(atPath: tablePath){
+            FileManager.default.fileExists(atPath: tablePath) {
             return NSLocalizedString(self,
                                      tableName: table,
                                      bundle: bundle,
@@ -29,7 +29,9 @@ extension String {
                                      comment: "")
         }
         else {
-            print("The key \(self) wasn't found in a strings file with name \(table) in the the bundle. Will fallback to the Localizable.strings file. Try reinstalling the SDK and then perform a clean/rebuild")
+            #if DEBUG
+                print("The key \(self) wasn't found in a strings file with name \(table) in the the bundle. Will fallback to the Localizable.strings file. Try reinstalling the SDK and then perform a clean/rebuild")
+            #endif
             return NSLocalizedString(self, bundle: bundle, value: "", comment: "")
         }
     }
