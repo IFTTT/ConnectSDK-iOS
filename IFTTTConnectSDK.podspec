@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = "IFTTTConnectSDK"
-  spec.version          = "2.3.4"
+  spec.version          = "2.4.0"
   spec.summary          = "Allows your users to activate programmable IFTTT Connections directly in your app."
   spec.description      = <<-DESC
   - Easily authenticate your services to IFTTT through the Connect Button
