@@ -28,9 +28,16 @@ extension String {
                                      value: "",
                                      comment: "")
         }
-        else {
+        else if let languageCode = locale.languageCode,
+            let languageTableFallbackPath = bundle.path(forResource: "Localizable_\(languageCode)", ofType: "strings"),
+            FileManager.default.fileExists(atPath: languageTableFallbackPath) {
             #if DEBUG
-                print("The key \(self) wasn't found in a strings file with name \(table) in the the bundle. Will fallback to the Localizable.strings file. Try reinstalling the SDK and then perform a clean/rebuild")
+                print("The key \(self) wasn't found in a strings file with name \(table) in the the bundle. Will try to fallback to Localizable_\(languageCode).strings file. Try reinstalling the SDK and then perform a clean/rebuild")
+            #endif
+            return NSLocalizedString(self, tableName: "Localizable_\(languageCode)", bundle: bundle, value: "", comment: "")
+        } else {
+            #if DEBUG
+                print("The key \(self) wasn't found in a strings file with name \(table) in the the bundle. Will try to fallback to Localizable.strings file. Try reinstalling the SDK and then perform a clean/rebuild")
             #endif
             return NSLocalizedString(self, bundle: bundle, value: "", comment: "")
         }

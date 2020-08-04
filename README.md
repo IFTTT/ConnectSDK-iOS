@@ -379,7 +379,6 @@ Text translation is supported for the following languages:
 * German (de)
 * Spanish (es)
 * Spanish - Latin America and Caribbean region (es-419)
-* Spanish - United States (es-US)
 * Finnish (fi)
 * French (fr)
 * French - Canada (fr-CA)
