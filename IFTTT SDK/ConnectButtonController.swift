@@ -163,8 +163,18 @@ public class ConnectButtonController {
     private let connectionVerificationSession: ConnectionVerificationSession
     
     /// The locale that will be used for localizing the flow.
-    static var locale: Locale = Locale.current
+    static var locale: Locale = {
+        return determineLocale()
+    }()
 
+    /// Determines the locale to use based on the user's preferred language and falls back to the current `Locale` chosen by the user.
+    ///
+    /// - Returns: The `Locale` to use in localizing the flow.
+    public static func determineLocale() -> Locale {
+        guard let preferredLanguage = Locale.preferredLanguages.first else { return .current }
+        return Locale(identifier: preferredLanguage)
+    }
+    
     /// Creates a new `ConnectButtonController`.
     ///
     /// - Parameters:
@@ -174,7 +184,7 @@ public class ConnectButtonController {
     ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
     public init(connectButton: ConnectButton,
                 connectionConfiguration: ConnectionConfiguration,
-                locale: Locale = Locale.current,
+                locale: Locale = determineLocale(),
                 delegate: ConnectButtonControllerDelegate) {
         self.button = connectButton
 
