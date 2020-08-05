@@ -32,6 +32,27 @@
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
 		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
+		DE29EA5E24DAFC7B00F6F356 /* Localizable_cs.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C0C24C0AAE70094D33B /* Localizable_cs.strings */; };
+		DE29EA5F24DAFC7B00F6F356 /* Localizable_da.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C0D24C0AAF90094D33B /* Localizable_da.strings */; };
+		DE29EA6024DAFC7B00F6F356 /* Localizable_de.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C0E24C0AB040094D33B /* Localizable_de.strings */; };
+		DE29EA6124DAFC7B00F6F356 /* Localizable_en-GB.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C0F24C0AB0B0094D33B /* Localizable_en-GB.strings */; };
+		DE29EA6224DAFC7B00F6F356 /* Localizable_es-419.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1024C0AB160094D33B /* Localizable_es-419.strings */; };
+		DE29EA6324DAFC7B00F6F356 /* Localizable_es.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1124C0AB230094D33B /* Localizable_es.strings */; };
+		DE29EA6424DAFC7B00F6F356 /* Localizable_fi.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1224C0AB2B0094D33B /* Localizable_fi.strings */; };
+		DE29EA6524DAFC7B00F6F356 /* Localizable_fr-CA.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1324C0AB380094D33B /* Localizable_fr-CA.strings */; };
+		DE29EA6624DAFC7B00F6F356 /* Localizable_fr.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1424C0AB480094D33B /* Localizable_fr.strings */; };
+		DE29EA6724DAFC7B00F6F356 /* Localizable_it.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1524C0AB4F0094D33B /* Localizable_it.strings */; };
+		DE29EA6824DAFC7B00F6F356 /* Localizable_ja.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1624C0AB5F0094D33B /* Localizable_ja.strings */; };
+		DE29EA6924DAFC7B00F6F356 /* Localizable_ko.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1724C0AB680094D33B /* Localizable_ko.strings */; };
+		DE29EA6A24DAFC7B00F6F356 /* Localizable_nb.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1824C0AB6F0094D33B /* Localizable_nb.strings */; };
+		DE29EA6B24DAFC7B00F6F356 /* Localizable_nl.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1924C0AB7A0094D33B /* Localizable_nl.strings */; };
+		DE29EA6C24DAFC7B00F6F356 /* Localizable_pl.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1A24C0AB8D0094D33B /* Localizable_pl.strings */; };
+		DE29EA6D24DAFC7B00F6F356 /* Localizable_pt-BR.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1B24C0AB950094D33B /* Localizable_pt-BR.strings */; };
+		DE29EA6E24DAFC7B00F6F356 /* Localizable_pt-PT.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1C24C0ABA10094D33B /* Localizable_pt-PT.strings */; };
+		DE29EA6F24DAFC7B00F6F356 /* Localizable_ru.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1D24C0ABAB0094D33B /* Localizable_ru.strings */; };
+		DE29EA7024DAFC7B00F6F356 /* Localizable_sv.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C1F24C0ABBA0094D33B /* Localizable_sv.strings */; };
+		DE29EA7124DAFC7B00F6F356 /* Localizable_zh-Hans.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C2024C0ABC80094D33B /* Localizable_zh-Hans.strings */; };
+		DE29EA7224DAFC7B00F6F356 /* Localizable_zh-Hant.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C2124C0ABD90094D33B /* Localizable_zh-Hant.strings */; };
 		DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F52492429404200EF986A /* Connection+Location.swift */; };
 		DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */; };
 		DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */; };
@@ -535,9 +556,30 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE29EA6024DAFC7B00F6F356 /* Localizable_de.strings in Resources */,
+				DE29EA6324DAFC7B00F6F356 /* Localizable_es.strings in Resources */,
+				DE29EA6B24DAFC7B00F6F356 /* Localizable_nl.strings in Resources */,
+				DE29EA6C24DAFC7B00F6F356 /* Localizable_pl.strings in Resources */,
+				DE29EA6824DAFC7B00F6F356 /* Localizable_ja.strings in Resources */,
+				DE29EA6524DAFC7B00F6F356 /* Localizable_fr-CA.strings in Resources */,
+				DE29EA7124DAFC7B00F6F356 /* Localizable_zh-Hans.strings in Resources */,
+				DE29EA5F24DAFC7B00F6F356 /* Localizable_da.strings in Resources */,
 				DED00F9524990BBD00C8E618 /* Localizable_en-US.strings in Resources */,
+				DE29EA5E24DAFC7B00F6F356 /* Localizable_cs.strings in Resources */,
 				DED00F9724990C3800C8E618 /* Localizable.strings in Resources */,
+				DE29EA6924DAFC7B00F6F356 /* Localizable_ko.strings in Resources */,
+				DE29EA6D24DAFC7B00F6F356 /* Localizable_pt-BR.strings in Resources */,
+				DE29EA7024DAFC7B00F6F356 /* Localizable_sv.strings in Resources */,
+				DE29EA6624DAFC7B00F6F356 /* Localizable_fr.strings in Resources */,
+				DE29EA6124DAFC7B00F6F356 /* Localizable_en-GB.strings in Resources */,
+				DE29EA6724DAFC7B00F6F356 /* Localizable_it.strings in Resources */,
+				DE29EA6224DAFC7B00F6F356 /* Localizable_es-419.strings in Resources */,
+				DE29EA6424DAFC7B00F6F356 /* Localizable_fi.strings in Resources */,
 				DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */,
+				DE29EA6A24DAFC7B00F6F356 /* Localizable_nb.strings in Resources */,
+				DE29EA6F24DAFC7B00F6F356 /* Localizable_ru.strings in Resources */,
+				DE29EA7224DAFC7B00F6F356 /* Localizable_zh-Hant.strings in Resources */,
+				DE29EA6E24DAFC7B00F6F356 /* Localizable_pt-PT.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,6 +810,7 @@
 		FCBA15FF21389F7500EB1BC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
@@ -781,6 +824,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 2.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDK";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -793,6 +837,7 @@
 		FCBA160021389F7500EB1BC8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
@@ -806,6 +851,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 2.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDK";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
