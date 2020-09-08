@@ -12,7 +12,7 @@ import AuthenticationServices
 class ConnectionViewController: UIViewController {
     
     struct Constants {
-        static let connectionId = "zG58W2uC"
+        static let connectionId = "fWj4fxYg"
     }
     
     // MARK: - UI
@@ -39,6 +39,7 @@ class ConnectionViewController: UIViewController {
         
         connectButtonController = ConnectButtonController(connectButton: connectButton,
                                                           connectionConfiguration: configuration,
+                                                          locale: settings.locale,
                                                           delegate: self)
     }
     
@@ -52,7 +53,8 @@ class ConnectionViewController: UIViewController {
             let connectionConfiguration = ConnectionConfiguration(connectionId: id,
                                                                   suggestedUserEmail: self.connectionCredentials.email,
                                                                   credentialProvider: self.connectionCredentials,
-                                                                  redirectURL: AppDelegate.connectionRedirectURL)
+                                                                  redirectURL: AppDelegate.connectionRedirectURL,
+                                                                  skipConnectionConfiguration: settings.skipConnectionConfiguration)
             self.setupConnectButtonController(connectionConfiguration)
         } else {
             activityIndicator.startAnimating()
@@ -67,7 +69,8 @@ class ConnectionViewController: UIViewController {
                     let connectionConfiguration = ConnectionConfiguration(connection: connection,
                                                                           suggestedUserEmail: self.connectionCredentials.email,
                                                                           credentialProvider: self.connectionCredentials,
-                                                                          redirectURL: AppDelegate.connectionRedirectURL)
+                                                                          redirectURL: AppDelegate.connectionRedirectURL,
+                                                                          skipConnectionConfiguration: self.settings.skipConnectionConfiguration)
                     self.setupConnectButtonController(connectionConfiguration)
                     
                 case .failure:

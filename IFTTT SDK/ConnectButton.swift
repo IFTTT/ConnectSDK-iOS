@@ -278,7 +278,7 @@ public class ConnectButton: UIView {
     /// - Parameters:
     ///   - placeholderText: The placeholder text for the email field when it is empty
     ///   - confirmButtonImage: The image asset to use for the email confirm button
-    func configureEmailField(placeholderText: String, confirmButtonAsset: UIImage) {
+    func configureEmailField(placeholderText: String, confirmButtonAsset: UIImage?) {
         emailEntryField.placeholder = placeholderText
         emailConfirmButton.imageView.image = confirmButtonAsset
     }
@@ -311,7 +311,7 @@ public class ConnectButton: UIView {
     }
     
     private let footerLabelAnimator = LabelAnimator {
-        $0.numberOfLines = 1
+        $0.numberOfLines = 0
         $0.textAlignment = .center
         $0.lineBreakMode = .byTruncatingMiddle
     }    
@@ -566,6 +566,15 @@ private extension ConnectButton {
     
     private func transitionToLoadingFailed() {
         stopPulseAnimation()
+        resetEmailState()
+    }
+    
+    private func resetEmailState() {
+        emailEntryField.text = nil
+        emailEntryField.alpha = 0.0
+        emailConfirmButton.transform = .identity
+        emailConfirmButton.maskedEndCaps = .all
+        emailConfirmButton.alpha = 0
     }
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
@@ -574,6 +583,8 @@ private extension ConnectButton {
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
         switchControl.configure(with: service, networkController: self.imageViewNetworkController, trackColor: trackColor)
         emailConfirmButton.backgroundColor = service.brandColor
+        
+        resetEmailState()
         
         animator.addAnimations {
             self.progressBar.alpha = 0

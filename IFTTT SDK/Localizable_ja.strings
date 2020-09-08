@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "読み込み中…";
+"button.footer.works_with" = "以下と連携";
+"button.state.verifying" = "確認中...";
+"button.state.creating_account" = "アカウントを作成中...";
+"button.footer.accountCreation" = "%@の新規アカウント";
+"button.state.sign_in" = "%@に移動中...";
+"button.state.sign_in.brief" = "サインイン";
+"button.state.saving_configuration" = "設定を保存中...";
+"button.state.connected" = "接続済み";
+"button.state.disconnect" = "スライドして切断";
+"button.state.disconnecting" = "接続解除中...";
+"button.state.disconnected" = "切断済み";
+"button.email.placeholder" = "電子メール";
+"button.footer.email.invalid" = "有効な電子メールの入力";
+"button.footer.loading.failed.postfix" = "再試行";
+"button.state.connect" = "%@に接続";
+"button.state.connecting" = "接続中";
+"button.footer.email.prefix" = "IFTTTで保護 詳細を確認する";
+"about.title_full" = "IFTTTは%@を%@に接続します";
+"about.connect" = "お気に入りのものを連携すると、新しい機能を利用できます";
+"about.control" = "データにアクセスするサービスとその使用方法を制御します";
+"about.security" = "データを保護し、監視します";
+"about.manage" = "いつでも停止可能";
+"about.legal.full" = "この接続を使用すると、プライバシーと利用規約に同意したことになります";
+"button.footer.loading.failed.prefix" = "スマートフォンがインターネットに接続されていることを確認してください";
+"about.connection-deep-link" = "管理";
+"about.legal.link" = "プライバシーと利用規約";
+"button.footer.email.postfix" = "詳細を確認する";

@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Läser in ...";
+"button.footer.works_with" = "FUNGERAR MED";
+"button.state.verifying" = "Verifierar…";
+"button.state.creating_account" = "Skapar konto…";
+"button.footer.accountCreation" = "Nytt IFTTT-konto för %@";
+"button.state.sign_in" = "Går till %@…";
+"button.state.sign_in.brief" = "Logga in";
+"button.state.saving_configuration" = "Spara inställningar…";
+"button.state.connected" = "Ansluten till ";
+"button.state.disconnect" = "Skjut för att koppla från";
+"button.state.disconnecting" = "Kopplar från…";
+"button.state.disconnected" = "Frånkopplad";
+"button.email.placeholder" = "Din e-postadress";
+"button.footer.email.invalid" = "Ange en giltig e-postadress";
+"button.footer.loading.failed.postfix" = "Försök igen";
+"button.state.connect" = "Anslut %@";
+"button.state.connecting" = "Ansluter";
+"button.footer.email.prefix" = "Skyddad med IFTTT. Läs mer";
+"about.title_full" = "IFTTT ansluter %@ till %@";
+"about.connect" = "Upptäck nya funktioner när dina favoritsaker arbetar tillsammans";
+"about.control" = "Styr vilka tjänster som kommer åt dina uppgifter och hur de använder dem";
+"about.security" = "Skydda och övervaka dina uppgifter";
+"about.manage" = "Koppla ur när som helst";
+"about.legal.full" = "Genom att använda den här anslutningen accepterar du vår Sekretesspolicy och våra villkor";
+"button.footer.loading.failed.prefix" = "Kontrollera att din telefon har en Internetanslutning";
+"about.connection-deep-link" = "Hantera";
+"about.legal.link" = "Sekretesspolicy och våra villkor";
+"button.footer.email.postfix" = "Läs mer";

@@ -199,6 +199,7 @@ This configuration type provides information about the `Connection` that you wis
 2) `suggestedUserEmail`: The email address that your user uses for your service. This allows us to prefill the email. 
 3) `credentialProvider`: The `ConnectionCredentialProvider` you set up in [Setup](#setup)
 4) `redirectURL`: The redirect URL you configured in [Setup](#setup)
+5) `skipConnectionConfiguration`: A boolean value that allows for the connection configuration to be skipped. See [Configuration skipping](https://github.com/IFTTT/ConnectSDK-iOS#configuration-skipping) for more information.
 
 #### ConnectButtonControllerDelegate
 `ConnectButtonControllerDelegate` communicates important information back to your app.
@@ -354,3 +355,46 @@ By default, the SDK will track user interactions when users interact with the Co
 
 #### Disable tracking
 You may set `ConnectButtonController.analyticsEnabled = false` if you wish to opt-out from tracking. After this method is called, all tracking will be disabled for all of the ConnectButton instances within the app for as long as it is in-memory. If you want to persist the user's preference for disabling tracking, you should store the preference within your persistent storage, and set this variable every time the app is started.
+
+### Localization
+The Connect Button and the corresponding flow can display translated text that is different from the user's current locale. To pass in a different locale, pass in a Swift `Locale` object for the `locale` parameter of the `ConnectButtonController` initializer. For example, if the Connect Button is to be displayed in Latin American Spanish:
+```
+let locale = Locale(identifier: "es-419")
+let config = ConnectionConfiguration(connection: connection, 
+                                      suggestedUserEmail: yourUsersEmail,
+                                      credentialProvider: yourCredentialProvider,
+                                      connectAuthorizationRedirectURL: theRedirectURLForYourIFTTTService)
+let controller = ConnectButtonController(connectButton: self.connectButton,
+                                         connectionConfiguration: config,
+                                         locale: locale,
+                                         delegate: self)
+```
+If no translations are found for a locale passed in for this parameter, the Connect Button and the corresponding flow will be displayed in English. If no value is provided for the `locale` parameter, a default value of `Locale.current` will be used.
+
+Text translation is supported for the following languages:
+* English - United States (en-US)
+* English - United Kingdom (en-GB)
+* Czech (cs)
+* Danish (da)
+* German (de)
+* Spanish (es)
+* Spanish - Latin America and Caribbean region (es-419)
+* Finnish (fi)
+* French (fr)
+* French - Canada (fr-CA)
+* Italian (it)
+* Japanese (ja)
+* Korean (ko)
+* Norwegian-Bokmål (nb)
+* Dutch (nl)
+* Polish (pl)
+* Portuguese - Brazil (pt-BR)
+* Portuguese - Portugal (pt-PT)
+* Russian (ru)
+* Swedish (sv)
+* Simplified Chinese (zh-Hans)
+* Traditional Chinese (zh-Hant)
+
+### Configuration skipping
+You can use the `skipConnectionConfiguration` parameter on the `ConnectionConfiguration` initializer if you want to use your own connection configuration UI. Setting this parameter to `true` will instruct IFTTT to skip the connection configuration screen. This parameter defaults to `false`. Once a user clicks the connect button they will be taken through the usual connection flow however they will not see the connection configuration screen but will be redirected back to your app instead. After that you will be able to use the [field options endpoint](https://platform.ifttt.com/docs/connect_api#field-options) and the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection) to support your UI and allow the user to configure the connection. A user connection created with `skipConnectionConfiguration=true` is considered pending 
+and will not fire it's triggers or allow you to run it's actions or queries until it's updated using the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection). This feature is available <a href="mailto:platform-support+via-docs-connection-api@ifttt.com" class="open_intercom_messenger">upon request</a>.

@@ -36,7 +36,7 @@ class PillButton: PillView {
         }
     }
     
-    init(_ image: UIImage, _ configure: ((PillButton) -> Void)? = nil) {
+    init(_ image: UIImage?, _ configure: ((PillButton) -> Void)? = nil) {
         super.init()
         
         addSubview(imageView)

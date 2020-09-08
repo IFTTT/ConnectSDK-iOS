@@ -10,9 +10,6 @@ import Foundation
 /// Factory for building `NSAttributedString` with links for Terms of Use and our Privacy Policy
 struct LegalTermsText {
     
-    /// The link text for our Privacy & Terms of Use
-    private static let privacyAndTerms = "about.legal.link".localized
-    
     /// Creates a string with links to IFTTT's terms of service and privacy policy
     /// Prefix text is added before the links in the format "[prefix text] Terms_of_Use and Privacy_Policy"
     ///
@@ -23,7 +20,7 @@ struct LegalTermsText {
     static func string(withPrefix prefix: String, activateLinks: Bool = true, attributes: [NSAttributedString.Key : Any]) -> NSAttributedString {
         let text = NSMutableAttributedString(string: prefix, attributes: attributes)
         
-        text.addLink(text: privacyAndTerms,
+        text.addLink(text: "about.legal.link".localized,
                      to: Links.privacyAndTerms,
                      activateLinks: activateLinks,
                      attributes: attributes)
@@ -37,12 +34,10 @@ private extension NSMutableAttributedString {
     /// Adds a link to a url for a text snippet
     ///
     /// - Parameters:
-    ///   - text: The text for the link
+    ///   - text: The text that have a link added to.
     ///   - activateLinks: Adds the link attribute to the string
     ///   - url: The URL to link to
     func addLink(text: String, to url: URL, activateLinks: Bool, attributes: [NSAttributedString.Key : Any]) {
-        append(NSAttributedString(string: text, attributes: attributes))
-        
         let range = mutableString.range(of: text)
         assert(range.location != NSNotFound, "This should never happen but if it does, the `text` may include some special characters.")
         if range.location != NSNotFound {

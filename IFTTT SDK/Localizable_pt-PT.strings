@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "A carregar";
+"button.footer.works_with" = "FUNCIONA COM";
+"button.state.verifying" = "A verificar...";
+"button.state.creating_account" = "A criar conta...";
+"button.footer.accountCreation" = "Nova conta IFTTT para %@";
+"button.state.sign_in" = "A ir para %@...";
+"button.state.sign_in.brief" = "Iniciar sessão";
+"button.state.saving_configuration" = "A guardar definições...";
+"button.state.connected" = " ligado";
+"button.state.disconnect" = "Deslize para desligar";
+"button.state.disconnecting" = "A desligar...";
+"button.state.disconnected" = "Desligado";
+"button.email.placeholder" = "O seu e-mail";
+"button.footer.email.invalid" = "Introduza um e-mail válido";
+"button.footer.loading.failed.postfix" = "Repetir";
+"button.state.connect" = "Estabelecer ligação a %@";
+"button.state.connecting" = "A ligar";
+"button.footer.email.prefix" = "Protegido com IFTTT. Mais informações";
+"about.title_full" = "IFTTT liga %@ para %@";
+"about.connect" = "Desbloqueie novas funcionalidades quando os seus equipamentos favoritos trabalham em conjunto";
+"about.control" = "Controle que serviços acedem aos seus dados e como utilizá-los";
+"about.security" = "Proteja e monitorize os seus dados";
+"about.manage" = "Desligue em qualquer altura";
+"about.legal.full" = "A utilizar esta ligação, concorda com os nossos Termos e Privacidade";
+"button.footer.loading.failed.prefix" = "Certifique-se de que o seu telefone tem ligação à Internet";
+"about.connection-deep-link" = "Gerir";
+"about.legal.link" = "Termos e Privacidade";
+"button.footer.email.postfix" = "Mais informações";

@@ -361,8 +361,7 @@
 			baseConfigurationReference = 1E50F2200F82A42DEACE84AD /* Pods-Grocery Express.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 35;
 				INFOPLIST_FILE = GroceryExpress/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -371,6 +370,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.sdk.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "SDK Example Dev";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -381,8 +381,7 @@
 			baseConfigurationReference = D8E3AD91754C0A77D3B12E00 /* Pods-Grocery Express.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 35;
 				INFOPLIST_FILE = GroceryExpress/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (

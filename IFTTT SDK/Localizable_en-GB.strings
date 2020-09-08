@@ -1,41 +1,35 @@
-/* 
+/*
   Localizable.strings
   IFTTT SDK
 
   Copyright © 2018 IFTTT. All rights reserved.
 */
 
-"common.cancel" = "Cancel";
-
 "button.state.loading" = "Loading...";
-"button.state.connect" = "Connect %@";
+"button.footer.works_with" = "WORKS WITH";
 "button.state.verifying" = "Verifying...";
 "button.state.creating_account" = "Creating account...";
+"button.footer.accountCreation" = "New IFTTT account for %@";
 "button.state.sign_in" = "Going to %@...";
 "button.state.sign_in.brief" = "Sign in";
 "button.state.saving_configuration" = "Saving settings...";
-"button.state.connecting" = "Connecting...";
-"button.state.connected" = "Connected";
+"button.state.connected" = "Connected ";
 "button.state.disconnect" = "Slide to disconnect";
 "button.state.disconnecting" = "Disconnecting...";
 "button.state.disconnected" = "Disconnected";
-
 "button.email.placeholder" = "Your email";
-
-"button.footer.works_with" = "WORKS WITH";
 "button.footer.email.invalid" = "Enter valid email";
-"button.footer.loading.failed.prefix" = "Make sure your phone has internet connection.";
 "button.footer.loading.failed.postfix" = "Retry";
+"button.state.connect" = "Connect %@";
+"button.state.connecting" = "Connecting...";
 "button.footer.email.prefix" = "Secured with IFTTT. Learn More";
-"button.footer.email.postfix" = "Learn more";
-"button.footer.accountCreation" = "New IFTTT account for %@";
-
 "about.title_full" = "IFTTT connects %@ to %@";
-"about.connect" = "Unlock new features when your favorite things work together";
+"about.connect" = "Unlock new features when your favourite things work together";
 "about.control" = "Control which services access your data and how they use it";
 "about.security" = "Protect and monitor your data";
 "about.manage" = "Unplug any time";
-"about.connection-deep-link" = "Manage";
 "about.legal.full" = "By using this connection, you agree to our Privacy & Terms";
-"about.legal.prefix" = "By using this connection you agree to our ";
+"button.footer.loading.failed.prefix" = "Make sure your phone has internet connection";
+"about.connection-deep-link" = "Manage";
 "about.legal.link" = "Privacy & Terms";
+"button.footer.email.postfix" = "Learn more";

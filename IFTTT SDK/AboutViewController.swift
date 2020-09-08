@@ -81,9 +81,11 @@ class AboutViewController: UIViewController {
             /// The about page title
             static func titleText(connects primaryService: Connection.Service,
                                   with secondaryService: Connection.Service) -> NSAttributedString {
-                let rawText = "about.title".localized(with: primaryService.shortName,
-                                                      secondaryService.shortName)
-                let text = NSMutableAttributedString(string: rawText,
+                let rawText = "about.title_full".localized(with: primaryService.shortName,
+                                                           secondaryService.shortName)
+                let iftttRemoved = rawText.replacingOccurrences(of: "IFTTT", with: "")
+                
+                let text = NSMutableAttributedString(string: iftttRemoved,
                                                      attributes: [.font : UIFont.h3(weight: .demiBold)])
                 let ifttt = NSAttributedString(string: "IFTTT",
                                                attributes: [.font : UIFont.h3(weight: .heavy)])
@@ -93,9 +95,9 @@ class AboutViewController: UIViewController {
             
             /// The text for legal terms
             static var legalTermsText: NSAttributedString {
-                return LegalTermsText.string(withPrefix: "about.legal.prefix".localized,
-                                                              attributes: [.foregroundColor : Color.mediumGrey,
-                                                                           .font : UIFont.body(weight: .demiBold)])
+                return LegalTermsText.string(withPrefix: "about.legal.full".localized,
+                                             attributes: [.foregroundColor : Color.mediumGrey,
+                                                          .font : UIFont.body(weight: .demiBold)])
             }
         }
     }
@@ -358,7 +360,7 @@ private extension AboutViewController {
 
 private extension AboutViewController {
     final class ValuePropositionView: UIView {
-        init(icon: UIImage, text: String) {
+        init(icon: UIImage?, text: String) {
             super.init(frame: .zero)
             
             let iconView = UIImageView(image: icon)

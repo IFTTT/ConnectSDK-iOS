@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Bezig met laden...";
+"button.footer.works_with" = "WERKT MET";
+"button.state.verifying" = "Bezig met controleren...";
+"button.state.creating_account" = "Account maken...";
+"button.footer.accountCreation" = "Nieuw IFTTT-account voor %@";
+"button.state.sign_in" = "Gaat %@ naar...";
+"button.state.sign_in.brief" = "Aanmelden";
+"button.state.saving_configuration" = "Instellingen opslaan...";
+"button.state.connected" = "Verbonden";
+"button.state.disconnect" = "Schuiven om verbinding te verbreken";
+"button.state.disconnecting" = "Verbinding verbreken...";
+"button.state.disconnected" = "Verbinding verbroken";
+"button.email.placeholder" = "Uw e-mail";
+"button.footer.email.invalid" = "Vul een geldig e-mailadres in";
+"button.footer.loading.failed.postfix" = "Opnieuw proberen";
+"button.state.connect" = "Verbinden met %@";
+"button.state.connecting" = "Verbinding maken";
+"button.footer.email.prefix" = "Beveiligd met IFTTT. Meer informatie";
+"about.title_full" = "IFTTT verbindt %@ met %@";
+"about.connect" = "Ontgrendel nieuwe functies wanneer uw favoriete dingen samenwerken";
+"about.control" = "Bepaal welke services toegang hebben tot uw gegevens en hoe ze deze gebruiken";
+"about.security" = "Uw gegevens beschermen en controleren";
+"about.manage" = "Op elk gewenst moment loskoppelen";
+"about.legal.full" = "Door deze verbinding te gebruiken, gaat u akkoord met onze Privacy en voorwaarden";
+"button.footer.loading.failed.prefix" = "Zorg dat uw telefoon een internetverbinding heeft";
+"about.connection-deep-link" = "Beheren";
+"about.legal.link" = "Privacy en voorwaarden";
+"button.footer.email.postfix" = "Meer informatie";

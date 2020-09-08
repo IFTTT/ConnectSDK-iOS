@@ -21,8 +21,9 @@ final class ConnectionVerificationSession {
     /// Dismisses a authentication session in progress. Call this once after the redirect is complete.
     ///
     /// - Parameters:
+    ///     - isUserCancelled: True if the dismissal was user initiated.
     ///     - completion: A closure that gets called after the dismissal is complete.
-    func dismiss(completion: @escaping VoidClosure) {
+    func dismiss(isUserCancelled: Bool, completion: @escaping VoidClosure) {
         guard let authProvider = authProvider else {
             // If we don't have an auth provider, call the completion handler right away.
             completion()
@@ -30,7 +31,9 @@ final class ConnectionVerificationSession {
         }
         switch authProvider {
         case .authSession(let authSession):
-            authSession.cancel()
+            if !isUserCancelled {
+                authSession.cancel()
+            }
             completion()
         case .safari(let safariViewController):
             safariViewController.dismiss(animated: true, completion: completion)
@@ -45,7 +48,7 @@ final class ConnectionVerificationSession {
     ///     - presentationContext: The `UIWindow` instance to use in presenting the web auth flow. The system may present an alert.
     @available(iOS 13.0, *)
     func start(with url: URL, in presentationContext: UIWindow) {
-        let authenticationMethod = AuthenticationSession.AuthenticationMethod.oauth(url: url, callbackURLScheme: nil)
+        let authenticationMethod = AuthenticationSession.AuthenticationMethod.oauth(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)
         let authenticationSession = AuthenticationSession(method: authenticationMethod, presentationContext: presentationContext) { [weak self] (result) in
             switch result {
             case .success(let result):
@@ -129,6 +132,15 @@ final class ConnectionVerificationSession {
         case authSession(AuthenticationSession)
         
         case safari(SFSafariViewController)
+        
+        func cancel() {
+            switch self {
+            case .authSession(let session):
+                session.cancel()
+            case .safari(let vc):
+                vc.dismiss(animated: true, completion: nil)
+            }
+        }
     }
     
     /// Hold on to the instance of the authentication session so it is not deallocated
@@ -162,6 +174,8 @@ final class ConnectionVerificationSession {
     private var cancellationObserver: CancellationObserver?
     
     deinit {
+        authProvider?.cancel()
+        authProvider = nil
         NotificationCenter.default.removeObserver(self)
     }
 }

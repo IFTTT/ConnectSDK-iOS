@@ -1,0 +1,35 @@
+/*
+  Localizable.strings
+  IFTTT SDK
+
+  Copyright © 2018 IFTTT. All rights reserved.
+*/
+
+"button.state.loading" = "Načítání…";
+"button.footer.works_with" = "FUNGUJE S";
+"button.state.verifying" = "Ověřování...";
+"button.state.creating_account" = "Vytváření účtu...";
+"button.footer.accountCreation" = "Nový účet IFTTT pro %@";
+"button.state.sign_in" = "Přechod na %@...";
+"button.state.sign_in.brief" = "Přihlásit se";
+"button.state.saving_configuration" = "Ukládání nastavení...";
+"button.state.connected" = "Připojeno";
+"button.state.disconnect" = "Posunutím odpojit";
+"button.state.disconnecting" = "Odpojování...";
+"button.state.disconnected" = "Odpojeno";
+"button.email.placeholder" = "Váš e-mail";
+"button.footer.email.invalid" = "Zadejte platný e-mail";
+"button.footer.loading.failed.postfix" = "Zkusit znovu";
+"button.state.connect" = "Připojit %@";
+"button.state.connecting" = "Připojování";
+"button.footer.email.prefix" = "Zabezpečeno pomocí IFTTT. Další informace";
+"about.title_full" = "IFTTT propojuje %@ s %@";
+"about.connect" = "Získejte nové funkce, kdy budou vaše oblíbené věci spolupracovat";
+"about.control" = "Ovládejte, které služby mají přístup k vašim údajům a jak je využívají";
+"about.security" = "Chraňte a monitorujte své údaje";
+"about.manage" = "Můžete kdykoli odpojit";
+"about.legal.full" = "Využíváním tohoto propojení vyjadřujete souhlas Ochrana soukromí a smluvní podmínky";
+"button.footer.loading.failed.prefix" = "Zkontrolujte, že má váš telefon přístup k internetu";
+"about.connection-deep-link" = "Spravovat";
+"about.legal.link" = "Ochrana soukromí a smluvní podmínky";
+"button.footer.email.postfix" = "Další informace";
