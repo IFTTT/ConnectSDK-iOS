@@ -26,11 +26,13 @@ public final class ConnectionsSynchronizer {
     private let scheduler: SynchronizationScheduler
     private let location: LocationService
     private let connectionsMonitor: ConnectionsMonitor
+    private let connectionsRegistry: ConnectionsRegistry
     
     /// Creates an instance of the `ConnectionsSynchronizer`.
     private init() {
         let location = LocationService(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
-        let connectionsMonitor = ConnectionsMonitor(location: location)
+        self.connectionsRegistry = ConnectionsRegistry()
+        let connectionsMonitor = ConnectionsMonitor(location: location, connectionsRegistry: connectionsRegistry)
         
         let subscribers: [SynchronizationSubscriber] = [
             connectionsMonitor

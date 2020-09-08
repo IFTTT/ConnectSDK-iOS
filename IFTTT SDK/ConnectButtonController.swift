@@ -122,7 +122,6 @@ public class ConnectButtonController {
         connection?.status = .enabled
         
         if let connection = connection {
-            ConnectionsRegistry.shared.update(with: connection)
             Analytics.shared.track(.StateChange,
                                    object: connection,
                                    state: state)
@@ -133,6 +132,7 @@ public class ConnectButtonController {
     }
     
     private func handleActivationFailed(error: ConnectButtonControllerError) {
+        ConnectButtonController.isCurrentlyEnablingConnection = false
         delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error))
     }
     
@@ -140,7 +140,7 @@ public class ConnectButtonController {
         connection?.status = .disabled
         
         if let connection = connection {
-            ConnectionsRegistry.shared.update(with: connection)
+            connectionsRegistry.update(with: connection)
             delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
     }
@@ -157,6 +157,7 @@ public class ConnectButtonController {
     public private(set) weak var delegate: ConnectButtonControllerDelegate?
 
     private let connectionConfiguration: ConnectionConfiguration
+    private let connectionsRegistry = ConnectionsRegistry()
     private let connectionHandoffFlow: ConnectionHandoffFlow
     private let connectionNetworkController = ConnectionNetworkController()
     private let serviceIconNetworkController = ServiceIconsNetworkController()
@@ -257,6 +258,7 @@ public class ConnectButtonController {
             return
         }
         
+        connectionsRegistry.update(with: connection)
         Analytics.shared.track(.Impression,
                                location: .connectButtonImpression,
                                object: connection)

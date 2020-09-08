@@ -30,10 +30,10 @@ final class LocationService: NSObject {
 }
 
 extension LocationService: ConnectionMonitorSubscriber {
-    func processUpdate(with connections: Set<Connection>) {
+    func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
         var overlappingSet = Set<CLCircularRegion>()
-        connections.forEach { connection in
-            connection.activeTriggers.forEach { trigger in
+        connections.forEach {
+            $0.activeTriggers.forEach { trigger in
                 switch trigger {
                 case .location(let region): overlappingSet.insert(region)
                 }

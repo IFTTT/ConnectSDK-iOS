@@ -48,12 +48,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Grocery Express needs your location to be able to update your Connections.</string>
+	<string>Grocery Express needs your location to be able to update your Connections.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Grocery Express needs your location to be able to update your Connections.</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>fetch</string>
 		<string>location</string>
 		<string>processing</string>
 	</array>

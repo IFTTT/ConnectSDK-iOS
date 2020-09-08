@@ -47,6 +47,7 @@ protocol SynchronizationSubscriber {
     /// This instructs a `SynchronizationSubscriber` to begin a synchronization
     ///
     /// - Parameters:
+    ///   - source: The source of this synchronization
     ///   - completion: Call this when synchronization is complete
-    func performSynchronization(completion: @escaping (_ newData: Bool, _ syncError: Error?) -> Void)
+    func performSynchronization(source: SynchronizationSource, completion: @escaping (_ newData: Bool, _ syncError: Error?) -> Void)
 }

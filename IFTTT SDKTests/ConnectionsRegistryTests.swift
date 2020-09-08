@@ -11,13 +11,15 @@ import XCTest
 
 class ConnectionsRegistryTests: XCTestCase {
 
+    private var connectionsRegistry: ConnectionsRegistry!
     override func setUp() {
         UserDefaults.standard.removeObject(forKey: "ConnectionsRegistry.ConnectionsUserDefaultKey")
+        connectionsRegistry = ConnectionsRegistry()
     }
 
     func testGet() {
         // Since we reset the user defaults before every test, the registry should be empty.
-        assert(ConnectionsRegistry.shared.getConnections().isEmpty)
+        assert(connectionsRegistry.getConnections().isEmpty)
         
         let disabledConnection = Connection(id: "12345",
                                             name: "Test connection",
@@ -32,8 +34,8 @@ class ConnectionsRegistryTests: XCTestCase {
                                             activeTriggers: .init(),
                                             activePermissions: .init())
         
-        ConnectionsRegistry.shared.update(with: disabledConnection, shouldNotify: false)
-        assert(ConnectionsRegistry.shared.getConnections().isEmpty)
+        connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
+        assert(connectionsRegistry.getConnections().isEmpty)
         
         let enabledConnection = Connection(id: "12345",
                                            name: "Test connection",
@@ -48,8 +50,8 @@ class ConnectionsRegistryTests: XCTestCase {
                                            activeTriggers: .init(),
                                            activePermissions: .init())
         
-        ConnectionsRegistry.shared.update(with: enabledConnection, shouldNotify: false)
-        assert(ConnectionsRegistry.shared.getConnections().count == 1)
+        connectionsRegistry.update(with: enabledConnection, shouldNotify: false)
+        assert(connectionsRegistry.getConnections().count == 1)
     }
     
     func testUpdate() {
@@ -65,13 +67,14 @@ class ConnectionsRegistryTests: XCTestCase {
                                             primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
                                             activeTriggers: .init(),
                                             activePermissions: .init())
+        let disabledConnectionStorage = Connection.ConnectionStorage(connection: disabledConnection)
         
-        ConnectionsRegistry.shared.update(with: disabledConnection, shouldNotify: false)
-        assert(!ConnectionsRegistry.shared.getConnections().contains(disabledConnection.id))
+        connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
+        assert(!connectionsRegistry.getConnections().contains(disabledConnectionStorage))
         
         disabledConnection.status = .enabled
-        ConnectionsRegistry.shared.update(with: disabledConnection, shouldNotify: false)
-        assert(ConnectionsRegistry.shared.getConnections().contains(disabledConnection.id))
+        connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
+        assert(connectionsRegistry.getConnections().contains(disabledConnectionStorage))
         
         let enabledConnection = Connection(id: "123456",
                                            name: "Test connection",
@@ -87,7 +90,7 @@ class ConnectionsRegistryTests: XCTestCase {
                                            activePermissions: .init())
         
         let expectation = self.expectation(forNotification: .ConnectionsChangedNotification, object: nil, handler: nil)
-        ConnectionsRegistry.shared.update(with: enabledConnection, shouldNotify: true)
+        connectionsRegistry.update(with: enabledConnection, shouldNotify: true)
         wait(for: [expectation], timeout: 30.0)
     }
 }

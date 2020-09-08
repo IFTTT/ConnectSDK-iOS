@@ -14,16 +14,13 @@ extension NSNotification.Name {
 
 /// Stores connection information to be able to use in synchronizations.
 final class ConnectionsRegistry {
-    /// The shared instance that should be used in creating an instance of the registry.
-    static let shared = ConnectionsRegistry()
-    
     /// Stores constants used in this class.
     private struct Constants {
         /// The `UserDefaults` key used to store connection information.
         static let ConnectionsUserDefaultKey = "ConnectionsRegistry.ConnectionsUserDefaultKey"
     }
     
-    private init() {}
+    init() {}
     
     /// Updates the registry with the parameter connection. Optionally notifies the `NotificationCenter` if specified.
     ///
@@ -33,9 +30,9 @@ final class ConnectionsRegistry {
     func update(with connection: Connection, shouldNotify: Bool = true) {
         switch connection.status {
         case .disabled, .initial, .unknown:
-            remove(connection.id)
+            remove(connection)
         case .enabled:
-            add(connection.id)
+            add(connection)
         }
         
         if shouldNotify {
@@ -44,38 +41,38 @@ final class ConnectionsRegistry {
     }
     
     /// Gets the connections stored in the registry.
-    func getConnections() -> Set<String> {
-        guard let array = UserDefaults.standard.stringArray(forKey: Constants.ConnectionsUserDefaultKey) else { return .init() }
-        return Set(array)
+    func getConnections() -> Set<Connection.ConnectionStorage> {
+        guard let map = UserDefaults.standard.dictionary(forKey: Constants.ConnectionsUserDefaultKey) else { return .init() }
+        let connections = map.values.compactMap { $0 as? JSON }.compactMap { Connection.ConnectionStorage(json: $0) }
+        return Set(connections)
     }
     
     /// Adds a connection to the registry.
     ///
     /// - Parameters:
-    ///     - connectionId: The id of the connection to add to the registry.
-    private func add(_ connectionId: String) {
-        var array = UserDefaults.standard.stringArray(forKey: Constants.ConnectionsUserDefaultKey)
+    ///     - connection: The connection to add to the registry.
+    private func add(_ connection: Connection) {
+        var map = UserDefaults.standard.dictionary(forKey: Constants.ConnectionsUserDefaultKey)
         defer {
-            UserDefaults.standard.set(array, forKey: Constants.ConnectionsUserDefaultKey)
+            UserDefaults.standard.set(map, forKey: Constants.ConnectionsUserDefaultKey)
         }
-        if array != nil {
-            array?.append(connectionId)
+        let storage = Connection.ConnectionStorage(connection: connection).toJSON()
+        if map != nil {
+            map?[connection.id] = storage
         } else {
-            array = [connectionId]
+            map = [connection.id: storage]
         }
     }
     
     /// Removes a connection from the registry.
     ///
     /// - Parameters:
-    ///     - connectionId: The id of the connection to remove from the registry.
-    private func remove(_ connectionId: String) {
-        var array = UserDefaults.standard.stringArray(forKey: Constants.ConnectionsUserDefaultKey)
+    ///     - connection: The connection to remove from the registry.
+    private func remove(_ connection: Connection) {
+        var map = UserDefaults.standard.dictionary(forKey: Constants.ConnectionsUserDefaultKey)
         defer {
-            UserDefaults.standard.set(array, forKey: Constants.ConnectionsUserDefaultKey)
+            UserDefaults.standard.set(map, forKey: Constants.ConnectionsUserDefaultKey)
         }
-        if array != nil {
-            array?.removeAll(where: { $0 == connectionId })
-        }
+        map?[connection.id] = nil
     }
 }
