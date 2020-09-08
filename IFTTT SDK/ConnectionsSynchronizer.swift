@@ -62,10 +62,10 @@ public final class ConnectionsSynchronizer {
     }
     
     /// Hook to be called when the application finishes launching. This performs pre-flight checks along with setting up background fetch or background processing and starting the synchronization scheduler.
-    public func applicationDidFinishLaunching() {
+    public func didFinishLaunchingWithOptions() {
         performPreflightChecks()
         if #available(iOS 13.0, *) {
-            scheduler.applicationDidFinishLaunching()
+            scheduler.didFinishLaunchingWithOptions()
         } else {
             guard Bundle.main.backgroundFetchEnabled else { return }
             // We must set the interval to setMinimumBackgroundFetchInterval(...) to a value to something other than the default of UIApplication.backgroundFetchIntervalNever

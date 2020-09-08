@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         ConnectButtonController.analyticsEnabled = true
-        ConnectionsSynchronizer.shared.applicationDidFinishLaunching()
+        ConnectionsSynchronizer.shared.didFinishLaunchingWithOptions()
         return true
     }
     
@@ -40,15 +40,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        if let aps = userInfo["aps"] as? [String: Any],
-            let isSilentPushNotification = aps["content-available"] as? Bool,
-            isSilentPushNotification {
-            ConnectionsSynchronizer.shared.didReceiveSilentRemoteNotification(backgroundFetchCompletion: completionHandler)
-        }
-    }
-    
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        ConnectionsSynchronizer.shared.didReceiveSilentRemoteNotification(backgroundFetchCompletion: completionHandler)
-    }
 }

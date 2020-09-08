@@ -10,6 +10,7 @@ import BackgroundTasks
 
 /// Schedules native integrations sync using `SynchronizationManager`
 final class SynchronizationScheduler {
+    /// Add this identifier to the Info.plist array for `BGTaskSchedulerPermittedIdentifiers`.
     static let BackgroundProcessIdentifier = "com.ifttt.ifttt.synchronization_scheduler"
 
     /// The `SynchronizationManager` to use when scheduling a sync
@@ -76,7 +77,7 @@ final class SynchronizationScheduler {
     }
     
     /// Hook that should get called when the app finishes launching. Registers background process with the system.
-    func applicationDidFinishLaunching() {
+    func didFinishLaunchingWithOptions() {
         if #available(iOS 13.0, *) {
             guard Bundle.main.backgroundProcessingEnabled else { return }
             guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
