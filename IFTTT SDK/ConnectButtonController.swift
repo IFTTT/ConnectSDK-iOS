@@ -132,7 +132,6 @@ public class ConnectButtonController {
     }
     
     private func handleActivationFailed(error: ConnectButtonControllerError) {
-        ConnectButtonController.isCurrentlyEnablingConnection = false
         delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error))
     }
     
