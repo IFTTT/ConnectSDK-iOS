@@ -7,6 +7,7 @@
 
 import UIKit
 import IFTTTConnectSDK
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,7 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         ConnectButtonController.analyticsEnabled = true
+        ConnectionsSynchronizer.shared.didFinishLaunchingWithOptions()
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        ConnectionsSynchronizer.shared.applicationDidEnterBackground()
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -33,4 +39,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return false
         }
     }
+    
 }

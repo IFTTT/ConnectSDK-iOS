@@ -1,5 +1,5 @@
 //
-//  Connection_parsingSpec.swift
+//  Connection_ParsingTests.swift
 //  IFTTT SDKTests
 //
 //  Copyright © 2019 IFTTT. All rights reserved.
@@ -8,12 +8,12 @@
 import XCTest
 @testable import IFTTT_SDK
 
-class Connection_parsingSpec: XCTestCase {
+class Connection_ParsingTests: XCTestCase {
     
     var connection: Connection!
     
     override func setUp() {
-        let bundle = Bundle(for: Connection_parsingSpec.self)
+        let bundle = Bundle(for: Connection_ParsingTests.self)
         if let path = bundle.url(forResource: "fetch_connection_response",
                                  withExtension: "json"),
             let json = try? Data(contentsOf: path) {
@@ -54,7 +54,7 @@ class Connection_parsingSpec: XCTestCase {
             XCTAssertEqual(region.radius, 123.4567890)
             XCTAssertEqual(region.center.latitude, 12.45678920)
             XCTAssertEqual(region.center.longitude, -98.5432112)
-            XCTAssertEqual(region.identifier, "somecoolidentifier")
+            XCTAssertEqual(region.identifier, "ifttt_somecoolidentifier")
         default:
             XCTFail("Expecting a location trigger")
         }
@@ -71,7 +71,7 @@ class Connection_parsingSpec: XCTestCase {
             XCTAssertEqual(firstRegion.radius, 123.4567890)
             XCTAssertEqual(firstRegion.center.latitude, 12.45678920)
             XCTAssertEqual(firstRegion.center.longitude, -98.5432112)
-            XCTAssertEqual(firstRegion.identifier, "somecoolidentifier")
+            XCTAssertEqual(firstRegion.identifier, "ifttt_somecoolidentifier")
         } else {
             XCTFail("Expecting a region to be returned")
         }

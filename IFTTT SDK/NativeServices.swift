@@ -50,6 +50,23 @@ enum Trigger: Equatable, Hashable, CaseIterable {
             return nil
         }
     }
+    
+    init?(userDefaultsJSON: JSON) {
+        if let regionMap = userDefaultsJSON["location"] as? [String: Any],
+            let region = CLCircularRegion(userDefaultsJSON: regionMap) {
+            self = .location(region: region)
+        }
+        return nil
+    }
+    
+    func toJSON() -> JSON {
+        switch self {
+        case .location(let region):
+            return [
+                "location": region.toUserDefaultsJSON()
+            ]
+        }
+    }
  
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
@@ -61,16 +78,8 @@ enum Trigger: Equatable, Hashable, CaseIterable {
 }
 
 /// Enumerates permissions to be requested from the user. Determined by the triggers for a Connection.
-enum NativePermission: CaseIterable, Equatable {
+enum NativePermission: String, CaseIterable {
     
     /// Describes an always required location permission.
-    case location
+    case location = "always_location"
 }
-
-func ==(lhs: NativePermission, rhs: NativePermission) -> Bool {
-    switch (lhs, rhs) {
-    case (.location, .location):
-        return true
-    }
-}
-

@@ -52,6 +52,19 @@ extension Bundle {
         return backgroundModes.contains("fetch")
     }
     
+    /// Determines whether or not background processing is enabled as a capability in the app's info dictionary.
+    var backgroundProcessingEnabled: Bool {
+        guard let backgroundModes = infoDictionary?["UIBackgroundModes"] as? [String] else { return false }
+        return backgroundModes.contains("processing")
+    }
+    
+    /// Determines whether or not the target's info plist contains the IFTTT background processing task identifier
+    var containsIFTTTBackgroundProcessingIdentifier: Bool {
+        guard let backgroundTaskIdentifiers = infoDictionary?["BGTaskSchedulerPermittedIdentifiers"] as? [String] else { return false}
+        
+        return backgroundTaskIdentifiers.contains(SynchronizationScheduler.BackgroundProcessIdentifier)
+    }
+    
     var appName: String? {
         return object(forInfoDictionaryKey: "CFBundleName") as? String
     }
