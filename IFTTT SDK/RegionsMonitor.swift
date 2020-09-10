@@ -57,14 +57,7 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     ///     - regions: The list of regions to monitor.
     func updateRegions(_ regions: Set<CLRegion>) {
         self.allMonitoredRegions = regions
-        if shouldStartVisitsMonitor() {
-            visitsMonitor.updateMonitoring(with: CLLocationManager.authorizationStatus())
-        } else if CLLocationManager.authorizationStatus() == .authorizedAlways {
-            register(regions: allMonitoredRegions)
-        } else {
-            visitsMonitor.stopMonitor()
-        }
-        
+        updateMonitoring(with: CLLocationManager.authorizationStatus())
     }
     
     /// Determines whether or not significantLocationMonitoring needs to be started or not.
@@ -131,6 +124,10 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
         didExitRegion?(region)
     }
     
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        updateMonitoring(with: status)
+    }
+    
     // MARK:- LocationMonitor
     func stopMonitor() {
         allMonitoredRegions.forEach { (region) in
@@ -148,8 +145,9 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
         if status == .authorizedAlways {
             if shouldStartVisitsMonitor() {
                 visitsMonitor.startMonitor()
+            } else {
+                startMonitor()
             }
-            startMonitor()
         } else {
             visitsMonitor.stopMonitor()
             stopMonitor()

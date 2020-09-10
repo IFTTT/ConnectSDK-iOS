@@ -8,9 +8,9 @@
 import Foundation
 
 final class Keychain {
-    struct Key {
-        static let UserToken = "KeychainKey.IFTTTUserToken"
-        static let InviteCode = "KeychainKey.PlatformInviteCode"
+    enum Key: String, CaseIterable {
+        case UserToken = "KeychainKey.IFTTTUserToken"
+        case InviteCode = "KeychainKey.PlatformInviteCode"
     }
 
     class func set(value: String?, for key: String) {
@@ -64,9 +64,15 @@ final class Keychain {
         if (status != errSecSuccess) {
             if #available(iOS 11.3, *) {
                 if let err = SecCopyErrorMessageString(status, nil) {
-                    print("Keychain Remove failed: \(err)")
+                    debugPrint("Keychain Remove failed: \(err)")
                 }
             }
+        }
+    }
+    
+    class func reset() {
+        Key.AllCases().forEach {
+            removeValue(for: $0.rawValue)
         }
     }
 }

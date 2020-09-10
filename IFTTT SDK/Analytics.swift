@@ -43,10 +43,7 @@ final class Analytics {
         
         /// The label of the dispatch queue used to handle events utilizing `UIApplication`'s background tasks.
         static let BackgroundQueueLabel = "ifttt_sdk.analytics.backgroundTask"
-        
-        /// The key used to store the analytics queue in `UserDefaults`.
-        static let QueueUserDefaultsKey = "ifttt_sdk.analytics.queued_events.key"
-        
+
         /// The key used to identify the background task (if one is started) for any Analytics events.
         static let BackgroundTaskIdentifier = "ifttt_sdk.analytics.io.flush"
         
@@ -105,7 +102,7 @@ final class Analytics {
     // MARK: - Event queue operations
     /// The queue of analytics events.
     private lazy var queuedEvents: [AnalyticsData] = {
-        guard let dataFromUserDefaults = UserDefaults.standard.array(forKey: Constants.QueueUserDefaultsKey) as? [AnalyticsData] else {
+        guard let dataFromUserDefaults = UserDefaults.analyticsQueue else {
             return [AnalyticsData]()
         }
         return dataFromUserDefaults
@@ -113,13 +110,13 @@ final class Analytics {
     
     /// Persists the queue to `UserDefaults`.
     private func persistQueue() {
-        UserDefaults.standard.set(queuedEvents, forKey: Constants.QueueUserDefaultsKey)
+        UserDefaults.analyticsQueue = queuedEvents
     }
     
     /// Deletes the queue from `UserDefaults`.
     private func deleteQueue() {
-        if let _ = UserDefaults.standard.data(forKey: Constants.QueueUserDefaultsKey) {
-            UserDefaults.standard.removeObject(forKey: Constants.QueueUserDefaultsKey)
+        if let _ = UserDefaults.analyticsQueue {
+            UserDefaults.analyticsQueue = nil
         }
     }
     

@@ -331,13 +331,10 @@ public class ConnectButton: UIView {
     
     // MARK: Layout
     
-    /// A key used by an app to determine if it should hide the footer on the Connect Button.
-    static let shouldHideFooterUserDefaultsKey = "appShouldHideConnectButtonFooter"
-    
     private func createLayout() {
         
         // In some cases, we need to hide the footer on the Connect Button SDK. Introducing a key check to determine if the footer should be shown.
-        let shouldHideFooter = UserDefaults.standard.bool(forKey: ConnectButton.shouldHideFooterUserDefaultsKey)
+        let shouldHideFooter = UserDefaults.shouldHideFooter
         
         let stackView: UIStackView
         

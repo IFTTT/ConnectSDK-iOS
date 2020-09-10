@@ -17,17 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static let connectionRedirectURL = URL(string: "groceryexpress://connect_callback")!
     
     private let connectionRedirectHandler = ConnectionRedirectHandler(redirectURL: AppDelegate.connectionRedirectURL)
+    private let connectionsSynchronizer = ConnectionsSynchronizer()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         ConnectButtonController.analyticsEnabled = true
-        ConnectionsSynchronizer.shared.didFinishLaunchingWithOptions()
         return true
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        ConnectionsSynchronizer.shared.applicationDidEnterBackground()
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {

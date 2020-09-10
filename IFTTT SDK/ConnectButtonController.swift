@@ -118,7 +118,7 @@ public class ConnectButtonController {
         if let status = connection?.status {
             state = (status == .initial) ? .Created : .Enabled
         }
-        Keychain.set(value: userToken, for: Keychain.Key.UserToken)
+        Keychain.set(value: userToken, for: Keychain.Key.UserToken.rawValue)
         connection?.status = .enabled
         
         if let connection = connection {
@@ -207,8 +207,8 @@ public class ConnectButtonController {
     }
     
     private func setupKeychain(for credentialProvider: ConnectionCredentialProvider) {
-        Keychain.set(value: credentialProvider.userToken, for: Keychain.Key.UserToken)
-        Keychain.set(value: credentialProvider.inviteCode, for: Keychain.Key.InviteCode)
+        Keychain.set(value: credentialProvider.userToken, for: Keychain.Key.UserToken.rawValue)
+        Keychain.set(value: credentialProvider.inviteCode, for: Keychain.Key.InviteCode.rawValue)
     }
     
     private func setupVerification() {

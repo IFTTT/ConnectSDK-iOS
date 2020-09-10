@@ -52,9 +52,9 @@ final class ConnectionsRegistry {
     /// - Parameters:
     ///     - connection: The connection to add to the registry.
     private func add(_ connection: Connection) {
-        var map = UserDefaults.standard.dictionary(forKey: Constants.ConnectionsUserDefaultKey)
+        var map = UserDefaults.connections
         defer {
-            UserDefaults.standard.set(map, forKey: Constants.ConnectionsUserDefaultKey)
+            UserDefaults.connections = map
         }
         let storage = Connection.ConnectionStorage(connection: connection).toJSON()
         if map != nil {
@@ -69,9 +69,9 @@ final class ConnectionsRegistry {
     /// - Parameters:
     ///     - connection: The connection to remove from the registry.
     private func remove(_ connection: Connection) {
-        var map = UserDefaults.standard.dictionary(forKey: Constants.ConnectionsUserDefaultKey)
+        var map = UserDefaults.connections
         defer {
-            UserDefaults.standard.set(map, forKey: Constants.ConnectionsUserDefaultKey)
+            UserDefaults.connections = map
         }
         map?[connection.id] = nil
     }

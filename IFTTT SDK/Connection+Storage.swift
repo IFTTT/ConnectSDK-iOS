@@ -2,7 +2,6 @@
 //  Connection+Storage.swift
 //  IFTTT SDK
 //
-//  Created by Siddharth Sathyam on 9/8/20.
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
@@ -13,16 +12,13 @@ extension Connection {
         let id: String
         let status: Status
         let activeTriggers: Set<Trigger>
-        let activePermissions: Set<NativePermission>
         
         init(id: String,
              status: Status,
-             activeTriggers: Set<Trigger>,
-             activePermissions: Set<NativePermission>) {
+             activeTriggers: Set<Trigger>) {
             self.id = id
             self.status = status
             self.activeTriggers = activeTriggers
-            self.activePermissions = activePermissions
         }
         
         func hash(into hasher: inout Hasher) {

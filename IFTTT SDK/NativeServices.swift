@@ -76,10 +76,3 @@ enum Trigger: Equatable, Hashable, CaseIterable {
         return lhs.identifier == rhs.identifier
     }
 }
-
-/// Enumerates permissions to be requested from the user. Determined by the triggers for a Connection.
-enum NativePermission: String, CaseIterable {
-    
-    /// Describes an always required location permission.
-    case location = "always_location"
-}

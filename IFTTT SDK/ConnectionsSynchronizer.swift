@@ -6,9 +6,16 @@
 //
 
 import Foundation
+import UIKit
 #if canImport(BackgroundTasks)
 import BackgroundTasks
 #endif
+
+public func debugPrint(_ string: String) {
+    #if DEBUG
+    print(string)
+    #endif
+}
 
 /**
  Handles synchronizing events from the SDK to the backend.
@@ -19,20 +26,21 @@ import BackgroundTasks
  - Background processing
 */
 public final class ConnectionsSynchronizer {
-    /// The shared instance to use in calling designated hooks to run synchronizations as required.
-    public static let shared = ConnectionsSynchronizer()
-    
     private let eventPublisher: EventPublisher<SynchronizationTriggerEvent>
     private let scheduler: SynchronizationScheduler
     private let location: LocationService
     private let connectionsMonitor: ConnectionsMonitor
-    private let connectionsRegistry: ConnectionsRegistry
+    
+    /// An `ConnectButtonControllerDelegate` object that will recieved messages about events that happen on the `ConnectButtonController`.
+     public private(set) weak var delegate: ConnectButtonControllerDelegate?
     
     /// Creates an instance of the `ConnectionsSynchronizer`.
-    private init() {
+    public init() {
         let location = LocationService(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
-        self.connectionsRegistry = ConnectionsRegistry()
-        let connectionsMonitor = ConnectionsMonitor(location: location, connectionsRegistry: connectionsRegistry)
+        let permissionsRequestor = PermissionsRequestor()
+        let connectionsRegistry = ConnectionsRegistry()
+
+        let connectionsMonitor = ConnectionsMonitor(location: location, permissionsRequestor: permissionsRequestor, connectionsRegistry: connectionsRegistry)
         
         let subscribers: [SynchronizationSubscriber] = [
             connectionsMonitor
@@ -44,41 +52,66 @@ public final class ConnectionsSynchronizer {
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher)
         self.location = location
         self.connectionsMonitor = connectionsMonitor
+        
+        setupNotifications()
     }
     
     /// Runs checks to see what capabilities the target currently has and prints messages to the console as required.
-    private func performPreflightChecks() {
-        if !Bundle.main.backgroundFetchEnabled {
-            print("Background fetch not enabled for this target! Enable background fetch to allow Connections to get synchrnonized more frequently.")
+    private func performPreflightChecks(useBackgroundFetch: Bool) {
+        if !Bundle.main.backgroundFetchEnabled && useBackgroundFetch {
+            debugPrint("Background fetch not enabled for this target! Enable background fetch to allow Connections to get synchrnonized more frequently.")
         }
         
         if !Bundle.main.backgroundProcessingEnabled {
-            print("Background processing not enabled for this target! Enable background processing to allow Connections to get synchrnonized more frequently.")
+            debugPrint("Background processing not enabled for this target! Enable background processing to allow Connections to get synchrnonized more frequently.")
         } else if Bundle.main.backgroundProcessingEnabled && !Bundle.main.containsIFTTTBackgroundProcessingIdentifier {
-            print("Missing IFTTT background processing task identifier. Add com.ifttt.ifttt.synchronization_scheduler to the BGTaskSchedulerPermittedIdentifiers array of the info plist for this target.")
+            debugPrint("Missing IFTTT background processing task identifier. Add com.ifttt.ifttt.synchronization_scheduler to the BGTaskSchedulerPermittedIdentifiers array of the info plist for this target.")
         }
         
         if !Bundle.main.backgroundLocationEnabled {
-            print("Background location not enabled for this target! Enable background location to allow location updates to be delivered to the app in the background.")
+            debugPrint("Background location not enabled for this target! Enable background location to allow location updates to be delivered to the app in the background.")
         }
     }
     
+    /// Resets the keychain if the user defaults is missing SDK-related data. This typically happens when the app is deleted and re-installed.
+    private func resetKeychainIfNecessary() {
+        if UserDefaults.anonymousId == nil {
+            Keychain.reset()
+        }
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didFinishLaunchingWithOptions),
+                                               name: UIApplication.didFinishLaunchingNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
+    }
+    
     /// Hook to be called when the application finishes launching. This performs pre-flight checks along with setting up background fetch or background processing and starting the synchronization scheduler.
-    public func didFinishLaunchingWithOptions() {
-        performPreflightChecks()
+    @objc private func didFinishLaunchingWithOptions() {
+        let useBackgroundFetch = false
+        performPreflightChecks(useBackgroundFetch: useBackgroundFetch)
+        resetKeychainIfNecessary()
         if #available(iOS 13.0, *) {
             scheduler.didFinishLaunchingWithOptions()
         } else {
-            guard Bundle.main.backgroundFetchEnabled else { return }
+            guard Bundle.main.backgroundFetchEnabled, useBackgroundFetch else { return }
             // We must set the interval to setMinimumBackgroundFetchInterval(...) to a value to something other than the default of UIApplication.backgroundFetchIntervalNever
-            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+            let closure : () -> Void  = { UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+            }
+            closure()
         }
         
         scheduler.start()
     }
 
     /// Hook to be called when the application enters the background.
-    public func applicationDidEnterBackground() {
+    @objc private func applicationDidEnterBackground() {
         if #available(iOS 13.0, *) {
             scheduler.applicationDidEnterBackground()
         }
