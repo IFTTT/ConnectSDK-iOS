@@ -21,8 +21,8 @@ protocol ConnectionMonitorSubscriber {
 class ConnectionsMonitor: SynchronizationSubscriber {
     
     private struct ConnectionFetchCredentialProvider: ConnectionCredentialProvider {
-        var inviteCode: String? { return Keychain.getValue(for: Keychain.Key.InviteCode) }
-        var userToken: String? { return Keychain.getValue(for: Keychain.Key.UserToken) }
+        var inviteCode: String? { return Keychain.getValue(for: Keychain.Key.InviteCode.rawValue) }
+        var userToken: String? { return Keychain.getValue(for: Keychain.Key.UserToken.rawValue) }
         
         /// This isn't used in the network request.
         var oauthCode: String = ""
@@ -43,11 +43,15 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     /// Creates an instance of `ConnectionsMonitor`
     ///
     /// - Parameters:
-    ///     - location: An instance of `LocationService` to use when we the Set of connections get updated.
+    ///     - location: An instance of `LocationService` to use when the user's connections get updated.
+    ///     - permissionsRequestor: An instance of `PermissionsRequestor` to use when the user's connections get updated
     ///     - connectionsRegistry: The registry of connections that should be monitored.
     /// - Returns: An initialized instance of `ConnectionsMonitor`.
-    init(location: LocationService, connectionsRegistry: ConnectionsRegistry) {
-        self.subscribers = [location]
+    init(location: LocationService, permissionsRequestor: PermissionsRequestor, connectionsRegistry: ConnectionsRegistry) {
+        self.subscribers = [
+            permissionsRequestor,
+            location
+        ]
         self.connectionsRegistry = connectionsRegistry
     }
     
@@ -65,7 +69,10 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     }
     
     func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
-        return !connectionsRegistry.getConnections().isEmpty
+        let credentialProvider = ConnectionFetchCredentialProvider()
+        return !connectionsRegistry.getConnections().isEmpty &&
+            credentialProvider.userToken != nil &&
+            credentialProvider.inviteCode != nil
     }
     
     func performSynchronization(source: SynchronizationSource, completion: @escaping (Bool, Error?) -> Void) {
@@ -74,6 +81,8 @@ class ConnectionsMonitor: SynchronizationSubscriber {
             completion(true, nil)
             return
         }
+
+        let credentialProvider = ConnectionFetchCredentialProvider()
         
         let requestQueue = DispatchQueue(label: "com.connection_monitor.synchronization.requests", attributes: .concurrent)
         let stateQueue = DispatchQueue(label: "com.connection_monitor.synchronization.state", attributes: .concurrent)
@@ -87,7 +96,6 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         connections.forEach { connection in
             group.enter()
             requestQueue.async { [weak self] in
-                let credentialProvider = ConnectionFetchCredentialProvider()
                 let dataTask = self?.networkController.start(request: .fetchConnection(for: connection.id,
                                                                                        credentialProvider: credentialProvider))
                 { (response) in

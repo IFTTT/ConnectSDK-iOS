@@ -20,11 +20,11 @@ struct API {
     
     /// An installation id for this instance of the SDK. This id remains static from installation to deletion of the partner app.
     static var anonymousId: String {
-        if let id = UserDefaults.standard.string(forKey: Keys.anonymousIdKey) {
+        if let id = UserDefaults.anonymousId {
             return id
         } else {
             let id = UUID().uuidString
-            UserDefaults.standard.set(id, forKey: Keys.anonymousIdKey)
+            UserDefaults.anonymousId = id
             return id
         }
     }
@@ -48,8 +48,63 @@ struct API {
     
     static let findUserByToken = URL(string: "\(API.URLConstants.base)\(API.URLConstants.me)")!
     static let submitAnalytics = URL(string: "\(API.URLConstants.base)\(API.URLConstants.analytics)")!
-    
+}
+
+/// Helper accessors for `UserDefaults`
+extension UserDefaults {
     private struct Keys {
-        static let anonymousIdKey = "com.ifttt.sdk.analytics.anonymous_id"
+        static let anonymousId = "com.ifttt.sdk.analytics.anonymous_id"
+        static let shouldHideFooterUserDefaults = "appShouldHideConnectButtonFooter"
+        static let QueueUserDefaults = "ifttt_sdk.analytics.queued_events.key"
+        static let ConnectionsRegistry = "ConnectionsRegistry.ConnectionsUserDefaultKey"
+    }
+    
+    static var anonymousId: String? {
+        get {
+            return standard.string(forKey: Keys.anonymousId)
+        }
+        set {
+            guard let newValue = newValue else {
+                standard.removeObject(forKey: Keys.anonymousId)
+                return
+            }
+            standard.set(newValue, forKey: Keys.anonymousId)
+        }
+    }
+    
+    /// Used by an app to determine if it should hide the footer on the Connect Button.
+    static var shouldHideFooter: Bool {
+        get {
+            return standard.bool(forKey: Keys.shouldHideFooterUserDefaults)
+        }
+        set {
+            standard.set(newValue, forKey: Keys.shouldHideFooterUserDefaults)
+        }
+    }
+    
+    static var analyticsQueue: [AnalyticsData]? {
+        get {
+            return UserDefaults.standard.array(forKey: Keys.QueueUserDefaults) as? [AnalyticsData]
+        }
+        set {
+            guard let newValue = newValue else {
+                standard.removeObject(forKey: Keys.QueueUserDefaults)
+                return
+            }
+            standard.set(newValue, forKey: Keys.QueueUserDefaults)
+        }
+    }
+    
+    static var connections: [String: Any]? {
+        get {
+            return UserDefaults.standard.dictionary(forKey: Keys.ConnectionsRegistry)
+        }
+        set {
+            guard let newValue = newValue else {
+                standard.removeObject(forKey: Keys.ConnectionsRegistry)
+                return
+            }
+            standard.set(newValue, forKey: Keys.ConnectionsRegistry)
+        }
     }
 }

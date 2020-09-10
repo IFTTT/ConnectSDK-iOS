@@ -59,12 +59,6 @@ class Connection_ParsingTests: XCTestCase {
             XCTFail("Expecting a location trigger")
         }
         
-        if let firstNativePermission = connection.activePermissions.first {
-            XCTAssertEqual(firstNativePermission, NativePermission.location)
-        } else {
-            XCTFail("Expecting a location permission to exist.")
-        }
-        
         XCTAssertEqual(connection.hasLocationTriggers, true)
         
         if let firstRegion = connection.locationRegions.first {

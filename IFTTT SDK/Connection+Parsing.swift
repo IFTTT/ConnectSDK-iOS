@@ -38,7 +38,6 @@ extension Connection {
         
         let activeTriggers = Connection.parseTriggers(parser)
         self.activeTriggers = activeTriggers
-        self.activePermissions = Connection.generateActivePermissions(activeTriggers)
     }
     
     static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {
@@ -72,14 +71,6 @@ extension Connection {
             return Set(allTriggers)
         default:
             return []
-        }
-    }
-    
-    static func generateActivePermissions(_ activeTriggers: Set<Trigger>) -> Set<NativePermission> {
-        return activeTriggers.map { trigger -> NativePermission in
-            switch trigger {
-            case .location: return .location
-            }
         }
     }
 }
@@ -137,8 +128,7 @@ extension Connection.ConnectionStorage {
     convenience init(connection: Connection) {
         self.init(id: connection.id,
                   status: connection.status,
-                  activeTriggers: connection.activeTriggers,
-                  activePermissions: connection.activePermissions)
+                  activeTriggers: connection.activeTriggers)
     }
     
     
@@ -146,22 +136,18 @@ extension Connection.ConnectionStorage {
         guard let id = json["id"] as? String,
             let statusValue = json["status"] as? String,
             let status = Connection.Status(rawValue: statusValue),
-            let activeTriggers = json["activeTriggers"] as? [JSON],
-            let activePermissions = json["activePermissions"] as? [String] else { return nil }
+            let activeTriggers = json["activeTriggers"] as? [JSON] else { return nil }
         self.init(id: id,
                   status: status,
-                  activeTriggers: Set(activeTriggers.compactMap { Trigger(userDefaultsJSON: $0) }),
-                  activePermissions: Set(activePermissions.compactMap { NativePermission(rawValue: $0) }))
+                  activeTriggers: Set(activeTriggers.compactMap { Trigger(userDefaultsJSON: $0) }))
     }
     
     func toJSON() -> JSON {
         let mappedTriggers = activeTriggers.map { $0.toJSON() }
-        let mappedPermissions = Array(activePermissions.map { $0.rawValue })
         return [
             "id": id,
             "status": status.rawValue,
-            "activeTriggers": mappedTriggers,
-            "activePermissions": mappedPermissions
+            "activeTriggers": mappedTriggers
         ]
     }
 }

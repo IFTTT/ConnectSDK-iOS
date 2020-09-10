@@ -81,6 +81,9 @@
 		DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */; };
 		DEC08FFC242BAB25007D7039 /* Bundle+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */; };
 		DEC75CB42508312F00F40296 /* Connection+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB32508312F00F40296 /* Connection+Storage.swift */; };
+		DEC75CB725092B8600F40296 /* PermissionsRequestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */; };
+		DEC75CB9250973F600F40296 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB8250973F600F40296 /* Library.swift */; };
+		DEC75CBB2509741F00F40296 /* LocationLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CBA2509741F00F40296 /* LocationLibrary.swift */; };
 		DEC8803D242BB0BA00E0286C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8803C242BB0BA00E0286C /* LocationService.swift */; };
 		DED00F9524990BBD00C8E618 /* Localizable_en-US.strings in Resources */ = {isa = PBXBuildFile; fileRef = DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */; };
 		DED00F9724990C3800C8E618 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DED00F9624990C3800C8E618 /* Localizable.strings */; };
@@ -182,6 +185,9 @@
 		DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsMonitor.swift; sourceTree = "<group>"; };
 		DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Helpers.swift"; sourceTree = "<group>"; };
 		DEC75CB32508312F00F40296 /* Connection+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Storage.swift"; sourceTree = "<group>"; };
+		DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsRequestor.swift; sourceTree = "<group>"; };
+		DEC75CB8250973F600F40296 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
+		DEC75CBA2509741F00F40296 /* LocationLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLibrary.swift; sourceTree = "<group>"; };
 		DEC8803C242BB0BA00E0286C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = "Localizable_en-US.strings"; sourceTree = "<group>"; };
 		DED00F9624990C3800C8E618 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -316,12 +322,15 @@
 			name = Monitoring;
 			sourceTree = "<group>";
 		};
-		DED28CE72425455B006A8DA7 /* Location */ = {
+		DEC75CB525092B6100F40296 /* Native Services */ = {
 			isa = PBXGroup;
 			children = (
 				DEC8803C242BB0BA00E0286C /* LocationService.swift */,
+				DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */,
+				DEC75CB8250973F600F40296 /* Library.swift */,
+				DEC75CBA2509741F00F40296 /* LocationLibrary.swift */,
 			);
-			name = Location;
+			name = "Native Services";
 			sourceTree = "<group>";
 		};
 		FC425EBC227233A10020967F /* Extensions */ = {
@@ -442,8 +451,8 @@
 		FCF29FC32187B903004B1100 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				DEC75CB525092B6100F40296 /* Native Services */,
 				1DFE020C2190E3DB00856ABC /* API.swift */,
-				DED28CE72425455B006A8DA7 /* Location */,
 				DE3074A523DB505400A3C71F /* Analytics */,
 				FC425EBC227233A10020967F /* Extensions */,
 				FC84B85121C437FB00BAF7ED /* Pages */,
@@ -652,6 +661,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC75F93E22387164007C2DDB /* URLComponents+email.swift in Sources */,
+				DEC75CB725092B8600F40296 /* PermissionsRequestor.swift in Sources */,
 				FCF29FCB2187D0E3004B1100 /* User.swift in Sources */,
 				DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */,
 				DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */,
@@ -703,6 +713,7 @@
 				FC74F1D82152AE4D00035A66 /* ConnectButtonController.swift in Sources */,
 				DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */,
 				DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */,
+				DEC75CB9250973F600F40296 /* Library.swift in Sources */,
 				1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */,
 				DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */,
 				DE328DC4243E1E1200603EAC /* VisitsMonitor.swift in Sources */,
@@ -714,6 +725,7 @@
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
 				1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */,
+				DEC75CBB2509741F00F40296 /* LocationLibrary.swift in Sources */,
 				DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,
 				DEC08FF2242948C3007D7039 /* Set+Helpers.swift in Sources */,

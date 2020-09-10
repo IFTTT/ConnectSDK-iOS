@@ -7,6 +7,7 @@
 
 import Foundation
 import BackgroundTasks
+import UIKit
 
 /// Schedules native integrations sync using `SynchronizationManager`
 final class SynchronizationScheduler {
