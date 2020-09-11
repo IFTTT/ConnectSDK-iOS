@@ -14,11 +14,6 @@ extension NSNotification.Name {
 
 /// Stores connection information to be able to use in synchronizations.
 final class ConnectionsRegistry {
-    /// Stores constants used in this class.
-    private struct Constants {
-        /// The `UserDefaults` key used to store connection information.
-        static let ConnectionsUserDefaultKey = "ConnectionsRegistry.ConnectionsUserDefaultKey"
-    }
     
     init() {}
     
@@ -42,7 +37,7 @@ final class ConnectionsRegistry {
     
     /// Gets the connections stored in the registry.
     func getConnections() -> Set<Connection.ConnectionStorage> {
-        guard let map = UserDefaults.standard.dictionary(forKey: Constants.ConnectionsUserDefaultKey) else { return .init() }
+        guard let map = UserDefaults.connections else { return .init() }
         let connections = map.values.compactMap { $0 as? JSON }.compactMap { Connection.ConnectionStorage(json: $0) }
         return Set(connections)
     }
@@ -53,15 +48,14 @@ final class ConnectionsRegistry {
     ///     - connection: The connection to add to the registry.
     private func add(_ connection: Connection) {
         var map = UserDefaults.connections
-        defer {
-            UserDefaults.connections = map
-        }
         let storage = Connection.ConnectionStorage(connection: connection).toJSON()
         if map != nil {
             map?[connection.id] = storage
         } else {
             map = [connection.id: storage]
         }
+        
+        UserDefaults.connections = map
     }
     
     /// Removes a connection from the registry.
@@ -70,9 +64,7 @@ final class ConnectionsRegistry {
     ///     - connection: The connection to remove from the registry.
     private func remove(_ connection: Connection) {
         var map = UserDefaults.connections
-        defer {
-            UserDefaults.connections = map
-        }
         map?[connection.id] = nil
+        UserDefaults.connections = map
     }
 }

@@ -34,7 +34,7 @@ final class LocationLibrary: NSObject, Library, CLLocationManagerDelegate {
     }
     
     func requestAccess(_ completion: @escaping (LibraryAccess) -> Void) {
-        if access == .notDetermined {
+        if access != .authorized {
             locationManager.requestAlwaysAuthorization()
         } else {
             completion(access)

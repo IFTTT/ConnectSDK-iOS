@@ -106,12 +106,6 @@ extension SynchronizationManager {
         
         private var resultsBySubscriber: [String : UIBackgroundFetchResult] = [:]
         
-        func remainingSubscribers() -> [SynchronizationSubscriber] {
-            return subscribers.filter { (subscriber) -> Bool in
-                resultsBySubscriber.keys.contains(subscriber.name) == false
-            }
-        }
-        
         fileprivate var onComplete: ((UIBackgroundFetchResult) -> Void)?
         
         fileprivate init(source: SynchronizationSource, subscribers: [SynchronizationSubscriber]) {
@@ -124,11 +118,14 @@ extension SynchronizationManager {
                 onComplete?(.noData)
                 return
             }
-            guard identifier == nil else {
-                return
+            
+            if source != .backgroundProcess {
+                guard identifier == nil else {
+                    return
+                }
             }
             
-            if UIApplication.shared.applicationState == .background && source != .backgroundProcess {
+            if source != .backgroundProcess {
                 identifier = UIApplication.shared.beginBackgroundTask(expirationHandler: { [weak self] in
                     if let strongSelf = self {
                         strongSelf.finish()
@@ -136,12 +133,12 @@ extension SynchronizationManager {
                 })
             }
             
-            perform(source: source)
+            perform()
         }
         
-        private func perform(source: SynchronizationSource) {
+        private func perform() {
             subscribers.forEach { (s) in
-                s.performSynchronization (source: source) { [weak self] (newData, error) in
+                s.performSynchronization { [weak self] (newData, error) in
                     self?.subscriber(s, didFinishWithNewData: newData, error: error)
                 }
             }
@@ -168,6 +165,12 @@ extension SynchronizationManager {
         
         private func finish() {
             guard self.result == nil else {
+                onComplete?(.noData)
+                if source != .backgroundProcess {
+                    if let identifier = identifier, identifier != UIBackgroundTaskIdentifier.invalid {
+                        UIApplication.shared.endBackgroundTask(identifier)
+                    }
+                }
                 return
             }
             guard Thread.isMainThread else {
@@ -187,9 +190,9 @@ extension SynchronizationManager {
             }
             self.result = result
             
-            if UIApplication.shared.applicationState != .background || source == .backgroundProcess {
-                 onComplete?(result)
-            } else {
+            onComplete?(result)
+            
+            if source != .backgroundProcess {
                 if let identifier = identifier, identifier != UIBackgroundTaskIdentifier.invalid {
                     UIApplication.shared.endBackgroundTask(identifier)
                 }

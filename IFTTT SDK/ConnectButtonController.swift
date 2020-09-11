@@ -127,6 +127,7 @@ public class ConnectButtonController {
                                    state: state)
             let activation = ConnectionActivation(userToken: userToken,
                                                   connection: connection)
+            connectionsRegistry.update(with: connection)
             delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
         }
     }

@@ -51,7 +51,8 @@ final class SynchronizationScheduler {
         
         self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
             guard let self = self else { return }
-            self.manager.sync(source: triggerEvent.source, completion: triggerEvent.backgroundFetchCompletionHandler)
+            self.manager.sync(source: triggerEvent.source,
+                              completion: triggerEvent.backgroundFetchCompletionHandler)
         }
     }
     

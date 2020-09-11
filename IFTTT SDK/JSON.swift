@@ -62,6 +62,11 @@ enum Parser {
         return string ?? ""
     }
     
+    var uuid: UUID? {
+        guard let string = string else { return nil }
+        return UUID(uuidString: string)
+    }
+    
     var stringArray: [String]? {
         if case .array(let array) = self {
             return array.compactMap({ $0.string })
@@ -105,6 +110,19 @@ enum Parser {
     var color: UIColor? {
         if let string = string {
             return UIColor(hex: string)
+        } else {
+            return nil
+        }
+    }
+    
+    /// Easily convert to an type that can conforms to `RawRepresentable`
+    /// For example, an given `enum Status: UInt`, simply call parser.represented(as: Status.self)
+    ///
+    /// - Parameter rawRepresentableType: The type of `RawRepresentable`
+    /// - Returns: The parsed `RawRepresentable` or nil
+    func representation<RawRepresentableType : RawRepresentable>(of rawRepresentableType: RawRepresentableType.Type) -> RawRepresentableType? {
+        if let rawValue = currentValue as? RawRepresentableType.RawValue {
+            return RawRepresentableType(rawValue: rawValue)
         } else {
             return nil
         }

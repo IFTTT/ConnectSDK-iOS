@@ -8,6 +8,15 @@
 import Foundation
 import CoreLocation
 
+struct UserAuthenticatedRequestCredentialProvider: ConnectionCredentialProvider {
+    var inviteCode: String? { return Keychain.getValue(for: Keychain.Key.InviteCode.rawValue) }
+    var userToken: String? { return Keychain.getValue(for: Keychain.Key.UserToken.rawValue) }
+    
+    /// This isn't used in the network request.
+    var oauthCode: String = ""
+}
+
+
 /// A protocol that allows for subscribers to process updates for the user's connections.
 protocol ConnectionMonitorSubscriber {
     /// A hook for a native service to be able to update itself based on the user's connections.
@@ -19,14 +28,6 @@ protocol ConnectionMonitorSubscriber {
 
 /// Monitors connections to update native services.
 class ConnectionsMonitor: SynchronizationSubscriber {
-    
-    private struct ConnectionFetchCredentialProvider: ConnectionCredentialProvider {
-        var inviteCode: String? { return Keychain.getValue(for: Keychain.Key.InviteCode.rawValue) }
-        var userToken: String? { return Keychain.getValue(for: Keychain.Key.UserToken.rawValue) }
-        
-        /// This isn't used in the network request.
-        var oauthCode: String = ""
-    }
     
     /// A list of subscribers to update when a connection gets updated
     private let subscribers: [ConnectionMonitorSubscriber]
@@ -69,20 +70,13 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     }
     
     func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
-        let credentialProvider = ConnectionFetchCredentialProvider()
+        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
         return !connectionsRegistry.getConnections().isEmpty &&
-            credentialProvider.userToken != nil &&
-            credentialProvider.inviteCode != nil
+            credentialProvider.userToken != nil
     }
     
-    func performSynchronization(source: SynchronizationSource, completion: @escaping (Bool, Error?) -> Void) {
-        if source == .connectionsUpdate {
-            update(with: connectionsRegistry.getConnections())
-            completion(true, nil)
-            return
-        }
-
-        let credentialProvider = ConnectionFetchCredentialProvider()
+    func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
+        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
         
         let requestQueue = DispatchQueue(label: "com.connection_monitor.synchronization.requests", attributes: .concurrent)
         let stateQueue = DispatchQueue(label: "com.connection_monitor.synchronization.state", attributes: .concurrent)
@@ -92,7 +86,8 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         
         // Get connections from the registry
         let connections = connectionsRegistry.getConnections()
-
+        let startingCount = connections.count
+        
         connections.forEach { connection in
             group.enter()
             requestQueue.async { [weak self] in
@@ -101,8 +96,8 @@ class ConnectionsMonitor: SynchronizationSubscriber {
                 { (response) in
                     switch response.result {
                     case .success(let connection):
-                        self?.connectionsRegistry.update(with: connection, shouldNotify: false)
                         stateQueue.async {
+                            self?.connectionsRegistry.update(with: connection, shouldNotify: false)
                             connectionsSet.insert(.init(connection: connection))
                             group.leave()
                         }
@@ -120,8 +115,10 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         requestQueue.async { [weak self] in
             group.wait()
             DispatchQueue.main.async {
-                self?.subscribers.forEach { $0.processUpdate(with: connectionsSet) }
-                completion(!connectionsSet.isEmpty, error)
+                if let self = self {
+                    self.subscribers.forEach { $0.processUpdate(with: self.connectionsRegistry.getConnections()) }
+                }
+                completion(connectionsSet.count == startingCount, error)
             }
         }
     }

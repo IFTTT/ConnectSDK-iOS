@@ -31,15 +31,16 @@ extension CLCircularRegion {
         ]
     }
     
-    convenience init?(userDefaultsJSON: JSON) {
-        let parser = Parser(content: userDefaultsJSON)
+    convenience init?(parser: Parser) {
         guard let latitude = parser["latitude"].double,
             let longitude = parser["longitude"].double,
             let radius = parser["radius"].double,
             let identifier = parser["identifier"].string else {
                 return nil
         }
-        let center = CLLocationCoordinate2D(latitude: latitude as CLLocationDegrees, longitude: longitude as CLLocationDegrees)
+        
+        let center = CLLocationCoordinate2D(latitude: latitude as CLLocationDegrees,
+                                            longitude: longitude as CLLocationDegrees)
         
         self.init(center: center,
                   radius: radius as CLLocationDistance,
@@ -68,6 +69,17 @@ extension CLCircularRegion {
     
     private static func generateIFTTTRegionIdentifier(from originalIdentifier: String) -> String {
         return "\(Constants.IFTTTRegionPrefix)_\(originalIdentifier)"
+    }
+}
+
+extension String {
+    func stripIFTTTPrefix() -> String {
+        let splitString = split(separator: "_")
+        if splitString.count == 2 {
+            return String(splitString[1])
+        } else {
+            return ""
+        }
     }
 }
 

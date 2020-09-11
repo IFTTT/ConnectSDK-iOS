@@ -31,6 +31,7 @@ struct API {
     
     private struct URLConstants {
         static let base = "https://connect.ifttt.com/v2"
+        static let locationBase = "https://connectapi.ifttt.com/v1"
         static let findEmail = "/account/find"
         static let emailName = "email"
         static let me = "/me"
@@ -38,6 +39,7 @@ struct API {
     }
 
     static let base = URL(string: API.URLConstants.base)!
+    static let locationBase = URL(string: API.URLConstants.locationBase)!
     static let findEmail = URL(string: "\(API.URLConstants.base)\(API.URLConstants.findEmail)")!
     
     static func findUserBy(email: String) -> URL? {
@@ -57,6 +59,7 @@ extension UserDefaults {
         static let shouldHideFooterUserDefaults = "appShouldHideConnectButtonFooter"
         static let QueueUserDefaults = "ifttt_sdk.analytics.queued_events.key"
         static let ConnectionsRegistry = "ConnectionsRegistry.ConnectionsUserDefaultKey"
+        static let RegionEventsRegistry = "RegionEventsRegistry.Key"
     }
     
     static var anonymousId: String? {
@@ -105,6 +108,19 @@ extension UserDefaults {
                 return
             }
             standard.set(newValue, forKey: Keys.ConnectionsRegistry)
+        }
+    }
+    
+    static var regionEvents: [Any]? {
+        get {
+            return UserDefaults.standard.array(forKey: Keys.RegionEventsRegistry)
+        }
+        set {
+            guard let newValue = newValue else {
+                standard.removeObject(forKey: Keys.RegionEventsRegistry)
+                return
+            }
+            standard.set(newValue, forKey: Keys.RegionEventsRegistry)
         }
     }
 }

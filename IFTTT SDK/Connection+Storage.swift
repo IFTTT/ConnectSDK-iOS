@@ -8,7 +8,7 @@
 import Foundation
 
 extension Connection {
-    final class ConnectionStorage: Hashable {
+    struct ConnectionStorage: Hashable {
         let id: String
         let status: Status
         let activeTriggers: Set<Trigger>
@@ -26,7 +26,9 @@ extension Connection {
         }
         
         static func == (lhs: Connection.ConnectionStorage, rhs: Connection.ConnectionStorage) -> Bool {
-            return lhs.id == rhs.id
+            return lhs.id == rhs.id &&
+                lhs.status == rhs.status &&
+                lhs.activeTriggers == rhs.activeTriggers
         }
     }
 }

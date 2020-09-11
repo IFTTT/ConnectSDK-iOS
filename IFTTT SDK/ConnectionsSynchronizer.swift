@@ -36,18 +36,24 @@ public final class ConnectionsSynchronizer {
     
     /// Creates an instance of the `ConnectionsSynchronizer`.
     public init() {
-        let location = LocationService(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
-        let permissionsRequestor = PermissionsRequestor()
+        let regionEventsRegistry = RegionEventsRegistry()
         let connectionsRegistry = ConnectionsRegistry()
+        let permissionsRequestor = PermissionsRequestor()
+        let eventPublisher = EventPublisher<SynchronizationTriggerEvent>(queue: DispatchQueue.global())
 
+        let location = LocationService(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled,
+                                       regionEventsRegistry: regionEventsRegistry,
+                                       connectionsRegistry: connectionsRegistry,
+                                       eventPublisher: eventPublisher)
+        
         let connectionsMonitor = ConnectionsMonitor(location: location, permissionsRequestor: permissionsRequestor, connectionsRegistry: connectionsRegistry)
         
         let subscribers: [SynchronizationSubscriber] = [
-            connectionsMonitor
+            connectionsMonitor,
+            location
         ]
         
         let manager = SynchronizationManager(subscribers: subscribers)
-        let eventPublisher = EventPublisher<SynchronizationTriggerEvent>(queue: DispatchQueue.global())
         self.eventPublisher = eventPublisher
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher)
         self.location = location
