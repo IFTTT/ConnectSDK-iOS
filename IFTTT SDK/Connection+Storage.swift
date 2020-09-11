@@ -26,9 +26,7 @@ extension Connection {
         }
         
         static func == (lhs: Connection.ConnectionStorage, rhs: Connection.ConnectionStorage) -> Bool {
-            return lhs.id == rhs.id &&
-                lhs.status == rhs.status &&
-                lhs.activeTriggers == rhs.activeTriggers
+            return lhs.id == rhs.id
         }
     }
 }
