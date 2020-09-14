@@ -85,7 +85,7 @@ class ConnectionsRegistryTests: XCTestCase {
                                            primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
                                            activeTriggers: .init())
         
-        let expectation = self.expectation(forNotification: .ConnectionsChangedNotification, object: nil, handler: nil)
+        let expectation = self.expectation(forNotification: .ConnectionAddedNotification, object: nil, handler: nil)
         connectionsRegistry.update(with: enabledConnection, shouldNotify: true)
         wait(for: [expectation], timeout: 30.0)
     }
