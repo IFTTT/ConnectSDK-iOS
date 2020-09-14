@@ -127,6 +127,7 @@ public class ConnectButtonController {
                                    state: state)
             let activation = ConnectionActivation(userToken: userToken,
                                                   connection: connection)
+            connectionsRegistry.update(with: connection)
             delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
         }
     }
@@ -814,7 +815,8 @@ public class ConnectButtonController {
         connectionNetworkController.start(urlRequest: request.urlRequest) { response in
             progress.finish {
                 switch response.result {
-                case .success:
+                case .success(let connection):
+                    self.connection = connection
                     self.transition(to: .disconnected)
                 case .failure(let error):
                     self.handleDeactivationFailed(error: .networkError(error))

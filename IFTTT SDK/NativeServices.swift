@@ -9,13 +9,7 @@ import Foundation
 import CoreLocation
 
 /// Enumerates supported native service triggers
-enum Trigger: Equatable, Hashable, CaseIterable {
-    static var allCases: [Trigger] {
-        return [
-            .location(region: .init())
-        ]
-    }
-    
+enum Trigger: Hashable {
     private struct Constants {
         static let LocationIdentifer = "location"
     }
@@ -29,8 +23,8 @@ enum Trigger: Equatable, Hashable, CaseIterable {
     /// Uniquely identifies this trigger.
     var identifier: String {
         switch self {
-        case .location:
-            return Constants.LocationIdentifer
+        case .location(let region):
+            return region.identifier
         }
     }
     
@@ -40,21 +34,26 @@ enum Trigger: Equatable, Hashable, CaseIterable {
     ///     - json: The `JSON` object corresponding to the trigger
     ///     - triggerId: A value that uniquely identifies this trigger. Used in registering multiple unique triggers with the system.
     init?(json: JSON, triggerId: String) {
-        guard let fieldId = json["field_id"] as? String else { return nil }
+        guard let fieldId = json["field_id"] as? String else {
+            return nil
+        }
         
         switch fieldId {
         case Constants.LocationIdentifer:
-            guard let region = CLCircularRegion(json: json, triggerId: triggerId) else { return nil }
+            guard let region = CLCircularRegion(json: json, triggerId: triggerId) else {
+                return nil
+            }
             self = .location(region: region)
         default:
             return nil
         }
     }
     
-    init?(userDefaultsJSON: JSON) {
-        if let regionMap = userDefaultsJSON["location"] as? [String: Any],
-            let region = CLCircularRegion(userDefaultsJSON: regionMap) {
+    init?(parser: Parser) {
+        let locationParser = parser[Constants.LocationIdentifer]
+        if let region = CLCircularRegion(parser: locationParser) {
             self = .location(region: region)
+            return
         }
         return nil
     }
@@ -63,7 +62,7 @@ enum Trigger: Equatable, Hashable, CaseIterable {
         switch self {
         case .location(let region):
             return [
-                "location": region.toUserDefaultsJSON()
+                Constants.LocationIdentifer: region.toUserDefaultsJSON()
             ]
         }
     }

@@ -60,8 +60,12 @@ extension Connection {
         switch parser["user_connection"] {
         case .dictionary(let json):
             guard let userFeatures = json["user_features"] as? [JSON] else { return [] }
+            let enabledUserFeatures = userFeatures.filter { dict -> Bool in
+                guard let enabled = dict["enabled"] as? Bool else { return false }
+                return enabled
+            }
             
-            let userFeatureTriggers = userFeatures.compactMap { $0["user_feature_triggers"] as? [JSON] }.reduce([], +)
+            let userFeatureTriggers = enabledUserFeatures.compactMap { $0["user_feature_triggers"] as? [JSON] }.reduce([], +)
             let allTriggers = userFeatureTriggers.compactMap { (userFeatureTrigger) -> [Trigger] in
                 guard let userTriggerId = userFeatureTrigger["id"] as? String else { return [] }
                 guard let userFields = userFeatureTrigger["user_fields"] as? [JSON] else { return [] }
@@ -125,29 +129,35 @@ private extension Connection.CoverImage {
 }
 
 extension Connection.ConnectionStorage {
-    convenience init(connection: Connection) {
+    private struct Keys {
+        static let Id = "id"
+        static let Status = "status"
+        static let ActiveTriggers = "activeTriggers"
+    }
+    
+    init(connection: Connection) {
         self.init(id: connection.id,
                   status: connection.status,
                   activeTriggers: connection.activeTriggers)
     }
     
-    
-    convenience init?(json: JSON) {
-        guard let id = json["id"] as? String,
-            let statusValue = json["status"] as? String,
-            let status = Connection.Status(rawValue: statusValue),
-            let activeTriggers = json["activeTriggers"] as? [JSON] else { return nil }
+    init?(json: JSON) {
+        let parser = Parser(content: json)
+        guard let id = parser[Keys.Id].string,
+            let status = parser[Keys.Status].representation(of: Connection.Status.self) else { return nil }
+        
+        let triggers = parser[Keys.ActiveTriggers].compactMap { Trigger(parser: $0) }
         self.init(id: id,
                   status: status,
-                  activeTriggers: Set(activeTriggers.compactMap { Trigger(userDefaultsJSON: $0) }))
+                  activeTriggers: Set(triggers))
     }
     
     func toJSON() -> JSON {
         let mappedTriggers = activeTriggers.map { $0.toJSON() }
         return [
-            "id": id,
-            "status": status.rawValue,
-            "activeTriggers": mappedTriggers
+            Keys.Id: id,
+            Keys.Status: status.rawValue,
+            Keys.ActiveTriggers: mappedTriggers
         ]
     }
 }

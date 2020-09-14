@@ -9,11 +9,17 @@ import Foundation
 
 /// Defines sources that kick off a synchronization
 enum SynchronizationSource {
-    /// Defines a region entered or region update. Currently not used.
+    /// Defines a region entered or region update.
     case regionsUpdate
     
-    /// Used when the user's connections gets updated.
+    /// Used when a user's connections gets updated.
     case connectionsUpdate
+    
+    /// Used when a user's connection gets removed
+    case connectionRemoval
+    
+    /// Used when a user's connection is added to the registry
+    case connectionAddition
     
     /// Used when the application did become active
     case appDidBecomeActive
@@ -21,13 +27,13 @@ enum SynchronizationSource {
     /// Used when the application goes to the background
     case appBackgrounded
     
-    /// Used when the system initiates a background fetch
+    /// Used when the system initiates a background fetch. Not used.
     case backgroundFetch
     
     /// Used when the system initiates a background process run
     case backgroundProcess
     
-    /// Used when the app gets a silen push notification.
+    /// Used when the app gets a silen push notification. Not used.
     case silentPushNotification
 }
 
@@ -47,7 +53,6 @@ protocol SynchronizationSubscriber {
     /// This instructs a `SynchronizationSubscriber` to begin a synchronization
     ///
     /// - Parameters:
-    ///   - source: The source of this synchronization
     ///   - completion: Call this when synchronization is complete
-    func performSynchronization(source: SynchronizationSource, completion: @escaping (_ newData: Bool, _ syncError: Error?) -> Void)
+    func performSynchronization(completion: @escaping (_ newData: Bool, _ syncError: Error?) -> Void)
 }

@@ -59,9 +59,10 @@ class Connection_ParsingTests: XCTestCase {
             XCTFail("Expecting a location trigger")
         }
         
-        XCTAssertEqual(connection.hasLocationTriggers, true)
+        let storage = Connection.ConnectionStorage(connection: connection)
+        XCTAssertEqual(storage.hasLocationTriggers, true)
         
-        if let firstRegion = connection.locationRegions.first {
+        if let firstRegion = storage.locationRegions.first {
             XCTAssertEqual(firstRegion.radius, 123.4567890)
             XCTAssertEqual(firstRegion.center.latitude, 12.45678920)
             XCTAssertEqual(firstRegion.center.longitude, -98.5432112)

@@ -26,7 +26,7 @@ protocol LocationMonitor {
 
 extension LocationMonitor {
     func updateMonitoring(with status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
             startMonitor()
         } else {
             stopMonitor()

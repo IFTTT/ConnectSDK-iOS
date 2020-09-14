@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-extension Connection {
+extension Connection.ConnectionStorage {
     var hasLocationTriggers: Bool {
         return activeTriggers.contains(where: {
             switch $0 {
@@ -26,4 +26,3 @@ extension Connection {
         }
     }
 }
-

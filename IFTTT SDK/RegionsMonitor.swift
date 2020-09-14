@@ -142,7 +142,7 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     }
     
     func updateMonitoring(with status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
             if shouldStartVisitsMonitor() {
                 visitsMonitor.startMonitor()
             } else {
