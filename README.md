@@ -10,6 +10,7 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 - [Setup](#setup)
 - [The Connect Button](#the-connect-button)
 - [Authentication](#authentication)
+- [Location](#location)
 - [Advanced](#advanced)
 
 
@@ -20,6 +21,7 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 - [x] Easily authenticate your services to IFTTT through the Connect Button
 - [x] Configure the Connect Button through code or through interface builder with `IBDesignable`
 - [x] Configure the ConnectButtonController to handle the Connection activation flow
+- [x] (Version 2.5.0 and up) Provides native geo-fencing functionality (through [Apple CoreLocation Region Monitoring](https://developer.apple.com/documentation/corelocation/monitoring_the_user_s_proximity_to_geographic_regions)) for connections using [IFTTT Location service](https://ifttt.com/location).
 
 ## Requirements
 
@@ -314,6 +316,14 @@ That's it! You're ready to start activating programmable Connections directly in
  Your IFTTT service key should be kept secret at all time. The service key can be used to make calls on behalf of any user, but a user token is limited to a single user. This makes user tokens much less sensitive. On the other hand, you’d never want to embed your service key into a mobile app because it could be read by end users.
 
   Because of this, **we strongly encourage you to** call this API on your backend, and return the user token back to your application, instead of making the API call directly within your application.
+
+## Location
+### Usage
+#### Prerequisite
+To use this library, you should have a connection on your service on IFTTT that connects the IFTTT Location service. To learn more about creating connections, please visit [developer documentation](https://platform.ifttt.com/docs/connections).
+
+#### Initialization
+To initialize location monitoring, create an instance of `ConnectionsSynchronizer` in `application:willFinishLaunchingWithOptions:` and store it as a property on the app delegate implementation. If you're using SwiftUI, ensure that an instance of this object is created before the app finishes launches. This is to make sure the SDK can set up connection monitoring and geofence registration as early as possible.
 
 ## Advanced
 
