@@ -45,9 +45,19 @@ final class SynchronizationScheduler {
                      shouldRunInBackground: true)
 
         // Start synchronization on events we fire
-        scheduleSynchronization(on: .ConnectionsChangedNotification,
+        scheduleSynchronization(on: .ConnectionUpdatedNotification,
                      source: .connectionsUpdate,
-                     shouldRunInBackground: false)
+                     shouldRunInBackground: true)
+        
+        // Start synchronization on events we fire
+        scheduleSynchronization(on: .ConnectionAddedNotification,
+                     source: .connectionAddition,
+                     shouldRunInBackground: true)
+        
+        // Start synchronization on events we fire
+        scheduleSynchronization(on: .ConnectionRemovedNotification,
+                     source: .connectionRemoval,
+                     shouldRunInBackground: true)
         
         self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
             guard let self = self else { return }

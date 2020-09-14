@@ -12,8 +12,14 @@ enum SynchronizationSource {
     /// Defines a region entered or region update.
     case regionsUpdate
     
-    /// Used when the user's connections gets updated.
+    /// Used when a user's connections gets updated.
     case connectionsUpdate
+    
+    /// Used when a user's connection gets removed
+    case connectionRemoval
+    
+    /// Used when a user's connection is added to the registry
+    case connectionAddition
     
     /// Used when the application did become active
     case appDidBecomeActive

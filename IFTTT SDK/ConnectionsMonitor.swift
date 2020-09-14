@@ -14,23 +14,12 @@ struct UserAuthenticatedRequestCredentialProvider: ConnectionCredentialProvider 
     
     /// This isn't used in the network request.
     var oauthCode: String = ""
-}
-
-
-/// A protocol that allows for subscribers to process updates for the user's connections.
-protocol ConnectionMonitorSubscriber {
-    /// A hook for a native service to be able to update itself based on the user's connections.
-    ///
-    /// - Parameters:
-    ///     - connections: The updated set of `Connection.ConnectionStorage`.
-    func processUpdate(with connections: Set<Connection.ConnectionStorage>)
+    
+    static var standard = UserAuthenticatedRequestCredentialProvider()
 }
 
 /// Monitors connections to update native services.
 class ConnectionsMonitor: SynchronizationSubscriber {
-    
-    /// A list of subscribers to update when a connection gets updated
-    private let subscribers: [ConnectionMonitorSubscriber]
     
     /// The registry of connections the user has currently enabled.
     private let connectionsRegistry: ConnectionsRegistry 
@@ -44,24 +33,10 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     /// Creates an instance of `ConnectionsMonitor`
     ///
     /// - Parameters:
-    ///     - location: An instance of `LocationService` to use when the user's connections get updated.
-    ///     - permissionsRequestor: An instance of `PermissionsRequestor` to use when the user's connections get updated
     ///     - connectionsRegistry: The registry of connections that should be monitored.
     /// - Returns: An initialized instance of `ConnectionsMonitor`.
-    init(location: LocationService, permissionsRequestor: PermissionsRequestor, connectionsRegistry: ConnectionsRegistry) {
-        self.subscribers = [
-            permissionsRequestor,
-            location
-        ]
+    init(connectionsRegistry: ConnectionsRegistry) {
         self.connectionsRegistry = connectionsRegistry
-    }
-    
-    /// Updates subscribers with this connection.
-    ///
-    /// - Parameters:
-    ///     - connection: The connection to run updates for
-    private func update(with connections: Set<Connection.ConnectionStorage>) {
-        subscribers.forEach { $0.processUpdate(with: connections) }
     }
     
     // MARK: - SynchronizationSubscriber
@@ -72,7 +47,9 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
         let credentialProvider = UserAuthenticatedRequestCredentialProvider()
         return !connectionsRegistry.getConnections().isEmpty &&
-            credentialProvider.userToken != nil
+            credentialProvider.userToken != nil &&
+            source != .connectionRemoval &&
+            source != .connectionsUpdate
     }
     
     func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
@@ -112,12 +89,9 @@ class ConnectionsMonitor: SynchronizationSubscriber {
             }
         }
 
-        requestQueue.async { [weak self] in
+        requestQueue.async {
             group.wait()
             DispatchQueue.main.async {
-                if let self = self {
-                    self.subscribers.forEach { $0.processUpdate(with: self.connectionsRegistry.getConnections()) }
-                }
                 completion(connectionsSet.count == startingCount, error)
             }
         }

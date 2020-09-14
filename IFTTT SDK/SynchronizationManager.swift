@@ -11,7 +11,7 @@ import CoreLocation
 /// A type responsible for performing a sync
 final class SynchronizationManager {
     
-    private let subscribers: Array<SynchronizationSubscriber>
+    private let subscribers: [SynchronizationSubscriber]
     
     /// The sync currently being performed or nil if no sync is active
     private(set) var currentTask: Task?

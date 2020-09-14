@@ -163,12 +163,13 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         self.regionEventTriggerPublisher = eventPublisher
         
         super.init()
-            
+
         start()
     }
     
-    private func start() {
+    private func updateRegionsFromRegistry() {
         let regions: Set<CLCircularRegion> = connectionsRegistry.getConnections().reduce(.init()) { (currSet, store) -> Set<CLCircularRegion> in
+            guard store.status == .enabled else { return currSet }
             var set = currSet
             store.locationRegions.forEach {
                 set.insert($0)
@@ -176,6 +177,14 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             return set
         }
         regionsMonitor.updateRegions(regions)
+    }
+    
+    @objc private func connectionsChanged() {
+        updateRegionsFromRegistry()
+    }
+    
+    private func start() {
+        updateRegionsFromRegistry()
         
         self.regionsMonitor.didEnterRegion = { region in
             self.recordRegionEvent(with: region, kind: .entry)
@@ -210,6 +219,19 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         }
     }
     
+    private func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
+        var overlappingSet = Set<CLCircularRegion>()
+        connections.forEach {
+            $0.activeTriggers.forEach { trigger in
+                switch trigger {
+                case .location(let region): overlappingSet.insert(region)
+                }
+            }
+        }
+
+        regionsMonitor.updateRegions(overlappingSet)
+    }
+    
     // MARK: - SynchronizationSubscriber
     var name: String {
         return "LocationService"
@@ -219,16 +241,14 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         let hasLocationTriggers = connectionsRegistry.getConnections().reduce(false) { (currentResult, connection) -> Bool in
             return currentResult || connection.hasLocationTriggers
         }
-        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
+        let credentialProvider = UserAuthenticatedRequestCredentialProvider.standard
 
         let isLoggedIn = credentialProvider.userToken != nil
         if !(hasLocationTriggers && isLoggedIn) {
             regionEventsRegistry.removeAll()
         }
         return hasLocationTriggers &&
-            credentialProvider.userToken != nil &&
-            !regionEventsRegistry.getRegionEvents().isEmpty &&
-            currentTask == nil
+            credentialProvider.userToken != nil
     }
     
     private func exponentialBackoffTiming(for retryCount: Int) -> DispatchTimeInterval {
@@ -237,6 +257,13 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     }
     
     func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
+        processUpdate(with: connectionsRegistry.getConnections())
+        
+        if currentTask != nil {
+            completion(false, nil)
+            return
+        }
+        
         let credentialProvider = UserAuthenticatedRequestCredentialProvider()
             
         let existingRegionEvents = regionEventsRegistry.getRegionEvents()
@@ -289,20 +316,5 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             }
         })
         currentTask?.resume()
-    }
-}
-
-extension LocationService: ConnectionMonitorSubscriber {
-    func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
-        var overlappingSet = Set<CLCircularRegion>()
-        connections.forEach {
-            $0.activeTriggers.forEach { trigger in
-                switch trigger {
-                case .location(let region): overlappingSet.insert(region)
-                }
-            }
-        }
-
-        regionsMonitor.updateRegions(overlappingSet)
     }
 }
