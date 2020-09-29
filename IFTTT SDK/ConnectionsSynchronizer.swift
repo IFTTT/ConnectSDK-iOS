@@ -17,25 +17,38 @@ public func debugPrint(_ string: String) {
     #endif
 }
 
+/// Controls current running state
+enum RunState {
+    /// Currently stopped
+    case stopped
+    
+    /// Currently running
+    case running
+}
+
 /**
  Handles synchronizing events from the SDK to the backend.
  
  Uses the following mechanisms to do so:
- - Silent remote push notifications
- - Background fetch
  - Background processing
+ - App lifecycle events
+    - App going to background
+    - App transitions to active state
+ - Other events specified by `SynchronizationSource`
 */
 public final class ConnectionsSynchronizer {
     private let eventPublisher: EventPublisher<SynchronizationTriggerEvent>
     private let scheduler: SynchronizationScheduler
     private let location: LocationService
     private let connectionsMonitor: ConnectionsMonitor
+    private let subscribers: [SynchronizationSubscriber]
+    private var state: RunState = .stopped
     
-    /// An `ConnectButtonControllerDelegate` object that will recieved messages about events that happen on the `ConnectButtonController`.
-     public private(set) weak var delegate: ConnectButtonControllerDelegate?
+    /// Shared instance of connections synchronizer to use in starting/stopping synchronization
+    public static let shared = ConnectionsSynchronizer()
     
     /// Creates an instance of the `ConnectionsSynchronizer`.
-    public init() {
+    private init() {
         let regionEventsRegistry = RegionEventsRegistry()
         let connectionsRegistry = ConnectionsRegistry()
         let permissionsRequestor = PermissionsRequestor(registry: connectionsRegistry)
@@ -48,7 +61,7 @@ public final class ConnectionsSynchronizer {
         
         let connectionsMonitor = ConnectionsMonitor(connectionsRegistry: connectionsRegistry)
         
-        let subscribers: [SynchronizationSubscriber] = [
+        self.subscribers = [
             connectionsMonitor,
             permissionsRequestor,
             location
@@ -59,8 +72,43 @@ public final class ConnectionsSynchronizer {
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher)
         self.location = location
         self.connectionsMonitor = connectionsMonitor
+    }
+    
+    /// Can be used to force a synchronization.
+    public func update() {
+        let event = SynchronizationTriggerEvent(source: .forceUpdate, backgroundFetchCompletionHandler: nil)
+        eventPublisher.onNext(event)
+    }
+    
+    /// Call this to start the synchronization. This should be called preferably as early as possible and after the app determines that the user is logged in. Safe to be called multiple times.
+    public func start() {
+        guard state == .stopped else { return }
         
         setupNotifications()
+        let useBackgroundFetch = false
+        performPreflightChecks(useBackgroundFetch: useBackgroundFetch)
+        resetKeychainIfNecessary()
+        if #available(iOS 13.0, *) {
+            scheduler.start()
+        } else {
+            guard Bundle.main.backgroundFetchEnabled, useBackgroundFetch else { return }
+            // We must set the interval to setMinimumBackgroundFetchInterval(...) to a value to something other than the default of UIApplication.backgroundFetchIntervalNever
+            let closure : () -> Void  = { UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+            }
+            closure()
+        }
+        state = .running
+    }
+    
+    /// Call this to stop the synchronization. This should be called when the user is logged out. Safe to be called multiple times.
+    public func stop() {
+        guard state == .running else { return }
+        
+        Keychain.reset()
+        scheduler.stop()
+        NotificationCenter.default.removeObserver(self)
+        subscribers.forEach { $0.reset() }
+        state = .stopped
     }
     
     /// Runs checks to see what capabilities the target currently has and prints messages to the console as required.
@@ -87,36 +135,14 @@ public final class ConnectionsSynchronizer {
         }
     }
     
+    /// Peforms internal setup to allow the SDK to perform work in response to notification center notifications.
     private func setupNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didFinishLaunchingWithOptions),
-                                               name: UIApplication.didFinishLaunchingNotification,
-                                               object: nil)
-        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationDidEnterBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
     }
     
-    /// Hook to be called when the application finishes launching. This performs pre-flight checks along with setting up background fetch or background processing and starting the synchronization scheduler.
-    @objc private func didFinishLaunchingWithOptions() {
-        let useBackgroundFetch = false
-        performPreflightChecks(useBackgroundFetch: useBackgroundFetch)
-        resetKeychainIfNecessary()
-        if #available(iOS 13.0, *) {
-            scheduler.didFinishLaunchingWithOptions()
-        } else {
-            guard Bundle.main.backgroundFetchEnabled, useBackgroundFetch else { return }
-            // We must set the interval to setMinimumBackgroundFetchInterval(...) to a value to something other than the default of UIApplication.backgroundFetchIntervalNever
-            let closure : () -> Void  = { UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-            }
-            closure()
-        }
-        
-        scheduler.start()
-    }
-
     /// Hook to be called when the application enters the background.
     @objc private func applicationDidEnterBackground() {
         if #available(iOS 13.0, *) {

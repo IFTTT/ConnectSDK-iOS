@@ -38,10 +38,20 @@ final class ConnectionsRegistry {
     }
     
     /// Gets the connections stored in the registry.
+    ///
+    /// - Returns: A `Set` of all the connections that the user has enabled.
     func getConnections() -> Set<Connection.ConnectionStorage> {
         guard let map = UserDefaults.connections else { return .init() }
         let connections = map.values.compactMap { $0 as? JSON }.compactMap { Connection.ConnectionStorage(json: $0) }
         return Set(connections)
+    }
+    
+    /// Gets the count of user enabled connections stored in the registry.
+    ///
+    /// - Returns: A count of the user's enabled connections stored in the registry
+    func getConnectionsCount() -> Int {
+        guard let map = UserDefaults.connections else { return 0 }
+        return map.count
     }
     
     /// Adds a connection to the registry.
@@ -86,5 +96,11 @@ final class ConnectionsRegistry {
         if shouldNotify {
             NotificationCenter.default.post(name: .ConnectionRemovedNotification, object: nil)
         }
+    }
+    
+    /// Removes all connections from the registry
+    ///
+    func removeAll() {
+        UserDefaults.connections = nil
     }
 }

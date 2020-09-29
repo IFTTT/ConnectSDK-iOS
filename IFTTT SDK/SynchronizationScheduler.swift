@@ -20,6 +20,8 @@ final class SynchronizationScheduler {
     /// The token corresponding to the subscriber.
     private var subscriberToken: UUID?
     
+    private var notificationCenterTokens: [Any] = []
+    
     /// The triggers to kick off synchronizations
     private let triggers: EventPublisher<SynchronizationTriggerEvent>
 
@@ -34,35 +36,50 @@ final class SynchronizationScheduler {
     }
     
     /// Performs registration for system and SDK generated events for kicking off synchronizations
+    /// Should get called when the scheduler is to start. Registers background process with the system.
     func start() {
         // Start synchronization on system events
-        scheduleSynchronization(on: UIApplication.didBecomeActiveNotification,
-                     source: .appDidBecomeActive,
-                     shouldRunInBackground: false)
-
-        scheduleSynchronization(on: UIApplication.didEnterBackgroundNotification,
-                     source: .appBackgrounded,
-                     shouldRunInBackground: true)
-
-        // Start synchronization on events we fire
-        scheduleSynchronization(on: .ConnectionUpdatedNotification,
-                     source: .connectionsUpdate,
-                     shouldRunInBackground: true)
+        let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = [
+            (UIApplication.didBecomeActiveNotification, .appDidBecomeActive, false),
+            (UIApplication.didEnterBackgroundNotification, .appBackgrounded, true),
+            (.ConnectionUpdatedNotification, .connectionsUpdate, true),
+            (.ConnectionAddedNotification, .connectionAddition, true),
+            (.ConnectionRemovedNotification, .connectionRemoval, true)
+        ]
         
-        // Start synchronization on events we fire
-        scheduleSynchronization(on: .ConnectionAddedNotification,
-                     source: .connectionAddition,
-                     shouldRunInBackground: true)
-        
-        // Start synchronization on events we fire
-        scheduleSynchronization(on: .ConnectionRemovedNotification,
-                     source: .connectionRemoval,
-                     shouldRunInBackground: true)
+        self.notificationCenterTokens = eventTuples.map {
+            return scheduleSynchronization(on: $0.0,
+                                           source: $0.1,
+                                           shouldRunInBackground: $0.2)
+        }
         
         self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
             guard let self = self else { return }
             self.manager.sync(source: triggerEvent.source,
                               completion: triggerEvent.backgroundFetchCompletionHandler)
+        }
+        
+        if #available(iOS 13.0, *) {
+            guard Bundle.main.backgroundProcessingEnabled else { return }
+            guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
+            
+            registerBackgroundProcess()
+        }
+    }
+    
+    func stop() {
+        // Unregister from background process
+        // Remove observers from notification center
+        notificationCenterTokens.forEach {
+            NotificationCenter.default.removeObserver($0)
+        }
+        notificationCenterTokens = []
+        if #available(iOS 13.0, *) {
+            BGTaskScheduler.shared.cancelAllTaskRequests()
+        } else { }
+        
+        if let subscriberToken = subscriberToken {
+            triggers.removeSubscriber(subscriberToken)
         }
     }
     
@@ -74,7 +91,7 @@ final class SynchronizationScheduler {
     ///     - shouldRunInBackground: A boolean flag that determines whether or not this synchronization should run in the background or not.
     private func scheduleSynchronization(on notificationName: Notification.Name,
                                          source: SynchronizationSource,
-                                         shouldRunInBackground: Bool) {
+                                         shouldRunInBackground: Bool) -> Any {
         let body = { [weak self] (notification: Notification) in
             guard let self = self,
                 UIApplication.shared.applicationState != .background || shouldRunInBackground else {
@@ -82,20 +99,10 @@ final class SynchronizationScheduler {
             }
             self.manager.sync(source: source, completion: nil)
         }
-        NotificationCenter.default.addObserver(forName: notificationName,
-                                               object: nil,
-                                               queue: .main,
-                                               using: body)
-    }
-    
-    /// Hook that should get called when the app finishes launching. Registers background process with the system.
-    func didFinishLaunchingWithOptions() {
-        if #available(iOS 13.0, *) {
-            guard Bundle.main.backgroundProcessingEnabled else { return }
-            guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
-            
-            registerBackgroundProcess()
-        }
+        return NotificationCenter.default.addObserver(forName: notificationName,
+                                                      object: nil,
+                                                      queue: .main,
+                                                      using: body)
     }
     
     /// Hook that should get called when the app enters the background. Schedules background process with the system.
@@ -109,10 +116,7 @@ final class SynchronizationScheduler {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
-        if let subscriberToken = subscriberToken {
-            triggers.removeSubscriber(subscriberToken)
-        }
+        stop()
     }
 }
 

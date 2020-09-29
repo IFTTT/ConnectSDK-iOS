@@ -27,6 +27,9 @@ enum SynchronizationSource {
     /// Used when the application goes to the background
     case appBackgrounded
     
+    /// Used when the SDK needs to run a synchronization due to a force update 
+    case forceUpdate
+    
     /// Used when the system initiates a background fetch. Not used.
     case backgroundFetch
     
@@ -55,4 +58,7 @@ protocol SynchronizationSubscriber {
     /// - Parameters:
     ///   - completion: Call this when synchronization is complete
     func performSynchronization(completion: @escaping (_ newData: Bool, _ syncError: Error?) -> Void)
+    
+    /// Hook that is called to reset the subscriber. Called when global synchronization is stopped. Use this hook to tear down any notification observers, clear out cached data, etc.
+    func reset()
 }
