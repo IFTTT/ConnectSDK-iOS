@@ -21,7 +21,7 @@ struct RegionEvent: Hashable {
     private struct Key {
         static let RecordId = "record_id"
         static let RegionType = "region_type"
-        static let OccurredAt = "ocurred_at"
+        static let OccurredAt = "occurred_at"
         static let EventType = "event_type"
         static let ChannelId = "channel_id"
         static let TriggerSubscriptionId = "trigger_subscription_id"
