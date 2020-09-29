@@ -320,10 +320,39 @@ That's it! You're ready to start activating programmable Connections directly in
 ## Location
 ### Usage
 #### Prerequisite
-To use this library, you should have a connection on your service on IFTTT that connects the IFTTT Location service. To learn more about creating connections, please visit [developer documentation](https://platform.ifttt.com/docs/connections).
+- To use this library, you should have a connection on your service on IFTTT that connects the IFTTT Location service. To learn more about creating connections, please visit [developer documentation](https://platform.ifttt.com/docs/connections). 
+- Add location background mode to your target's info.plist. Example:
+  ```
+  <key>UIBackgroundModes</key>
+  <array>
+      <string>location</string>
+  </array>
+  ```
+- Add the descriptions for the "Always Allow" and "When In Use" location permission level to your target's info.plist. Example:
+  ```
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
+  <key>NSLocationWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
+  ```
+- (Optional) The SDK uses the `BackgroundTasks` API to request background processing run time with the system. In order to opt-in to this, the following must be done:
+  - Add the processing background mode to your target's info.plist. Example:```
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>processing</string>
+    </array>
+    ```
+  - Add the IFTTT background process identifier: `com.ifttt.ifttt.synchronization_scheduler` to your target's info.plist. Example: 
+  ```
+  <key>BGTaskSchedulerPermittedIdentifiers</key>
+  <array>
+      <string>com.ifttt.ifttt.synchronization_scheduler</string>
+  </array>
+  ```
 
 #### Initialization
-To initialize location monitoring, create an instance of `ConnectionsSynchronizer` in `application:willFinishLaunchingWithOptions:` and store it as a property on the app delegate implementation. If you're using SwiftUI, ensure that an instance of this object is created before the app finishes launches. This is to make sure the SDK can set up connection monitoring and geofence registration as early as possible.
+To initialize location monitoring, call `ConnectionsSynchronizer.shared.start()` if the user is logged in to your service and `ConnectionsSynchronizer.shared.stop()` if the user is not logged in to your service.
+
+### Manual updates
+To kick off manual updates of the registered geofences and connection data, you can call `ConnectionsSynchronizer.shared.update()` to do so.
 
 ## Advanced
 
