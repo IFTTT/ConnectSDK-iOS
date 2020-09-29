@@ -51,6 +51,7 @@ final class PermissionsRequestor: SynchronizationSubscriber {
         completion(true, nil)
     }
     
+    func reset() { }
 }
 
 private extension BlockOperation {

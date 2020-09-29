@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import IFTTTConnectSDK
 
 class SettingsViewController: UIViewController {
     
@@ -55,6 +56,7 @@ class SettingsViewController: UIViewController {
     }
     @IBAction func logoutTapped(_ sender: Any) {
         ConnectionCredentials(settings: settings).logout()
+        ConnectionsSynchronizer.shared.stop()
         update()
     }
     

@@ -28,7 +28,7 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     private let networkController = ConnectionNetworkController()
     
     /// The operation queue to handle synchronization of multiple network requests
-    private let operationQueue = OperationQueue()
+    private let operationQueue: OperationQueue
     
     /// Creates an instance of `ConnectionsMonitor`
     ///
@@ -37,6 +37,9 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     /// - Returns: An initialized instance of `ConnectionsMonitor`.
     init(connectionsRegistry: ConnectionsRegistry) {
         self.connectionsRegistry = connectionsRegistry
+        let operationQueue = OperationQueue()
+        operationQueue.maxConcurrentOperationCount = 1
+        self.operationQueue = operationQueue
     }
     
     // MARK: - SynchronizationSubscriber
@@ -46,54 +49,81 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     
     func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
         let credentialProvider = UserAuthenticatedRequestCredentialProvider()
-        return !connectionsRegistry.getConnections().isEmpty &&
+        return connectionsRegistry.getConnectionsCount() > 0 &&
             credentialProvider.userToken != nil &&
             source != .connectionRemoval &&
-            source != .connectionsUpdate
+            source != .connectionsUpdate &&
+            source != .connectionAddition &&
+            operationQueue.operations.isEmpty
     }
     
     func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
-        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
-        
-        let requestQueue = DispatchQueue(label: "com.connection_monitor.synchronization.requests", attributes: .concurrent)
-        let stateQueue = DispatchQueue(label: "com.connection_monitor.synchronization.state", attributes: .concurrent)
-        let group = DispatchGroup()
-        var connectionsSet = Set<Connection.ConnectionStorage>()
         var error: Error? = nil
-        
         // Get connections from the registry
-        let connections = connectionsRegistry.getConnections()
+        let connections = self.connectionsRegistry.getConnections()
         let startingCount = connections.count
         
+        let completionOperation = BlockOperation {
+            DispatchQueue.main.async {
+                completion(self.connectionsRegistry.getConnectionsCount() == startingCount, error)
+            }
+        }
+        
+        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
+
         connections.forEach { connection in
-            group.enter()
-            requestQueue.async { [weak self] in
-                let dataTask = self?.networkController.start(request: .fetchConnection(for: connection.id,
-                                                                                       credentialProvider: credentialProvider))
-                { (response) in
-                    switch response.result {
-                    case .success(let connection):
-                        stateQueue.async {
-                            self?.connectionsRegistry.update(with: connection, shouldNotify: false)
-                            connectionsSet.insert(.init(connection: connection))
-                            group.leave()
-                        }
-                    case .failure(let _error):
-                        stateQueue.async {
-                            error = _error
-                            group.leave()
-                        }
+            let op = CancellableNetworkOperation(networkController: self.networkController,
+                                                 request: .fetchConnection(for: connection.id,
+                                                                           credentialProvider: credentialProvider))
+            { (response) in
+                switch response.result {
+                case .success(let connection):
+                    self.connectionsRegistry.update(with: connection, shouldNotify: false)
+                case .failure(let _error):
+                    if (_error as NSError).code != NSURLErrorCancelled {
+                        error = _error
                     }
                 }
-                dataTask?.resume()
             }
+            completionOperation.addDependency(op)
+            operationQueue.addOperation(op)
         }
-
-        requestQueue.async {
-            group.wait()
-            DispatchQueue.main.async {
-                completion(connectionsSet.count == startingCount, error)
-            }
-        }
+        
+        operationQueue.addOperation(completionOperation)
     }
+    
+    func reset() {
+        connectionsRegistry.removeAll()
+        operationQueue.operations.reversed().forEach { $0.cancel() }
+    }
+}
+
+/// Defines a cancellable `Operation` subclass to allow for cancellable network requests.
+private class CancellableNetworkOperation: Operation {
+    private var task: URLSessionDataTask? = nil
+    private let completion: ConnectionNetworkController.CompletionHandler
+    private weak var networkController: ConnectionNetworkController?
+    private let request: Connection.Request
+
+    init(networkController: ConnectionNetworkController,
+         request: Connection.Request,
+         _ completion: @escaping ConnectionNetworkController.CompletionHandler) {
+        self.networkController = networkController
+        self.request = request
+        self.completion = completion
+    }
+    
+    override func main() {
+        task = networkController?.start(request: request, completion: { response in
+            self.completion(response)
+            self.completionBlock?()
+        })
+        task?.resume()
+    }
+    
+    override func cancel() {
+        super.cancel()
+        task?.cancel()
+    }
+    
 }

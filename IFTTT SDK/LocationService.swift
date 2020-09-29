@@ -279,6 +279,19 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         }
     }
     
+    /// Resets the location service.
+    func reset() {
+        // Empty monitored regions
+        regionsMonitor.updateRegions(.init())
+        
+        // Remove all registered events
+        regionEventsRegistry.removeAll()
+        
+        // Cancel and nil the current network request to update regions
+        currentTask?.cancel()
+        currentTask = nil
+    }
+    
     private func performRequest(events: [RegionEvent],
                                 credentialProvider: ConnectionCredentialProvider,
                                 numberOfRetries: Int = 3,
