@@ -325,7 +325,7 @@ That's it! You're ready to start activating programmable Connections directly in
   ```
   <key>UIBackgroundModes</key>
   <array>
-      <string>location</string>
+	<string>location</string>
   </array>
   ```
 - Add the descriptions for the "Always Allow" and "When In Use" location permission level to your target's info.plist. Example:
@@ -334,17 +334,18 @@ That's it! You're ready to start activating programmable Connections directly in
   <key>NSLocationWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   ```
 - (Optional) The SDK uses the `BackgroundTasks` API to request background processing run time with the system. In order to opt-in to this, the following must be done:
-  - Add the processing background mode to your target's info.plist. Example:```
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>processing</string>
-    </array>
-    ```
+  - Add the processing background mode to your target's info.plist. Example:
+  ```
+  <key>UIBackgroundModes</key>
+  <array>
+	<string>processing</string>
+  </array>
+  ```
   - Add the IFTTT background process identifier: `com.ifttt.ifttt.synchronization_scheduler` to your target's info.plist. Example: 
   ```
   <key>BGTaskSchedulerPermittedIdentifiers</key>
   <array>
-      <string>com.ifttt.ifttt.synchronization_scheduler</string>
+	<string>com.ifttt.ifttt.synchronization_scheduler</string>
   </array>
   ```
 
