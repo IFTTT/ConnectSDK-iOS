@@ -333,7 +333,11 @@ That's it! You're ready to start activating programmable Connections directly in
   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   <key>NSLocationWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   ```
-- (Optional) The SDK uses the `BackgroundTasks` API to request background processing run time with the system. In order to opt-in to this, the following must be done:
+- (Optional) If you use silent push notifications to perform work while the app is in the background, you can call `ConnectButtonController.didReceiveSilentRemoteNotification(backgroundFetchCompletion:)` in the `didReceiveRemoteNotification(userInfo:fetchCompletionHandler)` `UIApplicationDelegate` method. Doing so will result in a sychronization to occur.
+
+- (Optional) If you use background fetch to perform work while the app is in the background, you can call `ConnectButtonController.performFetchWithCompletionHandler(backgroundFetchCompletion:)` in the `performFetchWithCompletionHandler(completionHandler:)` `UIApplicationDelegate` method. Doing so will result in a sychronization to occur.
+
+- (Optional) The SDK uses the `BackgroundTasks` API to request background processing run time with the system. To allow the SDK to register background processes with the system, the following must be done:
   - Add the processing background mode to your target's info.plist. Example:
   ```
   <key>UIBackgroundModes</key>
@@ -348,12 +352,13 @@ That's it! You're ready to start activating programmable Connections directly in
 	<string>com.ifttt.ifttt.synchronization_scheduler</string>
   </array>
   ```
+  Alternatively, if you'd like to create your own background process/task but run a synchronization, you can call `ConnectButtonController.startBackgroundProcess(success:)`. The parameter to the method gets invoked once the synchronization is complete. To cancel a synchronization due to background process/task expiration, you can call `ConnectButtonController.stopCurrentSynchronization()`.
 
 #### Initialization
-To initialize location monitoring, call `ConnectionsSynchronizer.shared.start()` if the user is logged in to your service and `ConnectionsSynchronizer.shared.stop()` if the user is not logged in to your service.
+To initialize location monitoring, call `ConnectButtonController.login()` if the user is logged in to your service and `ConnectButtonController.logout()` if the user is not logged in to your service.
 
 ### Manual updates
-To kick off manual updates of the registered geofences and connection data, you can call `ConnectionsSynchronizer.shared.update()` to do so.
+To kick off manual updates of the registered geofences and connection data, you can call `ConnectButtonController.update(with:)` to do so.
 
 ## Advanced
 
