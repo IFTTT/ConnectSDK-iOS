@@ -53,6 +53,7 @@
 	<string>Grocery Express needs your location to be able to update your Connections.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>processing</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
