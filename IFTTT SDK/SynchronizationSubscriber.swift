@@ -33,11 +33,20 @@ enum SynchronizationSource {
     /// Used when the system initiates a background fetch. Not used.
     case backgroundFetch
     
-    /// Used when the system initiates a background process run
-    case backgroundProcess
+    /// Used when the SDK has a background process run which is scheduled by the SDK.
+    case internalBackgroundProcess
+    
+    /// Used when the SDK has a background process run which is scheduled by the user of the SDK.
+    case externalBackgroundProcess
     
     /// Used when the app gets a silen push notification. Not used.
     case silentPushNotification
+    
+    /// Determines whether or not the source is a background process or not.
+    /// - Returns: A bool as to whether or not the source is a background process or not.
+    func isBackgroundProcess() -> Bool {
+        return self == .internalBackgroundProcess || self == .externalBackgroundProcess
+    }
 }
 
 /// Conform to this protocol and register with the `SynchronizationManager` be notified when a synchronization is starting.

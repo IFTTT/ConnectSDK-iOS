@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         ConnectButtonController.analyticsEnabled = true
-        ConnectionsSynchronizer.shared.start()
+        ConnectButtonController.login()
         return true
     }
     
@@ -36,4 +36,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        ConnectButtonController.performFetchWithCompletionHandler { (result) in
+            completionHandler(result)
+        }
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        ConnectButtonController.didReceiveSilentRemoteNotification { (result) in
+            completionHandler(result)
+        }
+    }
 }

@@ -9,8 +9,8 @@ import Foundation
 import CoreLocation
 
 struct UserAuthenticatedRequestCredentialProvider: ConnectionCredentialProvider {
-    var inviteCode: String? { return Keychain.getValue(for: Keychain.Key.InviteCode.rawValue) }
-    var userToken: String? { return Keychain.getValue(for: Keychain.Key.UserToken.rawValue) }
+    var inviteCode: String? { return Keychain.inviteCode }
+    var userToken: String? { return Keychain.userToken }
     
     /// This isn't used in the network request.
     var oauthCode: String = ""
