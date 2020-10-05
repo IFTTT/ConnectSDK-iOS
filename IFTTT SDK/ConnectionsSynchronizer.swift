@@ -88,6 +88,7 @@ final class ConnectionsSynchronizer {
         
         setupNotifications()
         performPreflightChecks()
+        Keychain.resetIfNecessary(force: false)
         scheduler.start()
         state = .running
     }
@@ -96,6 +97,7 @@ final class ConnectionsSynchronizer {
     func stop() {
         guard state == .running else { return }
         
+        Keychain.resetIfNecessary(force: true)
         scheduler.stop()
         NotificationCenter.default.removeObserver(self)
         subscribers.forEach { $0.reset() }

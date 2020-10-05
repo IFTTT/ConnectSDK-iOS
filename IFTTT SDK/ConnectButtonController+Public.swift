@@ -8,16 +8,20 @@
 import Foundation
 
 extension ConnectButtonController {
+    /// Call this method to login the user. This starts the synchronization setup.
     public static func login() {
-        Keychain.resetIfNecessary(force: false)
         ConnectionsSynchronizer.shared.start()
     }
     
+    /// Call this method to log the user out. This stop the synchronization and performs cleanup of any stored data.
     public static func logout() {
-        Keychain.reset()
         ConnectionsSynchronizer.shared.stop()
     }
     
+    /// Call this method to run a manual synchronization.
+    ///
+    /// - Parameters:
+    ///     - iftttUserToken: This optional IFTTT user token will be stored by the SDK to use in synchronization. If this parameter is nil, the parameter will be ignored.
     public static func update(with iftttUserToken: String? = nil) {
         if let iftttUserToken = iftttUserToken {
             Keychain.userToken = iftttUserToken
@@ -26,11 +30,17 @@ extension ConnectButtonController {
     }
     
     /// Hook to be called when the `UIApplicationDelegate` recieves the `application:performFetchWithCompletionHandler:` method call. This method should only be called when your app recieves a background fetch request from the system.
+    ///
+    /// - Parameters:
+    ///     - backgroundFetchCompletion: The block that's executed when the synchronization is complete. When this closure is called, the fetch result value that best describes the results of the synchronization is provided.
     public static func performFetchWithCompletionHandler(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
         ConnectionsSynchronizer.shared.performFetchWithCompletionHandler(backgroundFetchCompletion: backgroundFetchCompletion)
     }
     
     /// Hook to be called when the `UIApplicationDelegate` recieves the `application:didReceiveRemoteNotification:` method call. This method should only be called when your app recieves a silent push notification.
+    /// 
+    /// - Parameters:
+    ///     - backgroundFetchCompletion: The block that's executed when the synchronization is complete. When this closure is called, the fetch result value that best describes the results of the synchronization is provided.
     public static func didReceiveSilentRemoteNotification(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
         ConnectionsSynchronizer.shared.didReceiveSilentRemoteNotification(backgroundFetchCompletion: backgroundFetchCompletion)
     }
