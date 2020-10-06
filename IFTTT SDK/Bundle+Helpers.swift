@@ -46,12 +46,6 @@ extension Bundle {
         return backgroundModes.contains("location")
     }
     
-    /// Determines whether or not background fetch is enabled as a capability in the app's info dictionary.
-    var backgroundFetchEnabled: Bool {
-        guard let backgroundModes = infoDictionary?["UIBackgroundModes"] as? [String] else { return false }
-        return backgroundModes.contains("fetch")
-    }
-    
     /// Determines whether or not background processing is enabled as a capability in the app's info dictionary.
     var backgroundProcessingEnabled: Bool {
         guard let backgroundModes = infoDictionary?["UIBackgroundModes"] as? [String] else { return false }

@@ -36,7 +36,7 @@ final class SynchronizationScheduler {
     }
     
     /// Performs registration for system and SDK generated events for kicking off synchronizations
-    /// Should get called when the scheduler is to start. Registers background process with the system.
+    /// Should get called when the scheduler is to start. On iOS 13 and up, registers background process with the system.
     func start() {
         // Start synchronization on system events
         let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = [
@@ -76,8 +76,7 @@ final class SynchronizationScheduler {
         notificationCenterTokens = []
         if #available(iOS 13.0, *) {
             BGTaskScheduler.shared.cancelAllTaskRequests()
-        } else { }
-        
+        }
         if let subscriberToken = subscriberToken {
             triggers.removeSubscriber(subscriberToken)
         }
@@ -103,6 +102,10 @@ final class SynchronizationScheduler {
                                                       object: nil,
                                                       queue: .main,
                                                       using: body)
+    }
+    
+    func stopCurrentSynchronization() {
+        manager.currentTask?.cancel()
     }
     
     /// Hook that should get called when the app enters the background. Schedules background process with the system.
@@ -145,7 +148,7 @@ extension SynchronizationScheduler {
             guard let appProcessTask = task as? BGProcessingTask else { return }
 
             self?.scheduleBackgroundProcess()
-            self?.manager.sync(source: .backgroundProcess) { (result) in
+            self?.manager.sync(source: .internalBackgroundProcess) { (result) in
                 let success = result != .failed
                 // TODO: Log error here if result == .failed
                 appProcessTask.setTaskCompleted(success: success)

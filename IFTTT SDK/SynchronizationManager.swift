@@ -119,13 +119,13 @@ extension SynchronizationManager {
                 return
             }
             
-            if source != .backgroundProcess {
+            if !source.isBackgroundProcess() {
                 guard identifier == nil else {
                     return
                 }
             }
             
-            if source != .backgroundProcess {
+            if !source.isBackgroundProcess() {
                 identifier = UIApplication.shared.beginBackgroundTask(expirationHandler: { [weak self] in
                     if let strongSelf = self {
                         strongSelf.finish()
@@ -166,7 +166,7 @@ extension SynchronizationManager {
         private func finish() {
             guard self.result == nil else {
                 onComplete?(.noData)
-                if source != .backgroundProcess {
+                if !source.isBackgroundProcess() {
                     if let identifier = identifier, identifier != UIBackgroundTaskIdentifier.invalid {
                         UIApplication.shared.endBackgroundTask(identifier)
                     }
@@ -192,7 +192,7 @@ extension SynchronizationManager {
             
             onComplete?(result)
             
-            if source != .backgroundProcess {
+            if !source.isBackgroundProcess() {
                 if let identifier = identifier, identifier != UIBackgroundTaskIdentifier.invalid {
                     UIApplication.shared.endBackgroundTask(identifier)
                 }

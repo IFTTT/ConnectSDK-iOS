@@ -12,8 +12,26 @@ final class Keychain {
         case UserToken = "KeychainKey.IFTTTUserToken"
         case InviteCode = "KeychainKey.PlatformInviteCode"
     }
+    
+    static var userToken: String? {
+        get {
+            getValue(for: .UserToken)
+        }
+        set {
+            set(value: newValue, for: .UserToken)
+        }
+    }
+    
+    static var inviteCode: String? {
+        get {
+            getValue(for: .InviteCode)
+        }
+        set {
+            set(value: newValue, for: .InviteCode)
+        }
+    }
 
-    class func set(value: String?, for key: String) {
+    private class func set(value: String?, for key: Key) {
         guard let value = value else {
             removeValue(for: key)
             return
@@ -21,7 +39,7 @@ final class Keychain {
         guard let valueData = value.data(using: .utf8) else { return }
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword as String,
-            kSecAttrAccount as String: key,
+            kSecAttrAccount as String: key.rawValue,
             kSecValueData as String: valueData
         ]
 
@@ -29,10 +47,10 @@ final class Keychain {
         SecItemAdd(query as CFDictionary, nil)
     }
 
-    class func getValue(for key: String) -> String? {
+    private class func getValue(for key: Key) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key,
+            kSecAttrAccount as String: key.rawValue,
             kSecReturnData as String: kCFBooleanTrue!,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
@@ -48,14 +66,14 @@ final class Keychain {
     }
 
 
-    class func removeValue(for key: String) {
+    private class func removeValue(for key: Key) {
         // Only remove the value for the key if it exists in the keychain
         if getValue(for: key) == nil { return }
             
         // Instantiate a new default keychain query
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key
+            kSecAttrAccount as String: key.rawValue
         ]
 
         // Delete any existing items
@@ -70,9 +88,15 @@ final class Keychain {
         }
     }
     
-    class func reset() {
+    private class func reset() {
         Key.AllCases().forEach {
-            removeValue(for: $0.rawValue)
+            removeValue(for: $0)
+        }
+    }
+    
+    class func resetIfNecessary(force: Bool) {
+        if UserDefaults.anonymousId == nil || force {
+            Keychain.reset()
         }
     }
 }

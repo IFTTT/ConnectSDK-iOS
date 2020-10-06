@@ -156,7 +156,6 @@ final class LocationService: NSObject, SynchronizationSubscriber {
          regionEventsRegistry: RegionEventsRegistry,
          connectionsRegistry: ConnectionsRegistry,
          eventPublisher: EventPublisher<SynchronizationTriggerEvent>) {
-        
         self.regionsMonitor = RegionsMonitor(allowsBackgroundLocationUpdates: allowsBackgroundLocationUpdates)
         self.regionEventsRegistry = regionEventsRegistry
         self.connectionsRegistry = connectionsRegistry
@@ -241,6 +240,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         let hasLocationTriggers = connectionsRegistry.getConnections().reduce(false) { (currentResult, connection) -> Bool in
             return currentResult || connection.hasLocationTriggers
         }
+        let hasLocationEvents = !regionEventsRegistry.getRegionEvents().isEmpty
         let credentialProvider = UserAuthenticatedRequestCredentialProvider.standard
 
         let isLoggedIn = credentialProvider.userToken != nil
@@ -248,6 +248,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             regionEventsRegistry.removeAll()
         }
         return hasLocationTriggers &&
+            hasLocationEvents &&
             credentialProvider.userToken != nil
     }
     
