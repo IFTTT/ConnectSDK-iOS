@@ -92,6 +92,8 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         operationQueue.addOperation(completionOperation)
     }
     
+    func start() { }
+    
     func reset() {
         connectionsRegistry.removeAll()
         operationQueue.operations.reversed().forEach { $0.cancel() }

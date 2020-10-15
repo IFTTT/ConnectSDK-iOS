@@ -70,4 +70,7 @@ protocol SynchronizationSubscriber {
     
     /// Hook that is called to reset the subscriber. Called when global synchronization is stopped. Use this hook to tear down any notification observers, clear out cached data, etc.
     func reset()
+    
+    /// Hook that is called to start the subscriber.
+    func start()
 }

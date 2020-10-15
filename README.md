@@ -354,11 +354,18 @@ That's it! You're ready to start activating programmable Connections directly in
   ```
   Alternatively, if you'd like to create your own background process/task but run a synchronization, you can call `ConnectButtonController.startBackgroundProcess(success:)`. The parameter to the method gets invoked once the synchronization is complete. To cancel a synchronization due to background process/task expiration, you can call `ConnectButtonController.stopCurrentSynchronization()`.
 
-#### Initialization
-To initialize location monitoring, call `ConnectButtonController.login()` if the user is logged in to your service and `ConnectButtonController.logout()` if the user is not logged in to your service.
+### Initialization
+To initialize synchronization and location monitoring, call `ConnectButtonController.setup(with credentials: ConnectionCredentialProvider)`.
+
+### Activation/Deactivation
+To activate location monitoring and start synchronization, call `ConnectButtonController.activate(connections:)`. If the list of connection ids is known when activating the synchronization, pass in this to the method.
+To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. If you would like to restart location monitoring and synchronization, call `ConnectButtonController.activate(connections:)`.
 
 ### Manual updates
 To kick off manual updates of the registered geofences and connection data, you can call `ConnectButtonController.update(with:)` to do so.
+
+### Notes
+Automatic synchronization for a given connections will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
 
 ## Advanced
 

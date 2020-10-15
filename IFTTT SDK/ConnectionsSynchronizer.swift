@@ -18,12 +18,15 @@ public func debugPrint(_ string: String) {
 }
 
 /// Controls current running state
-enum RunState {
+enum RunState: String {
     /// Currently stopped
-    case stopped
+    case stopped = "stopped"
     
     /// Currently running
-    case running
+    case running = "running"
+    
+    /// Unknown state
+    case unknown = "unknown"
 }
 
 public typealias BoolClosure = (Bool) -> Void
@@ -42,6 +45,7 @@ final class ConnectionsSynchronizer {
     private let eventPublisher: EventPublisher<SynchronizationTriggerEvent>
     private let scheduler: SynchronizationScheduler
     private let location: LocationService
+    private let registry: ConnectionsRegistry
     private let connectionsMonitor: ConnectionsMonitor
     private let subscribers: [SynchronizationSubscriber]
     private var state: RunState = .stopped
@@ -70,6 +74,7 @@ final class ConnectionsSynchronizer {
         ]
         
         let manager = SynchronizationManager(subscribers: subscribers)
+        self.registry = connectionsRegistry
         self.eventPublisher = eventPublisher
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher)
         self.location = location
@@ -82,19 +87,36 @@ final class ConnectionsSynchronizer {
         eventPublisher.onNext(event)
     }
     
-    /// Call this to start the synchronization. This should be called preferably as early as possible and after the app determines that the user is logged in. Safe to be called multiple times.
-    func start() {
+    /// Used to start the synchronization with an optional list of connection ids to monitor.
+    ///
+    /// - Parameters:
+    ///     - connections: An optional list of connections to start monitoring.
+    func activate(connections ids: [String]? = nil) {
+        if let ids = ids {
+            registry.addConnections(with: ids, shouldNotify: false)
+        }
+        start()
+    }
+    
+    /// Used to deactivate and stop synchronization.
+    func deactivate() {
+        stop()
+    }
+    
+    /// Call this to start the synchronization. Safe to be called multiple times.
+    private func start() {
         guard state == .stopped else { return }
         
         setupNotifications()
         performPreflightChecks()
         Keychain.resetIfNecessary(force: false)
+        subscribers.forEach { $0.start() }
         scheduler.start()
         state = .running
     }
     
-    /// Call this to stop the synchronization. This should be called when the user is logged out. Safe to be called multiple times.
-    func stop() {
+    /// Call this to stop the synchronization completely. Safe to be called multiple times.
+    private func stop() {
         guard state == .running else { return }
         
         Keychain.resetIfNecessary(force: true)

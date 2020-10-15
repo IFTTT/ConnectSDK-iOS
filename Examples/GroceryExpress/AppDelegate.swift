@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
         ConnectButtonController.analyticsEnabled = true
-        ConnectButtonController.login()
+        ConnectButtonController.activate()
         return true
     }
     

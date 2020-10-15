@@ -8,23 +8,36 @@
 import Foundation
 
 extension ConnectButtonController {
-    /// Call this method to login the user. This starts the synchronization setup.
-    public static func login() {
-        ConnectionsSynchronizer.shared.start()
+    /// This method should be called prior to calling any other static method on `ConnectButtonController`. It performs setup of the location component of the SDK.
+    ///
+    /// - Parameters:
+    ///     - credentials: An object conforming to `ConnectionCredentialProvider` which is used to setup the SDK.
+    public static func setup(with credentials: ConnectionCredentialProvider) {
+        Keychain.userToken = credentials.userToken
+        Keychain.inviteCode = credentials.inviteCode
     }
     
-    /// Call this method to log the user out. This stop the synchronization and performs cleanup of any stored data.
-    public static func logout() {
-        ConnectionsSynchronizer.shared.stop()
+    /// Call this method to activate the synchronization. This starts synchronization for the parameter connections.
+    ///
+    /// - Parameters:
+    ///     - connections: An optional list of `Connection` to activate synchronization with.
+    public static func activate(connections ids: [String]? = nil) {
+        ConnectionsSynchronizer.shared.activate(connections: ids)
+    }
+    
+    /// Call this method to deactivate the synchronization of connection and native service data. This stops synchronization and performs cleanup of any stored data.
+    public static func deactivate() {
+        ConnectionsSynchronizer.shared.deactivate()
     }
     
     /// Call this method to run a manual synchronization.
     ///
     /// - Parameters:
     ///     - iftttUserToken: This optional IFTTT user token will be stored by the SDK to use in synchronization. If this parameter is nil, the parameter will be ignored.
-    public static func update(with iftttUserToken: String? = nil) {
-        if let iftttUserToken = iftttUserToken {
-            Keychain.userToken = iftttUserToken
+    public static func update(with credentials: ConnectionCredentialProvider? = nil) {
+        if let credentials = credentials {
+            Keychain.userToken = credentials.userToken
+            Keychain.inviteCode = credentials.inviteCode
         }
         ConnectionsSynchronizer.shared.update()
     }

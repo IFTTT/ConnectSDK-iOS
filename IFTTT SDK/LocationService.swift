@@ -162,8 +162,6 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         self.regionEventTriggerPublisher = eventPublisher
         
         super.init()
-
-        start()
     }
     
     private func updateRegionsFromRegistry() {
@@ -178,11 +176,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         regionsMonitor.updateRegions(regions)
     }
     
-    @objc private func connectionsChanged() {
-        updateRegionsFromRegistry()
-    }
-    
-    private func start() {
+    func start() {
         updateRegionsFromRegistry()
         
         self.regionsMonitor.didEnterRegion = { region in

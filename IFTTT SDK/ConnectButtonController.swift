@@ -127,7 +127,9 @@ public class ConnectButtonController {
                                    state: state)
             let activation = ConnectionActivation(userToken: userToken,
                                                   connection: connection)
-            connectionsRegistry.update(with: connection)
+            if connection.hasNativeTriggers {
+                connectionsRegistry.update(with: connection)
+            }
             delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
         }
     }
@@ -140,7 +142,9 @@ public class ConnectButtonController {
         connection?.status = .disabled
         
         if let connection = connection {
-            connectionsRegistry.update(with: connection)
+            if connection.hasNativeTriggers {
+                connectionsRegistry.update(with: connection)
+            }
             delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
         }
     }
@@ -258,7 +262,10 @@ public class ConnectButtonController {
             return
         }
         
-        connectionsRegistry.update(with: connection)
+        if connection.hasNativeTriggers {
+            connectionsRegistry.update(with: connection)
+        }
+        
         Analytics.shared.track(.Impression,
                                location: .connectButtonImpression,
                                object: connection)
