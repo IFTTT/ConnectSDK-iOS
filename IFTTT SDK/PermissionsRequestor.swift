@@ -51,6 +51,8 @@ final class PermissionsRequestor: SynchronizationSubscriber {
         completion(true, nil)
     }
     
+    func start() { }
+    
     func reset() { }
 }
 

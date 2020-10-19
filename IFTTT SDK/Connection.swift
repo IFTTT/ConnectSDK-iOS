@@ -204,6 +204,10 @@ public struct Connection: Equatable, Hashable {
     // MARK:- Native Services
     /// The set of active native service triggers for this Connection.
     let activeTriggers: Set<Trigger>
+    
+    var hasNativeTriggers: Bool {
+        return !activeTriggers.isEmpty
+    }
 
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {
         return lhs.id == rhs.id
