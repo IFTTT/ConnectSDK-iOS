@@ -48,7 +48,7 @@ class Connection_ParsingTests: XCTestCase {
         XCTAssertEqual(firstFeature?.details, "Some random description for this feature")
         XCTAssertEqual(firstFeature?.iconURL?.absoluteString, "https://ifttt.com/value-prop-icons/clock.png", "Feature not found")
         
-        let firstTrigger = connection.activeTriggers.first
+        let firstTrigger = connection.allNativeTriggers.first
         switch firstTrigger {
         case .location(let region):
             XCTAssertEqual(region.radius, 123.4567890)

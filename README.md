@@ -355,7 +355,8 @@ That's it! You're ready to start activating programmable Connections directly in
   Alternatively, if you'd like to create your own background process/task but run a synchronization, you can call `ConnectButtonController.startBackgroundProcess(success:)`. The parameter to the method gets invoked once the synchronization is complete. To cancel a synchronization due to background process/task expiration, you can call `ConnectButtonController.stopCurrentSynchronization()`.
 
 ### Initialization
-To initialize synchronization and location monitoring, call `ConnectButtonController.setup(with credentials: ConnectionCredentialProvider)`.
+- To initialize synchronization and location monitoring, call `ConnectButtonController.setup(with credentials: ConnectionCredentialProvider)`. 
+- If you would like the SDK to manage background processes, call `ConnectButtonController.setupSDKBackgroundProcess()`. This method is required to be called before the app finishes launching. Not doing so will result in a `NSInternalInconsistencyException`.
 
 ### Activation/Deactivation
 To activate location monitoring and start synchronization, call `ConnectButtonController.activate(connections:)`. If the list of connection ids is known when activating the synchronization, pass in this to the method.
@@ -363,6 +364,9 @@ To deactivate location monitoring and stop synchronization completely, call `Con
 
 ### Manual updates
 To kick off manual updates of the registered geofences and connection data, you can call `ConnectButtonController.update(with:)` to do so.
+
+### Logging
+To enable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = true`. To disable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = false`. By default the logs get printed out using `NSLog`. If you'd like to supply your own logging handler, you may do so by setting a custom closure for `ConnectButtonController.synchnronizationLoggingHandler`. Setting this closure will not log any events using `NSLog`.
 
 ### Notes
 Automatic synchronization for a given connections will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.

@@ -31,7 +31,7 @@ class ConnectionsRegistryTests: XCTestCase {
                                             features: [],
                                             services: [],
                                             primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
-                                            activeTriggers: .init())
+                                            activeUserTriggers: .init())
         
         connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
         assert(connectionsRegistry.getConnections().isEmpty)
@@ -46,7 +46,7 @@ class ConnectionsRegistryTests: XCTestCase {
                                            features: [],
                                            services: [],
                                            primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
-                                           activeTriggers: .init())
+                                           activeUserTriggers: .init())
         
         connectionsRegistry.update(with: enabledConnection, shouldNotify: false)
         assert(connectionsRegistry.getConnections().count == 1)
@@ -63,7 +63,7 @@ class ConnectionsRegistryTests: XCTestCase {
                                             features: [],
                                             services: [],
                                             primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
-                                            activeTriggers: .init())
+                                            activeUserTriggers: .init())
         let disabledConnectionStorage = Connection.ConnectionStorage(connection: disabledConnection)
         
         connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
@@ -83,7 +83,7 @@ class ConnectionsRegistryTests: XCTestCase {
                                            features: [],
                                            services: [],
                                            primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
-                                           activeTriggers: .init())
+                                           activeUserTriggers: .init())
         
         let expectation = self.expectation(forNotification: .ConnectionAddedNotification, object: nil, handler: nil)
         connectionsRegistry.update(with: enabledConnection, shouldNotify: true)

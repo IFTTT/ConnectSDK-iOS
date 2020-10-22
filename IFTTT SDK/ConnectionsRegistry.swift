@@ -32,7 +32,10 @@ final class ConnectionsRegistry {
     ///     - identifier: The identifier of the connection to update the registry with.
     ///     - shouldNotify: A boolean that determines whether or not the default `NotificationCenter` should be notified of the update. Defaults to `true`.
     func addConnections(with identifiers: [String], shouldNotify: Bool = true) {
-        let storage = identifiers.map { Connection.ConnectionStorage(id: $0, status: .enabled, activeTriggers: .init()) }
+        let storage = identifiers.map { Connection.ConnectionStorage(id: $0,
+                                                                     status: .enabled,
+                                                                     activeUserTriggers: .init(),
+                                                                     allTriggers: .init()) }
         add(storage, shouldNotify: shouldNotify)
     }
     
@@ -99,7 +102,8 @@ final class ConnectionsRegistry {
            let _foundConnection = Connection.ConnectionStorage(json: _foundConnectionJSON) {
             modifiedConnection = .init(id: connection.id,
                                        status: connection.status,
-                                       activeTriggers: _foundConnection.activeTriggers)
+                                       activeUserTriggers: connection.activeUserTriggers.count > 0 ? connection.activeUserTriggers: _foundConnection.activeUserTriggers,
+                                       allTriggers: connection.allTriggers.count > 0 ? connection.allTriggers: _foundConnection.allTriggers)
         }
         
         let notificationName: Notification.Name = foundConnection != nil ? .ConnectionUpdatedNotification: .ConnectionAddedNotification
@@ -114,7 +118,7 @@ final class ConnectionsRegistry {
         UserDefaults.connections = map
         
         if shouldNotify {
-            NotificationCenter.default.post(name: notificationName, object: nil)
+            NotificationCenter.default.post(.init(name: notificationName, object: nil, userInfo: ["connection_id": connection.id]))
         }
     }
     

@@ -180,10 +180,12 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         updateRegionsFromRegistry()
         
         self.regionsMonitor.didEnterRegion = { region in
+            ConnectButtonController.synchronizationLog("User entered region: \(region)")
             self.recordRegionEvent(with: region, kind: .entry)
         }
 
         self.regionsMonitor.didExitRegion = { region in
+            ConnectButtonController.synchronizationLog("User exited region: \(region)")
             self.recordRegionEvent(with: region, kind: .exit)
         }
     }
@@ -215,7 +217,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     private func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
         var overlappingSet = Set<CLCircularRegion>()
         connections.forEach {
-            $0.activeTriggers.forEach { trigger in
+            $0.activeUserTriggers.forEach { trigger in
                 switch trigger {
                 case .location(let region): overlappingSet.insert(region)
                 }
@@ -231,6 +233,8 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     }
     
     func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
+        updateRegionsFromRegistry()
+        
         let hasLocationTriggers = connectionsRegistry.getConnections().reduce(false) { (currentResult, connection) -> Bool in
             return currentResult || connection.hasLocationTriggers
         }
@@ -294,8 +298,10 @@ final class LocationService: NSObject, SynchronizationSubscriber {
                                 completion: @escaping (Bool, Error?) -> Void) {
         currentTask?.cancel()
         currentTask = nil
+        ConnectButtonController.synchronizationLog("Uploading region events: \(events)")
         currentTask = networkController.send(.uploadEvents(events, credentialProvider: credentialProvider), completionHandler: { [weak self] (success) in
             if success {
+                ConnectButtonController.synchronizationLog("Successfully uploaded region events: \(events)")
                 self?.regionEventsRegistry.remove(events)
             }
             self?.currentTask = nil
@@ -311,6 +317,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             
             if retryCount < numberOfRetries {
                 let count = retryCount + 1
+                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events). Will retry \(numberOfRetries - retryCount) more times.")
                 DispatchQueue.main.asyncAfter(deadline: .now() + self.exponentialBackoffTiming(for: count)) {
                     self.performRequest(events: events,
                                         credentialProvider: credentialProvider,
@@ -319,6 +326,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
                                         completion: completion)
                 }
             } else {
+                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events) after \(retryCount). Will try again on the next synchronization.")
                 self.currentTask = nil
                 completion(false, error)
             }

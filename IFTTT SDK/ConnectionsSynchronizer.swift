@@ -11,12 +11,6 @@ import UIKit
 import BackgroundTasks
 #endif
 
-public func debugPrint(_ string: String) {
-    #if DEBUG
-    print(string)
-    #endif
-}
-
 /// Controls current running state
 enum RunState: String {
     /// Currently stopped
@@ -30,6 +24,38 @@ enum RunState: String {
 }
 
 public typealias BoolClosure = (Bool) -> Void
+
+/// A set of application lifecycle events that are used to determine whether or not a synchronization should occur for that application lifecycle event.
+public struct ApplicationLifecycleSynchronizationOptions: OptionSet, CustomStringConvertible {
+    public let rawValue: Int
+
+    /// Option for the UIApplication.didEnterBackground lifecycle event
+    public static let applicationDidEnterBackground = ApplicationLifecycleSynchronizationOptions(rawValue: 1 << 0)
+    
+    /// Option for the UIApplication.didBecomeActive lifecycle event
+    public static let applicationDidBecomeActive  = ApplicationLifecycleSynchronizationOptions(rawValue: 1 << 1)
+
+    /// Describes all supported lifecycle events
+    public static let all: ApplicationLifecycleSynchronizationOptions = [.applicationDidEnterBackground, .applicationDidBecomeActive]
+    
+    /// Describes none of the application lifecycle events.
+    public static let none: ApplicationLifecycleSynchronizationOptions = []
+    
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    public var description: String {
+        var strings = [String]()
+        if self.contains(.applicationDidBecomeActive) {
+            strings.append("ApplicationDidBecomeActive")
+        }
+        if self.contains(.applicationDidEnterBackground) {
+            strings.append("ApplicationDidEnterBackground")
+        }
+        return strings.joined(separator: ",")
+    }
+}
 
 /**
  Handles synchronizing events from the SDK to the backend.
@@ -51,10 +77,22 @@ final class ConnectionsSynchronizer {
     private var state: RunState = .stopped
     
     /// Shared instance of connections synchronizer to use in starting/stopping synchronization
-    public static let shared = ConnectionsSynchronizer()
+    static var _shared: ConnectionsSynchronizer!
+    
+    static func shared() -> ConnectionsSynchronizer {
+        if _shared == nil {
+            _shared = ConnectionsSynchronizer(lifecycleSynchronizationOptions: .all)
+        }
+        return _shared
+    }
+    
+    static func setup(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {    
+        guard _shared == nil else { return }
+        _shared = ConnectionsSynchronizer(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
+    }
     
     /// Creates an instance of the `ConnectionsSynchronizer`.
-    private init() {
+    private init(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
         let regionEventsRegistry = RegionEventsRegistry()
         let connectionsRegistry = ConnectionsRegistry()
         let permissionsRequestor = PermissionsRequestor(registry: connectionsRegistry)
@@ -76,7 +114,7 @@ final class ConnectionsSynchronizer {
         let manager = SynchronizationManager(subscribers: subscribers)
         self.registry = connectionsRegistry
         self.eventPublisher = eventPublisher
-        self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher)
+        self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher, lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
         self.location = location
         self.connectionsMonitor = connectionsMonitor
     }
@@ -94,12 +132,16 @@ final class ConnectionsSynchronizer {
     func activate(connections ids: [String]? = nil) {
         if let ids = ids {
             registry.addConnections(with: ids, shouldNotify: false)
+            ConnectButtonController.synchronizationLog("Activated synchronization with connection ids: \(ids)")
+        } else {
+            ConnectButtonController.synchronizationLog("Activated synchronization")
         }
         start()
     }
     
     /// Used to deactivate and stop synchronization.
     func deactivate() {
+        ConnectButtonController.synchronizationLog("Deactivated synchronization")
         stop()
     }
     
@@ -129,29 +171,34 @@ final class ConnectionsSynchronizer {
     /// Runs checks to see what capabilities the target currently has and prints messages to the console as required.
     private func performPreflightChecks() {
         if !Bundle.main.backgroundProcessingEnabled {
-            debugPrint("Background processing not enabled for this target! Enable background processing to allow Connections to get synchronized more frequently.")
+            ConnectButtonController.synchronizationLog("Background processing not enabled for this target! Enable background processing to allow Connections to get synchronized more frequently.")
         } else if Bundle.main.backgroundProcessingEnabled && !Bundle.main.containsIFTTTBackgroundProcessingIdentifier {
-            debugPrint("Missing IFTTT background processing task identifier. Add com.ifttt.ifttt.synchronization_scheduler to the BGTaskSchedulerPermittedIdentifiers array of the info plist for this target.")
+            ConnectButtonController.synchronizationLog("Missing IFTTT background processing task identifier. Add com.ifttt.ifttt.synchronization_scheduler to the BGTaskSchedulerPermittedIdentifiers array of the info plist for this target.")
         }
         
         if !Bundle.main.backgroundLocationEnabled {
-            debugPrint("Background location not enabled for this target! Enable background location to allow location updates to be delivered to the app in the background.")
+            ConnectButtonController.synchronizationLog("Background location not enabled for this target! Enable background location to allow location updates to be delivered to the app in the background.")
         }
     }
     
     /// Peforms internal setup to allow the SDK to perform work in response to notification center notifications.
     private func setupNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationDidEnterBackground),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
+        if #available(iOS 13.0, *) {
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(applicationDidEnterBackground),
+                                                   name: UIApplication.didEnterBackgroundNotification,
+                                                   object: nil)
+        }
     }
     
     /// Hook to be called when the application enters the background.
     @objc private func applicationDidEnterBackground() {
-        if #available(iOS 13.0, *) {
-            scheduler.applicationDidEnterBackground()
-        }
+        scheduler.applicationDidEnterBackground()
+    }
+    
+    /// Call this to setup background processes. Must be called before the application finishes launching.
+    func setupBackgroundProcess() {
+        scheduler.setupBackgroundProcess()
     }
     
     func performFetchWithCompletionHandler(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {

@@ -26,7 +26,7 @@ final class PermissionsRequestor: SynchronizationSubscriber {
 
     private func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
         let operations = connections.reduce(.init()) { (currSet, connections) -> Set<Trigger> in
-            return currSet.union(connections.activeTriggers)
+            return currSet.union(connections.allTriggers)
         }
         .compactMap { permission -> Library in
             switch permission {

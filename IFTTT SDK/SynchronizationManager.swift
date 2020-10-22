@@ -58,6 +58,7 @@ final class SynchronizationManager {
         if reachability?.connection == Reachability.Connection.none {
             // Generally it is bad practice to skip an API request because reachability fails
             // But since we are doing some operation in the background, let's just wait until we're sure the connection is active
+            ConnectButtonController.synchronizationLog("Cancelling sync due to lack of network connectivity")
             completion?(.failed)
             return
         }
@@ -67,6 +68,7 @@ final class SynchronizationManager {
             let task = Task(source: source, subscribers: activeSubscribers)
             
             task.onComplete = { [weak self] result in
+                ConnectButtonController.synchronizationLog("Completed synchronization. Source: \(source)")
                 self?.currentTask = nil
                 completion?(result)
                 
@@ -75,9 +77,12 @@ final class SynchronizationManager {
                     self?.sync(source: nextTask.source, completion: nextTask.completion)
                 }
             }
+
             currentTask = task
+            ConnectButtonController.synchronizationLog("Starting synchronization. Source: \(source)")
             task.start()
         } else {
+            ConnectButtonController.synchronizationLog("Synchronization already in process. Setting up next synchronization to occur. Source: \(source)")
             nextTask = SynchronizationRequest(source: source, completion: completion)
         }
     }
@@ -97,6 +102,10 @@ extension SynchronizationManager {
         private(set) var error: Error?
         
         let timeout: TimeInterval = 29.5
+        
+        override var description: String {
+            return "source: \(source), createdAt: \(createdAt)"
+        }
         
         func cancel() {
             finish()

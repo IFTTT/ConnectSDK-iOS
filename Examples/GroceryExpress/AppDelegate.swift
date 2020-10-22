@@ -20,9 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start()
+        ConnectButtonController.synchronizationLoggingEnabled = true
+
+        ConnectButtonController.setupSDKBackgroundProcess()
         ConnectButtonController.analyticsEnabled = true
-        ConnectButtonController.activate()
+        TokenRequest(credentials: ConnectionCredentials(settings: Settings())).start { (credentials) in
+            ConnectButtonController.setup(with: credentials)
+            ConnectButtonController.activate()
+        }
         return true
     }
     
