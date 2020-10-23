@@ -78,7 +78,7 @@ final class Analytics {
     ///     - event: A string corresponding to the event.
     private static func log(_ event: String) {
         guard loggingEnabled else { return }
-        print("ANALYTICS: \(event)")
+        NSLog("[ConnectSDK/Analytics] \(event)")
     }
     
     /// The `AnalyticsNetworkController` used in uploading Analytics events.

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Defines sources that kick off a synchronization
-enum SynchronizationSource {
+enum SynchronizationSource: CustomStringConvertible {
     /// Defines a region entered or region update.
     case regionsUpdate
     
@@ -46,6 +46,33 @@ enum SynchronizationSource {
     /// - Returns: A bool as to whether or not the source is a background process or not.
     func isBackgroundProcess() -> Bool {
         return self == .internalBackgroundProcess || self == .externalBackgroundProcess
+    }
+    
+    var description: String {
+        switch self {
+        case .appBackgrounded:
+            return "Application entered background"
+        case .appDidBecomeActive:
+            return "Application did become active"
+        case .backgroundFetch:
+            return "Background fetch"
+        case .connectionAddition:
+            return "Connection added"
+        case .connectionRemoval:
+            return "Connection removed"
+        case .connectionsUpdate:
+            return "Connections were updated"
+        case .externalBackgroundProcess:
+            return "Host app started background process"
+        case .forceUpdate:
+            return "Host app triggered a force update"
+        case .internalBackgroundProcess:
+            return "SDK started background process"
+        case .regionsUpdate:
+            return "User triggered geofence update"
+        case .silentPushNotification:
+            return "Host app received a silent push notification"
+        }
     }
 }
 

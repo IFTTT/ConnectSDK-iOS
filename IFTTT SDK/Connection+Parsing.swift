@@ -36,8 +36,7 @@ extension Connection {
             Connection.Feature(parser: $0)
         }
         
-        let activeTriggers = Connection.parseTriggers(parser)
-        self.activeTriggers = activeTriggers
+        self.activeUserTriggers = Connection.parseTriggers(parser)
     }
     
     static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {
@@ -110,6 +109,14 @@ private extension Connection.Feature {
         self.details = parser["description"].string
         self.title = title
         self.iconURL = iconURL
+
+        self.triggers = Set(parser["feature_triggers"].compactMap { innerParser -> Trigger? in
+            let fieldsParser = innerParser["fields"]
+            guard let id = innerParser["id"].string,
+                  let firstField = fieldsParser.first else { return nil }
+            
+            return Trigger(defaultFieldParser: firstField, triggerId: id)
+        })
     }
 }
 
@@ -133,12 +140,14 @@ extension Connection.ConnectionStorage {
         static let Id = "id"
         static let Status = "status"
         static let ActiveTriggers = "activeTriggers"
+        static let AllTriggers = "allTriggers"
     }
     
     init(connection: Connection) {
         self.init(id: connection.id,
                   status: connection.status,
-                  activeTriggers: connection.activeTriggers)
+                  activeUserTriggers: connection.activeUserTriggers,
+                  allTriggers: connection.allNativeTriggers)
     }
     
     init?(json: JSON) {
@@ -146,18 +155,22 @@ extension Connection.ConnectionStorage {
         guard let id = parser[Keys.Id].string,
             let status = parser[Keys.Status].representation(of: Connection.Status.self) else { return nil }
         
-        let triggers = parser[Keys.ActiveTriggers].compactMap { Trigger(parser: $0) }
+        let activeUserTriggers = parser[Keys.ActiveTriggers].compactMap { Trigger(parser: $0) }
+        let allTriggers = parser[Keys.AllTriggers].compactMap { Trigger(parser: $0) }
         self.init(id: id,
                   status: status,
-                  activeTriggers: Set(triggers))
+                  activeUserTriggers: Set(activeUserTriggers),
+                  allTriggers: Set(allTriggers))
     }
     
     func toJSON() -> JSON {
-        let mappedTriggers = activeTriggers.map { $0.toJSON() }
+        let mappedAllTriggers = allTriggers.map { $0.toJSON() }
+        let mappedActiveUserTriggers = activeUserTriggers.map { $0.toJSON() }
         return [
             Keys.Id: id,
             Keys.Status: status.rawValue,
-            Keys.ActiveTriggers: mappedTriggers
+            Keys.ActiveTriggers: mappedActiveUserTriggers,
+            Keys.AllTriggers: mappedAllTriggers
         ]
     }
 }

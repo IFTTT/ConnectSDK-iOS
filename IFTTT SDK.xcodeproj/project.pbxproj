@@ -77,6 +77,7 @@
 		DE641D88252B7BC900C56FF9 /* ConnectButtonController+Public.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */; };
 		DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */; };
 		DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */; };
+		DEBC3C8225421D600052A8CB /* ConnectButtonController+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */; };
 		DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FEF2429469C007D7039 /* NativeServices.swift */; };
 		DEC08FF2242948C3007D7039 /* Set+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF1242948C3007D7039 /* Set+Helpers.swift */; };
 		DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */; };
@@ -183,6 +184,7 @@
 		DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButtonController+Public.swift"; sourceTree = "<group>"; };
 		DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionVerificationSession.swift; sourceTree = "<group>"; };
 		DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationSession.swift; sourceTree = "<group>"; };
+		DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButtonController+Logging.swift"; sourceTree = "<group>"; };
 		DEC08FEF2429469C007D7039 /* NativeServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeServices.swift; sourceTree = "<group>"; };
 		DEC08FF1242948C3007D7039 /* Set+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+Helpers.swift"; sourceTree = "<group>"; };
 		DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsMonitor.swift; sourceTree = "<group>"; };
@@ -478,6 +480,7 @@
 				DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */,
 				DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */,
 				DE328DBD243E18BB00603EAC /* Keychain.swift */,
+				DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -676,6 +679,7 @@
 				FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */,
 				DEC75CB42508312F00F40296 /* Connection+Storage.swift in Sources */,
 				FC361B61224D872D0078B153 /* ProgressBarController.swift in Sources */,
+				DEBC3C8225421D600052A8CB /* ConnectButtonController+Logging.swift in Sources */,
 				DE4C5FFA22CFE570009C7AF9 /* EmailValidator.swift in Sources */,
 				1D453EE42297230C001994FF /* ConnectButton+LabelValue.swift in Sources */,
 				1D453EDC2297213E001994FF /* ConnectButton+Service.swift in Sources */,

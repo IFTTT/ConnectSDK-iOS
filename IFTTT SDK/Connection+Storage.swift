@@ -11,14 +11,17 @@ extension Connection {
     struct ConnectionStorage: Hashable {
         let id: String
         let status: Status
-        let activeTriggers: Set<Trigger>
+        let activeUserTriggers: Set<Trigger>
+        let allTriggers: Set<Trigger>
         
         init(id: String,
              status: Status,
-             activeTriggers: Set<Trigger>) {
+             activeUserTriggers: Set<Trigger>,
+             allTriggers: Set<Trigger>) {
             self.id = id
             self.status = status
-            self.activeTriggers = activeTriggers
+            self.activeUserTriggers = activeUserTriggers
+            self.allTriggers = allTriggers
         }
         
         func hash(into hasher: inout Hasher) {

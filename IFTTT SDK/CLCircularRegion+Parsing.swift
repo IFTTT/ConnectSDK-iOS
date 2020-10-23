@@ -47,13 +47,15 @@ extension CLCircularRegion {
                   identifier: identifier)
     }
     
-    convenience init?(json: JSON, triggerId: String) {
-        let parser = Parser(content: json)
-        let locationParser = parser["value"]
-
-        guard let latitude = locationParser["lat"].double,
-            let longitude = locationParser["lng"].double,
-            var radius = locationParser["radius"].double else {
+    convenience init?(defaultFieldParser: Parser, triggerId: String) {
+        let locationParser = defaultFieldParser["default_value"]
+        self.init(parser: locationParser, triggerId: triggerId)
+    }
+    
+    convenience init?(parser: Parser, triggerId: String) {
+        guard let latitude = parser["lat"].double,
+            let longitude = parser["lng"].double,
+            var radius = parser["radius"].double else {
                 return nil
         }
         
@@ -65,6 +67,12 @@ extension CLCircularRegion {
         self.init(center: center,
                   radius: radius as CLLocationDistance,
                   identifier: identifier)
+    }
+    
+    convenience init?(json: JSON, triggerId: String) {
+        let parser = Parser(content: json)
+        let locationParser = parser["value"]
+        self.init(parser: locationParser, triggerId: triggerId)
     }
     
     private static func generateIFTTTRegionIdentifier(from originalIdentifier: String) -> String {

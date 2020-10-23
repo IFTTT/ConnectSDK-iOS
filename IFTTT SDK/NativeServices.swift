@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 
 /// Enumerates supported native service triggers
-enum Trigger: Hashable {
+public enum Trigger: Hashable {
     private struct Constants {
         static let LocationIdentifer = "location"
     }
@@ -49,6 +49,31 @@ enum Trigger: Hashable {
         }
     }
     
+    /// Creates an instance of `Trigger` with default fields from connection
+    ///
+    /// - Parameters:
+    ///     - defaultFieldParser: The default field `Parser` object corresponding to the trigger.
+    ///     - triggerId: A value that uniquely identifies this trigger. Used in registering multiple unique triggers with the system.
+    init?(defaultFieldParser: Parser, triggerId: String) {
+        guard let fieldId = defaultFieldParser["id"].string else {
+            return nil
+        }
+        
+        switch fieldId {
+        case Constants.LocationIdentifer:
+            guard let region = CLCircularRegion(defaultFieldParser: defaultFieldParser, triggerId: triggerId) else {
+                return nil
+            }
+            self = .location(region: region)
+        default:
+            return nil
+        }
+    }
+    
+    /// Creates an instance of `Trigger` from storage. Either from `UserDefaults` or `KeyChain`
+    ///
+    /// - Parameters:
+    ///     - parser: The parser corresponding to the JSON from storage.
     init?(parser: Parser) {
         let locationParser = parser[Constants.LocationIdentifer]
         if let region = CLCircularRegion(parser: locationParser) {
@@ -67,11 +92,11 @@ enum Trigger: Hashable {
         }
     }
  
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
     
-    static func ==(lhs: Trigger, rhs: Trigger) -> Bool {
+    public static func ==(lhs: Trigger, rhs: Trigger) -> Bool {
         return lhs.identifier == rhs.identifier
     }
 }

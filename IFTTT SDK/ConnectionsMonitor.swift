@@ -42,6 +42,22 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         self.operationQueue = operationQueue
     }
     
+    func fetchConnection(with identifier: String) {
+        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
+        let op = CancellableNetworkOperation(networkController: self.networkController,
+                                             request: .fetchConnection(for: identifier,
+                                                                       credentialProvider: credentialProvider))
+        { (response) in
+            switch response.result {
+            case .success(let connection):
+                self.connectionsRegistry.update(with: connection)
+            case .failure:
+                break
+            }
+        }
+        operationQueue.addOperation(op)
+    }
+    
     // MARK: - SynchronizationSubscriber
     var name: String {
         return "ConnectionsMonitor"

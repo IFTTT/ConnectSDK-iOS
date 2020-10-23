@@ -123,6 +123,9 @@ public struct Connection: Equatable, Hashable {
         
         /// The URL for the icon asset
         public let iconURL: URL?
+        
+        /// The set of all feature triggers for this connection
+        public let triggers: Set<Trigger>
     }
     
     /// The identifier of the `Connection`.
@@ -202,11 +205,19 @@ public struct Connection: Equatable, Hashable {
     }
     
     // MARK:- Native Services
-    /// The set of active native service triggers for this Connection.
-    let activeTriggers: Set<Trigger>
+    /// The set of active user native service triggers for this Connection.
+    let activeUserTriggers: Set<Trigger>
+    
+    /// The set of all supported native service triggers for this Connection.
+    /// - Note: The triggers in this set are only used to determine if native services are enabled for this `Connection` or not. The actual triggers that are setup with the operating system are `activeUserTriggers`.
+    var allNativeTriggers: Set<Trigger> {
+       return Set(features.reduce([]) { (currentTriggers, feature) -> [Trigger] in
+            return currentTriggers + feature.triggers
+       })
+    }
     
     var hasNativeTriggers: Bool {
-        return !activeTriggers.isEmpty
+        return !allNativeTriggers.isEmpty
     }
 
     public static func ==(lhs: Connection, rhs: Connection) -> Bool {

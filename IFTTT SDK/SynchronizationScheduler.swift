@@ -20,6 +20,9 @@ final class SynchronizationScheduler {
     /// The token corresponding to the subscriber.
     private var subscriberToken: UUID?
     
+    /// The lifecycle options to use in scheduling synchronizations
+    private let lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions
+    
     private var notificationCenterTokens: [Any] = []
     
     /// The triggers to kick off synchronizations
@@ -30,18 +33,29 @@ final class SynchronizationScheduler {
     /// - Parameters:
     ///   - syncManager: The `SyncManager` to use when scheduling a sync
     ///   - triggers: The publisher to use in publishing any possible events we might need to.
-    init(manager: SynchronizationManager, triggers: EventPublisher<SynchronizationTriggerEvent>) {
+    ///   - lifecycleSynchronizationOptions: The options to use in scheduling app lifecycle events.
+    init(manager: SynchronizationManager,
+         triggers: EventPublisher<SynchronizationTriggerEvent>,
+         lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
         self.manager = manager
         self.triggers = triggers
+        self.lifecycleSynchronizationOptions = lifecycleSynchronizationOptions
     }
     
     /// Performs registration for system and SDK generated events for kicking off synchronizations
     /// Should get called when the scheduler is to start. On iOS 13 and up, registers background process with the system.
     func start() {
         // Start synchronization on system events
-        let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = [
-            (UIApplication.didBecomeActiveNotification, .appDidBecomeActive, false),
-            (UIApplication.didEnterBackgroundNotification, .appBackgrounded, true),
+        var appLifecycleEventTuples = [(NSNotification.Name, SynchronizationSource, Bool)]()
+        
+        if lifecycleSynchronizationOptions.contains(.applicationDidBecomeActive) {
+            appLifecycleEventTuples.append((UIApplication.didBecomeActiveNotification, .appDidBecomeActive, false))
+        }
+        if lifecycleSynchronizationOptions.contains(.applicationDidEnterBackground) {
+            appLifecycleEventTuples.append((UIApplication.didEnterBackgroundNotification, .appBackgrounded, true))
+        }
+        
+        let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = appLifecycleEventTuples + [
             (.ConnectionUpdatedNotification, .connectionsUpdate, true),
             (.ConnectionAddedNotification, .connectionAddition, true),
             (.ConnectionRemovedNotification, .connectionRemoval, true)
@@ -57,13 +71,6 @@ final class SynchronizationScheduler {
             guard let self = self else { return }
             self.manager.sync(source: triggerEvent.source,
                               completion: triggerEvent.backgroundFetchCompletionHandler)
-        }
-        
-        if #available(iOS 13.0, *) {
-            guard Bundle.main.backgroundProcessingEnabled else { return }
-            guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
-            
-            registerBackgroundProcess()
         }
     }
     
@@ -105,7 +112,17 @@ final class SynchronizationScheduler {
     }
     
     func stopCurrentSynchronization() {
+        ConnectButtonController.synchronizationLog("Stopping current sync: \(String(describing: manager.currentTask))")
         manager.currentTask?.cancel()
+    }
+    
+    func setupBackgroundProcess() {
+        if #available(iOS 13.0, *) {
+            guard Bundle.main.backgroundProcessingEnabled else { return }
+            guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
+            
+            registerBackgroundProcess()
+        }
     }
     
     /// Hook that should get called when the app enters the background. Schedules background process with the system.
@@ -137,8 +154,8 @@ extension SynchronizationScheduler {
 
         do {
             try BGTaskScheduler.shared.submit(request)
-        } catch {
-            // TODO: Log error here
+        } catch let error {
+            ConnectButtonController.synchronizationLog("Error in scheduling background process: \(error)")
         }
     }
 
@@ -150,12 +167,14 @@ extension SynchronizationScheduler {
             self?.scheduleBackgroundProcess()
             self?.manager.sync(source: .internalBackgroundProcess) { (result) in
                 let success = result != .failed
-                // TODO: Log error here if result == .failed
+                if success != false {
+                    ConnectButtonController.synchronizationLog("Synchronization resulted in a failed UIBackgroundFetch result")
+                }
                 appProcessTask.setTaskCompleted(success: success)
             }
 
              appProcessTask.expirationHandler = {
-                // TODO: Log expiration handler getting called here
+                ConnectButtonController.synchronizationLog("Synchronization took too long, expiration handler invoked")
                 self?.manager.currentTask?.cancel()
             }
         }
