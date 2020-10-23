@@ -176,7 +176,11 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         regionsMonitor.updateRegions(regions)
     }
     
+    private var state: RunState = .unknown
+    
     func start() {
+        if state == .running { return }
+        
         updateRegionsFromRegistry()
         
         self.regionsMonitor.didEnterRegion = { region in
@@ -188,6 +192,16 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             ConnectButtonController.synchronizationLog("User exited region: \(region)")
             self.recordRegionEvent(with: region, kind: .exit)
         }
+        
+        self.regionsMonitor.didStartMonitoringRegion = { region in
+            ConnectButtonController.synchronizationLog("Did start monitoring region: \(region)")
+        }
+        
+        self.regionsMonitor.monitoringDidFail = { region, error in
+            ConnectButtonController.synchronizationLog("Did fail monitoring region: \(String(describing: region)). Error: \(error)")
+        }
+        
+        state = .running
     }
     
     private func recordRegionEvent(with region: CLRegion, kind: RegionEvent.Kind) {
@@ -289,6 +303,9 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         // Cancel and nil the current network request to update regions
         currentTask?.cancel()
         currentTask = nil
+        
+        // Set the state to stopped
+        state = .stopped
     }
     
     private func performRequest(events: [RegionEvent],

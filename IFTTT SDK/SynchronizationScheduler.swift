@@ -23,7 +23,11 @@ final class SynchronizationScheduler {
     /// The lifecycle options to use in scheduling synchronizations
     private let lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions
     
+    /// The tokens that get generated when the SDK sets up NotificationCenter observers
     private var notificationCenterTokens: [Any] = []
+    
+    /// Has the app opted into using background process?
+    private var optedInToUsingSDKBackgroundProcess: Bool = false
     
     /// The triggers to kick off synchronizations
     private let triggers: EventPublisher<SynchronizationTriggerEvent>
@@ -40,6 +44,8 @@ final class SynchronizationScheduler {
         self.manager = manager
         self.triggers = triggers
         self.lifecycleSynchronizationOptions = lifecycleSynchronizationOptions
+        
+        setupSubscribers()
     }
     
     /// Performs registration for system and SDK generated events for kicking off synchronizations
@@ -67,25 +73,40 @@ final class SynchronizationScheduler {
                                            shouldRunInBackground: $0.2)
         }
         
-        self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
-            guard let self = self else { return }
-            self.manager.sync(source: triggerEvent.source,
-                              completion: triggerEvent.backgroundFetchCompletionHandler)
-        }
+        setupSubscribers()
     }
     
+    /// Unregisters from system and SDK generated events for synchronizations.
+    /// Should get called when the scheduler is to stop. On iOS 13 and up, un-registers from background processes with the system.
     func stop() {
         // Unregister from background process
         // Remove observers from notification center
         notificationCenterTokens.forEach {
             NotificationCenter.default.removeObserver($0)
         }
+        
         notificationCenterTokens = []
+        
         if #available(iOS 13.0, *) {
             BGTaskScheduler.shared.cancelAllTaskRequests()
         }
+        
         if let subscriberToken = subscriberToken {
             triggers.removeSubscriber(subscriberToken)
+        }
+        
+        // Nil out the subscriber token
+        subscriberToken = nil
+    }
+    
+    /// Sets up subscriber with app generated triggers.
+    private func setupSubscribers() {
+        guard subscriberToken == nil else { return }
+        
+        self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
+            guard let self = self else { return }
+            self.manager.sync(source: triggerEvent.source,
+                              completion: triggerEvent.backgroundFetchCompletionHandler)
         }
     }
     
@@ -122,6 +143,7 @@ final class SynchronizationScheduler {
             guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
             
             registerBackgroundProcess()
+            optedInToUsingSDKBackgroundProcess = true
         }
     }
     
@@ -130,6 +152,7 @@ final class SynchronizationScheduler {
         if #available(iOS 13.0, *) {
             guard Bundle.main.backgroundProcessingEnabled else { return }
             guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
+            guard optedInToUsingSDKBackgroundProcess else { return }
             
             scheduleBackgroundProcess()
         }

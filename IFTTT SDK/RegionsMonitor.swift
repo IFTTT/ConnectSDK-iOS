@@ -15,6 +15,8 @@ import CoreLocation
 */
 class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     typealias RegionEvent = (CLRegion) -> Void
+    typealias RegionErrorEvent = (CLRegion?, Error) -> Void
+    
     /// The manager used to monitor regions
     private let locationManager = CLLocationManager()
     /// The monitor used to monitor visits. Used if the number of regions we want to monitor is > 20.
@@ -31,6 +33,8 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     var didEnterRegion: RegionEvent?
     /// Closure that gets called when the user exits a region.
     var didExitRegion: RegionEvent?
+    /// Closure that gets called when there's an error in monitoring a specific region.
+    var monitoringDidFail: RegionErrorEvent?
     
     /// The list of all monitored regions. Updated by the `updateRegions` method.
     private var allMonitoredRegions: Set<CLRegion>
@@ -114,6 +118,10 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     // MARK:- CoreLocationManagerDelegate
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
         didStartMonitoringRegion?(region)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+        monitoringDidFail?(region, error)
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
