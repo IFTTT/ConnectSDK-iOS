@@ -10,7 +10,7 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 - [Setup](#setup)
 - [The Connect Button](#the-connect-button)
 - [Authentication](#authentication)
-- [Location](#location)
+- [Location](Location.md)
 - [Advanced](#advanced)
 
 
@@ -316,60 +316,6 @@ That's it! You're ready to start activating programmable Connections directly in
  Your IFTTT service key should be kept secret at all time. The service key can be used to make calls on behalf of any user, but a user token is limited to a single user. This makes user tokens much less sensitive. On the other hand, you’d never want to embed your service key into a mobile app because it could be read by end users.
 
   Because of this, **we strongly encourage you to** call this API on your backend, and return the user token back to your application, instead of making the API call directly within your application.
-
-## Location
-### Usage
-#### Prerequisite
-- To use this library, you should have a connection on your service on IFTTT that connects the IFTTT Location service. To learn more about creating connections, please visit [developer documentation](https://platform.ifttt.com/docs/connections). 
-- Add location background mode to your target's info.plist. Example:
-  ```
-  <key>UIBackgroundModes</key>
-  <array>
-	<string>location</string>
-  </array>
-  ```
-- Add the descriptions for the "Always Allow" and "When In Use" location permission level to your target's info.plist. Example:
-  ```
-  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
-  <key>NSLocationWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
-  ```
-- (Optional) If you use silent push notifications to perform work while the app is in the background, you can call `ConnectButtonController.didReceiveSilentRemoteNotification(backgroundFetchCompletion:)` in the `didReceiveRemoteNotification(userInfo:fetchCompletionHandler)` `UIApplicationDelegate` method. Doing so will result in a sychronization to occur.
-
-- (Optional) If you use background fetch to perform work while the app is in the background, you can call `ConnectButtonController.performFetchWithCompletionHandler(backgroundFetchCompletion:)` in the `performFetchWithCompletionHandler(completionHandler:)` `UIApplicationDelegate` method. Doing so will result in a sychronization to occur.
-
-- (Optional) The SDK uses the `BackgroundTasks` API to request background processing run time with the system. To allow the SDK to register background processes with the system, the following must be done:
-  - Add the processing background mode to your target's info.plist. Example:
-  ```
-  <key>UIBackgroundModes</key>
-  <array>
-	<string>processing</string>
-  </array>
-  ```
-  - Add the IFTTT background process identifier: `com.ifttt.ifttt.synchronization_scheduler` to your target's info.plist. Example: 
-  ```
-  <key>BGTaskSchedulerPermittedIdentifiers</key>
-  <array>
-	<string>com.ifttt.ifttt.synchronization_scheduler</string>
-  </array>
-  ```
-  Alternatively, if you'd like to create your own background process/task but run a synchronization, you can call `ConnectButtonController.startBackgroundProcess(success:)`. The parameter to the method gets invoked once the synchronization is complete. To cancel a synchronization due to background process/task expiration, you can call `ConnectButtonController.stopCurrentSynchronization()`.
-
-### Initialization
-- To initialize synchronization and location monitoring, call `ConnectButtonController.setup(with credentials: ConnectionCredentialProvider)`. 
-- If you would like the SDK to manage background processes, call `ConnectButtonController.setupSDKBackgroundProcess()`. This method is required to be called before the app finishes launching. Not doing so will result in a `NSInternalInconsistencyException`.
-
-### Activation/Deactivation
-To activate location monitoring and start synchronization, call `ConnectButtonController.activate(connections:)`. If the list of connection ids is known when activating the synchronization, pass in this to the method.
-To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. If you would like to restart location monitoring and synchronization, call `ConnectButtonController.activate(connections:)`.
-
-### Manual updates
-To kick off manual updates of the registered geofences and connection data, you can call `ConnectButtonController.update(with:)` to do so.
-
-### Logging
-To enable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = true`. To disable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = false`. By default the logs get printed out using `NSLog`. If you'd like to supply your own logging handler, you may do so by setting a custom closure for `ConnectButtonController.synchnronizationLoggingHandler`. Setting this closure will not log any events using `NSLog`.
-
-### Notes
-Automatic synchronization for a given connections will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
 
 ## Advanced
 

@@ -180,7 +180,7 @@ extension SynchronizationScheduler {
         } catch let error {
             ConnectButtonController.synchronizationLog("Error in scheduling background process: \(error)")
         }
-    }
+        }
 
     /// Registers the background process to run with the system.
     private func registerBackgroundProcess() {
