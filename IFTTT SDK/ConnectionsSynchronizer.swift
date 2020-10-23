@@ -117,6 +117,8 @@ final class ConnectionsSynchronizer {
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher, lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
         self.location = location
         self.connectionsMonitor = connectionsMonitor
+        
+        location.start()
     }
     
     /// Can be used to force a synchronization.
@@ -137,6 +139,7 @@ final class ConnectionsSynchronizer {
             ConnectButtonController.synchronizationLog("Activated synchronization")
         }
         start()
+        update()
     }
     
     /// Used to deactivate and stop synchronization.
