@@ -20,7 +20,7 @@ Example:
 	<string>location</string>
   </array>
   ```
-  This is required in order for the operating system to launch the app when it's not in memory to response to geofence updates. 
+  This is required in order for the operating system to launch the app when it's not in memory to respond to geofence updates. 
 - Add the descriptions for the "Always Allow" and "When In Use" location permission level to your target's info.plist.<br>
 Example:
   ```
@@ -35,7 +35,7 @@ Example:
 To activate location monitoring and start synchronization, call `ConnectButtonController.activate(connections:)`. If the list of connection identifiers is known when activating the synchronization, pass this in to the method. This method can be called multiple times.
 
 ### Deactivation
-To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. If you would like to restart location monitoring and synchronization after calling ``ConnectButtonController.deactivate()`, call `ConnectButtonController.activate(connections:)`. This method can be called multiple times.
+To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. If you would like to restart location monitoring and synchronization after calling `ConnectButtonController.deactivate()`, call `ConnectButtonController.activate(connections:)`. This method can be called multiple times.
 
 ### Manual updates
 To kick off a manual update of registered geofences and connection data, you can call `ConnectButtonController.update(with:)`.
@@ -67,13 +67,13 @@ Alternatively, if you'd like to create your own background process/task but run 
 - Call `ConnectButtonController.setupSDKBackgroundProcess()`. This method is required to be called before the app finishes launching. Not doing so will result in a `NSInternalInconsistencyException`.
 
 ### Silent push notification support
-While the SDK doesn't support recieving silent push notifications directly, if you've configured your app to recieve silent push notifications and you'd like to run a  synchronization, you can call `ConnectButtonController.didReceiveSilentRemoteNotification(backgroundFetchCompletion:)` in the `didReceiveRemoteNotification(userInfo:fetchCompletionHandler)` `UIApplicationDelegate` method. The `backgroundFetchCompletion` closure will be invoked once the synchronization is complete with an appropriate `UIBackgroundFetchResult` enum value.
+While the SDK doesn't support receiving silent push notifications directly, if you've configured your app to receive silent push notifications and you'd like to run a  synchronization, you can call `ConnectButtonController.didReceiveSilentRemoteNotification(backgroundFetchCompletion:)` in the `didReceiveRemoteNotification(userInfo:fetchCompletionHandler)` `UIApplicationDelegate` method. The `backgroundFetchCompletion` closure will be invoked once the synchronization is complete with an appropriate `UIBackgroundFetchResult` enum value.
 
 ### Background Fetch support
-The SDK doesn't directly invoke any background fetch methods but if want to use background fetch to run a synchronization while the app is in the background, you can call `ConnectButtonController.performFetchWithCompletionHandler(backgroundFetchCompletion:)` in the `performFetchWithCompletionHandler(completionHandler:)` `UIApplicationDelegate` method. The `backgroundFetchCompletion` closure will be invoked once the synchronization is complete with an appropriate `UIBackgroundFetchResult` enum value.
+The SDK doesn't directly invoke any background fetch methods. To use background fetch to run a synchronization while the app is in the background, you can call `ConnectButtonController.performFetchWithCompletionHandler(backgroundFetchCompletion:)` in the `performFetchWithCompletionHandler(completionHandler:)` `UIApplicationDelegate` method. The `backgroundFetchCompletion` closure will be invoked once the synchronization is complete with an appropriate `UIBackgroundFetchResult` enum value.
 
 ### Notes
-- Automatic synchronization for a given connections will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
+- Automatic synchronization for a given connection will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
 - The SDK runs a synchronization by default for the following events:
     - When a connection is enabled via the user sliding the connect button
     - When a connection is disabled via the user sliding the connect button
