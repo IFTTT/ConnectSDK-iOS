@@ -9,7 +9,7 @@ The IFTTT Connect SDK supports native geofencing for connections using the IFTTT
 ## Dependencies
 - [CoreLocation geofence monitoring](https://developer.apple.com/documentation/corelocation/monitoring_the_user_s_proximity_to_geographic_regions)
 
-## Usage
+## Setup
 ### Prerequisites
 - To use this library, you should have a connection on your service on IFTTT that connects the IFTTT Location service. To learn more about creating connections, please visit [developer documentation](https://platform.ifttt.com/docs/connections). 
 - Add location background mode to your target's info.plist.<br> 
@@ -27,20 +27,20 @@ Example:
   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   <key>NSLocationWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   ```
-
-## Initialization
+## Usage
+### Initialization
 - To initialize synchronization and location monitoring, call `ConnectButtonController.setup(with credentials: ConnectionCredentialProvider)`. This can be done after the app has made the determination that the current user is logged in. 
 
-## Activation
+### Activation
 To activate location monitoring and start synchronization, call `ConnectButtonController.activate(connections:)`. If the list of connection identifiers is known when activating the synchronization, pass this in to the method. This method can be called multiple times.
 
-## Deactivation
+### Deactivation
 To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. If you would like to restart location monitoring and synchronization after calling ``ConnectButtonController.deactivate()`, call `ConnectButtonController.activate(connections:)`. This method can be called multiple times.
 
-## Manual updates
+### Manual updates
 To kick off a manual update of registered geofences and connection data, you can call `ConnectButtonController.update(with:)`.
 
-## Logging
+### Logging
 To enable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = true`. To disable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = false`. By default the logs get printed out using `NSLog`. If you'd like to supply your own logging handler, you may do so by setting a custom closure for `ConnectButtonController.synchnronizationLoggingHandler`. Setting this closure will not log any events using `NSLog`. If `ConnectButtonController.synchronizationLoggingEnabled = false` then neither the custom logging handler nor `NSLog` will be invoked to log events.
 
 ## Advanced
