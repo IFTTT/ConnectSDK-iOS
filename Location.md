@@ -1,5 +1,5 @@
 # Location
-The IFTTT Connect SDK supports native geo-fencing for connections using the IFTTT Location service. The geo-fence functionality is done using CoreLocation's region monitoring API. The documentation for this API is located [here](https://developer.apple.com/documentation/corelocation/monitoring_the_user_s_proximity_to_geographic_regions). 
+The IFTTT Connect SDK supports native geofencing for connections using the IFTTT Location service. The geofence functionality is done using CoreLocation's region monitoring API. The documentation for this API is located [here](https://developer.apple.com/documentation/corelocation/monitoring_the_user_s_proximity_to_geographic_regions). 
 
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 - [Dependencies](#dependencies)
