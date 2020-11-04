@@ -7,6 +7,26 @@
 
 import Foundation
 
+/// A protocol to recieve connections registry updates
+protocol ConnectionsRegistryDelegate: class {
+    /// Called when the registry updates its stored set of connections
+    ///
+    /// - Parameters:
+    ///     - connections: The `Set<Connection.ConnectionStorage>` containing `Connection.ConnectionStorage` objects that've changed.
+    func didUpdateConnections(_ connections: Set<Connection.ConnectionStorage>)
+    
+    /// Called when the registry removes all of the stored connections.
+    func didRemoveAllConnections()
+}
+
+private extension Dictionary where Key == String, Value == Any {
+    /// Returns a set of `Connection.ConnectionStorage` stored in the values of the reciever.
+    var connections: Set<Connection.ConnectionStorage> {
+        return Set(values.compactMap { $0 as? JSON }
+            .compactMap { Connection.ConnectionStorage(json: $0) })
+    }
+}
+
 extension NSNotification.Name {
     /// Notification that gets emitted whenever one of the user's connection gets updated.
     static let ConnectionUpdatedNotification = NSNotification.Name("ConnectionUpdatedNotification")
@@ -23,6 +43,9 @@ extension NSNotification.Name {
 
 /// Stores connection information to be able to use in synchronizations.
 final class ConnectionsRegistry {
+    
+    /// The delegate for the `ConnectionsRegistry`. See `ConnectionsRegistryDelegate` for more information about the methods of this delegate.
+    weak var delegate: ConnectionsRegistryDelegate?
     
     init() {}
     
@@ -68,8 +91,7 @@ final class ConnectionsRegistry {
     /// - Returns: A `Set` of all the connections that the user has enabled.
     func getConnections() -> Set<Connection.ConnectionStorage> {
         guard let map = UserDefaults.connections else { return .init() }
-        let connections = map.values.compactMap { $0 as? JSON }.compactMap { Connection.ConnectionStorage(json: $0) }
-        return Set(connections)
+        return map.connections
     }
     
     /// Gets the count of user enabled connections stored in the registry.
@@ -117,6 +139,10 @@ final class ConnectionsRegistry {
         
         UserDefaults.connections = map
         
+        if let map = map {
+            delegate?.didUpdateConnections(map.connections)
+        }
+        
         if shouldNotify {
             NotificationCenter.default.post(.init(name: notificationName, object: nil, userInfo: ["connection_id": connection.id]))
         }
@@ -131,6 +157,10 @@ final class ConnectionsRegistry {
         ids.forEach { map?[$0] = nil }
         UserDefaults.connections = map
         
+        if let map = map {
+            delegate?.didUpdateConnections(map.connections)
+        }
+        
         if shouldNotify {
             NotificationCenter.default.post(name: .ConnectionRemovedNotification, object: nil)
         }
@@ -140,6 +170,8 @@ final class ConnectionsRegistry {
     ///
     func removeAll(shouldNotify: Bool = true) {
         UserDefaults.connections = nil
+        
+        delegate?.didRemoveAllConnections()
         
         if shouldNotify {
             NotificationCenter.default.post(name: .AllConnectionRemovedNotification, object: nil)

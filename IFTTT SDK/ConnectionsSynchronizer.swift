@@ -67,12 +67,13 @@ public struct ApplicationLifecycleSynchronizationOptions: OptionSet, CustomStrin
     - App transitions to active state
  - Other events specified by `SynchronizationSource`
 */
-final class ConnectionsSynchronizer {
+final class ConnectionsSynchronizer: ConnectionsRegistryDelegate {
     private let eventPublisher: EventPublisher<SynchronizationTriggerEvent>
     private let scheduler: SynchronizationScheduler
     private let location: LocationService
     private let registry: ConnectionsRegistry
     private let connectionsMonitor: ConnectionsMonitor
+    private let nativeServicesCoordinator: NativeServicesCoordinator
     private let subscribers: [SynchronizationSubscriber]
     private var state: RunState = .stopped
     
@@ -104,7 +105,8 @@ final class ConnectionsSynchronizer {
                                        eventPublisher: eventPublisher)
         
         let connectionsMonitor = ConnectionsMonitor(connectionsRegistry: connectionsRegistry)
-        
+        let nativeServicesCoordinator = NativeServicesCoordinator(locationService: location)
+
         self.subscribers = [
             connectionsMonitor,
             permissionsRequestor,
@@ -113,11 +115,13 @@ final class ConnectionsSynchronizer {
         
         let manager = SynchronizationManager(subscribers: subscribers)
         self.registry = connectionsRegistry
+        self.nativeServicesCoordinator = nativeServicesCoordinator
         self.eventPublisher = eventPublisher
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher, lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
         self.location = location
         self.connectionsMonitor = connectionsMonitor
         
+        connectionsRegistry.delegate = self
         location.start()
     }
     
@@ -223,5 +227,31 @@ final class ConnectionsSynchronizer {
     
     func stopCurrentSynchronization() {
         scheduler.stopCurrentSynchronization()
+    }
+    
+    // MARK: - ConnectionsRegistryDelegate
+    func didUpdateConnections(_ connections: Set<Connection.ConnectionStorage>) {
+        nativeServicesCoordinator.processConnectionUpdate(connections)
+    }
+    
+    func didRemoveAllConnections() {
+        nativeServicesCoordinator.processConnectionUpdate(.init())
+    }
+}
+
+/// Handles coordination of native services with a set of connections
+private class NativeServicesCoordinator {
+    private let locationService: LocationService
+    private let operationQueue: OperationQueue
+    
+    init(locationService: LocationService) {
+        self.locationService = locationService
+        self.operationQueue = OperationQueue.main
+    }
+    
+    func processConnectionUpdate(_ updates: Set<Connection.ConnectionStorage>) {
+        operationQueue.addOperation {
+            self.locationService.updateRegions(from: updates)
+        }
     }
 }
