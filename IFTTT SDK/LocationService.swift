@@ -165,7 +165,11 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     }
     
     private func updateRegionsFromRegistry() {
-        let regions: Set<CLCircularRegion> = connectionsRegistry.getConnections().reduce(.init()) { (currSet, store) -> Set<CLCircularRegion> in
+        updateRegions(from: connectionsRegistry.getConnections())
+    }
+    
+    func updateRegions(from connections: Set<Connection.ConnectionStorage>) {
+        let regions: Set<CLCircularRegion> = connections.reduce(.init()) { (currSet, store) -> Set<CLCircularRegion> in
             guard store.status == .enabled else { return currSet }
             var set = currSet
             store.locationRegions.forEach {
@@ -228,27 +232,12 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         }
     }
     
-    private func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
-        var overlappingSet = Set<CLCircularRegion>()
-        connections.forEach {
-            $0.activeUserTriggers.forEach { trigger in
-                switch trigger {
-                case .location(let region): overlappingSet.insert(region)
-                }
-            }
-        }
-
-        regionsMonitor.updateRegions(overlappingSet)
-    }
-    
     // MARK: - SynchronizationSubscriber
     var name: String {
         return "LocationService"
     }
     
     func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
-        updateRegionsFromRegistry()
-        
         let hasLocationTriggers = connectionsRegistry.getConnections().reduce(false) { (currentResult, connection) -> Bool in
             return currentResult || connection.hasLocationTriggers
         }
@@ -270,8 +259,6 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     }
     
     func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
-        processUpdate(with: connectionsRegistry.getConnections())
-        
         if currentTask != nil {
             completion(false, nil)
             return
