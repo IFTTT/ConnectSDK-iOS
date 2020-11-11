@@ -8,6 +8,13 @@
 import Foundation
 import CoreLocation
 
+extension CLLocationCoordinate2D: Equatable {
+    public static func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        return lhs.latitude == rhs.latitude &&
+            lhs.longitude == rhs.longitude
+    }
+}
+
 /**
  Monitors a set of regions associated with the user's applets.
  Caps the number of regions monitored by the system to `Constants.MaxCoreLocationManagerMonitoredRegionsCount`.
@@ -83,14 +90,27 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     ///     - regions: The list of regions to monitor with the CLLocationManager.
     private func register(regions: Set<CLRegion>) {
         let monitoredRegions = locationManager.monitoredRegions
+        
+        // Get the regions that match identifier, coordinate, and radius.
+        let closure: (Set<CLRegion>, CLRegion) -> Bool = { (allRegions, outerRegion) -> Bool in
+            return allRegions.contains { (innerRegion) -> Bool in
+                guard let innerCircularRegion = innerRegion as? CLCircularRegion,
+                      let outerCircularRegion = outerRegion as? CLCircularRegion else { return false }
+                return innerCircularRegion.identifier == outerCircularRegion.identifier
+                    && innerCircularRegion.center == outerCircularRegion.center
+                    && innerCircularRegion.radius == outerCircularRegion.radius
+            }
+        }
+        
         // Go through the new regions we got passed in and start monitoring those regions if they're not being monitored
         regions.forEach { (region) in
-            if !monitoredRegions.contains(region) && CLLocationManager.isMonitoringAvailable(for: type(of: region)) {
+            let containsRegion = closure(monitoredRegions, region)
+            if !containsRegion && CLLocationManager.isMonitoringAvailable(for: type(of: region)) {
                 locationManager.startMonitoring(for: region)
             }
         }
         
-        // Go through the currently monitored regions of the location manager and check what regions we don't need to monitor anymore
+        // Go through the currently monitored regions of the location manager and check what regions we don't need to monitor anymore. Only stop monitoring regions that aren't in the parameter set of regions
         monitoredRegions.forEach { (region) in
             if region.isIFTTTRegion && !regions.contains(region) {
                 locationManager.stopMonitoring(for: region)
