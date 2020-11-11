@@ -7,16 +7,33 @@
 
 import Foundation
 
-/// A protocol to recieve connections registry updates
-protocol ConnectionsRegistryDelegate: class {
+extension Notification.Name {
+    /// Describes a notification that gets emitted when the connections registry is updated.
+    /// - Notes:
+    ///     - The `userInfo` of the notification has the following keys/values:
+    ///         - "UpdateConnectionsSetKey": <An array of JSON that maps to `Connection.ConnectionStorage`>
+    static let UpdateConnectionsName = Notification.Name("UpdateConnectionsName")
+}
+
+/// A struct to transmit connections registry updates
+struct ConnectionsRegistryNotification {
+    
+    /// The key for the set of connections emitted when the connection registry changes.
+    static let UpdateConnectionsSetKey = "UpdateConnectionsSetKey"
+    
     /// Called when the registry updates its stored set of connections
     ///
     /// - Parameters:
     ///     - connections: The `Set<Connection.ConnectionStorage>` containing `Connection.ConnectionStorage` objects that've changed.
-    func didUpdateConnections(_ connections: Set<Connection.ConnectionStorage>)
-    
-    /// Called when the registry removes all of the stored connections.
-    func didRemoveAllConnections()
+    static func didUpdateConnections(_ connections: Set<Connection.ConnectionStorage>) {
+        let notification = Notification(name: .UpdateConnectionsName,
+                                        object: nil,
+                                        userInfo: [
+                                            ConnectionsRegistryNotification.UpdateConnectionsSetKey:
+                                                connections.map { $0.toJSON() }
+                                        ])
+        NotificationCenter.default.post(notification)
+    }
 }
 
 private extension Dictionary where Key == String, Value == Any {
@@ -43,9 +60,6 @@ extension NSNotification.Name {
 
 /// Stores connection information to be able to use in synchronizations.
 final class ConnectionsRegistry {
-    
-    /// The delegate for the `ConnectionsRegistry`. See `ConnectionsRegistryDelegate` for more information about the methods of this delegate.
-    weak var delegate: ConnectionsRegistryDelegate?
     
     init() {}
     
@@ -140,7 +154,7 @@ final class ConnectionsRegistry {
         UserDefaults.connections = map
         
         if let map = map {
-            delegate?.didUpdateConnections(map.connections)
+            ConnectionsRegistryNotification.didUpdateConnections(map.connections)
         }
         
         if shouldNotify {
@@ -154,12 +168,19 @@ final class ConnectionsRegistry {
     ///     - id: The connection id to remove from the registry.
     private func remove(_ ids: [String], shouldNotify: Bool) {
         var map = UserDefaults.connections
-        ids.forEach { map?[$0] = nil }
-        UserDefaults.connections = map
+        ids.forEach {
+            guard let val = map?[$0] as? JSON,
+                  var connectionStorage = Connection.ConnectionStorage(json: val) else { return }
+            connectionStorage.status = .disabled
+            map?[$0]? = connectionStorage.toJSON()
+        }
         
         if let map = map {
-            delegate?.didUpdateConnections(map.connections)
+            ConnectionsRegistryNotification.didUpdateConnections(map.connections)
         }
+        
+        ids.forEach { map?[$0] = nil }
+        UserDefaults.connections = map
         
         if shouldNotify {
             NotificationCenter.default.post(name: .ConnectionRemovedNotification, object: nil)
@@ -169,9 +190,16 @@ final class ConnectionsRegistry {
     /// Removes all connections from the registry
     ///
     func removeAll(shouldNotify: Bool = true) {
-        UserDefaults.connections = nil
+        let keys = UserDefaults.connections?.keys
+        keys?.forEach {
+            guard let val = UserDefaults.connections?[$0] as? JSON,
+                  var connectionStorage = Connection.ConnectionStorage(json: val) else { return }
+            connectionStorage.status = .disabled
+            UserDefaults.connections?[$0]? = connectionStorage.toJSON()
+        }
         
-        delegate?.didRemoveAllConnections()
+        ConnectionsRegistryNotification.didUpdateConnections(UserDefaults.connections?.connections ?? .init())
+        UserDefaults.connections = nil
         
         if shouldNotify {
             NotificationCenter.default.post(name: .AllConnectionRemovedNotification, object: nil)

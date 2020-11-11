@@ -67,7 +67,7 @@ public struct ApplicationLifecycleSynchronizationOptions: OptionSet, CustomStrin
     - App transitions to active state
  - Other events specified by `SynchronizationSource`
 */
-final class ConnectionsSynchronizer: ConnectionsRegistryDelegate {
+final class ConnectionsSynchronizer {
     private let eventPublisher: EventPublisher<SynchronizationTriggerEvent>
     private let scheduler: SynchronizationScheduler
     private let location: LocationService
@@ -120,8 +120,7 @@ final class ConnectionsSynchronizer: ConnectionsRegistryDelegate {
         self.scheduler = SynchronizationScheduler(manager: manager, triggers: eventPublisher, lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
         self.location = location
         self.connectionsMonitor = connectionsMonitor
-        
-        connectionsRegistry.delegate = self
+        setupRegistryNotifications()
         location.start()
     }
     
@@ -198,6 +197,18 @@ final class ConnectionsSynchronizer: ConnectionsRegistryDelegate {
         }
     }
     
+    private func setupRegistryNotifications() {
+        NotificationCenter.default.addObserver(forName: .UpdateConnectionsName,
+                                               object: nil,
+                                               queue: nil) { [weak self] (notification) in
+            guard let userInfo = notification.userInfo,
+                  let connectionUpdates = userInfo[ConnectionsRegistryNotification.UpdateConnectionsSetKey] as? [JSON] else { return }
+            let connectionsSet = Set(connectionUpdates
+                .compactMap { Connection.ConnectionStorage(json: $0) })
+            self?.nativeServicesCoordinator.processConnectionUpdate(connectionsSet)
+        }
+    }
+    
     /// Hook to be called when the application enters the background.
     @objc private func applicationDidEnterBackground() {
         scheduler.applicationDidEnterBackground()
@@ -227,15 +238,6 @@ final class ConnectionsSynchronizer: ConnectionsRegistryDelegate {
     
     func stopCurrentSynchronization() {
         scheduler.stopCurrentSynchronization()
-    }
-    
-    // MARK: - ConnectionsRegistryDelegate
-    func didUpdateConnections(_ connections: Set<Connection.ConnectionStorage>) {
-        nativeServicesCoordinator.processConnectionUpdate(connections)
-    }
-    
-    func didRemoveAllConnections() {
-        nativeServicesCoordinator.processConnectionUpdate(.init())
     }
 }
 

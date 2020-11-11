@@ -42,22 +42,6 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         self.operationQueue = operationQueue
     }
     
-    func fetchConnection(with identifier: String) {
-        let credentialProvider = UserAuthenticatedRequestCredentialProvider()
-        let op = CancellableNetworkOperation(networkController: self.networkController,
-                                             request: .fetchConnection(for: identifier,
-                                                                       credentialProvider: credentialProvider))
-        { (response) in
-            switch response.result {
-            case .success(let connection):
-                self.connectionsRegistry.update(with: connection)
-            case .failure:
-                break
-            }
-        }
-        operationQueue.addOperation(op)
-    }
-    
     // MARK: - SynchronizationSubscriber
     var name: String {
         return "ConnectionsMonitor"
@@ -91,10 +75,10 @@ class ConnectionsMonitor: SynchronizationSubscriber {
             let op = CancellableNetworkOperation(networkController: self.networkController,
                                                  request: .fetchConnection(for: connection.id,
                                                                            credentialProvider: credentialProvider))
-            { (response) in
+            { [weak self] (response) in
                 switch response.result {
                 case .success(let connection):
-                    self.connectionsRegistry.update(with: connection, shouldNotify: false)
+                    self?.connectionsRegistry.update(with: connection, shouldNotify: false)
                 case .failure(let _error):
                     if (_error as NSError).code != NSURLErrorCancelled {
                         error = _error
