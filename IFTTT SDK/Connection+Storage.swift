@@ -10,7 +10,7 @@ import Foundation
 extension Connection {
     struct ConnectionStorage: Hashable {
         let id: String
-        let status: Status
+        var status: Status
         let activeUserTriggers: Set<Trigger>
         let allTriggers: Set<Trigger>
         
