@@ -1,5 +1,5 @@
 PODS:
-  - IFTTTConnectSDK (2.5.0)
+  - IFTTTConnectSDK (2.5.2)
 
 DEPENDENCIES:
   - IFTTTConnectSDK (from `./../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "./../"
 
 SPEC CHECKSUMS:
-  IFTTTConnectSDK: 793cd84f5ef9c4070f425debc923439a0fb234d4
+  IFTTTConnectSDK: 16bb23ffd1cd26e1ed5103c7c938a07a07da8fd5
 
 PODFILE CHECKSUM: af7656f7e18efa570ba8f674c004512bed06a55e
 
