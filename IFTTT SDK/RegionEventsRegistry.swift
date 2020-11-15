@@ -86,7 +86,7 @@ struct RegionEvent: Hashable {
 final class RegionEventsRegistry {
     /// Gets all the region events stored in the registry.
     func getRegionEvents() -> [RegionEvent] {
-        guard let array = UserDefaults.regionEvents else { return [] }
+        guard let array = StorageHelpers.regionEvents else { return [] }
         return array.compactMap { $0 as? JSON }.compactMap { RegionEvent(json: $0) }
     }
     
@@ -95,7 +95,7 @@ final class RegionEventsRegistry {
     /// - Parameters:
     ///     - event: The event to add to the registry.
     func add(_ event: RegionEvent) {
-        var array = UserDefaults.regionEvents
+        var array = StorageHelpers.regionEvents
 
         let storage = event.toJSON(stripPrefix: false)
         if array != nil {
@@ -104,7 +104,7 @@ final class RegionEventsRegistry {
             array = [storage]
         }
         
-        UserDefaults.regionEvents = array
+        StorageHelpers.regionEvents = array
     }
     
     /// Removes an array of region events from the registry.
@@ -112,18 +112,18 @@ final class RegionEventsRegistry {
     /// - Parameters:
     ///     - events: The events to remove from the registry.
     func remove(_ events: [RegionEvent]) {
-        var array = UserDefaults.regionEvents
+        var array = StorageHelpers.regionEvents
         array?.removeAll(where: { (value) -> Bool in
             guard let eventJSON = value as? JSON,
                 let event = RegionEvent(json: eventJSON) else { return false }
             return events.contains(event)
         })
         
-        UserDefaults.regionEvents = array
+        StorageHelpers.regionEvents = array
     }
     
     /// Removes all region events from the registry.
     func removeAll() {
-        UserDefaults.regionEvents = nil
+        StorageHelpers.regionEvents = nil
     }
 }

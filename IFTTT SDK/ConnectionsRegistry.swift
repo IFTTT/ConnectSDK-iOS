@@ -7,6 +7,77 @@
 
 import Foundation
 
+/// Struct to help with storing data to the disk.
+struct StorageHelpers {
+    /// Retrieves the user's connections stored on the disk
+    static var connections: [String: Any]? {
+        get {
+            guard let connectionsFileURL = connectionsFileURL,
+                  let json = getJSON(at: connectionsFileURL) as? [String: Any] else { return nil }
+            
+            return json
+        }
+        set {
+            guard let connectionsFileURL = connectionsFileURL else { return }
+            writeOrDelete(newValue, to: connectionsFileURL)
+        }
+    }
+    
+    /// Retrieves the user's region events stored on the disk
+    static var regionEvents: [Any]? {
+        get {
+            guard let regionsFileURL = regionsFileURL,
+                  let json = getJSON(at: regionsFileURL) as? [Any] else { return nil }
+            
+            return json
+        }
+        set {
+            guard let regionsFileURL = regionsFileURL else { return }
+            writeOrDelete(newValue, to: regionsFileURL)
+        }
+    }
+    
+    private static var connectionsFileName = "IFTTTConnectionsData"
+    private static var connectionsFileURL: URL? {
+        get {
+            fileURL(with: connectionsFileName)
+        }
+    }
+    
+    private static var regionsFileName = "IFTTTRegionsData"
+    private static var regionsFileURL: URL? {
+        get {
+            fileURL(with: regionsFileName)
+        }
+    }
+    
+    private static func fileURL(with fileName: String) -> URL? {
+        return try? FileManager.default
+            .url(for: .documentDirectory,
+                 in: .userDomainMask,
+                 appropriateFor: nil,
+                 create: false)
+            .appendingPathComponent(fileName, isDirectory: false)
+    }
+    
+    private static func writeOrDelete(_ jsonObject: Any?, to file: URL) {
+        guard let jsonObject = jsonObject else {
+            try? FileManager.default.removeItem(at: file)
+            return
+        }
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: jsonObject, options: .init()) else { return }
+        try? data.write(to: file)
+    }
+    
+    private static func getJSON(at file: URL) -> Any? {
+        guard let data = try? Data(contentsOf: file),
+              let json = try? JSONSerialization.jsonObject(with: data, options: .init()) else { return nil }
+        return json
+    }
+}
+
+
 extension Notification.Name {
     /// Describes a notification that gets emitted when the connections registry is updated.
     /// - Notes:
@@ -104,7 +175,7 @@ final class ConnectionsRegistry {
     ///
     /// - Returns: A `Set` of all the connections that the user has enabled.
     func getConnections() -> Set<Connection.ConnectionStorage> {
-        guard let map = UserDefaults.connections else { return .init() }
+        guard let map = StorageHelpers.connections else { return .init() }
         return map.connections
     }
     
@@ -112,7 +183,7 @@ final class ConnectionsRegistry {
     ///
     /// - Returns: A count of the user's enabled connections stored in the registry
     func getConnectionsCount() -> Int {
-        guard let map = UserDefaults.connections else { return 0 }
+        guard let map = StorageHelpers.connections else { return 0 }
         return map.count
     }
     
@@ -125,7 +196,7 @@ final class ConnectionsRegistry {
     }
     
     private func add(_ connection: Connection.ConnectionStorage, shouldNotify: Bool) {
-        var map = UserDefaults.connections
+        var map = StorageHelpers.connections
         var modifiedConnection = connection
         
         let foundConnection = map?.values.first(where: { value -> Bool in
@@ -151,7 +222,7 @@ final class ConnectionsRegistry {
             map = [connection.id: storageJSON]
         }
         
-        UserDefaults.connections = map
+        StorageHelpers.connections = map
         
         if let map = map {
             ConnectionsRegistryNotification.didUpdateConnections(map.connections)
@@ -167,7 +238,7 @@ final class ConnectionsRegistry {
     /// - Parameters:
     ///     - id: The connection id to remove from the registry.
     private func remove(_ ids: [String], shouldNotify: Bool) {
-        var map = UserDefaults.connections
+        var map = StorageHelpers.connections
         ids.forEach {
             guard let val = map?[$0] as? JSON,
                   var connectionStorage = Connection.ConnectionStorage(json: val) else { return }
@@ -180,7 +251,7 @@ final class ConnectionsRegistry {
         }
         
         ids.forEach { map?[$0] = nil }
-        UserDefaults.connections = map
+        StorageHelpers.connections = map
         
         if shouldNotify {
             NotificationCenter.default.post(name: .ConnectionRemovedNotification, object: nil)
@@ -190,16 +261,15 @@ final class ConnectionsRegistry {
     /// Removes all connections from the registry
     ///
     func removeAll(shouldNotify: Bool = true) {
-        let keys = UserDefaults.connections?.keys
-        keys?.forEach {
-            guard let val = UserDefaults.connections?[$0] as? JSON,
+        var connectionsData = StorageHelpers.connections
+        connectionsData?.keys.forEach {
+            guard let val = connectionsData?[$0] as? JSON,
                   var connectionStorage = Connection.ConnectionStorage(json: val) else { return }
             connectionStorage.status = .disabled
-            UserDefaults.connections?[$0]? = connectionStorage.toJSON()
+            connectionsData?[$0]? = connectionStorage.toJSON()
         }
         
-        ConnectionsRegistryNotification.didUpdateConnections(UserDefaults.connections?.connections ?? .init())
-        UserDefaults.connections = nil
+        ConnectionsRegistryNotification.didUpdateConnections(.init())
         
         if shouldNotify {
             NotificationCenter.default.post(name: .AllConnectionRemovedNotification, object: nil)
