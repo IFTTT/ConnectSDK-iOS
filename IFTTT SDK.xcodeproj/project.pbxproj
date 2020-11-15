@@ -67,7 +67,6 @@
 		DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */; };
 		DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */; };
 		DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */; };
-		DE328DCE2440E89600603EAC /* ConnectionsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
 		DE4A4C5E243632A7004082BF /* SynchronizationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C5D243632A7004082BF /* SynchronizationSubscriber.swift */; };
@@ -761,7 +760,6 @@
 				DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */,
 				1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */,
 				DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */,
-				DE328DCE2440E89600603EAC /* ConnectionsRegistryTests.swift in Sources */,
 				FC1F491422710B62008A1B21 /* Connection_ParsingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,8 +9,8 @@ import Foundation
 
 final class Keychain {
     enum Key: String, CaseIterable {
-        case UserToken = "KeychainKey.IFTTTUserToken"
-        case InviteCode = "KeychainKey.PlatformInviteCode"
+        case UserToken = "Keychain.Key.IFTTTUserToken"
+        case InviteCode = "Keychain.Key.IFTTTPlatformInviteCode"
     }
     
     static var userToken: String? {
@@ -40,7 +40,8 @@ final class Keychain {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword as String,
             kSecAttrAccount as String: key.rawValue,
-            kSecValueData as String: valueData
+            kSecValueData as String: valueData,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
         ]
 
         SecItemDelete(query as CFDictionary)

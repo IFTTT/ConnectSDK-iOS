@@ -97,30 +97,4 @@ extension UserDefaults {
             standard.set(newValue, forKey: Keys.QueueUserDefaults)
         }
     }
-    
-    static var connections: [String: Any]? {
-        get {
-            return UserDefaults.standard.dictionary(forKey: Keys.ConnectionsRegistry)
-        }
-        set {
-            guard let newValue = newValue else {
-                standard.removeObject(forKey: Keys.ConnectionsRegistry)
-                return
-            }
-            standard.set(newValue, forKey: Keys.ConnectionsRegistry)
-        }
-    }
-    
-    static var regionEvents: [Any]? {
-        get {
-            return UserDefaults.standard.array(forKey: Keys.RegionEventsRegistry)
-        }
-        set {
-            guard let newValue = newValue else {
-                standard.removeObject(forKey: Keys.RegionEventsRegistry)
-                return
-            }
-            standard.set(newValue, forKey: Keys.RegionEventsRegistry)
-        }
-    }
 }
