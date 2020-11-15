@@ -270,6 +270,7 @@ final class ConnectionsRegistry {
         }
         
         ConnectionsRegistryNotification.didUpdateConnections(.init())
+        StorageHelpers.connections = nil
         
         if shouldNotify {
             NotificationCenter.default.post(name: .AllConnectionRemovedNotification, object: nil)
