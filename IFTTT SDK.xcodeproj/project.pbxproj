@@ -74,6 +74,7 @@
 		DE4A4C622436409C004082BF /* SynchronizationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C612436409C004082BF /* SynchronizationScheduler.swift */; };
 		DE4C5FFA22CFE570009C7AF9 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */; };
 		DE641D88252B7BC900C56FF9 /* ConnectButtonController+Public.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */; };
+		DE75D24E256218B000E611EF /* ConnectionsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */; };
 		DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */; };
 		DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */; };
 		DEBC3C8225421D600052A8CB /* ConnectButtonController+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */; };
@@ -757,6 +758,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE75D24E256218B000E611EF /* ConnectionsRegistryTests.swift in Sources */,
 				DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */,
 				1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */,
 				DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */,

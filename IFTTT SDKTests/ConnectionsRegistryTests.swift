@@ -15,6 +15,7 @@ class ConnectionsRegistryTests: XCTestCase {
     override func setUp() {
         UserDefaults.standard.removeObject(forKey: "ConnectionsRegistry.ConnectionsUserDefaultKey")
         connectionsRegistry = ConnectionsRegistry()
+        connectionsRegistry.removeAll() 
     }
 
     func testGet() {

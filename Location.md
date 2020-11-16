@@ -80,3 +80,4 @@ The SDK doesn't directly invoke any background fetch methods. To use background 
     - When a connection is updated via displaying the connect button.
     - When the user enters a region specified by a connection geofence
     - When the user exits a region specified by a connection geofence
+- Since the SDK needs to be able to store and read data while the app is in the background, the data is saved to the host app's container with the protection level `NSData.WritingOptions.completeFileProtectionUntilFirstUserAuthentication`.
