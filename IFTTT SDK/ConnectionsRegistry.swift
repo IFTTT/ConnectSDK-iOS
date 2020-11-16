@@ -37,6 +37,16 @@ struct StorageHelpers {
         }
     }
     
+    static func removeAll() {
+        if let connectionsFileURL = connectionsFileURL {
+            try? FileManager.default.removeItem(at: connectionsFileURL)
+        }
+        
+        if let regionsFileURL = regionsFileURL {
+            try? FileManager.default.removeItem(at: regionsFileURL)
+        }
+    }
+    
     private static var connectionsFileName = "IFTTTConnectionsData"
     private static var connectionsFileURL: URL? {
         get {
@@ -67,7 +77,9 @@ struct StorageHelpers {
         }
         
         guard let data = try? JSONSerialization.data(withJSONObject: jsonObject, options: .init()) else { return }
-        try? data.write(to: file)
+        
+        // We have to explictly set .completeFileProtectionUntilFirstUserAuthentication option to allow these files to be able to be read/written to while the host app is in the background. This may override the value set for the host app's file protection entitlement. We might end up in a case where the app boots up, the device is locked, and the user performs some action to update the state of SDK-related.
+        try? data.write(to: file, options: .completeFileProtectionUntilFirstUserAuthentication)
     }
     
     private static func getJSON(at file: URL) -> Any? {

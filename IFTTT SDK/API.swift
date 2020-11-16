@@ -58,7 +58,6 @@ extension UserDefaults {
         static let anonymousId = "com.ifttt.sdk.analytics.anonymous_id"
         static let shouldHideFooterUserDefaults = "appShouldHideConnectButtonFooter"
         static let QueueUserDefaults = "ifttt_sdk.analytics.queued_events.key"
-        static let ConnectionsRegistry = "ConnectionsRegistry.ConnectionsUserDefaultKey"
         static let RegionEventsRegistry = "RegionEventsRegistry.Key"
     }
     
