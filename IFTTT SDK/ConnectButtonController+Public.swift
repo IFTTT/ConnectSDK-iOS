@@ -63,7 +63,7 @@ extension ConnectButtonController {
         ConnectionsSynchronizer.shared().activate(connections: ids)
     }
     
-    /// Call this method to deactivate the synchronization of connection and native service data. This stops synchronization and performs cleanup of any stored data.
+    /// Call this method to deactivate the synchronization of connection and native service data. This stops synchronization and performs cleanup of any stored data. This will also remove any registered geofences.
     public static func deactivate() {
         ConnectionsSynchronizer.shared().deactivate()
     }

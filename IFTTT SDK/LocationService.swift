@@ -282,7 +282,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     /// Resets the location service.
     func reset() {
         // Empty monitored regions
-        regionsMonitor.updateRegions(.init())
+        regionsMonitor.reset()
         
         // Remove all registered events
         regionEventsRegistry.removeAll()

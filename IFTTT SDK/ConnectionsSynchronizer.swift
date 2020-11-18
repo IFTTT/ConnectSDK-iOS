@@ -53,7 +53,7 @@ public struct ApplicationLifecycleSynchronizationOptions: OptionSet, CustomStrin
         if self.contains(.applicationDidEnterBackground) {
             strings.append("ApplicationDidEnterBackground")
         }
-        return strings.joined(separator: ",")
+        return strings.joined(separator: ", ")
     }
 }
 
@@ -127,8 +127,12 @@ final class ConnectionsSynchronizer {
     }
     
     /// Can be used to force a synchronization.
-    func update() {
-        let event = SynchronizationTriggerEvent(source: .forceUpdate, backgroundFetchCompletionHandler: nil)
+    ///
+    /// - Parameters:
+    ///     - isActivation: Is this forced synchronization due to connections being activated?
+    func update(isActivation: Bool = false) {
+        let source: SynchronizationSource = isActivation ? .connectionActivation: .forceUpdate
+        let event = SynchronizationTriggerEvent(source: source, backgroundFetchCompletionHandler: nil)
         eventPublisher.onNext(event)
     }
     
@@ -144,7 +148,7 @@ final class ConnectionsSynchronizer {
             ConnectButtonController.synchronizationLog("Activated synchronization")
         }
         start()
-        update()
+        update(isActivation: true)
     }
     
     /// Used to deactivate and stop synchronization.

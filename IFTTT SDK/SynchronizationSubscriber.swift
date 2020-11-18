@@ -30,6 +30,9 @@ enum SynchronizationSource: CustomStringConvertible {
     /// Used when the SDK needs to run a synchronization due to a force update 
     case forceUpdate
     
+    /// Used when the SDK needs to run a synchronization due to activation
+    case connectionActivation
+    
     /// Used when the system initiates a background fetch. Not used.
     case backgroundFetch
     
@@ -66,6 +69,8 @@ enum SynchronizationSource: CustomStringConvertible {
             return "Host app started background process"
         case .forceUpdate:
             return "Host app triggered a force update"
+        case .connectionActivation:
+            return "Connections were activated"
         case .internalBackgroundProcess:
             return "SDK started background process"
         case .regionsUpdate:
