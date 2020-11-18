@@ -44,13 +44,15 @@ final class SynchronizationScheduler {
         self.manager = manager
         self.triggers = triggers
         self.lifecycleSynchronizationOptions = lifecycleSynchronizationOptions
-        
         setupSubscribers()
     }
     
     /// Performs registration for system and SDK generated events for kicking off synchronizations
     /// Should get called when the scheduler is to start. On iOS 13 and up, registers background process with the system.
     func start() {
+        // Start the manager
+        manager.start()
+        
         // Start synchronization on system events
         var appLifecycleEventTuples = [(NSNotification.Name, SynchronizationSource, Bool)]()
         
@@ -72,13 +74,14 @@ final class SynchronizationScheduler {
                                            source: $0.1,
                                            shouldRunInBackground: $0.2)
         }
-        
-        setupSubscribers()
     }
     
     /// Unregisters from system and SDK generated events for synchronizations.
     /// Should get called when the scheduler is to stop. On iOS 13 and up, un-registers from background processes with the system.
     func stop() {
+        // Reset the manager
+        manager.reset()
+        
         // Unregister from background process
         // Remove observers from notification center
         notificationCenterTokens.forEach {
@@ -87,8 +90,9 @@ final class SynchronizationScheduler {
         
         notificationCenterTokens = []
         
+        // Cancel background tasks associated with the SDK
         if #available(iOS 13.0, *) {
-            BGTaskScheduler.shared.cancelAllTaskRequests()
+            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: SynchronizationScheduler.BackgroundProcessIdentifier)
         }
         
         if let subscriberToken = subscriberToken {

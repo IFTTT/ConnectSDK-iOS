@@ -330,7 +330,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
                                         completion: completion)
                 }
             } else {
-                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events) after \(retryCount). Will try again on the next synchronization.")
+                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events) after \(retryCount) retry attempts. Will try again on the next synchronization.")
                 self.currentTask = nil
                 completion(false, error)
             }

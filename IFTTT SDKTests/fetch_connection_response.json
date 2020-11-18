@@ -38,18 +38,44 @@
         "4320w_url": "https://ifttt.com/4320w"
     },
     "features": [{
-        "id": "qharvmtjdh",
-        "title": "Effortlessly track time spent at work",
-        "description": "Some random description for this feature",
-        "icon_url": "https://ifttt.com/value-prop-icons/clock.png",
-        "field_options_url": "https://connect.ifttt.com/v2/connections/zG58W2uC/features/qharvmtjdh/field_options",
-        "fields": []
+        "id": "wb6v52fyhl",
+        "title": "Deliver to a location",
+        "description": "Set a location and the grocery will be delivered there",
+        "icon_url": "https://ifttt.com/value-prop-icons/gps.png",
+        "field_options_url": "https://connect.ifttt.com/v2/connections/pWisyzm7/features/wb6v52fyhl/field_options",
+        "fields": [],
+        "feature_triggers": [{
+            "id": "fyzcn9umx5",
+            "trigger_id": "enter_region_location",
+            "service_id": "location",
+            "label": "You enter an area",
+            "field_options_url": "https://connect.ifttt.com/v2/connections/pWisyzm7/triggers/location.enter_region_location/field_options",
+            "run_url": null,
+            "fields": [{
+                "id": "location",
+                "label": "Locate an area",
+                "type": "LOCATION_ENTER",
+                "required": true,
+                "hidden": false,
+                "default_value": {
+                    "lat": 37.78383800416815,
+                    "lng": -122.40843300000002,
+                    "radius": 316.2010756871335,
+                    "address": "923 Market St, San Francisco, CA 94103, USA",
+                    "description": "923 Market St, San Francisco, CA 94103, USA",
+                    "zoom": 16
+                }
+            }]
+        }],
+        "feature_queries": [],
+        "feature_actions": []
     }],
     "user_connection": {
         "user_features": [{
             "id": "ab12345m8ef",
             "feature_id": "qharvmtjdh",
             "user_fields": [],
+            "enabled": true,
             "user_feature_triggers": [{
                 "feature_trigger_id": "f3gtkmjkgf",
                 "id": "somecoolidentifier",

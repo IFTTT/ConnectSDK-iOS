@@ -10,12 +10,13 @@ import XCTest
 @testable import IFTTT_SDK
 
 class ConnectionsRegistryTests: XCTestCase {
-
-    private var connectionsRegistry: ConnectionsRegistry!
+    private var connectionsRegistry = ConnectionsRegistry()
+    
     override func setUp() {
-        UserDefaults.standard.removeObject(forKey: "ConnectionsRegistry.ConnectionsUserDefaultKey")
-        connectionsRegistry = ConnectionsRegistry()
-        connectionsRegistry.removeAll() 
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
+        
+        connectionsRegistry.removeAll()
     }
 
     func testGet() {

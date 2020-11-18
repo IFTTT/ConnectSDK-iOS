@@ -30,6 +30,7 @@
 		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
 		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
+		DE1712BD2565B295000B13E6 /* RegionEventsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */; };
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
 		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
 		DE29EA5E24DAFC7B00F6F356 /* Localizable_cs.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C0C24C0AAE70094D33B /* Localizable_cs.strings */; };
@@ -158,6 +159,7 @@
 		1DFE020C2190E3DB00856ABC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
 		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
+		DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionEventsRegistryTests.swift; sourceTree = "<group>"; };
 		DE25265523D8C49D0019C9CB /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Connection+Parsing.swift"; sourceTree = "<group>"; };
 		DE2F52492429404200EF986A /* Connection+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Location.swift"; sourceTree = "<group>"; };
@@ -445,6 +447,7 @@
 				DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */,
 				DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */,
 				DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */,
+				DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */,
 			);
 			path = "IFTTT SDKTests";
 			sourceTree = "<group>";
@@ -761,6 +764,7 @@
 				DE75D24E256218B000E611EF /* ConnectionsRegistryTests.swift in Sources */,
 				DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */,
 				1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */,
+				DE1712BD2565B295000B13E6 /* RegionEventsRegistryTests.swift in Sources */,
 				DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */,
 				FC1F491422710B62008A1B21 /* Connection_ParsingTests.swift in Sources */,
 			);

@@ -7,6 +7,13 @@
 
 import Foundation
 
+
+public struct InitializerOptions {
+    public let enableSDKBackgroundProcess: Bool
+    
+    public static var standard = InitializerOptions(enableSDKBackgroundProcess: false)
+}
+
 extension ConnectButtonController {
     /// Determines whether or not logging for synchronization is enabled or not.
     public static var synchronizationLoggingEnabled: Bool = false
@@ -20,16 +27,32 @@ extension ConnectButtonController {
     /// If this closure is set, it will be called with the localization log statement instead of calling `print`. This handler will only be called if `localizationLoggingEnabled` is set to true
     public static var localizationLoggingHandler: ((String) -> Void)?
     
+    /// Initializes the SDK with options. To do that, call `ConnectButtonController.setup(...)` to do so. Call this method in `UIApplicationDelegate`'s `didFinishLaunchingWithOptions` or `willFinishLaunchingWithOptions`.
+    ///
+    /// This method will do the following:
+    /// - Initialize the mechanism for synchronization but it will not start it.
+    /// - Start the location service to receive any location updates that might have occurred
+    /// - (If necessary) Setup SDK provided background process with the system. This allows the app to run synchronizations while the app is in memory and in the background. In this case, this method must be called before the app finishes launching. Failure to do so will result in a `NSInternalInconsistencyException`.
+    /// If you'd like to use the SDK provided background process updating
+    public static func initialize(initializerOptions: InitializerOptions = .standard) {
+        let sharedSynchronizer = ConnectionsSynchronizer.shared()
+        
+        if initializerOptions.enableSDKBackgroundProcess {
+            sharedSynchronizer.setupBackgroundProcess()
+        }
+    }
+    
     /// This method should be called prior to calling any other static method on `ConnectButtonController`. It performs setup of the location component of the SDK.
     ///
     /// - Parameters:
-    ///     - credentials: An object conforming to `ConnectionCredentialProvider` which is used to setup the SDK.
+    ///     - credentials: An optional object conforming to `ConnectionCredentialProvider` which is used to setup the SDK. If this is nil, the SDK will attempt to use cached values.
     ///     - lifecycleSynchronizationOptions: An instance of `ApplicationLifecycleSynchronizationOptions` that defines which app lifecycle events the synchronization should occur on. If this parameter is not set, a default value of `ApplicationLifecycleSynchronizationOptions.all` will be used.
-    public static func setup(with credentials: ConnectionCredentialProvider,
+    public static func setup(with credentials: ConnectionCredentialProvider?,
                              lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions = .all) {
-        Keychain.userToken = credentials.userToken
-        Keychain.inviteCode = credentials.inviteCode
-        ConnectionsSynchronizer.setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
+        if let credentials = credentials {
+            Keychain.update(with: credentials)
+        }
+        ConnectionsSynchronizer.shared().setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
     }
     
     /// Call this method to activate the synchronization. This starts synchronization for the parameter connections.
@@ -51,8 +74,7 @@ extension ConnectButtonController {
     ///     - iftttUserToken: This optional IFTTT user token will be stored by the SDK to use in synchronization. If this parameter is nil, the parameter will be ignored.
     public static func update(with credentials: ConnectionCredentialProvider? = nil) {
         if let credentials = credentials {
-            Keychain.userToken = credentials.userToken
-            Keychain.inviteCode = credentials.inviteCode
+            Keychain.update(with: credentials)
         }
         ConnectionsSynchronizer.shared().update()
     }
@@ -73,12 +95,7 @@ extension ConnectButtonController {
         ConnectionsSynchronizer.shared().didReceiveSilentRemoteNotification(backgroundFetchCompletion: backgroundFetchCompletion)
     }
     
-    /// Hook to be called if you'd like the SDK to setup a background process to run synchronizations while the app is in the background. This method is required to be called before the app finishes launching. Not doing so will result in a `NSInternalInconsistencyException`.
-    public static func setupSDKBackgroundProcess() {
-        ConnectionsSynchronizer.shared().setupBackgroundProcess()
-    }
-    
-    /// Hook to be called if you'd like to start a synchronization with a background process. It is the responsibility of the caller to manage the appropriate background process with the system and to handle the expiration of the task. For your convenience, `stopCurrentSynchronization` should called in the expiration handler of the background process.
+    /// Hook to be called if you'd like to start a synchronization with a background process. It is the responsibility of the caller to manage the appropriate background process with the system and to handle the expiration of the task. For your convenience, `stopCurrentSynchronization` is provided to be called in the expiration handler of the background process.
     ///
     /// - Parameters:
     ///     - success: A closure with a boolean argument that will return true/false as to whether or not the synchronization failed or succeeded.

@@ -62,7 +62,7 @@ extension CLCircularRegion {
         radius = min(radius, CLCircularRegion.locationManager.maximumRegionMonitoringDistance)
         
         let center = CLLocationCoordinate2D(latitude: latitude as CLLocationDegrees, longitude: longitude as CLLocationDegrees)
-        let identifier = CLCircularRegion.generateIFTTTRegionIdentifier(from: triggerId)
+        let identifier = triggerId.addIFTTTPrefix()
         
         self.init(center: center,
                   radius: radius as CLLocationDistance,
@@ -74,19 +74,19 @@ extension CLCircularRegion {
         let locationParser = parser["value"]
         self.init(parser: locationParser, triggerId: triggerId)
     }
-    
-    private static func generateIFTTTRegionIdentifier(from originalIdentifier: String) -> String {
-        return "\(Constants.IFTTTRegionPrefix)_\(originalIdentifier)"
-    }
 }
 
 extension String {
+    func addIFTTTPrefix() -> String {
+        return "\(Constants.IFTTTRegionPrefix)_\(self)"
+    }
+    
     func stripIFTTTPrefix() -> String {
         let splitString = split(separator: "_")
-        if splitString.count == 2 {
+        if splitString.count == 2 && splitString.first?.lowercased() == "ifttt" {
             return String(splitString[1])
         } else {
-            return ""
+            return self
         }
     }
 }
