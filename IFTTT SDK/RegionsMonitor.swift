@@ -181,6 +181,17 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
             stopMonitor()
         }
     }
+    
+    func reset() {
+        // Update regions so nothing is being monitored
+        updateRegions(.init())
+        
+        // Stop visits monitoring if necessary
+        visitsMonitor.stopMonitor()
+        
+        // Stop monitoring
+        stopMonitor()
+    }
    
     deinit {
         locationManager.delegate = nil

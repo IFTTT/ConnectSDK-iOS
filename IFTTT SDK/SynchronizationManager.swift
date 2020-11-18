@@ -11,6 +11,7 @@ import CoreLocation
 /// A type responsible for performing a sync
 final class SynchronizationManager {
     
+    /// The subscribers that participate in the synchronization
     private let subscribers: [SynchronizationSubscriber]
     
     /// The sync currently being performed or nil if no sync is active
@@ -29,6 +30,7 @@ final class SynchronizationManager {
         let completion: ((UIBackgroundFetchResult) -> Void)?
     }
     
+    /// Handles reachability state within the manager
     private let reachability = Reachability()
         
     /// Creates a `SyncManager`
@@ -42,8 +44,6 @@ final class SynchronizationManager {
     ///
     /// - Parameters:
     ///   - source: The `SynchronizationSource` that triggerered the synchronization.
-    ///   - notificationContent: The contents of the notification that triggered this sync or an empty value
-    ///   - syncConfiguration: The current configuration for syncs (as defined by the user in settings)
     ///   - completion: Called when this sync completes. Returns the background fetch result.
     func sync(source: SynchronizationSource,
               completion: ((UIBackgroundFetchResult) -> Void)?) {
@@ -85,6 +85,14 @@ final class SynchronizationManager {
             ConnectButtonController.synchronizationLog("Synchronization already in process. Setting up next synchronization to occur. Source: \(source)")
             nextTask = SynchronizationRequest(source: source, completion: completion)
         }
+    }
+    
+    func start() {
+        subscribers.forEach { $0.start() }
+    }
+    
+    func reset() {
+        subscribers.forEach { $0.reset() }
     }
 }
 
@@ -132,9 +140,7 @@ extension SynchronizationManager {
                 guard identifier == nil else {
                     return
                 }
-            }
-            
-            if !source.isBackgroundProcess() {
+                
                 identifier = UIApplication.shared.beginBackgroundTask(expirationHandler: { [weak self] in
                     if let strongSelf = self {
                         strongSelf.finish()

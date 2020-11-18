@@ -13,6 +13,11 @@ final class Keychain {
         case InviteCode = "Keychain.Key.IFTTTPlatformInviteCode"
     }
     
+    static func update(with credentials: ConnectionCredentialProvider) {
+        userToken = credentials.userToken
+        inviteCode = credentials.inviteCode
+    }
+    
     static var userToken: String? {
         get {
             getValue(for: .UserToken)

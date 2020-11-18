@@ -44,11 +44,11 @@ class Connection_ParsingTests: XCTestCase {
         XCTAssertEqual(bestCoverImage, "https://ifttt.com/1440w", "Best fit cover image not found")
         
         let firstFeature = connection.features.first
-        XCTAssertEqual(firstFeature?.title, "Effortlessly track time spent at work")
-        XCTAssertEqual(firstFeature?.details, "Some random description for this feature")
-        XCTAssertEqual(firstFeature?.iconURL?.absoluteString, "https://ifttt.com/value-prop-icons/clock.png", "Feature not found")
+        XCTAssertEqual(firstFeature?.title, "Deliver to a location")
+        XCTAssertEqual(firstFeature?.details, "Set a location and the grocery will be delivered there")
+        XCTAssertEqual(firstFeature?.iconURL?.absoluteString, "https://ifttt.com/value-prop-icons/gps.png", "Feature not found")
         
-        let firstTrigger = connection.allNativeTriggers.first
+        let firstTrigger = connection.activeUserTriggers.first
         switch firstTrigger {
         case .location(let region):
             XCTAssertEqual(region.radius, 123.4567890)
@@ -70,5 +70,21 @@ class Connection_ParsingTests: XCTestCase {
         } else {
             XCTFail("Expecting a region to be returned")
         }
+    }
+    
+    func test_stripIFTTTPrefix() {
+        let testNonIFTTTIdentifier = "1234"
+        assert(testNonIFTTTIdentifier.stripIFTTTPrefix() == testNonIFTTTIdentifier)
+        
+        let testIFTTTIdentifier = "IFTTT_1234"
+        assert(testIFTTTIdentifier.stripIFTTTPrefix() == "1234")
+        
+        let testMisspelledIFTTTIdentifier = "IFTT_1234"
+        assert(testMisspelledIFTTTIdentifier.stripIFTTTPrefix() == testMisspelledIFTTTIdentifier)
+    }
+    
+    func test_addIFTTTPrefix() {
+        let testIdentifier = "1234"
+        assert(testIdentifier.addIFTTTPrefix() == "ifttt_1234")
     }
 }

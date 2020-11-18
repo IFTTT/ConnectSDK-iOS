@@ -79,7 +79,6 @@ struct RegionEvent: Hashable {
         self.kind = eventType
         self.triggerSubscriptionId = triggerSubscriptionId
     }
-    
 }
 
 /// Stores region events information to be able to use in synchronizations.
@@ -116,7 +115,10 @@ final class RegionEventsRegistry {
         array?.removeAll(where: { (value) -> Bool in
             guard let eventJSON = value as? JSON,
                 let event = RegionEvent(json: eventJSON) else { return false }
-            return events.contains(event)
+            return events.contains {
+                $0.triggerSubscriptionId == event.triggerSubscriptionId &&
+                $0.recordId == event.recordId
+            }
         })
         
         StorageHelpers.regionEvents = array
