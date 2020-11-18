@@ -7,10 +7,13 @@
 
 import Foundation
 
-
+/// Describes options to initialize the SDK with
 public struct InitializerOptions {
+    
+    /// Enables the SDK to handle registering and running a background process to periodically run synchronizations.
     public let enableSDKBackgroundProcess: Bool
     
+    /// The standard options used when initial
     public static var standard = InitializerOptions(enableSDKBackgroundProcess: false)
 }
 
@@ -27,22 +30,24 @@ extension ConnectButtonController {
     /// If this closure is set, it will be called with the localization log statement instead of calling `print`. This handler will only be called if `localizationLoggingEnabled` is set to true
     public static var localizationLoggingHandler: ((String) -> Void)?
     
-    /// Initializes the SDK with options. To do that, call `ConnectButtonController.setup(...)` to do so. Call this method in `UIApplicationDelegate`'s `didFinishLaunchingWithOptions` or `willFinishLaunchingWithOptions`.
+    /// Initializes the SDK with options. This method should be called prior to calling any other static method on `ConnectButtonController`. It performs setup of the location component of the SDK. Call this method in `UIApplicationDelegate`'s `didFinishLaunchingWithOptions` or `willFinishLaunchingWithOptions`.
     ///
     /// This method will do the following:
     /// - Initialize the mechanism for synchronization but it will not start it.
     /// - Start the location service to receive any location updates that might have occurred
     /// - (If necessary) Setup SDK provided background process with the system. This allows the app to run synchronizations while the app is in memory and in the background. In this case, this method must be called before the app finishes launching. Failure to do so will result in a `NSInternalInconsistencyException`.
-    /// If you'd like to use the SDK provided background process updating
-    public static func initialize(initializerOptions: InitializerOptions = .standard) {
+    ///
+    /// - Parameters:
+    ///     - options: An instance of `InitializerOptions` to initialize the SDK with.
+    public static func initialize(options: InitializerOptions = .standard) {
         let sharedSynchronizer = ConnectionsSynchronizer.shared()
         
-        if initializerOptions.enableSDKBackgroundProcess {
+        if options.enableSDKBackgroundProcess {
             sharedSynchronizer.setupBackgroundProcess()
         }
     }
     
-    /// This method should be called prior to calling any other static method on `ConnectButtonController`. It performs setup of the location component of the SDK.
+    /// Performs setup of the SDK. Starts the synchronization of in the SDK. Registers background process with the system if desired.
     ///
     /// - Parameters:
     ///     - credentials: An optional object conforming to `ConnectionCredentialProvider` which is used to setup the SDK. If this is nil, the SDK will attempt to use cached values.

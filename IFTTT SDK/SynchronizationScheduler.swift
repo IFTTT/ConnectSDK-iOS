@@ -48,7 +48,7 @@ final class SynchronizationScheduler {
     }
     
     /// Performs registration for system and SDK generated events for kicking off synchronizations
-    /// Should get called when the scheduler is to start. On iOS 13 and up, registers background process with the system.
+    /// Should get called when the scheduler is to start.
     func start() {
         // Start the manager
         manager.start()
