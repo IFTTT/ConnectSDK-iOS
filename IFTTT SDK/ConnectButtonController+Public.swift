@@ -13,8 +13,19 @@ public struct InitializerOptions {
     /// Enables the SDK to handle registering and running a background process to periodically run synchronizations.
     public let enableSDKBackgroundProcess: Bool
     
-    /// The standard options used when initial
-    public static var standard = InitializerOptions(enableSDKBackgroundProcess: false)
+    /// The standard initializer options.
+    ///
+    /// This does the following:
+    /// - Sets `enableSDKBackgroundProcess` to false.
+    public static var standard = InitializerOptions()
+    
+    /// Creates an instance of `InitializerOptions`.
+    ///
+    /// - Parameters:
+    ///     - enableSDKBackgroundProcess: A `Bool` that allows the SDK to enable background processes. Defaults to `false`. If you'd like the SDK to manage a background process for you, set this to `true`.
+    public init(enableSDKBackgroundProcess: Bool = false) {
+        self.enableSDKBackgroundProcess = enableSDKBackgroundProcess
+    }
 }
 
 extension ConnectButtonController {

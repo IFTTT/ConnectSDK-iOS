@@ -74,8 +74,8 @@ final class ConnectionsSynchronizer {
     private let connectionsMonitor: ConnectionsMonitor
     private let nativeServicesCoordinator: NativeServicesCoordinator
     private let subscribers: [SynchronizationSubscriber]
+    private var scheduler: SynchronizationScheduler
     
-    private var scheduler: SynchronizationScheduler?
     private var state: RunState = .stopped
     
     /// Private shared instance of connections synchronizer to use in starting/stopping synchronization
@@ -115,15 +115,21 @@ final class ConnectionsSynchronizer {
         self.eventPublisher = eventPublisher
         self.location = location
         self.connectionsMonitor = connectionsMonitor
+        
+        let manager = SynchronizationManager(subscribers: subscribers)
+        self.scheduler = SynchronizationScheduler(manager: manager,
+                                             triggers: eventPublisher)
+        
         setupRegistryNotifications()
         location.start()
     }
     
+    /// Performs basic setup of the SDK with Application lifecycle synchronization options.
+    ///
+    /// - Parameters:
+    ///     - lifecycleSynchronizationOptions: The synchronization options to use in setting up App Lifecycle notification observers.
     func setup(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
-        let manager = SynchronizationManager(subscribers: subscribers)
-        scheduler = SynchronizationScheduler(manager: manager,
-                                             triggers: eventPublisher,
-                                             lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
+        scheduler.setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
     }
     
     /// Can be used to force a synchronization.
@@ -164,7 +170,7 @@ final class ConnectionsSynchronizer {
         setupNotifications()
         performPreflightChecks()
         Keychain.resetIfNecessary(force: false)
-        scheduler?.start()
+        scheduler.start()
         state = .running
     }
     
@@ -174,7 +180,7 @@ final class ConnectionsSynchronizer {
         
         stopNotifications()
         Keychain.resetIfNecessary(force: true)
-        scheduler?.stop()
+        scheduler.stop()
         state = .stopped
     }
     
@@ -214,12 +220,12 @@ final class ConnectionsSynchronizer {
     
     /// Hook to be called when the application enters the background.
     @objc private func applicationDidEnterBackground() {
-        scheduler?.applicationDidEnterBackground()
+        scheduler.applicationDidEnterBackground()
     }
     
     /// Call this to setup background processes. Must be called before the application finishes launching.
     func setupBackgroundProcess() {
-        scheduler?.setupBackgroundProcess()
+        scheduler.setupBackgroundProcess()
     }
     
     func performFetchWithCompletionHandler(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
@@ -240,7 +246,7 @@ final class ConnectionsSynchronizer {
     }
     
     func stopCurrentSynchronization() {
-        scheduler?.stopCurrentSynchronization()
+        scheduler.stopCurrentSynchronization()
     }
 }
 
