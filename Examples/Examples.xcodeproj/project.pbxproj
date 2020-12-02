@@ -17,6 +17,9 @@
 		DE01067D22D54D5E00B2CB47 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067322D54D5E00B2CB47 /* Settings.swift */; };
 		DE01067E22D54D5E00B2CB47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067422D54D5E00B2CB47 /* AppDelegate.swift */; };
 		DE01068022D54D5E00B2CB47 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */; };
+		DE3BF62E2576E1B300F12D24 /* UIView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */; };
+		DE3BF6312576E1DA00F12D24 /* UIImageView+NetworkLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */; };
+		DE8839DD25769AB000D76161 /* DisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8839D925769A7B00D76161 /* DisplayViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +36,10 @@
 		DE01067422D54D5E00B2CB47 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE01067522D54D5E00B2CB47 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Helpers.swift"; sourceTree = "<group>"; };
+		DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+NetworkLoading.swift"; sourceTree = "<group>"; };
 		DE7B730B22CAACD8000F4023 /* Grocery Express.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Grocery Express.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE8839D925769A7B00D76161 /* DisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +66,7 @@
 		DE01066B22D54D5E00B2CB47 /* GroceryExpress */ = {
 			isa = PBXGroup;
 			children = (
+				DE8839D925769A7B00D76161 /* DisplayViewController.swift */,
 				DE01066C22D54D5E00B2CB47 /* TokenRequest.swift */,
 				DE01066D22D54D5E00B2CB47 /* ConnectionCredentials.swift */,
 				DE01066E22D54D5E00B2CB47 /* Assets.xcassets */,
@@ -70,6 +77,8 @@
 				DE01067422D54D5E00B2CB47 /* AppDelegate.swift */,
 				DE01067522D54D5E00B2CB47 /* Info.plist */,
 				DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */,
+				DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */,
+				DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */,
 			);
 			path = GroceryExpress;
 			sourceTree = "<group>";
@@ -216,10 +225,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE01067822D54D5E00B2CB47 /* ConnectionCredentials.swift in Sources */,
+				DE8839DD25769AB000D76161 /* DisplayViewController.swift in Sources */,
+				DE3BF6312576E1DA00F12D24 /* UIImageView+NetworkLoading.swift in Sources */,
 				DE01067722D54D5E00B2CB47 /* TokenRequest.swift in Sources */,
 				DE01067D22D54D5E00B2CB47 /* Settings.swift in Sources */,
 				DE01067E22D54D5E00B2CB47 /* AppDelegate.swift in Sources */,
 				DE01067C22D54D5E00B2CB47 /* ConnectionViewController.swift in Sources */,
+				DE3BF62E2576E1B300F12D24 /* UIView+Helpers.swift in Sources */,
 				DE01068022D54D5E00B2CB47 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

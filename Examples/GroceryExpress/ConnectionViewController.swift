@@ -11,18 +11,29 @@ import AuthenticationServices
 
 class ConnectionViewController: UIViewController {
     
-    struct Constants {
-        static let connectionId = "pWisyzm7"
+    private var displayInformation: DisplayInformation!
+
+    static func instantiate(with information: DisplayInformation) -> ConnectionViewController {
+        guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ConnectionViewController") as? ConnectionViewController else {
+            fatalError("Missing view controller with identifier ConnectionViewController in Main storyboard.")
+        }
+        viewController.displayInformation = information
+        return viewController
     }
     
     // MARK: - UI
+    
+    @IBOutlet weak var backgroundImage: UIImageView!
+    
+    @IBOutlet weak var subtitle: UILabel!
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var connectButton: ConnectButton!
     
-    @IBOutlet weak var valuePropsView: UIImageView!
+    @IBOutlet weak var featuresStackView: UIStackView!
     
+    @IBOutlet weak var opaqueOverlay: UIView!
     
     // MARK: - Connect flow
     
@@ -35,7 +46,7 @@ class ConnectionViewController: UIViewController {
     private func setupConnectButtonController(_ configuration: ConnectionConfiguration) {
         activityIndicator.stopAnimating()
         connectButton.isHidden = false
-        valuePropsView.isHidden = false
+        featuresStackView.isHidden = false
         
         connectButtonController = ConnectButtonController(connectButton: connectButton,
                                                           connectionConfiguration: configuration,
@@ -59,7 +70,7 @@ class ConnectionViewController: UIViewController {
         } else {
             activityIndicator.startAnimating()
             connectButton.isHidden = true
-            valuePropsView.isHidden = true
+            featuresStackView.isHidden = true
             
             connectionNetworkController.start(request: .fetchConnection(for: id, credentialProvider: connectionCredentials)) { [weak self] response in
                 guard let self = self else { return }
@@ -72,7 +83,7 @@ class ConnectionViewController: UIViewController {
                                                                           redirectURL: AppDelegate.connectionRedirectURL,
                                                                           skipConnectionConfiguration: self.settings.skipConnectionConfiguration)
                     self.setupConnectButtonController(connectionConfiguration)
-                    
+                    self.setupFeatures(with: connection)
                 case .failure:
                     let alertController = UIAlertController(title: "Oops", message: "We were not able to retrieve the selected Connection. Please check your network connection.", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "Okay", style: .default, handler: { _ in
@@ -82,21 +93,93 @@ class ConnectionViewController: UIViewController {
                     self.present(alertController, animated: true, completion: nil)
                 }
             }
-            
         }
     }
     
+    // Displays the features on the UI.
+    private func setupFeatures(with connection: Connection) {
+        if !featuresStackView.arrangedSubviews.isEmpty {
+            featuresStackView.removeAllArrangedSubviews()
+        }
+        
+        connection.features.map { model -> FeatureDescriptionView in
+            let featureDescriptionView = FeatureDescriptionView()
+            featureDescriptionView.update(with: model)
+            return featureDescriptionView
+        }
+        .forEach { featuresStackView.addArrangedSubview($0) }
+    }
     
     // MARK: - UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        featuresStackView.isLayoutMarginsRelativeArrangement = true
+        featuresStackView.layoutMargins = .init(top: 0, left: 20, bottom: 0, right: 20)
         view.backgroundColor = .white
-        valuePropsView.tintColor = .black
         activityIndicator.color = .black
         
-        fetchConnection(with: Constants.connectionId)
+        update(with: displayInformation)
+    }
+    
+    private func update(with display: DisplayInformation) {
+        backgroundImage.image = displayInformation.headerImage
+        subtitle.text = displayInformation.subtitleText
+        opaqueOverlay.isHidden = displayInformation.hideOpaqueOverlay
+        fetchConnection(with: displayInformation.connectionId)
+    }
+
+    /// A view that displays features on the UI.
+    private class FeatureDescriptionView: UIView {
+
+        var iconImageView = UIImageView()
+        
+        private struct Constants {
+            static let ImageViewSize: CGFloat = 25
+            static let Spacing: CGFloat = 20
+            static let TextColor: UIColor = .black
+            static let TextFont = UIFont(name: "Avenir-Medium", size: 16)!
+        }
+        
+        private lazy var valueLabel: UILabel = {
+            let label = UILabel()
+            label.textColor = Constants.TextColor
+            label.font = Constants.TextFont
+            label.numberOfLines = 0
+            return label
+        }()
+        
+        private lazy var stackView: UIStackView = {
+            let stackView = UIStackView(arrangedSubviews: [iconImageView, valueLabel])
+            stackView.axis = .horizontal
+            stackView.alignment = .center
+            stackView.distribution = .fillProportionally
+            stackView.spacing = Constants.Spacing
+            return stackView
+        }()
+        
+        init() {
+            super.init(frame: .zero)
+            iconImageView.contentMode = .scaleAspectFit
+            iconImageView.addConstraints(iconImageView.sizeConstraints(size: .init(width: Constants.ImageViewSize, height: Constants.ImageViewSize)))
+            
+            addSubview(stackView)
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            addConstraints(fillConstraints(view: stackView))
+            
+            // This is done to ensure that the value label takes up the full possible width possible but at the same time, the enable switch hugs the content around it as tight as possible.
+            valueLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        func update(with feature: Connection.Feature) {
+            iconImageView.setURL(feature.iconURL)
+            valueLabel.text = feature.title
+        }
     }
 }
 
