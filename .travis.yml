@@ -1,5 +1,5 @@
 language: swift
 xcode_project: IFTTT SDK.xcodeproj
-xcode_scheme: SDKHostAppTests
+xcode_scheme: SDKHostApp
 osx_image: xcode12.2
 xcode_destination: platform=iOS Simulator,OS=14.2,name=iPhone 11
