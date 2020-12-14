@@ -23,13 +23,3 @@ protocol LocationMonitor {
     ///     - status: The user's permission level for location.
     func updateMonitoring(with status: CLAuthorizationStatus)
 }
-
-extension LocationMonitor {
-    func updateMonitoring(with status: CLAuthorizationStatus) {
-        if status == .authorizedAlways || status == .authorizedWhenInUse {
-            startMonitor()
-        } else {
-            stopMonitor()
-        }
-    }
-}

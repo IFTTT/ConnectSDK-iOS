@@ -2,7 +2,6 @@
 //  RegionEventsRegistryTests.swift
 //  IFTTT SDKTests
 //
-//  Created by Siddharth Sathyam on 11/18/20.
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
@@ -16,10 +15,14 @@ class RegionEventsRegistryTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        XCUIDevice.shared.press(.home)
         XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
         
         regionEventsRegistry.removeAll()
+    }
+    
+    class override func tearDown() {
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
     }
     
     func testGet() {

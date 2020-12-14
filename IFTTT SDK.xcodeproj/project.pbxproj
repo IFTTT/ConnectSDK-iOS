@@ -20,7 +20,6 @@
 		1D453EEC2297246C001994FF /* ConnectButton+CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EEB2297246C001994FF /* ConnectButton+CheckmarkView.swift */; };
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
-		1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */; };
 		1D7918412227202700429936 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7918402227202700429936 /* Reachability.swift */; };
 		1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */; };
 		1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */; };
@@ -30,7 +29,6 @@
 		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
 		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
-		DE1712BD2565B295000B13E6 /* RegionEventsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */; };
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
 		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
 		DE29EA5E24DAFC7B00F6F356 /* Localizable_cs.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEF16C0C24C0AAE70094D33B /* Localizable_cs.strings */; };
@@ -64,10 +62,7 @@
 		DE328DBE243E18BB00603EAC /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DBD243E18BB00603EAC /* Keychain.swift */; };
 		DE328DC0243E1DC000603EAC /* RegionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DBF243E1DC000603EAC /* RegionsMonitor.swift */; };
 		DE328DC2243E1DED00603EAC /* LocationMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC1243E1DED00603EAC /* LocationMonitor.swift */; };
-		DE328DC4243E1E1200603EAC /* VisitsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */; };
 		DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */; };
-		DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */; };
-		DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
 		DE3BEFCC22CAAA9C0020B425 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE3BEFCB22CAAA9B0020B425 /* Assets.xcassets */; };
 		DE4A4C5E243632A7004082BF /* SynchronizationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C5D243632A7004082BF /* SynchronizationSubscriber.swift */; };
@@ -75,7 +70,6 @@
 		DE4A4C622436409C004082BF /* SynchronizationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C612436409C004082BF /* SynchronizationScheduler.swift */; };
 		DE4C5FFA22CFE570009C7AF9 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */; };
 		DE641D88252B7BC900C56FF9 /* ConnectButtonController+Public.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */; };
-		DE75D24E256218B000E611EF /* ConnectionsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */; };
 		DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */; };
 		DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */; };
 		DEBC3C8225421D600052A8CB /* ConnectButtonController+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */; };
@@ -83,6 +77,24 @@
 		DEC08FF2242948C3007D7039 /* Set+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF1242948C3007D7039 /* Set+Helpers.swift */; };
 		DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */; };
 		DEC08FFC242BAB25007D7039 /* Bundle+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */; };
+		DEC29ECF258419FB00BF56EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29ECE258419FB00BF56EE /* AppDelegate.swift */; };
+		DEC29ED1258419FB00BF56EE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29ED0258419FB00BF56EE /* SceneDelegate.swift */; };
+		DEC29ED3258419FB00BF56EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29ED2258419FB00BF56EE /* ContentView.swift */; };
+		DEC29ED5258419FC00BF56EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEC29ED4258419FC00BF56EE /* Assets.xcassets */; };
+		DEC29ED8258419FC00BF56EE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEC29ED7258419FC00BF56EE /* Preview Assets.xcassets */; };
+		DEC29EDB258419FC00BF56EE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEC29ED9258419FC00BF56EE /* LaunchScreen.storyboard */; };
+		DEC29EF1258419FC00BF56EE /* SDKHostAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29EF0258419FC00BF56EE /* SDKHostAppUITests.swift */; };
+		DEC29F0125841A0800BF56EE /* String_EmailDataDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */; };
+		DEC29F0225841A0800BF56EE /* EventPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */; };
+		DEC29F0325841A0800BF56EE /* RegionEventsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */; };
+		DEC29F0425841A0800BF56EE /* CLRegion+Parsing_spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */; };
+		DEC29F0525841A0800BF56EE /* RegionsMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8E16E2583F34400ACE8B9 /* RegionsMonitorTests.swift */; };
+		DEC29F0625841A0800BF56EE /* Connection_ParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */; };
+		DEC29F0725841A0800BF56EE /* ConnectionsRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */; };
+		DEC29F0825841A0800BF56EE /* LocationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29DE525840DE300BF56EE /* LocationServiceTests.swift */; };
+		DEC29F1525841A5200BF56EE /* fetch_connection_response.json in Resources */ = {isa = PBXBuildFile; fileRef = FC1F491522710BE4008A1B21 /* fetch_connection_response.json */; };
+		DEC29F1F25841D7C00BF56EE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
+		DEC29F2025841D7C00BF56EE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DEC75CB42508312F00F40296 /* Connection+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB32508312F00F40296 /* Connection+Storage.swift */; };
 		DEC75CB725092B8600F40296 /* PermissionsRequestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */; };
 		DEC75CB9250973F600F40296 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB8250973F600F40296 /* Library.swift */; };
@@ -91,11 +103,11 @@
 		DEC8803D242BB0BA00E0286C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8803C242BB0BA00E0286C /* LocationService.swift */; };
 		DED00F9524990BBD00C8E618 /* Localizable_en-US.strings in Resources */ = {isa = PBXBuildFile; fileRef = DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */; };
 		DED00F9724990C3800C8E618 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DED00F9624990C3800C8E618 /* Localizable.strings */; };
+		DEF4A4922587B9EB00735E98 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF4A4912587B9EB00735E98 /* Array+Helpers.swift */; };
+		DEF4A4972587BA1A00735E98 /* ArrayHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */; };
 		FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */; };
 		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
-		FC1F491422710B62008A1B21 /* Connection_ParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */; };
-		FC1F491622710BE4008A1B21 /* fetch_connection_response.json in Resources */ = {isa = PBXBuildFile; fileRef = FC1F491522710BE4008A1B21 /* fetch_connection_response.json */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
 		FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19921ACCD9C00738023 /* ConstraintsMaker.swift */; };
@@ -115,7 +127,6 @@
 		FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC7F13A121B06E34002AD8FB /* ImageViewNetworkController.swift */; };
 		FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC84B84B21C4321F00BAF7ED /* Links.swift */; };
 		FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC84B85221C43A3000BAF7ED /* LegalTermsText.swift */; };
-		FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		FCBA15FB21389F7500EB1BC8 /* IFTTT_SDK.h in Headers */ = {isa = PBXBuildFile; fileRef = FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBA16042138A4EE00EB1BC8 /* Connection.swift */; };
 		FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCC6DEB1215D90DD008C8405 /* Assets.swift */; };
@@ -125,7 +136,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		FCBA15F521389F7500EB1BC8 /* PBXContainerItemProxy */ = {
+		DEC29EE2258419FC00BF56EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCBA15E121389F7500EB1BC8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DEC29ECB258419FB00BF56EE;
+			remoteInfo = SDKHostApp;
+		};
+		DEC29EED258419FC00BF56EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCBA15E121389F7500EB1BC8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DEC29ECB258419FB00BF56EE;
+			remoteInfo = SDKHostApp;
+		};
+		DEC29F2125841D7C00BF56EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FCBA15E121389F7500EB1BC8 /* Project object */;
 			proxyType = 1;
@@ -133,6 +158,20 @@
 			remoteInfo = "IFTTT SDK";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DEC29F2325841D7C00BF56EE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DEC29F2025841D7C00BF56EE /* IFTTT_SDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1D453ED722971C5C001994FF /* ConnectButton+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Style.swift"; sourceTree = "<group>"; };
@@ -172,7 +211,6 @@
 		DE328DBD243E18BB00603EAC /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		DE328DBF243E1DC000603EAC /* RegionsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionsMonitor.swift; sourceTree = "<group>"; };
 		DE328DC1243E1DED00603EAC /* LocationMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMonitor.swift; sourceTree = "<group>"; };
-		DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitsMonitor.swift; sourceTree = "<group>"; };
 		DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronizationTriggerEvent.swift; sourceTree = "<group>"; };
 		DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLRegion+Parsing_spec.swift"; sourceTree = "<group>"; };
 		DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPublisherTests.swift; sourceTree = "<group>"; };
@@ -191,12 +229,28 @@
 		DEC08FF1242948C3007D7039 /* Set+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+Helpers.swift"; sourceTree = "<group>"; };
 		DEC08FF9242A5DD4007D7039 /* ConnectionsMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsMonitor.swift; sourceTree = "<group>"; };
 		DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Helpers.swift"; sourceTree = "<group>"; };
+		DEC29DE525840DE300BF56EE /* LocationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceTests.swift; sourceTree = "<group>"; };
+		DEC29ECC258419FB00BF56EE /* SDKHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDKHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEC29ECE258419FB00BF56EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DEC29ED0258419FB00BF56EE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		DEC29ED2258419FB00BF56EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DEC29ED4258419FC00BF56EE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DEC29ED7258419FC00BF56EE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DEC29EDA258419FC00BF56EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		DEC29EDC258419FC00BF56EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEC29EE1258419FC00BF56EE /* SDKHostAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SDKHostAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEC29EE7258419FC00BF56EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEC29EEC258419FC00BF56EE /* SDKHostAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SDKHostAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEC29EF0258419FC00BF56EE /* SDKHostAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKHostAppUITests.swift; sourceTree = "<group>"; };
+		DEC29EF2258419FC00BF56EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEC29F1A25841A9400BF56EE /* SDKHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SDKHostApp.entitlements; sourceTree = "<group>"; };
 		DEC75CB32508312F00F40296 /* Connection+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Storage.swift"; sourceTree = "<group>"; };
 		DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsRequestor.swift; sourceTree = "<group>"; };
 		DEC75CB8250973F600F40296 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		DEC75CBA2509741F00F40296 /* LocationLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLibrary.swift; sourceTree = "<group>"; };
 		DEC75CBC250A73E000F40296 /* RegionEventsRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionEventsRegistry.swift; sourceTree = "<group>"; };
 		DEC8803C242BB0BA00E0286C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		DEC8E16E2583F34400ACE8B9 /* RegionsMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionsMonitorTests.swift; sourceTree = "<group>"; };
 		DED00F9424990BBD00C8E618 /* Localizable_en-US.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = "Localizable_en-US.strings"; sourceTree = "<group>"; };
 		DED00F9624990C3800C8E618 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		DEF16C0C24C0AAE70094D33B /* Localizable_cs.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_cs.strings; sourceTree = "<group>"; };
@@ -220,6 +274,8 @@
 		DEF16C1F24C0ABBA0094D33B /* Localizable_sv.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable_sv.strings; sourceTree = "<group>"; };
 		DEF16C2024C0ABC80094D33B /* Localizable_zh-Hans.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_zh-Hans.strings"; sourceTree = "<group>"; };
 		DEF16C2124C0ABD90094D33B /* Localizable_zh-Hant.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = "Localizable_zh-Hant.strings"; sourceTree = "<group>"; };
+		DEF4A4912587B9EB00735E98 /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
+		DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayHelpersTests.swift; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -247,8 +303,6 @@
 		FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IFTTT_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCBA15ED21389F7500EB1BC8 /* IFTTT_SDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IFTTT_SDK.h; sourceTree = "<group>"; };
 		FCBA15EE21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IFTTT SDKTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FCBA15FA21389F7500EB1BC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCBA16042138A4EE00EB1BC8 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		FCC6DEB1215D90DD008C8405 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
 		FCF0C4E321B0A97000DEB117 /* ConnectionNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionNetworkError.swift; sourceTree = "<group>"; };
@@ -257,18 +311,32 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		FCBA15E721389F7500EB1BC8 /* Frameworks */ = {
+		DEC29EC9258419FB00BF56EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC29F1F25841D7C00BF56EE /* IFTTT_SDK.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC29EDE258419FC00BF56EE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FCBA15F021389F7500EB1BC8 /* Frameworks */ = {
+		DEC29EE9258419FC00BF56EE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCBA15F421389F7500EB1BC8 /* IFTTT_SDK.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FCBA15E721389F7500EB1BC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,10 +393,60 @@
 				DE328DBB243E185800603EAC /* ConnectionsRegistry.swift */,
 				DE328DBF243E1DC000603EAC /* RegionsMonitor.swift */,
 				DE328DC1243E1DED00603EAC /* LocationMonitor.swift */,
-				DE328DC3243E1E1200603EAC /* VisitsMonitor.swift */,
 				DEC75CBC250A73E000F40296 /* RegionEventsRegistry.swift */,
 			);
 			name = Monitoring;
+			sourceTree = "<group>";
+		};
+		DEC29ECD258419FB00BF56EE /* SDKHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				DEC29F1A25841A9400BF56EE /* SDKHostApp.entitlements */,
+				DEC29ECE258419FB00BF56EE /* AppDelegate.swift */,
+				DEC29ED0258419FB00BF56EE /* SceneDelegate.swift */,
+				DEC29ED2258419FB00BF56EE /* ContentView.swift */,
+				DEC29ED4258419FC00BF56EE /* Assets.xcassets */,
+				DEC29ED9258419FC00BF56EE /* LaunchScreen.storyboard */,
+				DEC29EDC258419FC00BF56EE /* Info.plist */,
+				DEC29ED6258419FC00BF56EE /* Preview Content */,
+			);
+			path = SDKHostApp;
+			sourceTree = "<group>";
+		};
+		DEC29ED6258419FC00BF56EE /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				DEC29ED7258419FC00BF56EE /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		DEC29EE4258419FC00BF56EE /* SDKHostAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */,
+				FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */,
+				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
+				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
+				DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */,
+				DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */,
+				DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */,
+				DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */,
+				DEC8E16E2583F34400ACE8B9 /* RegionsMonitorTests.swift */,
+				DEC29DE525840DE300BF56EE /* LocationServiceTests.swift */,
+				DEC29EE7258419FC00BF56EE /* Info.plist */,
+				DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */,
+			);
+			path = SDKHostAppTests;
+			sourceTree = "<group>";
+		};
+		DEC29EEF258419FC00BF56EE /* SDKHostAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				DEC29EF0258419FC00BF56EE /* SDKHostAppUITests.swift */,
+				DEC29EF2258419FC00BF56EE /* Info.plist */,
+			);
+			path = SDKHostAppUITests;
 			sourceTree = "<group>";
 		};
 		DEC75CB525092B6100F40296 /* Native Services */ = {
@@ -352,6 +470,7 @@
 				DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */,
 				DEC08FF1242948C3007D7039 /* Set+Helpers.swift */,
 				DEC08FFB242BAB25007D7039 /* Bundle+Helpers.swift */,
+				DEF4A4912587B9EB00735E98 /* Array+Helpers.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -409,7 +528,9 @@
 			isa = PBXGroup;
 			children = (
 				FCBA15EC21389F7500EB1BC8 /* IFTTT SDK */,
-				FCBA15F721389F7500EB1BC8 /* IFTTT SDKTests */,
+				DEC29ECD258419FB00BF56EE /* SDKHostApp */,
+				DEC29EE4258419FC00BF56EE /* SDKHostAppTests */,
+				DEC29EEF258419FC00BF56EE /* SDKHostAppUITests */,
 				FCBA15EB21389F7500EB1BC8 /* Products */,
 				FCBA16202139ACF500EB1BC8 /* Frameworks */,
 			);
@@ -419,7 +540,9 @@
 			isa = PBXGroup;
 			children = (
 				FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */,
-				FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */,
+				DEC29ECC258419FB00BF56EE /* SDKHostApp.app */,
+				DEC29EE1258419FC00BF56EE /* SDKHostAppTests.xctest */,
+				DEC29EEC258419FC00BF56EE /* SDKHostAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -434,22 +557,6 @@
 				FCF29FC82187CF33004B1100 /* Resources */,
 			);
 			path = "IFTTT SDK";
-			sourceTree = "<group>";
-		};
-		FCBA15F721389F7500EB1BC8 /* IFTTT SDKTests */ = {
-			isa = PBXGroup;
-			children = (
-				1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */,
-				FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */,
-				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
-				FCBA15FA21389F7500EB1BC8 /* Info.plist */,
-				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
-				DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */,
-				DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */,
-				DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */,
-				DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */,
-			);
-			path = "IFTTT SDKTests";
 			sourceTree = "<group>";
 		};
 		FCBA16202139ACF500EB1BC8 /* Frameworks */ = {
@@ -550,6 +657,61 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		DEC29ECB258419FB00BF56EE /* SDKHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEC29EF3258419FC00BF56EE /* Build configuration list for PBXNativeTarget "SDKHostApp" */;
+			buildPhases = (
+				DEC29EC8258419FB00BF56EE /* Sources */,
+				DEC29EC9258419FB00BF56EE /* Frameworks */,
+				DEC29ECA258419FB00BF56EE /* Resources */,
+				DEC29F2325841D7C00BF56EE /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DEC29F2225841D7C00BF56EE /* PBXTargetDependency */,
+			);
+			name = SDKHostApp;
+			productName = SDKHostApp;
+			productReference = DEC29ECC258419FB00BF56EE /* SDKHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DEC29EE0258419FC00BF56EE /* SDKHostAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEC29EF6258419FC00BF56EE /* Build configuration list for PBXNativeTarget "SDKHostAppTests" */;
+			buildPhases = (
+				DEC29EDD258419FC00BF56EE /* Sources */,
+				DEC29EDE258419FC00BF56EE /* Frameworks */,
+				DEC29EDF258419FC00BF56EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DEC29EE3258419FC00BF56EE /* PBXTargetDependency */,
+			);
+			name = SDKHostAppTests;
+			productName = SDKHostAppTests;
+			productReference = DEC29EE1258419FC00BF56EE /* SDKHostAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		DEC29EEB258419FC00BF56EE /* SDKHostAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEC29EF9258419FC00BF56EE /* Build configuration list for PBXNativeTarget "SDKHostAppUITests" */;
+			buildPhases = (
+				DEC29EE8258419FC00BF56EE /* Sources */,
+				DEC29EE9258419FC00BF56EE /* Frameworks */,
+				DEC29EEA258419FC00BF56EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DEC29EEE258419FC00BF56EE /* PBXTargetDependency */,
+			);
+			name = SDKHostAppUITests;
+			productName = SDKHostAppUITests;
+			productReference = DEC29EEC258419FC00BF56EE /* SDKHostAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		FCBA15E921389F7500EB1BC8 /* IFTTT SDK */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FCBA15FE21389F7500EB1BC8 /* Build configuration list for PBXNativeTarget "IFTTT SDK" */;
@@ -568,39 +730,28 @@
 			productReference = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		FCBA15F221389F7500EB1BC8 /* IFTTT SDKTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = FCBA160121389F7500EB1BC8 /* Build configuration list for PBXNativeTarget "IFTTT SDKTests" */;
-			buildPhases = (
-				FCBA15EF21389F7500EB1BC8 /* Sources */,
-				FCBA15F021389F7500EB1BC8 /* Frameworks */,
-				FCBA15F121389F7500EB1BC8 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				FCBA15F621389F7500EB1BC8 /* PBXTargetDependency */,
-			);
-			name = "IFTTT SDKTests";
-			productName = "IFTTT SDKTests";
-			productReference = FCBA15F321389F7500EB1BC8 /* IFTTT SDKTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		FCBA15E121389F7500EB1BC8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1140;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = IFTTT;
 				TargetAttributes = {
-					FCBA15E921389F7500EB1BC8 = {
-						CreatedOnToolsVersion = 10.0;
-						LastSwiftMigration = 1020;
+					DEC29ECB258419FB00BF56EE = {
+						CreatedOnToolsVersion = 12.2;
 					};
-					FCBA15F221389F7500EB1BC8 = {
+					DEC29EE0258419FC00BF56EE = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = DEC29ECB258419FB00BF56EE;
+					};
+					DEC29EEB258419FC00BF56EE = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = DEC29ECB258419FB00BF56EE;
+					};
+					FCBA15E921389F7500EB1BC8 = {
 						CreatedOnToolsVersion = 10.0;
 						LastSwiftMigration = 1020;
 					};
@@ -620,12 +771,39 @@
 			projectRoot = "";
 			targets = (
 				FCBA15E921389F7500EB1BC8 /* IFTTT SDK */,
-				FCBA15F221389F7500EB1BC8 /* IFTTT SDKTests */,
+				DEC29ECB258419FB00BF56EE /* SDKHostApp */,
+				DEC29EE0258419FC00BF56EE /* SDKHostAppTests */,
+				DEC29EEB258419FC00BF56EE /* SDKHostAppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DEC29ECA258419FB00BF56EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC29EDB258419FC00BF56EE /* LaunchScreen.storyboard in Resources */,
+				DEC29ED8258419FC00BF56EE /* Preview Assets.xcassets in Resources */,
+				DEC29ED5258419FC00BF56EE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC29EDF258419FC00BF56EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC29F1525841A5200BF56EE /* fetch_connection_response.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC29EEA258419FC00BF56EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FCBA15E821389F7500EB1BC8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -657,17 +835,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FCBA15F121389F7500EB1BC8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FC1F491622710BE4008A1B21 /* fetch_connection_response.json in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		DEC29EC8258419FB00BF56EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC29ECF258419FB00BF56EE /* AppDelegate.swift in Sources */,
+				DEC29ED1258419FB00BF56EE /* SceneDelegate.swift in Sources */,
+				DEC29ED3258419FB00BF56EE /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC29EDD258419FC00BF56EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC29F0425841A0800BF56EE /* CLRegion+Parsing_spec.swift in Sources */,
+				DEC29F0325841A0800BF56EE /* RegionEventsRegistryTests.swift in Sources */,
+				DEC29F0825841A0800BF56EE /* LocationServiceTests.swift in Sources */,
+				DEC29F0725841A0800BF56EE /* ConnectionsRegistryTests.swift in Sources */,
+				DEC29F0125841A0800BF56EE /* String_EmailDataDetectorTests.swift in Sources */,
+				DEC29F0525841A0800BF56EE /* RegionsMonitorTests.swift in Sources */,
+				DEC29F0625841A0800BF56EE /* Connection_ParsingTests.swift in Sources */,
+				DEF4A4972587BA1A00735E98 /* ArrayHelpersTests.swift in Sources */,
+				DEC29F0225841A0800BF56EE /* EventPublisherTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC29EE8258419FC00BF56EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC29EF1258419FC00BF56EE /* SDKHostAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FCBA15E621389F7500EB1BC8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -731,7 +935,6 @@
 				DEC75CB9250973F600F40296 /* Library.swift in Sources */,
 				1D453EEA22972407001994FF /* ConnectButton+SwitchControl.swift in Sources */,
 				DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */,
-				DE328DC4243E1E1200603EAC /* VisitsMonitor.swift in Sources */,
 				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
 				1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */,
@@ -752,35 +955,182 @@
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
 				DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */,
 				DE3074A923DB50A800A3C71F /* Analytics+DataStructures.swift in Sources */,
+				DEF4A4922587B9EB00735E98 /* Array+Helpers.swift in Sources */,
 				FC22B1A021ACCDB200738023 /* Selectable.swift in Sources */,
 				FC75F93C22386626007C2DDB /* ConnectionActivationFlow.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FCBA15EF21389F7500EB1BC8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE75D24E256218B000E611EF /* ConnectionsRegistryTests.swift in Sources */,
-				DE328DCA2440CD7900603EAC /* CLRegion+Parsing_spec.swift in Sources */,
-				1D6E554721CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift in Sources */,
-				DE1712BD2565B295000B13E6 /* RegionEventsRegistryTests.swift in Sources */,
-				DE328DCC2440CEA500603EAC /* EventPublisherTests.swift in Sources */,
-				FC1F491422710B62008A1B21 /* Connection_ParsingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		FCBA15F621389F7500EB1BC8 /* PBXTargetDependency */ = {
+		DEC29EE3258419FC00BF56EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DEC29ECB258419FB00BF56EE /* SDKHostApp */;
+			targetProxy = DEC29EE2258419FC00BF56EE /* PBXContainerItemProxy */;
+		};
+		DEC29EEE258419FC00BF56EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DEC29ECB258419FB00BF56EE /* SDKHostApp */;
+			targetProxy = DEC29EED258419FC00BF56EE /* PBXContainerItemProxy */;
+		};
+		DEC29F2225841D7C00BF56EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FCBA15E921389F7500EB1BC8 /* IFTTT SDK */;
-			targetProxy = FCBA15F521389F7500EB1BC8 /* PBXContainerItemProxy */;
+			targetProxy = DEC29F2125841D7C00BF56EE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		DEC29ED9258419FC00BF56EE /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DEC29EDA258419FC00BF56EE /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		DEC29EF4258419FC00BF56EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = SDKHostApp/SDKHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"SDKHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SDKHostApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.SDKHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DEC29EF5258419FC00BF56EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = SDKHostApp/SDKHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"SDKHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SDKHostApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.SDKHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DEC29EF7258419FC00BF56EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
+				INFOPLIST_FILE = SDKHostAppTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.SDKHostAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SDKHostApp.app/SDKHostApp";
+			};
+			name = Debug;
+		};
+		DEC29EF8258419FC00BF56EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
+				INFOPLIST_FILE = SDKHostAppTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.SDKHostAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SDKHostApp.app/SDKHostApp";
+			};
+			name = Release;
+		};
+		DEC29EFA258419FC00BF56EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
+				INFOPLIST_FILE = SDKHostAppUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.SDKHostAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SDKHostApp;
+			};
+			name = Debug;
+		};
+		DEC29EFB258419FC00BF56EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
+				INFOPLIST_FILE = SDKHostAppUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.SDKHostAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SDKHostApp;
+			};
+			name = Release;
+		};
 		FCBA15FC21389F7500EB1BC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -956,52 +1306,36 @@
 			};
 			name = Release;
 		};
-		FCBA160221389F7500EB1BC8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "IFTTT SDKTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDKTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "IFTTT SDKTests/IFTTT SDKTests-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		FCBA160321389F7500EB1BC8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8SV2G8GQ6K;
-				INFOPLIST_FILE = "IFTTT SDKTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDKTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "IFTTT SDKTests/IFTTT SDKTests-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DEC29EF3258419FC00BF56EE /* Build configuration list for PBXNativeTarget "SDKHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEC29EF4258419FC00BF56EE /* Debug */,
+				DEC29EF5258419FC00BF56EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEC29EF6258419FC00BF56EE /* Build configuration list for PBXNativeTarget "SDKHostAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEC29EF7258419FC00BF56EE /* Debug */,
+				DEC29EF8258419FC00BF56EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEC29EF9258419FC00BF56EE /* Build configuration list for PBXNativeTarget "SDKHostAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEC29EFA258419FC00BF56EE /* Debug */,
+				DEC29EFB258419FC00BF56EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FCBA15E421389F7500EB1BC8 /* Build configuration list for PBXProject "IFTTT SDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1016,15 +1350,6 @@
 			buildConfigurations = (
 				FCBA15FF21389F7500EB1BC8 /* Debug */,
 				FCBA160021389F7500EB1BC8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		FCBA160121389F7500EB1BC8 /* Build configuration list for PBXNativeTarget "IFTTT SDKTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				FCBA160221389F7500EB1BC8 /* Debug */,
-				FCBA160321389F7500EB1BC8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

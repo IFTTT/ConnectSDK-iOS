@@ -95,10 +95,14 @@ final class ConnectionsSynchronizer {
         let connectionsRegistry = ConnectionsRegistry()
         let permissionsRequestor = PermissionsRequestor(registry: connectionsRegistry)
         let eventPublisher = EventPublisher<SynchronizationTriggerEvent>(queue: DispatchQueue.global())
-
-        let location = LocationService(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled,
+        let regionsMonitor = RegionsMonitor(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
+        let locationSessionManager = RegionEventsSessionManager(networkController: .init(),
+                                                                regionEventsRegistry: regionEventsRegistry)
+        
+        let location = LocationService(regionsMonitor: regionsMonitor,
                                        regionEventsRegistry: regionEventsRegistry,
                                        connectionsRegistry: connectionsRegistry,
+                                       sessionManager: locationSessionManager,
                                        eventPublisher: eventPublisher)
         
         let connectionsMonitor = ConnectionsMonitor(connectionsRegistry: connectionsRegistry)
