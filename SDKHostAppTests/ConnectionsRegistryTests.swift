@@ -91,4 +91,23 @@ class ConnectionsRegistryTests: XCTestCase {
         connectionsRegistry.update(with: enabledConnection, shouldNotify: true)
         wait(for: [expectation], timeout: 30.0)
     }
+    
+    func testRemoveAll() {
+        let enabledRegions = LocationTestHelpers.generateRegions(withStartCoordinate: LocationTestHelpers.IFTTTCenterCoordinate,
+                                                                     count: 10,
+                                                                     radius: 10)
+        let enabledConnections = enabledRegions.map { region -> Connection in
+            var triggersSet = Set<Trigger>()
+            triggersSet.insert(.location(region: region))
+            return LocationTestHelpers.generateConnection(with: .enabled, triggers: triggersSet)
+        }
+        
+        
+        let expectation = self.expectation(forNotification: .AllConnectionRemovedNotification, object: nil, handler: nil)
+        enabledConnections.forEach { connectionsRegistry.update(with: $0) }
+        connectionsRegistry.removeAll(shouldNotify: true)
+        wait(for: [expectation], timeout: 30.0)
+            
+        XCTAssertTrue(connectionsRegistry.getConnectionsCount() == 0, "The connections registry is not empty")
+    }
 }

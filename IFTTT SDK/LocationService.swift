@@ -8,8 +8,14 @@
 import Foundation
 import CoreLocation
 
+/// Desribes errors that are created by the network controllers in the SDK
+enum NetworkControllerError: Error {
+    /// The total retry attempts were exhausted.
+    case exhaustedRetryAttempts
+}
+
 /// Handles uploading analytics data to the network.
-final class RegionEventsNetworkController {
+class RegionEventsNetworkController {
     private let urlSession: URLSession
 
     /// Creates a `RegionEventsNetworkController`.
@@ -37,12 +43,14 @@ final class RegionEventsNetworkController {
     /// Sends an array of region events.
     ///
     /// - Parameters:
-    ///   - events: A `[AnalyticsEvent]` to send.
+    ///   - events: A `[RegionEvent]` to send.
     ///   - completionHandler: A `CompletionHandler` for providing a response of the data recieved from the request.
     ///   - errorHandler: A `ErrorHandler` for providing an error recieved from the request.
     /// - Returns: The `URLSessionDataTask` for the request.
     @discardableResult
-    func send(_ request: LocationService.Request, completionHandler: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) -> URLSessionDataTask {
+    open func send(_ events: [RegionEvent], using credentialProvider: ConnectionCredentialProvider, completionHandler: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) -> URLSessionDataTask {
+        let request = LocationService.Request.uploadEvents(events,
+                                                           credentialProvider: credentialProvider)
         return task(urlRequest: request.urlRequest, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
@@ -61,7 +69,7 @@ final class RegionEventsNetworkController {
             }
             
             guard let httpURLResponse = response as? HTTPURLResponse else {
-                completionHandler(true)
+                completionHandler(false)
                 return
             }
 
@@ -130,37 +138,146 @@ extension LocationService {
     }
 }
 
+/// Handles uploading region events to the backend. Handles retries and ensures that only one request is in flight at a single time.
+class RegionEventsSessionManager {
+    /// The network controller to use in uploading region events
+    private let networkController: RegionEventsNetworkController
+    /// The registry to use in getting region events
+    private let regionEventsRegistry: RegionEventsRegistry
+    /// A reference to the current upload network task.
+    private(set) var currentTask: URLSessionDataTask?
+
+    /// Creates an instance of `RegionEventsSessionManager`.
+    ///
+    /// - Parameters:
+    ///     - networkController: An instance of `RegionEventsNetworkController` used performing the upload of region events.
+    ///     - regionEventsRegistry: An instance of `RegionEventsRegistry`.
+    init(networkController: RegionEventsNetworkController,
+         regionEventsRegistry: RegionEventsRegistry) {
+        self.networkController = networkController
+        self.regionEventsRegistry = regionEventsRegistry
+    }
+    
+    /// Resets the session manager. Performs any cleanup work as necessary.
+    func reset() {
+        currentTask?.cancel()
+        currentTask = nil
+    }
+    
+    private func exponentialBackoffTiming(for retryCount: Int) -> DispatchTimeInterval {
+        let seconds = Int(pow(2, Double(retryCount)))
+        return .seconds(seconds)
+    }
+    
+    /// Uploads region events. Can handle multiple retry with exponential backoff timing.
+    ///
+    /// - Parameters:
+    ///     - events: The array of `RegionEvent` to upload
+    ///     - credentialProvider: A object conforming to `ConnectionCredentialProvider` to be used in making sure request is authenticated
+    ///     - numberOfRetries: The number of times to retry a request given a failed response.
+    ///     - retryCount: The total amount of retries that have occurred so far.
+    ///     - completion: The closure that's invoked after a successful response, an error response, or a failed response after `numberOfRetries` retry attempts.
+    func upload(events: [RegionEvent],
+                credentialProvider: ConnectionCredentialProvider,
+                numberOfRetries: Int = 3,
+                retryCount: Int = 0,
+                completion: @escaping (Bool, Error?) -> Void) {
+        currentTask?.cancel()
+        currentTask = nil
+        ConnectButtonController.synchronizationLog("Uploading region events: \(events)")
+        
+        let successClosure: VoidClosure = { [weak self] in
+            guard let self = self else { return }
+
+            ConnectButtonController.synchronizationLog("Successfully uploaded region events: \(events)")
+            self.regionEventsRegistry.remove(events)
+            self.currentTask = nil
+            completion(true, nil)
+        }
+        
+        let failureClosure: (Int, Int) -> Void = { [weak self] retryCount, numberOfRetries in
+            guard let self = self else { return }
+            
+            if retryCount < numberOfRetries {
+                let count = retryCount + 1
+                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events). Will retry \(numberOfRetries - retryCount) more times.")
+                DispatchQueue.main.asyncAfter(deadline: .now() + self.exponentialBackoffTiming(for: count)) {
+                    self.upload(events: events,
+                                credentialProvider: credentialProvider,
+                                numberOfRetries: numberOfRetries,
+                                retryCount: count,
+                                completion: completion)
+                }
+            } else {
+                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events) after \(retryCount) retry attempts. Will try again on the next synchronization.")
+                self.currentTask = nil
+                completion(false, NetworkControllerError.exhaustedRetryAttempts)
+            }
+        }
+        
+        currentTask = networkController.send(events, using: credentialProvider, completionHandler: { (success) in
+            if success {
+                successClosure()
+            } else {
+                failureClosure(retryCount, numberOfRetries)
+            }
+        }, errorHandler: { error in
+            if (error as NSError).code == NSURLErrorCancelled {
+                if retryCount == numberOfRetries {
+                    completion(false, nil)
+                }
+                return
+            }
+            
+            failureClosure(retryCount, numberOfRetries)
+        })
+        currentTask?.resume()
+    }
+}
+
+
 /// Helps with processing regions from connections and handles storing and uploading location event updates from the system to IFTTT.
 final class LocationService: NSObject, SynchronizationSubscriber {
     /// Used to monitor regions.
     private let regionsMonitor: RegionsMonitor
+    /// Stores region events that the regions monitor outputs
     private let regionEventsRegistry: RegionEventsRegistry
+    /// Stores the connections that are being monitored by the SDK
     private let connectionsRegistry: ConnectionsRegistry
-    private let networkController = RegionEventsNetworkController()
+    /// Handles uploading region events to the backend
+    private let sessionManager: RegionEventsSessionManager
+    /// The `EventPublisher<SynchronizationTriggerEvent>` that handles publishing synchronization events to listeners
     private let regionEventTriggerPublisher: EventPublisher<SynchronizationTriggerEvent>
-    
-    private var currentTask: URLSessionDataTask?
-    
-    private struct Constants {
-        /// According to the CoreLocationManager monitoring docs, the system can only monitor a total of 20 regions.
-        static let MaxCoreLocationManagerMonitoredRegionsCount = 20
+    /// Determines whether or not a 0.1 second delay should be applied before publishing synchronization events
+    private let applyDelayOnSyncTrigger: Bool
+        
+    struct Constants {
         static let SanityThreshold = 20
     }
     
     /// Creates an instance of `LocationService`.
     ///
     /// - Parameters:
-    ///     - allowsBackgroundLocationUpdates: Determines whether or not the location manager using in the service should allow for background location updates.
+    ///     - regionsMonitor: An instance of `RegionsMonitor` that allows for regions to be monitored.
+    ///     - regionEventsRegistry: An instance of `RegionEventsRegistry` that allows for the storage of region events.
+    ///     - connectionsRegistry: An instance of `ConnectionsRegistry` that determines which connections are currently being monitored by the SDK.
+    ///     - sessionManager: An instance of `RegionEventsSessionManager` that uploads region events to the backend.
+    ///     - eventPublisher: An instance of `EventPublisher<SynchronizationTriggerEvent>` that handles publishing sync events to listeners.
+    ///     - applyDelayOnSyncTrigger: Determines whether or not a 0.1 second delay should be applied to trigger syncs. Defaults to `true`.
     /// - Returns: An initialized instance of `LocationService`.
-    init(allowsBackgroundLocationUpdates: Bool,
+    init(regionsMonitor: RegionsMonitor,
          regionEventsRegistry: RegionEventsRegistry,
          connectionsRegistry: ConnectionsRegistry,
-         eventPublisher: EventPublisher<SynchronizationTriggerEvent>) {
-        self.regionsMonitor = RegionsMonitor(allowsBackgroundLocationUpdates: allowsBackgroundLocationUpdates)
+         sessionManager: RegionEventsSessionManager,
+         eventPublisher: EventPublisher<SynchronizationTriggerEvent>,
+         applyDelayOnSyncTrigger: Bool = true) {
+        self.regionsMonitor = regionsMonitor
         self.regionEventsRegistry = regionEventsRegistry
         self.connectionsRegistry = connectionsRegistry
+        self.sessionManager = sessionManager
         self.regionEventTriggerPublisher = eventPublisher
         
+        self.applyDelayOnSyncTrigger = applyDelayOnSyncTrigger
         super.init()
     }
     
@@ -177,10 +294,10 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             }
             return set
         }
-        regionsMonitor.updateRegions(regions)
+        regionsMonitor.updateRegions(Array(regions))
     }
     
-    private var state: RunState = .unknown
+    private(set) var state: RunState = .unknown
     
     func start() {
         if state == .running { return }
@@ -220,7 +337,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         let event = RegionEvent(kind: kind, triggerSubscriptionId: region.identifier)
         regionEventsRegistry.add(event)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        let closure = {
             let event = SynchronizationTriggerEvent(source: .regionsUpdate,
                                                     backgroundFetchCompletionHandler: nil)
             
@@ -229,6 +346,12 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             if let backgroundTaskIdentifier = backgroundTaskIdentifier, backgroundTaskIdentifier != UIBackgroundTaskIdentifier.invalid {
                 UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
             }
+        }
+
+        if applyDelayOnSyncTrigger {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: closure)
+        } else {
+            closure()
         }
     }
     
@@ -250,16 +373,11 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         }
         return hasLocationTriggers &&
             hasLocationEvents &&
-            credentialProvider.userToken != nil
+            isLoggedIn
     }
-    
-    private func exponentialBackoffTiming(for retryCount: Int) -> DispatchTimeInterval {
-        let seconds = Int(pow(2, Double(retryCount)))
-        return .seconds(seconds)
-    }
-    
+
     func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
-        if currentTask != nil {
+        if sessionManager.currentTask != nil {
             completion(false, nil)
             return
         }
@@ -271,9 +389,9 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             regionEventsRegistry.remove(existingRegionEvents)
             completion(false, nil)
         } else if existingRegionEvents.count > 0 {
-            performRequest(events: existingRegionEvents,
-                           credentialProvider: credentialProvider,
-                           completion: completion)
+            sessionManager.upload(events: existingRegionEvents,
+                                  credentialProvider: credentialProvider,
+                                  completion: completion)
         } else {
             completion(false, nil)
         }
@@ -287,54 +405,10 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         // Remove all registered events
         regionEventsRegistry.removeAll()
         
-        // Cancel and nil the current network request to update regions
-        currentTask?.cancel()
-        currentTask = nil
+        // Reet the session manager
+        sessionManager.reset()
         
         // Set the state to stopped
         state = .stopped
-    }
-    
-    private func performRequest(events: [RegionEvent],
-                                credentialProvider: ConnectionCredentialProvider,
-                                numberOfRetries: Int = 3,
-                                retryCount: Int = 0,
-                                completion: @escaping (Bool, Error?) -> Void) {
-        currentTask?.cancel()
-        currentTask = nil
-        ConnectButtonController.synchronizationLog("Uploading region events: \(events)")
-        currentTask = networkController.send(.uploadEvents(events, credentialProvider: credentialProvider), completionHandler: { [weak self] (success) in
-            if success {
-                ConnectButtonController.synchronizationLog("Successfully uploaded region events: \(events)")
-                self?.regionEventsRegistry.remove(events)
-            }
-            self?.currentTask = nil
-            completion(success, nil)
-        }, errorHandler: { [weak self] (error) in
-            guard let self = self else { return }
-            if (error as NSError).code == NSURLErrorCancelled {
-                if retryCount == numberOfRetries {
-                    completion(false, nil)
-                }
-                return
-            }
-            
-            if retryCount < numberOfRetries {
-                let count = retryCount + 1
-                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events). Will retry \(numberOfRetries - retryCount) more times.")
-                DispatchQueue.main.asyncAfter(deadline: .now() + self.exponentialBackoffTiming(for: count)) {
-                    self.performRequest(events: events,
-                                        credentialProvider: credentialProvider,
-                                        numberOfRetries: numberOfRetries,
-                                        retryCount: count,
-                                        completion: completion)
-                }
-            } else {
-                ConnectButtonController.synchronizationLog("Failed to upload region events: \(events) after \(retryCount) retry attempts. Will try again on the next synchronization.")
-                self.currentTask = nil
-                completion(false, error)
-            }
-        })
-        currentTask?.resume()
     }
 }

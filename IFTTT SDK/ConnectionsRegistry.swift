@@ -272,15 +272,7 @@ final class ConnectionsRegistry {
     
     /// Removes all connections from the registry
     ///
-    func removeAll(shouldNotify: Bool = true) {
-        var connectionsData = StorageHelpers.connections
-        connectionsData?.keys.forEach {
-            guard let val = connectionsData?[$0] as? JSON,
-                  var connectionStorage = Connection.ConnectionStorage(json: val) else { return }
-            connectionStorage.status = .disabled
-            connectionsData?[$0]? = connectionStorage.toJSON()
-        }
-        
+    func removeAll(shouldNotify: Bool = true) {       
         ConnectionsRegistryNotification.didUpdateConnections(.init())
         StorageHelpers.connections = nil
         

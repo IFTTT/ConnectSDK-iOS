@@ -10,12 +10,14 @@ import CoreLocation
 
 extension Connection.ConnectionStorage {
     var hasLocationTriggers: Bool {
-        return allTriggers.contains(where: {
+        let closure: (Trigger) -> Bool = {
             switch $0 {
             case .location:
                 return true
             }
-        })
+        }
+        
+        return allTriggers.contains(where: closure) || activeUserTriggers.contains(where: closure)
     }
     var locationRegions: [CLCircularRegion] {
         return activeUserTriggers.map { (trigger) -> CLCircularRegion in

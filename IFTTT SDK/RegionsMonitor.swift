@@ -8,13 +8,6 @@
 import Foundation
 import CoreLocation
 
-extension CLLocationCoordinate2D: Equatable {
-    public static func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
-        return lhs.latitude == rhs.latitude &&
-            lhs.longitude == rhs.longitude
-    }
-}
-
 /**
  Monitors a set of regions associated with the user's applets.
  Caps the number of regions monitored by the system to `Constants.MaxCoreLocationManagerMonitoredRegionsCount`.
@@ -25,11 +18,9 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     typealias RegionErrorEvent = (CLRegion?, Error) -> Void
     
     /// The manager used to monitor regions
-    private let locationManager = CLLocationManager()
-    /// The monitor used to monitor visits. Used if the number of regions we want to monitor is > 20.
-    private let visitsMonitor: VisitsMonitor
+    private let locationManager: CLLocationManager
     
-    private struct Constants {
+    struct Constants {
         /// According to the CoreLocationManager monitoring docs, the system can only monitor a total of 20 regions.
         static let MaxCoreLocationManagerMonitoredRegionsCount = 20
     }
@@ -44,31 +35,48 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     var monitoringDidFail: RegionErrorEvent?
     
     /// The list of all monitored regions. Updated by the `updateRegions` method.
-    private var allMonitoredRegions: Set<CLRegion>
+    private var allMonitoredRegions: [CLRegion]
+    
+    /// The list of the regions we're monitoring with the system. Updated by the `updateRegions` method.
+    private(set) var currentlyMonitoredRegions: Set<CLRegion>
     
     /// Creates an instance of `RegionsMonitor`.
-    init(allowsBackgroundLocationUpdates: Bool) {
+    ///
+    /// - Parameters:
+    ///     - locationManager: An instance of `CLLocationManager` to use in monitoring regions.
+    ///     - allowsBackgroundLocationUpdates: A flag that determines whether or not background location updates should be enabled on the location manager.
+    init(locationManager: CLLocationManager = CLLocationManager(),
+         allowsBackgroundLocationUpdates: Bool) {
+        self.locationManager = locationManager
         self.allMonitoredRegions = []
-        self.visitsMonitor = VisitsMonitor(allowsBackgroundLocationUpdates: allowsBackgroundLocationUpdates)
+        self.currentlyMonitoredRegions = .init()
 
         super.init()
-        locationManager.delegate = self
+        
+        self.locationManager.delegate = self
         if allowsBackgroundLocationUpdates {
-            locationManager.allowsBackgroundLocationUpdates = true
+            self.locationManager.allowsBackgroundLocationUpdates = true
         }
-        visitsMonitor.onVisit = { [weak self] visit in
-            guard let self = self else { return }
-            self.update(around: visit)
-        }
+        self.currentlyMonitoredRegions = locationManager.monitoredRegions
     }
     
-    /// Updates the regions that are monitored. Starts `significantLocationMonitor` if needed.
+    /// Updates the regions that are monitored. Starts core location's visits monitoring if needed.
     ///
     /// - Parameters:
     ///     - regions: The list of regions to monitor.
-    func updateRegions(_ regions: Set<CLRegion>) {
+    func updateRegions(_ regions: [CLRegion]) {
         self.allMonitoredRegions = regions
-        updateMonitoring(with: CLLocationManager.authorizationStatus())
+        if shouldStartVisitsMonitor() {
+            if type(of: locationManager).authorizationStatus() == .authorizedAlways {
+                locationManager.startMonitoringVisits()
+            } else {
+                locationManager.stopMonitoringVisits()
+            }
+        } else if type(of: locationManager).authorizationStatus() == .authorizedAlways {
+            register(regions: allMonitoredRegions)
+        } else {
+            locationManager.stopMonitoringVisits()
+        }
     }
     
     /// Determines whether or not significantLocationMonitoring needs to be started or not.
@@ -77,7 +85,6 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     ///
     /// - returns: A boolean value that determines whether or not we need to start significant location monitoring.
     private func shouldStartVisitsMonitor() -> Bool {
-        let currentlyMonitoredRegions = locationManager.monitoredRegions
         let monitoredRegionsSet = Set(allMonitoredRegions)
         
         let intersection = currentlyMonitoredRegions.intersection(monitoredRegionsSet)
@@ -88,51 +95,34 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     ///
     /// - Parameters:
     ///     - regions: The list of regions to monitor with the CLLocationManager.
-    private func register(regions: Set<CLRegion>) {
-        let monitoredRegions = locationManager.monitoredRegions
+    private func register(regions: [CLRegion]) {
+        let regionsToStopMonitoring = currentlyMonitoredRegions.subtracting(regions)
         
-        // Get the regions that match identifier, coordinate, and radius.
-        let closure: (Set<CLRegion>, CLRegion) -> Bool = { (allRegions, outerRegion) -> Bool in
-            return allRegions.contains { (innerRegion) -> Bool in
-                guard let innerCircularRegion = innerRegion as? CLCircularRegion,
-                      let outerCircularRegion = outerRegion as? CLCircularRegion else { return false }
-                return innerCircularRegion.identifier == outerCircularRegion.identifier
-                    && innerCircularRegion.center == outerCircularRegion.center
-                    && innerCircularRegion.radius == outerCircularRegion.radius
+        regionsToStopMonitoring.forEach { (region) in
+            if region.isIFTTTRegion {
+                locationManager.stopMonitoring(for: region)
             }
         }
         
-        // Go through the new regions we got passed in and start monitoring those regions if they're not being monitored
         regions.forEach { (region) in
-            let containsRegion = closure(monitoredRegions, region)
-            if !containsRegion && CLLocationManager.isMonitoringAvailable(for: type(of: region)) {
+            if CLLocationManager.isMonitoringAvailable(for: type(of: region)) && region.isIFTTTRegion {
                 locationManager.startMonitoring(for: region)
             }
         }
         
-        // Go through the currently monitored regions of the location manager and check what regions we don't need to monitor anymore. Only stop monitoring regions that aren't in the parameter set of regions
-        monitoredRegions.forEach { (region) in
-            if region.isIFTTTRegion && !regions.contains(region) {
-                locationManager.stopMonitoring(for: region)
-            }
-        }
+        self.currentlyMonitoredRegions = Set(regions)
     }
     
-    /// Updates the list of registered regions around the parameter location.
+    /// Updates the list of registered regions around the parameter visit.
     ///
     /// - Parameters:
-    ///     - location: The location to use in determining what regions get monitored. Only the 20 closest regions to this location get monitored.
+    ///     - visit: The visit to use in determining what regions get monitored. Only the 20 closest regions to this visit get monitored.
     private func update(around visit: CLVisit) {
-        let visitLocation = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude)
-        let regionsClosestToLocation = allMonitoredRegions.compactMap { $0 as? CLCircularRegion }
-            .sorted { (region1, region2) -> Bool in
-                let region1Location = CLLocation(latitude: region1.center.latitude, longitude: region1.center.longitude)
-                let region2Location = CLLocation(latitude: region2.center.latitude, longitude: region2.center.longitude)
-                return visitLocation.distance(from: region1Location) < visitLocation.distance(from: region2Location)
-            }
-        let topClosest = regionsClosestToLocation[..<Constants.MaxCoreLocationManagerMonitoredRegionsCount]
-
-        register(regions: Set(topClosest))
+        let coordinate = CLLocationCoordinate2D(latitude: visit.coordinate.latitude,
+                                                longitude: visit.coordinate.longitude)
+        let topClosest = allMonitoredRegions.closestRegions(to: coordinate,
+                                                            count: Constants.MaxCoreLocationManagerMonitoredRegionsCount)
+        register(regions: topClosest)
     }
     
     // MARK:- CoreLocationManagerDelegate
@@ -156,6 +146,10 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
         updateMonitoring(with: status)
     }
     
+    func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
+        update(around: visit)
+    }
+    
     // MARK:- LocationMonitor
     func stopMonitor() {
         allMonitoredRegions.forEach { (region) in
@@ -163,6 +157,12 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
                 locationManager.stopMonitoring(for: region)
             }
         }
+        
+        // Stop visits monitoring if necessary
+        locationManager.stopMonitoringVisits()
+        
+        // Clear out the currently monitored regions
+        currentlyMonitoredRegions = .init()
     }
     
     func startMonitor() {
@@ -170,25 +170,20 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     }
     
     func updateMonitoring(with status: CLAuthorizationStatus) {
-        if status == .authorizedAlways || status == .authorizedWhenInUse {
-            if shouldStartVisitsMonitor() {
-                visitsMonitor.startMonitor()
-            } else {
-                startMonitor()
+        if status == .authorizedAlways {
+            if shouldStartVisitsMonitor() && CLLocationManager.significantLocationChangeMonitoringAvailable() {
+                locationManager.startMonitoringSignificantLocationChanges()
             }
+            startMonitor()
         } else {
-            visitsMonitor.stopMonitor()
+            if CLLocationManager.significantLocationChangeMonitoringAvailable() {
+                locationManager.stopMonitoringSignificantLocationChanges()
+            }
             stopMonitor()
         }
     }
     
     func reset() {
-        // Update regions so nothing is being monitored
-        updateRegions(.init())
-        
-        // Stop visits monitoring if necessary
-        visitsMonitor.stopMonitor()
-        
         // Stop monitoring
         stopMonitor()
     }
