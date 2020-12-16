@@ -76,7 +76,7 @@ final class ConnectionsSynchronizer {
     private let subscribers: [SynchronizationSubscriber]
     private var scheduler: SynchronizationScheduler
     
-    private var state: RunState = .stopped
+    private var state: RunState = .unknown
     
     /// Private shared instance of connections synchronizer to use in starting/stopping synchronization
     private static var _shared: ConnectionsSynchronizer!
@@ -163,13 +163,14 @@ final class ConnectionsSynchronizer {
     
     /// Used to deactivate and stop synchronization.
     func deactivate() {
-        ConnectButtonController.synchronizationLog("Deactivated synchronization")
+        ConnectButtonController.synchronizationLog("Deactivating synchronization...")
         stop()
+        ConnectButtonController.synchronizationLog("Synchronization deactivated")
     }
     
     /// Call this to start the synchronization. Safe to be called multiple times.
     private func start() {
-        guard state == .stopped else { return }
+        if state == .running { return }
         
         setupNotifications()
         performPreflightChecks()
@@ -180,7 +181,7 @@ final class ConnectionsSynchronizer {
     
     /// Call this to stop the synchronization completely. Safe to be called multiple times.
     private func stop() {
-        guard state == .running else { return }
+        if state == .stopped { return }
         
         stopNotifications()
         Keychain.resetIfNecessary(force: true)
