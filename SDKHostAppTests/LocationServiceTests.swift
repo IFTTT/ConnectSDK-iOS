@@ -32,7 +32,7 @@ class LocationServiceTests: XCTestCase {
         super.setUp()
         
         locationManager = MockCoreLocationManager()
-        regionEventsController = MockRegionEventsController()
+        regionEventsController = MockRegionEventsController(urlSession: .regionEventsURLSession)
         regionsMonitor = RegionsMonitor(locationManager: locationManager, allowsBackgroundLocationUpdates: true)
         regionEventsRegistry = RegionEventsRegistry()
         eventPublisher = EventPublisher<SynchronizationTriggerEvent>(queue: .init(label: "event_publisher_region_events"))
@@ -360,22 +360,39 @@ class LocationServiceTests: XCTestCase {
     }
 }
 
-fileprivate class MockRegionEventsController: RegionEventsNetworkController {
+fileprivate class MockRegionEventsController: JSONNetworkController {
     var mockEvents: [RegionEvent] = []
     var mockPostError: Bool = false
     var mockSucceeded: Bool = true
 
     @discardableResult
-    override func send(_ events: [RegionEvent], using credentialProvider: ConnectionCredentialProvider, completionHandler: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) -> URLSessionDataTask {
+    override func json(urlRequest: URLRequest, completionHandler: JSONNetworkController.CompletionClosure?) -> URLSessionDataTask {
         if mockPostError {
-            errorHandler(NSError(domain: NSURLErrorDomain, code: 0, userInfo: nil))
+            completionHandler?(.failure(NSError(domain: NSURLErrorDomain, code: 0, userInfo: nil)))
         } else {
+            var response = HTTPURLResponse.mock(statusCode: 200)
             if mockSucceeded {
-                mockEvents.append(contentsOf: events)
+                if let body = urlRequest.httpBody,
+                   let json = try? JSONSerialization.jsonObject(with: body, options: .init()) as? [JSON] {
+                    let regionEvents = json.compactMap { RegionEvent(json: $0) }
+                    mockEvents.append(contentsOf: regionEvents)
+                }
+            } else {
+                response = HTTPURLResponse.mock(statusCode: 500)
             }
-            completionHandler(mockSucceeded)
+            
+            completionHandler?(.success(.init(httpURLResponse: response, data: .none)))
         }
         return URLSessionDataTaskMock(closure: nil)
+    }
+}
+
+extension HTTPURLResponse {
+    static func mock(statusCode: Int) -> HTTPURLResponse {
+        return HTTPURLResponse(url: URL(string: "https://www.ifttt.com")!,
+                               statusCode: statusCode,
+                               httpVersion: nil,
+                               headerFields: nil)!
     }
 }
 

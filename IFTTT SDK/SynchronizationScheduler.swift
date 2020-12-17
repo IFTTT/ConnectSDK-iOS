@@ -31,13 +31,15 @@ final class SynchronizationScheduler {
     
     /// The triggers to kick off synchronizations
     private let triggers: EventPublisher<SynchronizationTriggerEvent>
+    
+    /// A closure that gets invoked after an authentication failure in a sync task
+    var onAuthenticationFailure: VoidClosure?
 
     /// Creates a `SyncScheduler`
     ///
     /// - Parameters:
     ///   - syncManager: The `SyncManager` to use when scheduling a sync
     ///   - triggers: The publisher to use in publishing any possible events we might need to.
-    ///   - lifecycleSynchronizationOptions: The options to use in scheduling app lifecycle events.
     init(manager: SynchronizationManager,
          triggers: EventPublisher<SynchronizationTriggerEvent>) {
         self.manager = manager
@@ -117,8 +119,12 @@ final class SynchronizationScheduler {
         
         self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
             guard let self = self else { return }
-            self.manager.sync(source: triggerEvent.source,
-                              completion: triggerEvent.backgroundFetchCompletionHandler)
+            self.manager.sync(source: triggerEvent.source) { (result, authenticationFailure) in
+                if authenticationFailure {
+                    self.onAuthenticationFailure?()
+                }
+                triggerEvent.completionHandler?(result, authenticationFailure)
+            }
         }
     }
     
@@ -136,7 +142,11 @@ final class SynchronizationScheduler {
                 UIApplication.shared.applicationState != .background || shouldRunInBackground else {
                     return
             }
-            self.manager.sync(source: source, completion: nil)
+            self.manager.sync(source: source) { [weak self] _, authenticationFailure in
+                if authenticationFailure {
+                    self?.onAuthenticationFailure?()
+                }
+            }
         }
         return NotificationCenter.default.addObserver(forName: notificationName,
                                                       object: nil,
@@ -179,6 +189,14 @@ final class SynchronizationScheduler {
 extension SynchronizationScheduler {
     /// Schedules the background process for synchronizations with the system.
     private func scheduleBackgroundProcess() {
+        let credentialProvider = UserAuthenticatedRequestCredentialProvider.standard
+        let isLoggedIn = credentialProvider.userToken != nil
+        
+        if !isLoggedIn {
+            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: SynchronizationScheduler.BackgroundProcessIdentifier)
+            return
+        }
+        
         let request = BGProcessingTaskRequest(identifier: SynchronizationScheduler.BackgroundProcessIdentifier)
         // We need network connectivity so that we can fetch the user's connections
         request.requiresNetworkConnectivity = true
@@ -200,10 +218,13 @@ extension SynchronizationScheduler {
             guard let appProcessTask = task as? BGProcessingTask else { return }
 
             self?.scheduleBackgroundProcess()
-            self?.manager.sync(source: .internalBackgroundProcess) { (result) in
+            self?.manager.sync(source: .internalBackgroundProcess) { (result, authenticationFailure) in
                 let success = result != .failed
-                if success != false {
+                if !success {
                     ConnectButtonController.synchronizationLog("Synchronization resulted in a failed UIBackgroundFetch result")
+                }
+                if authenticationFailure {
+                    self?.onAuthenticationFailure?()
                 }
                 appProcessTask.setTaskCompleted(success: success)
             }

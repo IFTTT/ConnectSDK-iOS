@@ -8,53 +8,51 @@
 import Foundation
 
 /// A controller for handling making network request for `Connection`s.
-public final class ConnectionNetworkController {
-    
-    private let urlSession: URLSession
+public final class ConnectionNetworkController: JSONNetworkController {
     
     /// Creates a `ConnectionNetworkController`.
     public convenience init() {
         self.init(urlSession: .connectionURLSession)
     }
     
-    /// Creates a `ConnectionNetworkController`.
-    ///
-    /// - Parameter urlSession: A `URLSession` to make request on.
-    init(urlSession: URLSession) {
-        self.urlSession = urlSession
-    }
-    
     /// A structure encapsulating responses from the `Connection` activation service network requests.
-    public struct Response {
+    public struct Response: ResponseDescription {
         
-        /// The metadata associated with the response to network request.
-        public let urlResponse: URLResponse?
+        init(jsonResponse: JSONNetworkController.Response) {
+            if let applet = Connection.parseAppletsResponse(jsonResponse.data)?.first {
+                self.result = .success(applet)
+            } else {
+                self.result = .failure(.unknownResponse)
+            }
+            self.statusCode = jsonResponse.statusCode
+        }
+        
+        init(error: Error) {
+            self.statusCode = -1
+            self.result = .failure(.genericError(error))
+        }
         
         /// The network repsonse status code.
-        public let statusCode: Int?
+        public let statusCode: Int
         
         /// The `Result<Connection>` of the network request.
-        public let result: Result<Connection, ConnectionNetworkError>
+        public var result: Result<Connection, ConnectionNetworkError>
     }
     
     /// A handler that is used when a `Response` is recieved from a network request.
     ///
     /// - Parameter response: The `Response` object from the completed request.
-    public typealias CompletionHandler = (_ response: Response) -> Void
+    public typealias ConnectionResponseClosure = (_ response: Response) -> Void
     
-    /// Cancels any in-flight requests that were sent from this network controller
-    public func cancel() {
-        urlSession.invalidateAndCancel()
-    }
 
     /// Starts a task to fetch information about a `Connection`.
     ///
     /// - Parameters:
     ///   - request: A `Connection.Request` to complete the network request on.
-    ///   - completion: A `CompletionHandler` for providing a response of the data recieved from the request or an error that occured.
+    ///   - completion: A `ConnectionResponseClosure` for providing a response of the data recieved from the request or an error that occured.
     /// - Returns: The `URLSessionDataTask` for the request.
     @discardableResult
-    public func start(request: Connection.Request, completion: @escaping CompletionHandler) -> URLSessionDataTask {
+    public func start(request: Connection.Request, completion: @escaping ConnectionResponseClosure) -> URLSessionDataTask {
         return start(urlRequest: request.urlRequest, completion: completion)
     }
     
@@ -62,32 +60,24 @@ public final class ConnectionNetworkController {
     ///
     /// - Parameters:
     ///   - urlRequest: A `URLRequest` to complete the network request on.
-    ///   - completion: A `CompletionHandler` for providing a response of the data recieved from the request or an error that occured.
+    ///   - completion: A `ConnectionResponseClosure` for providing a response of the data recieved from the request or an error that occured.
     /// - Returns: The `URLSessionDataTask` for the request.
     @discardableResult
-    public func start(urlRequest: URLRequest, completion: @escaping CompletionHandler) -> URLSessionDataTask {
+    public func start(urlRequest: URLRequest, completion: @escaping ConnectionResponseClosure) -> URLSessionDataTask {
         let dataTask = task(urlRequest: urlRequest, completion: completion)
         dataTask.resume()
         return dataTask
     }
     
-    private func task(urlRequest: URLRequest, completion: @escaping CompletionHandler) -> URLSessionDataTask {
-        let handler = { (parser: Parser, response: HTTPURLResponse?, error: Error?) in
-            let statusCode = response?.statusCode
-            if let applet = Connection.parseAppletsResponse(parser)?.first {
-                completion(Response(urlResponse: response, statusCode: statusCode, result: .success(applet)))
-            } else {
-                let networkError: ConnectionNetworkError = {
-                    if let error = error {
-                        return .genericError(error)
-                    } else {
-                        return .unknownResponse
-                    }
-                }()
-                completion(Response(urlResponse: response, statusCode: statusCode, result: .failure(networkError)))
+    private func task(urlRequest: URLRequest, completion: @escaping ConnectionResponseClosure) -> URLSessionDataTask {
+        return json(urlRequest: urlRequest) { (result) in
+            switch result {
+            case .success(let jsonResponse):
+                completion(.init(jsonResponse: jsonResponse))
+            case .failure(let error):
+                completion(.init(error: error))
             }
         }
-        return urlSession.jsonTask(with: urlRequest, handler)
     }
     
     private enum APIConstants {
@@ -100,7 +90,7 @@ public final class ConnectionNetworkController {
     ///   - lookupMethod: Tells the controller how to identify the user’s IFTTT account.
     ///   - completion: A results of either the user or an error from looking up their IFTTT acount.
     /// - Returns: An optional `URLSessionDataTask` of the user fetching request.
-    func fetchUser(lookupMethod: User.LookupMethod, _ completion: @escaping (Result<User, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
+    func fetchUser(lookupMethod: User.LookupMethod, _ completion: @escaping (Result<User, NetworkControllerError>) -> Void) -> URLSessionDataTask? {
         return checkUser(user: lookupMethod) { result in
             DispatchQueue.main.async {
                 completion(result)
@@ -108,38 +98,39 @@ public final class ConnectionNetworkController {
         }
     }
     
-    private func checkUser(user: User.LookupMethod, _ completion: @escaping (Result<User, ConnectionNetworkError>) -> Void) -> URLSessionDataTask? {
+    private func checkUser(user: User.LookupMethod, _ completion: @escaping (Result<User, NetworkControllerError>) -> Void) -> URLSessionDataTask? {
         switch user {
         case .email(let email):
             guard let request = makeFindUserByEmailRequest(with: email) else {
                 return nil
             }
             
-            let dataTask = urlSession.jsonTask(with: request) { _, response, error in
-                let user = User(id: .email(email), isExistingUser: response?.statusCode == 204)
-                completion(.success(user))
-                
-            }
-            dataTask.resume()
-        
-            return dataTask
-        case .token(let token):
-            let dataTask = urlSession.jsonTask(with: makeFindUserByTokenRequest(with: token)) { parser, _, error in
-                guard let username = parser[APIConstants.userLoginKey].string else {
-                    if let networkError = error {
-                        completion(.failure(.genericError(networkError)))
-                    } else {
-                        completion(.failure(.unknownResponse))
-                    }
-                    return
+            return json(urlRequest: request) { (result) in
+                switch result {
+                case .success(let response):
+                    let user = User(id: .email(email), isExistingUser: response.statusCode == 204)
+                    completion(.success(user))
+                case .failure:
+                    let user = User(id: .email(email), isExistingUser: false)
+                    completion(.success(user))
                 }
-                
-                let user = User(id: .username(username), isExistingUser: true)
-                completion(.success(user))
             }
-            dataTask.resume()
-            
-            return dataTask
+        case .token(let token):
+            return json(urlRequest: makeFindUserByTokenRequest(with: token)) { (result) in
+                switch result {
+                case .success(let response):
+                    guard let username = response.data[APIConstants.userLoginKey].string else {
+                        completion(.failure(.unknownResponse))
+                        return
+                    }
+                    
+                    let user = User(id: .username(username), isExistingUser: true)
+                    completion(.success(user))
+                    
+                case .failure(let error):
+                    completion(.failure(.genericError(error)))
+                }
+            }
         }
     }
     

@@ -95,6 +95,7 @@
 		DEC29F1525841A5200BF56EE /* fetch_connection_response.json in Resources */ = {isa = PBXBuildFile; fileRef = FC1F491522710BE4008A1B21 /* fetch_connection_response.json */; };
 		DEC29F1F25841D7C00BF56EE /* IFTTT_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; };
 		DEC29F2025841D7C00BF56EE /* IFTTT_SDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FCBA15EA21389F7500EB1BC8 /* IFTTT_SDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DEC30C02258BECEB00A77A57 /* JSONNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC30C01258BECEB00A77A57 /* JSONNetworkController.swift */; };
 		DEC75CB42508312F00F40296 /* Connection+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB32508312F00F40296 /* Connection+Storage.swift */; };
 		DEC75CB725092B8600F40296 /* PermissionsRequestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */; };
 		DEC75CB9250973F600F40296 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CB8250973F600F40296 /* Library.swift */; };
@@ -244,6 +245,7 @@
 		DEC29EF0258419FC00BF56EE /* SDKHostAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKHostAppUITests.swift; sourceTree = "<group>"; };
 		DEC29EF2258419FC00BF56EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DEC29F1A25841A9400BF56EE /* SDKHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SDKHostApp.entitlements; sourceTree = "<group>"; };
+		DEC30C01258BECEB00A77A57 /* JSONNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONNetworkController.swift; sourceTree = "<group>"; };
 		DEC75CB32508312F00F40296 /* Connection+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Storage.swift"; sourceTree = "<group>"; };
 		DEC75CB625092B8600F40296 /* PermissionsRequestor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsRequestor.swift; sourceTree = "<group>"; };
 		DEC75CB8250973F600F40296 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
@@ -639,6 +641,7 @@
 				1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */,
 				FCF0C4E321B0A97000DEB117 /* ConnectionNetworkError.swift */,
 				DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */,
+				DEC30C01258BECEB00A77A57 /* JSONNetworkController.swift */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -883,6 +886,7 @@
 				DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */,
 				FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */,
 				DE328DBE243E18BB00603EAC /* Keychain.swift in Sources */,
+				DEC30C02258BECEB00A77A57 /* JSONNetworkController.swift in Sources */,
 				FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */,
 				DEC75CB42508312F00F40296 /* Connection+Storage.swift in Sources */,
 				FC361B61224D872D0078B153 /* ProgressBarController.swift in Sources */,

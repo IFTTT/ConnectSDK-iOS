@@ -96,7 +96,7 @@ final class ConnectionsSynchronizer {
         let permissionsRequestor = PermissionsRequestor(registry: connectionsRegistry)
         let eventPublisher = EventPublisher<SynchronizationTriggerEvent>(queue: DispatchQueue.global())
         let regionsMonitor = RegionsMonitor(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
-        let locationSessionManager = RegionEventsSessionManager(networkController: .init(),
+        let locationSessionManager = RegionEventsSessionManager(networkController: .init(urlSession: .regionEventsURLSession),
                                                                 regionEventsRegistry: regionEventsRegistry)
         
         let location = LocationService(regionsMonitor: regionsMonitor,
@@ -122,8 +122,11 @@ final class ConnectionsSynchronizer {
         
         let manager = SynchronizationManager(subscribers: subscribers)
         self.scheduler = SynchronizationScheduler(manager: manager,
-                                             triggers: eventPublisher)
-        
+                                                  triggers: eventPublisher)
+        self.scheduler.onAuthenticationFailure = { [weak self] in
+            self?.deactivate()
+            ConnectButtonController.authenticationFailureHandler?()
+        }
         setupRegistryNotifications()
         location.start()
     }
@@ -142,7 +145,7 @@ final class ConnectionsSynchronizer {
     ///     - isActivation: Is this forced synchronization due to connections being activated?
     func update(isActivation: Bool = false) {
         let source: SynchronizationSource = isActivation ? .connectionActivation: .forceUpdate
-        let event = SynchronizationTriggerEvent(source: source, backgroundFetchCompletionHandler: nil)
+        let event = SynchronizationTriggerEvent(source: source, completionHandler: nil)
         eventPublisher.onNext(event)
     }
     
@@ -234,17 +237,21 @@ final class ConnectionsSynchronizer {
     }
     
     func performFetchWithCompletionHandler(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
-        let event = SynchronizationTriggerEvent(source: .backgroundFetch, backgroundFetchCompletionHandler: backgroundFetchCompletion)
+        let event = SynchronizationTriggerEvent(source: .backgroundFetch) { (result, _) in
+            backgroundFetchCompletion?(result)
+        }
         eventPublisher.onNext(event)
     }
     
     func didReceiveSilentRemoteNotification(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
-        let event = SynchronizationTriggerEvent(source: .silentPushNotification, backgroundFetchCompletionHandler: backgroundFetchCompletion)
+        let event = SynchronizationTriggerEvent(source: .silentPushNotification) { (result, _) in
+            backgroundFetchCompletion?(result)
+        }
         eventPublisher.onNext(event)
     }
     
     func startBackgroundProcess(success: @escaping BoolClosure) {
-        let event = SynchronizationTriggerEvent(source: .externalBackgroundProcess) { (result) in
+        let event = SynchronizationTriggerEvent(source: .externalBackgroundProcess) { (result, _) in
             success(result != .failed)
         }
         eventPublisher.onNext(event)
