@@ -95,6 +95,11 @@ class ConnectionsMonitor: SynchronizationSubscriber {
     func start() { }
     
     func reset() {
+        let connectionsStoppedMonitoring = connectionsRegistry.getConnections()
+            .map { $0.id }
+            .joined(separator: ", ")
+            .description
+        ConnectButtonController.synchronizationLog("Deactivating synchronizations for connections: \(connectionsStoppedMonitoring)")
         connectionsRegistry.removeAll()
         operationQueue.operations.reversed().forEach { $0.cancel() }
     }

@@ -73,7 +73,7 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
                 locationManager.stopMonitoringVisits()
             }
         } else if type(of: locationManager).authorizationStatus() == .authorizedAlways {
-            register(regions: allMonitoredRegions)
+            startMonitor()
         } else {
             locationManager.stopMonitoringVisits()
         }
@@ -99,13 +99,14 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
         let regionsToStopMonitoring = currentlyMonitoredRegions.subtracting(regions)
         
         regionsToStopMonitoring.forEach { (region) in
-            if region.isIFTTTRegion {
-                locationManager.stopMonitoring(for: region)
-            }
+            locationManager.stopMonitoring(for: region)
+            ConnectButtonController.synchronizationLog("Did end monitoring for region: \(region)")
         }
         
         regions.forEach { (region) in
-            if CLLocationManager.isMonitoringAvailable(for: type(of: region)) && region.isIFTTTRegion {
+            if CLLocationManager.isMonitoringAvailable(for: type(of: region))
+                && region.isIFTTTRegion
+                && !currentlyMonitoredRegions.contains(region) {
                 locationManager.startMonitoring(for: region)
             }
         }
@@ -153,9 +154,8 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     // MARK:- LocationMonitor
     func stopMonitor() {
         allMonitoredRegions.forEach { (region) in
-            if CLLocationManager.isMonitoringAvailable(for: type(of: region)) {
-                locationManager.stopMonitoring(for: region)
-            }
+            locationManager.stopMonitoring(for: region)
+            ConnectButtonController.synchronizationLog("Did end monitoring for region: \(region)")
         }
         
         // Stop visits monitoring if necessary

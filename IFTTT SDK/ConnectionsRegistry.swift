@@ -251,19 +251,12 @@ final class ConnectionsRegistry {
     ///     - id: The connection id to remove from the registry.
     private func remove(_ ids: [String], shouldNotify: Bool) {
         var map = StorageHelpers.connections
-        ids.forEach {
-            guard let val = map?[$0] as? JSON,
-                  var connectionStorage = Connection.ConnectionStorage(json: val) else { return }
-            connectionStorage.status = .disabled
-            map?[$0]? = connectionStorage.toJSON()
-        }
+        ids.forEach { map?[$0] = nil }
+        StorageHelpers.connections = map
         
         if let map = map {
             ConnectionsRegistryNotification.didUpdateConnections(map.connections)
         }
-        
-        ids.forEach { map?[$0] = nil }
-        StorageHelpers.connections = map
         
         if shouldNotify {
             NotificationCenter.default.post(name: .ConnectionRemovedNotification, object: nil)
