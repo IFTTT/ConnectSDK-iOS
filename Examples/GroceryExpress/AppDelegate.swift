@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ConnectButtonController.synchronizationLoggingEnabled = true
         ConnectButtonController.analyticsEnabled = true
         ConnectButtonController.initialize(options: .init(enableSDKBackgroundProcess: true))
+        ConnectButtonController.activate(connections: [DisplayInformation.locationConnection.connectionId])
         return true
     }
     
