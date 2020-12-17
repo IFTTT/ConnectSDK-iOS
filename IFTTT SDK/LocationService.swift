@@ -8,80 +8,6 @@
 import Foundation
 import CoreLocation
 
-/// Desribes errors that are created by the network controllers in the SDK
-enum NetworkControllerError: Error {
-    /// The total retry attempts were exhausted.
-    case exhaustedRetryAttempts
-}
-
-/// Handles uploading analytics data to the network.
-class RegionEventsNetworkController {
-    private let urlSession: URLSession
-
-    /// Creates a `RegionEventsNetworkController`.
-    convenience init() {
-        self.init(urlSession: .regionEventsURLSession)
-    }
-
-    /// Creates a `RegionEventsNetworkController`.
-    ///
-    /// - Parameter urlSession: A `URLSession` to make request on.
-    init(urlSession: URLSession) {
-        self.urlSession = urlSession
-    }
-    
-    /// A handler that is used when response is recieved from a network request.
-    ///
-    /// - Parameter Bool: A boolean value that corresponds to whether or not the request should be retried.
-    typealias CompletionHandler = (Bool) -> Void
-    
-    /// A handler that is used when a error is recieved from a network request.
-    ///
-    /// - Parameter Error: The error resulting from the network request.
-    typealias ErrorHandler = (Error) -> Void
-
-    /// Sends an array of region events.
-    ///
-    /// - Parameters:
-    ///   - events: A `[RegionEvent]` to send.
-    ///   - completionHandler: A `CompletionHandler` for providing a response of the data recieved from the request.
-    ///   - errorHandler: A `ErrorHandler` for providing an error recieved from the request.
-    /// - Returns: The `URLSessionDataTask` for the request.
-    @discardableResult
-    open func send(_ events: [RegionEvent], using credentialProvider: ConnectionCredentialProvider, completionHandler: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) -> URLSessionDataTask {
-        let request = LocationService.Request.uploadEvents(events,
-                                                           credentialProvider: credentialProvider)
-        return task(urlRequest: request.urlRequest, completionHandler: completionHandler, errorHandler: errorHandler)
-    }
-
-    /// Returns an initialized `URLSessionDataTask`.
-    ///
-    /// - Parameters:
-    ///   - events: A `[AnalyticsEvent]` to send.
-    ///   - completionHandler: A `CompletionHandler` for providing a response of the data recieved from the request.
-    ///   - errorHandler: A `ErrorHandler` for providing an error recieved from the request.
-    /// - Returns: The `URLSessionDataTask` for the request.
-    private func task(urlRequest: URLRequest, completionHandler: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) -> URLSessionDataTask {
-        let handler = { (data: Data?, response: URLResponse?, error: Error?) in
-            if let error = error {
-                errorHandler(error)
-                return
-            }
-            
-            guard let httpURLResponse = response as? HTTPURLResponse else {
-                completionHandler(false)
-                return
-            }
-
-            // For 2xx response codes no retry is needed
-            // For 3xx, 4xx, 5xx response codes, a retry is needed
-            let isValidResponse = (200..<300).contains(httpURLResponse.statusCode)
-            completionHandler(isValidResponse)
-        }
-        return urlSession.dataTask(with: urlRequest, completionHandler: handler)
-    }
-}
-
 extension URLSession {
     /// The `URLSession` used to submit analytics data.
     static let regionEventsURLSession: URLSession =  {
@@ -141,7 +67,7 @@ extension LocationService {
 /// Handles uploading region events to the backend. Handles retries and ensures that only one request is in flight at a single time.
 class RegionEventsSessionManager {
     /// The network controller to use in uploading region events
-    private let networkController: RegionEventsNetworkController
+    private let networkController: JSONNetworkController
     /// The registry to use in getting region events
     private let regionEventsRegistry: RegionEventsRegistry
     /// A reference to the current upload network task.
@@ -150,9 +76,9 @@ class RegionEventsSessionManager {
     /// Creates an instance of `RegionEventsSessionManager`.
     ///
     /// - Parameters:
-    ///     - networkController: An instance of `RegionEventsNetworkController` used performing the upload of region events.
+    ///     - networkController: An instance of `JSONNetworkController` used performing the upload of region events.
     ///     - regionEventsRegistry: An instance of `RegionEventsRegistry`.
-    init(networkController: RegionEventsNetworkController,
+    init(networkController: JSONNetworkController,
          regionEventsRegistry: RegionEventsRegistry) {
         self.networkController = networkController
         self.regionEventsRegistry = regionEventsRegistry
@@ -186,15 +112,6 @@ class RegionEventsSessionManager {
         currentTask = nil
         ConnectButtonController.synchronizationLog("Uploading region events: \(events)")
         
-        let successClosure: VoidClosure = { [weak self] in
-            guard let self = self else { return }
-
-            ConnectButtonController.synchronizationLog("Successfully uploaded region events: \(events)")
-            self.regionEventsRegistry.remove(events)
-            self.currentTask = nil
-            completion(true, nil)
-        }
-        
         let failureClosure: (Int, Int) -> Void = { [weak self] retryCount, numberOfRetries in
             guard let self = self else { return }
             
@@ -215,26 +132,47 @@ class RegionEventsSessionManager {
             }
         }
         
-        currentTask = networkController.send(events, using: credentialProvider, completionHandler: { (success) in
-            if success {
-                successClosure()
+        let successClosure: (JSONNetworkController.Response) -> Void = { [weak self] response in
+            guard let self = self else { return }
+
+            self.currentTask = nil
+            
+            if response.isValidResponse {
+                ConnectButtonController.synchronizationLog("Successfully uploaded region events: \(events)")
+                self.regionEventsRegistry.remove(events)
+                completion(true, nil)
+            } else if response.isAuthenticationFailure {
+                ConnectButtonController.synchronizationLog("Region events: \(events) were not uploaded successfully. Ran into a authentication failure. Removing all region events.")
+                self.regionEventsRegistry.removeAll()
+                completion(false, NetworkControllerError.authenticationFailure)
             } else {
                 failureClosure(retryCount, numberOfRetries)
             }
-        }, errorHandler: { error in
-            if (error as NSError).code == NSURLErrorCancelled {
-                if retryCount == numberOfRetries {
-                    completion(false, nil)
+        }
+        
+        let request = LocationService.Request.uploadEvents(events, credentialProvider: credentialProvider)
+        currentTask = networkController.json(urlRequest: request.urlRequest, completionHandler: { (result) in
+            switch result {
+            case .success(let response):
+                successClosure(response)
+            case .failure(let error):
+                guard let networkControllerError = error as? NetworkControllerError else {
+                    failureClosure(retryCount, numberOfRetries)
+                    return
                 }
-                return
+                
+                if case .cancelled = networkControllerError {
+                    if retryCount == numberOfRetries {
+                        completion(false, nil)
+                    }
+                    return
+                }
+                failureClosure(retryCount, numberOfRetries)
             }
-            
-            failureClosure(retryCount, numberOfRetries)
         })
         currentTask?.resume()
     }
 }
-
 
 /// Helps with processing regions from connections and handles storing and uploading location event updates from the system to IFTTT.
 final class LocationService: NSObject, SynchronizationSubscriber {
@@ -339,7 +277,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         
         let closure = {
             let event = SynchronizationTriggerEvent(source: .regionsUpdate,
-                                                    backgroundFetchCompletionHandler: nil)
+                                                    completionHandler: nil)
             
             self.regionEventTriggerPublisher.onNext(event)
             

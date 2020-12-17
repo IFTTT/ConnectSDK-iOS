@@ -41,6 +41,9 @@ extension ConnectButtonController {
     /// If this closure is set, it will be called with the localization log statement instead of calling `print`. This handler will only be called if `localizationLoggingEnabled` is set to true
     public static var localizationLoggingHandler: ((String) -> Void)?
     
+    /// If this closure is set, it will be called after the synchronization is interrupted due to an authentication failure. This closure will be invoked after synchronization is deactivated.
+    public static var authenticationFailureHandler: (() -> Void)?
+    
     /// Initializes the SDK with options. This method should be called prior to calling any other static method on `ConnectButtonController`. It performs setup of the location component of the SDK. Call this method in `UIApplicationDelegate`'s `didFinishLaunchingWithOptions` or `willFinishLaunchingWithOptions`.
     ///
     /// This method will do the following:

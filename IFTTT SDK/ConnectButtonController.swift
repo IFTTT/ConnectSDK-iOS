@@ -686,7 +686,7 @@ public class ConnectButtonController {
                 }
 
             case .failure(let error):
-                self.transition(to: .failed(.networkError(error)))
+                self.transition(to: .failed(.networkError(.init(networkControllerError: error))))
             }
         }
         dataTask?.resume()

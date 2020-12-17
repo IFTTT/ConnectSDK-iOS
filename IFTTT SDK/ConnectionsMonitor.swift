@@ -76,6 +76,11 @@ class ConnectionsMonitor: SynchronizationSubscriber {
                                                  request: .fetchConnection(for: connection.id,
                                                                            credentialProvider: credentialProvider))
             { [weak self] (response) in
+                if response.isAuthenticationFailure {
+                    error = NetworkControllerError.authenticationFailure
+                    return
+                }
+                
                 switch response.result {
                 case .success(let connection):
                     self?.connectionsRegistry.update(with: connection, shouldNotify: false)
@@ -103,13 +108,13 @@ class ConnectionsMonitor: SynchronizationSubscriber {
 /// Defines a cancellable `Operation` subclass to allow for cancellable network requests.
 private class CancellableNetworkOperation: Operation {
     private var task: URLSessionDataTask? = nil
-    private let completion: ConnectionNetworkController.CompletionHandler
+    private let completion: ConnectionNetworkController.ConnectionResponseClosure
     private weak var networkController: ConnectionNetworkController?
     private let request: Connection.Request
 
     init(networkController: ConnectionNetworkController,
          request: Connection.Request,
-         _ completion: @escaping ConnectionNetworkController.CompletionHandler) {
+         _ completion: @escaping ConnectionNetworkController.ConnectionResponseClosure) {
         self.networkController = networkController
         self.request = request
         self.completion = completion

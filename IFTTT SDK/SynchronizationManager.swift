@@ -27,7 +27,7 @@ final class SynchronizationManager {
     /// A type that encodes information about a sync to perform
     struct SynchronizationRequest {
         let source: SynchronizationSource
-        let completion: ((UIBackgroundFetchResult) -> Void)?
+        let completion: ((UIBackgroundFetchResult, Bool) -> Void)?
     }
     
     /// Handles reachability state within the manager
@@ -44,9 +44,9 @@ final class SynchronizationManager {
     ///
     /// - Parameters:
     ///   - source: The `SynchronizationSource` that triggerered the synchronization.
-    ///   - completion: Called when this sync completes. Returns the background fetch result.
+    ///   - completion: Called when this sync completes. Returns the background fetch result and whether or not there was an authentication failure.
     func sync(source: SynchronizationSource,
-              completion: ((UIBackgroundFetchResult) -> Void)?) {
+              completion: ((UIBackgroundFetchResult, Bool) -> Void)?) {
         
         guard Thread.isMainThread else {
             DispatchQueue.main.async {
@@ -59,7 +59,7 @@ final class SynchronizationManager {
             // Generally it is bad practice to skip an API request because reachability fails
             // But since we are doing some operation in the background, let's just wait until we're sure the connection is active
             ConnectButtonController.synchronizationLog("Cancelling sync due to lack of network connectivity")
-            completion?(.failed)
+            completion?(.failed, false)
             return
         }
         
@@ -67,12 +67,19 @@ final class SynchronizationManager {
             let activeSubscribers = subscribers.filter { $0.shouldParticipateInSynchronization(source: source) }
             let task = Task(source: source, subscribers: activeSubscribers)
             
-            task.onComplete = { [weak self] result in
-                ConnectButtonController.synchronizationLog("Completed synchronization. Source: \(source)")
-                self?.currentTask = nil
-                completion?(result)
+            task.onComplete = { [weak self] result, authenticationFailure in
+                if authenticationFailure {
+                    ConnectButtonController.synchronizationLog("Synchronization interrupted due to authentication failure. Source: \(source)")
+                } else {
+                    ConnectButtonController.synchronizationLog("Completed synchronization. Source: \(source)")
+                }
                 
-                if let nextTask = self?.nextTask {
+                self?.currentTask = nil
+                completion?(result, authenticationFailure)
+                
+                if authenticationFailure {
+                    self?.nextTask = nil
+                } else if let nextTask = self?.nextTask {
                     self?.nextTask = nil
                     self?.sync(source: nextTask.source, completion: nextTask.completion)
                 }
@@ -123,7 +130,7 @@ extension SynchronizationManager {
         
         private var resultsBySubscriber: [String : UIBackgroundFetchResult] = [:]
         
-        fileprivate var onComplete: ((UIBackgroundFetchResult) -> Void)?
+        fileprivate var onComplete: ((UIBackgroundFetchResult, Bool) -> Void)?
         
         fileprivate init(source: SynchronizationSource, subscribers: [SynchronizationSubscriber]) {
             self.source = source
@@ -132,7 +139,7 @@ extension SynchronizationManager {
         
         fileprivate func start() {
             guard subscribers.isEmpty == false else {
-                onComplete?(.noData)
+                onComplete?(.noData, false)
                 return
             }
             
@@ -170,17 +177,27 @@ extension SynchronizationManager {
             let result: UIBackgroundFetchResult = error != nil ? .failed : (newData ? .newData : .noData)
             resultsBySubscriber[s.name] = result
 
-            if self.error == nil && error != nil { // Record the first error
+            var finishEarly = false
+            
+            // If error == NetworkController.authenticationFailure then we finish early out of the task and let the manager of the task know about the authenticationFailure so it can escalate that up.
+            // In this case, we'd also override `self.error` with NetworkController.authenticationFailure
+            if let _error = error,
+               let networkControllerError = _error as? NetworkControllerError,
+               case .authenticationFailure = networkControllerError {
+                self.error = error
+                finishEarly = true
+            } else if self.error == nil && error != nil {
                 self.error = error
             }
-            if resultsBySubscriber.count == subscribers.count {
+            
+            if resultsBySubscriber.count == subscribers.count || finishEarly {
                 finish()
             }
         }
         
         private func finish() {
             guard self.result == nil else {
-                onComplete?(.noData)
+                onComplete?(.noData, false)
                 if !source.isBackgroundProcess() {
                     if let identifier = identifier, identifier != UIBackgroundTaskIdentifier.invalid {
                         UIApplication.shared.endBackgroundTask(identifier)
@@ -197,7 +214,17 @@ extension SynchronizationManager {
             
             var result: UIBackgroundFetchResult = self.resultsBySubscriber.filter({ $0.value == .newData }).isEmpty ? .noData : .newData
             
-            if let _error = error {
+            let authenticationFailure: Bool = {
+                guard let _error = error,
+                   let networkControllerError = _error as? NetworkControllerError,
+                   case .authenticationFailure = networkControllerError else { return false }
+                return true
+            }()
+            
+            // If error == NetworkController.authenticationFailure then we let the manager of the task know about the authentication failure so it can escalate that up.
+            if authenticationFailure {
+                result = .failed
+            } else if let _error = error {
                 let error = _error as NSError
                 if error.code != -1001 { // Timeout isn't an error because we use a degenerating timeout
                     result = .failed
@@ -205,7 +232,7 @@ extension SynchronizationManager {
             }
             self.result = result
             
-            onComplete?(result)
+            onComplete?(result, authenticationFailure)
             
             if !source.isBackgroundProcess() {
                 if let identifier = identifier, identifier != UIBackgroundTaskIdentifier.invalid {
