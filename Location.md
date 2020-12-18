@@ -3,14 +3,13 @@ The IFTTT Connect SDK supports native geofencing for connections using the IFTTT
 
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 - [Dependencies](#dependencies)
-- [Setup](#setup)
+- [Prerequisites](#prerequisites)
 - [Usage](#usage)
 
 ## Dependencies
 - [CoreLocation geofence monitoring](https://developer.apple.com/documentation/corelocation/monitoring_the_user_s_proximity_to_geographic_regions)
 
-## Setup
-### Prerequisites
+## Prerequisites
 - To use this library, you should have a connection on your service on IFTTT that connects the IFTTT Location service. To learn more about creating connections, please visit [developer documentation](https://platform.ifttt.com/docs/connections). 
 - Add location background mode to your target's info.plist.<br> 
 Example:
@@ -27,6 +26,7 @@ Example:
   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   <key>NSLocationWhenInUseUsageDescription</key><string>Grocery Express needs your location to be able to update your Connections and run your applets with your location.</string>
   ```
+
 ## Usage
 
 ### Initialization
@@ -61,13 +61,16 @@ To setup synchronization, call `ConnectButtonController.setup(with:lifecycleSync
 To activate location monitoring and start synchronization, call `ConnectButtonController.activate(connections:)`. If the list of connection identifiers is known when activating the synchronization, pass this in to the method. This method can be called multiple times.
 
 ### Deactivation
-To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. If you would like to restart location monitoring and synchronization after calling `ConnectButtonController.deactivate()`, call `ConnectButtonController.activate(connections:)`. This method can be called multiple times.
+To deactivate location monitoring and stop synchronization completely, call `ConnectButtonController.deactivate()`. Calling this will deactivate all registered geofences and remove all connections that are being monitored by the SDK. If you would like to restart location monitoring and synchronization after calling `ConnectButtonController.deactivate()`, call `ConnectButtonController.activate(connections:)`. This method can be called multiple times.
 
 ### Manual updates
 To kick off a manual update of registered geofences and connection data, you can call `ConnectButtonController.update(with:)`.
 
 ### Logging
 To enable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = true`. To disable verbose logging, set `ConnectButtonController.synchronizationLoggingEnabled = false`. By default the logs get printed out using `NSLog`. If you'd like to supply your own logging handler, you may do so by setting a custom closure for `ConnectButtonController.synchnronizationLoggingHandler`. Setting this closure will not log any events using `NSLog`. If `ConnectButtonController.synchronizationLoggingEnabled = false` then neither the custom logging handler nor `NSLog` will be invoked to log events.
+
+### Handling authentication failures
+There exist cases in which the SDK can encounter an authentication failure. This could potentially happen due to a IFTTT user potentially getting deactivated or the token associated with the user being malformed. If you'd to get notifed of this failure and run any code, set a closure for the `ConnectButtonController.authenticationFailureHandler` property and it will get invoked after the SDK deactivates synchronization. It is the responsibility of the developer to perform SDK [setup](#Setup) and [activation](#Activation) after this occurs.
 
 ## Advanced
 ### Silent push notification support

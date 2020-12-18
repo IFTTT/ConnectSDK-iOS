@@ -213,9 +213,10 @@ final class ConnectionsRegistry {
             
             let activeUserTriggers: Set<Trigger> = shouldReplace ? connection.activeUserTriggers: _foundConnection.activeUserTriggers
             let allTriggers: Set<Trigger> = shouldReplace ? connection.allTriggers: _foundConnection.allTriggers
+            let status: Connection.Status = shouldReplace ? connection.status: _foundConnection.status
             
             modifiedConnection = .init(id: connection.id,
-                                       status: connection.status,
+                                       status: status,
                                        activeUserTriggers: activeUserTriggers,
                                        allTriggers: allTriggers)
         }
