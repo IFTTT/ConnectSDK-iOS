@@ -29,7 +29,7 @@ class ConnectionsRegistryTests: XCTestCase {
 
     func testGet() {
         // Since we reset the user defaults before every test, the registry should be empty.
-        assert(connectionsRegistry.getConnections().isEmpty)
+        XCTAssertTrue(connectionsRegistry.getConnections().isEmpty)
         
         let disabledConnection = Connection(id: "12345",
                                             name: "Test connection",
@@ -44,7 +44,9 @@ class ConnectionsRegistryTests: XCTestCase {
                                             activeUserTriggers: .init())
         
         connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
-        assert(connectionsRegistry.getConnections().isEmpty)
+        XCTAssertTrue(connectionsRegistry.getConnections().count == 1)
+        XCTAssertTrue(connectionsRegistry.getConnections().first?.id == "12345")
+        XCTAssertTrue(connectionsRegistry.getConnections().first?.status == .disabled)
         
         let enabledConnection = Connection(id: "12345",
                                            name: "Test connection",
@@ -59,7 +61,52 @@ class ConnectionsRegistryTests: XCTestCase {
                                            activeUserTriggers: .init())
         
         connectionsRegistry.update(with: enabledConnection, shouldNotify: false)
-        assert(connectionsRegistry.getConnections().count == 1)
+        XCTAssertTrue(connectionsRegistry.getConnections().count == 1)
+    }
+    
+    func testUpdateWithConnectionIds() {
+        let connectionIds = (0..<5).map { _ in return UUID().uuidString }
+        let expectation = self.expectation(forNotification: .ConnectionAddedNotification, object: nil, handler: nil)
+        connectionsRegistry.addConnections(with: connectionIds, shouldNotify: true)
+        wait(for: [expectation], timeout: 30.0)
+        
+        connectionsRegistry.getConnections().forEach { element in
+            XCTAssertTrue(connectionIds.contains(element.id))
+            XCTAssertEqual(element.status, .enabled)
+            XCTAssertTrue(element.activeUserTriggers.isEmpty)
+            XCTAssertTrue(element.allTriggers.isEmpty)
+        }
+        
+        let allStatuses: [Connection.Status] = [.disabled, .enabled, .initial, .unknown]
+        let statusMap = connectionIds.reduce([String: Connection.Status]()) { (map, id) -> [String: Connection.Status] in
+            var map = map
+            map[id] = allStatuses[Int.random(in: 0..<allStatuses.count)]
+            return map
+        }
+
+        var triggers = Set<Trigger>()
+        triggers.insert(.location(region: LocationTestHelpers.IFTTTCircularRegion))
+
+        let connectionsWithTriggers = connectionIds.map { id -> Connection in
+            return Connection(id: id,
+                              name: "Test connection",
+                              description: "Test connection description",
+                              status: statusMap[id]!,
+                              url: URL(string: "https://www.google.com")!,
+                              coverImages: [:],
+                              valuePropositionsParser: Parser(content: nil),
+                              features: [],
+                              services: [],
+                              primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
+                              activeUserTriggers: triggers)
+        }
+        
+        connectionsWithTriggers.forEach { connectionsRegistry.update(with: $0) }
+        connectionsWithTriggers.forEach { connection in
+            let expectedStatus = statusMap[connection.id]!
+            XCTAssertEqual(expectedStatus, connection.status)
+            XCTAssertEqual(connection.activeUserTriggers, triggers)
+        }
     }
     
     func testUpdate() {
@@ -77,11 +124,11 @@ class ConnectionsRegistryTests: XCTestCase {
         let disabledConnectionStorage = Connection.ConnectionStorage(connection: disabledConnection)
         
         connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
-        assert(!connectionsRegistry.getConnections().contains(disabledConnectionStorage))
+        XCTAssertTrue(connectionsRegistry.getConnections().contains(disabledConnectionStorage))
         
         disabledConnection.status = .enabled
         connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
-        assert(connectionsRegistry.getConnections().contains(disabledConnectionStorage))
+        XCTAssertTrue(connectionsRegistry.getConnections().contains(disabledConnectionStorage))
         
         let enabledConnection = Connection(id: "123456",
                                            name: "Test connection",
