@@ -74,8 +74,7 @@ final class SynchronizationScheduler {
         // Start monitoring the notifications related to Connection CRUD operations
         let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = [
             (.ConnectionUpdatedNotification, .connectionsUpdate, true),
-            (.ConnectionAddedNotification, .connectionAddition, true),
-            (.ConnectionRemovedNotification, .connectionRemoval, true)
+            (.ConnectionAddedNotification, .connectionAddition, true)
         ]
         
         self.sdkGeneratedNotificationCenterTokens = eventTuples.map {

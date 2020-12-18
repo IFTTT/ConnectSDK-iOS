@@ -134,9 +134,6 @@ extension NSNotification.Name {
     /// Notification that gets emitted whenever a new connection gets added to the registry.
     static let ConnectionAddedNotification = NSNotification.Name("ConnectionAddedNotification")
     
-    /// Notification that gets emitted whenever a connection gets removed from the registry.
-    static let ConnectionRemovedNotification = NSNotification.Name("ConnectionRemovedNotification")
-    
     /// Notification that gets emitted whenver all connections get removed from the registroy.
     static let AllConnectionRemovedNotification = NSNotification.Name("AllConnectionRemovedNotification")
 }
@@ -156,31 +153,17 @@ final class ConnectionsRegistry {
                                                                      status: .enabled,
                                                                      activeUserTriggers: .init(),
                                                                      allTriggers: .init()) }
-        add(storage, shouldNotify: shouldNotify)
+        add(storage, shouldReplace: false, shouldNotify: shouldNotify)
     }
-    
-    /// Removes the connection with identifier. Optionally notifies the `NotificationCenter` if specified.
-    ///
-    /// - Parameters:
-    ///     - identifier: The identifier of the connection to remove from the registry.
-    ///     - shouldNotify: A boolean that determines whether or not the default `NotificationCenter` should be notified of the update. Defaults to `true`.
-    func removeConnections(with identifiers: [String], shouldNotifiy: Bool = true) {
-        remove(identifiers, shouldNotify: shouldNotifiy)
-    }
-    
+
     /// Updates the registry with the parameter connection. Optionally notifies the `NotificationCenter` if specified.
     ///
     /// - Parameters:
     ///     - connection: The connection to update the registry with
     ///     - shouldNotify: A boolean that determines whether or not the default `NotificationCenter` should be notified of the update. Defaults to `true`.
     func update(with connection: Connection, shouldNotify: Bool = true) {
-        switch connection.status {
-        case .disabled, .initial, .unknown:
-            remove([connection.id], shouldNotify: shouldNotify)
-        case .enabled:
-            let storage = Connection.ConnectionStorage(connection: connection)
-            add([storage], shouldNotify: shouldNotify)
-        }
+        let storage = Connection.ConnectionStorage(connection: connection)
+        update(storage, shouldReplace: true, shouldNotify: shouldNotify)
     }
     
     /// Gets the connections stored in the registry.
@@ -203,11 +186,19 @@ final class ConnectionsRegistry {
     ///
     /// - Parameters:
     ///     - connection: The connection to add to the registry.
-    private func add(_ connections: [Connection.ConnectionStorage], shouldNotify: Bool) {
-        connections.forEach { add($0, shouldNotify: shouldNotify) }
+    ///     - shouldReplace: A boolean as to whether or not the parameter connections should be replaced without taking into account what's in the registry already.
+    ///     - shouldNotify: Determines whether or not a notification should get fired when the connection is added.
+    private func add(_ connections: [Connection.ConnectionStorage], shouldReplace: Bool, shouldNotify: Bool) {
+        connections.forEach { update($0, shouldReplace: shouldReplace, shouldNotify: shouldNotify) }
     }
     
-    private func add(_ connection: Connection.ConnectionStorage, shouldNotify: Bool) {
+    /// Updates connections in the registry.
+    ///
+    /// - Parameters:
+    ///     - connection: The connection to update the registry with.
+    ///     - shouldReplace: A boolean as to whether or not the parameter connections should be replaced without taking into account what's in the registry already.
+    ///     - shouldNotify: Determines whether or not a notification should get fired when the connection is added.
+    private func update(_ connection: Connection.ConnectionStorage, shouldReplace: Bool, shouldNotify: Bool) {
         var map = StorageHelpers.connections
         var modifiedConnection = connection
         
@@ -219,10 +210,14 @@ final class ConnectionsRegistry {
         
         if let _foundConnectionJSON = foundConnection as? JSON,
            let _foundConnection = Connection.ConnectionStorage(json: _foundConnectionJSON) {
+            
+            let activeUserTriggers: Set<Trigger> = shouldReplace ? connection.activeUserTriggers: _foundConnection.activeUserTriggers
+            let allTriggers: Set<Trigger> = shouldReplace ? connection.allTriggers: _foundConnection.allTriggers
+            
             modifiedConnection = .init(id: connection.id,
                                        status: connection.status,
-                                       activeUserTriggers: connection.activeUserTriggers.count > 0 ? connection.activeUserTriggers: _foundConnection.activeUserTriggers,
-                                       allTriggers: connection.allTriggers.count > 0 ? connection.allTriggers: _foundConnection.allTriggers)
+                                       activeUserTriggers: activeUserTriggers,
+                                       allTriggers: allTriggers)
         }
         
         let notificationName: Notification.Name = foundConnection != nil ? .ConnectionUpdatedNotification: .ConnectionAddedNotification
@@ -245,26 +240,10 @@ final class ConnectionsRegistry {
         }
     }
     
-    /// Removes a connection from the registry.
-    ///
-    /// - Parameters:
-    ///     - id: The connection id to remove from the registry.
-    private func remove(_ ids: [String], shouldNotify: Bool) {
-        var map = StorageHelpers.connections
-        ids.forEach { map?[$0] = nil }
-        StorageHelpers.connections = map
-        
-        if let map = map {
-            ConnectionsRegistryNotification.didUpdateConnections(map.connections)
-        }
-        
-        if shouldNotify {
-            NotificationCenter.default.post(name: .ConnectionRemovedNotification, object: nil)
-        }
-    }
-    
     /// Removes all connections from the registry
     ///
+    /// - Parameters:
+    ///     - shouldNotify: Determines whether or not a notification should get fired after all the connections are removed.
     func removeAll(shouldNotify: Bool = true) {       
         ConnectionsRegistryNotification.didUpdateConnections(.init())
         StorageHelpers.connections = nil
