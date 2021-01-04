@@ -41,7 +41,7 @@ final class AuthenticationSession {
     ///   - url: The url for an OAuth page
     ///   - callbackURLScheme: The URL scheme used in the redirect or nil. If passing nil, the scheme must be defined in the app's plist.
     ///   - completionHandler: Called when authentication finishes. Returns the Result.
-    @available(iOS, deprecated: 13, obsoleted: 12, message: "API is deprecated in iOS 13 and obsoleted in iOS 12")
+    @available(iOS, deprecated: 12, obsoleted: 13, message: "API is deprecated in iOS 12 and obsoleted in iOS 13")
     init(url: URL, callbackURLScheme: String? , completionHandler: @escaping (Result<URL, AuthenticationError>) -> Void) {
         let sessionCompletionHandler = { (url: URL?, error: Error?) -> Void in
             guard error == nil, let url = url else {
