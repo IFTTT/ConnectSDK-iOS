@@ -184,8 +184,6 @@ final class ConnectionsSynchronizer {
     
     /// Call this to stop the synchronization completely. Safe to be called multiple times.
     private func stop() {
-        if state == .stopped { return }
-        
         stopNotifications()
         Keychain.resetIfNecessary(force: true)
         scheduler.stop()
