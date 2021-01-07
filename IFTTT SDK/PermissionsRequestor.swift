@@ -24,7 +24,7 @@ final class PermissionsRequestor: SynchronizationSubscriber {
         self.registry = registry
     }
 
-    private func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
+    func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
         let operations = connections.reduce(.init()) { (currSet, connections) -> Set<Trigger> in
             return currSet.union(connections.allTriggers)
         }
