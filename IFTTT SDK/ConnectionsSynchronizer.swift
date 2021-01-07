@@ -106,7 +106,7 @@ final class ConnectionsSynchronizer {
                                        eventPublisher: eventPublisher)
         
         let connectionsMonitor = ConnectionsMonitor(connectionsRegistry: connectionsRegistry)
-        let nativeServicesCoordinator = NativeServicesCoordinator(locationService: location)
+        let nativeServicesCoordinator = NativeServicesCoordinator(locationService: location, permissionsRequestor: permissionsRequestor)
 
         self.subscribers = [
             connectionsMonitor,
@@ -184,8 +184,6 @@ final class ConnectionsSynchronizer {
     
     /// Call this to stop the synchronization completely. Safe to be called multiple times.
     private func stop() {
-        if state == .stopped { return }
-        
         stopNotifications()
         Keychain.resetIfNecessary(force: true)
         scheduler.stop()
@@ -265,15 +263,18 @@ final class ConnectionsSynchronizer {
 /// Handles coordination of native services with a set of connections
 private class NativeServicesCoordinator {
     private let locationService: LocationService
+    private let permissionsRequestor: PermissionsRequestor
     private let operationQueue: OperationQueue
     
-    init(locationService: LocationService) {
+    init(locationService: LocationService, permissionsRequestor: PermissionsRequestor) {
         self.locationService = locationService
+        self.permissionsRequestor = permissionsRequestor
         self.operationQueue = OperationQueue.main
     }
     
     func processConnectionUpdate(_ updates: Set<Connection.ConnectionStorage>) {
         operationQueue.addOperation {
+            self.permissionsRequestor.processUpdate(with: updates)
             self.locationService.updateRegions(from: updates)
         }
     }

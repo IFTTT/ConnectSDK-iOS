@@ -112,11 +112,19 @@ class ConnectionsMonitor: SynchronizationSubscriber {
 
 /// Defines a cancellable `Operation` subclass to allow for cancellable network requests.
 private class CancellableNetworkOperation: Operation {
+    /// The current in-flight network request
     private var task: URLSessionDataTask? = nil
+    
+    /// The completion closure to invoke once the request is completed
     private let completion: ConnectionNetworkController.ConnectionResponseClosure
+    
+    /// The network controller to perform requests with
     private weak var networkController: ConnectionNetworkController?
+    
+    /// The request to perform
     private let request: Connection.Request
 
+    /// Creates an instance of `CancellableNetworkOperation`.
     init(networkController: ConnectionNetworkController,
          request: Connection.Request,
          _ completion: @escaping ConnectionNetworkController.ConnectionResponseClosure) {
@@ -125,17 +133,83 @@ private class CancellableNetworkOperation: Operation {
         self.completion = completion
     }
     
+    /// State for this operation.
+    @objc private enum OperationState: Int {
+        case ready
+        case executing
+        case finished
+    }
+    
+    /// Concurrent queue for synchronizing access to `state`.
+    private let stateQueue = DispatchQueue(label: "com.ifttt.connections_monitor.rw.state", attributes: .concurrent)
+    
+    /// Private backing stored property for `state`.
+    private var _state: OperationState = .ready
+    
+    /// The state of the operation
+    @objc private dynamic var state: OperationState {
+        get {
+            return stateQueue.sync { _state }
+        }
+        set {
+            stateQueue.async(flags: .barrier) { self._state = newValue }
+        }
+    }
+    
+    override var isReady: Bool {
+        return state == .ready && super.isReady
+    }
+    
+    override var isExecuting: Bool {
+        return state == .executing
+    }
+    
+    override var isFinished: Bool {
+        return state == .finished
+    }
+    
+    override var isAsynchronous: Bool {
+        return true
+    }
+
+    open override class func keyPathsForValuesAffectingValue(forKey key: String) -> Set<String> {
+        let keys = ["isReady", "isFinished", "isExecuting"]
+        if keys.contains(key) {
+            return .init(arrayLiteral: #keyPath(state))
+        }
+        
+        return super.keyPathsForValuesAffectingValue(forKey: key)
+    }
+    
+    override func start() {
+        if isCancelled {
+            state = .finished
+            return
+        }
+        
+        state = .executing
+        
+        main()
+    }
+    
     override func main() {
-        task = networkController?.start(request: request, completion: { response in
+        task = networkController?.start(request: request, completion: { [weak self] response in
+            guard let self = self else { return }
             self.completion(response)
-            self.completionBlock?()
+            self.finish()
         })
         task?.resume()
     }
     
     override func cancel() {
-        super.cancel()
         task?.cancel()
+        finish()
     }
     
+    /// Call this method to finish the operation
+    private func finish() {
+        if !isFinished {
+            state = .finished
+        }
+    }
 }

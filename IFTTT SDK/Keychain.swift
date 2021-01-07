@@ -95,7 +95,7 @@ final class Keychain {
     }
     
     private class func reset() {
-        Key.AllCases().forEach {
+        Key.allCases.forEach {
             removeValue(for: $0)
         }
     }
