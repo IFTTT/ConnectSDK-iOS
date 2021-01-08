@@ -5,7 +5,7 @@
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreLocation
 
 /// Handles requesting device permissions

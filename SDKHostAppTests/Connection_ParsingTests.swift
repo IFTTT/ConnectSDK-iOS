@@ -13,7 +13,11 @@ class Connection_ParsingTests: XCTestCase {
     var connection: Connection!
     
     override func setUp() {
+        #if SWIFT_PACKAGE
+        let bundle = Bundle.module
+        #else
         let bundle = Bundle(for: Connection_ParsingTests.self)
+        #endif
         if let path = bundle.url(forResource: "fetch_connection_response",
                                  withExtension: "json"),
             let json = try? Data(contentsOf: path) {

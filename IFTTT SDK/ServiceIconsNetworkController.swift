@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// Implementation of `ImageViewNetworkController` to download service icons
 class ServiceIconsNetworkController: ImageViewNetworkController {

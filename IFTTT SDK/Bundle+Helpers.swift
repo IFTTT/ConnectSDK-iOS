@@ -16,7 +16,12 @@ extension Bundle {
      Defines the bundle for the SDK. The bundle for the app could be different from the bundle for the SDK which means that we might need to use the SDK bundle to get assets and other information.
      */
     static var sdk: Bundle {
+        #if SWIFT_PACKAGE
+        let connectButtonBundle = Bundle.module
+        #else
         let connectButtonBundle = Bundle(for: ConnectButton.self)
+        #endif
+
         guard let urlForBundle = connectButtonBundle.url(forResource: ResourceName, withExtension: BundleExtensionName),
             let bundle = Bundle(url: urlForBundle) else {
                 // If we're unable to generate the bundle indicated by `ResourceName`, fall back to returning the bundle for the `ConnectButton` instead.
@@ -30,7 +35,12 @@ extension Bundle {
     Defines the bundle for the localized strings for the SDK. The bundle for the app could be different from the bundle for the SDK which means that we might need to use the localized string bundle to get assets and other information.
     */
     static var localizedStrings: Bundle {
+        #if SWIFT_PACKAGE
+        let connectButtonBundle = Bundle.module
+        #else
         let connectButtonBundle = Bundle(for: ConnectButton.self)
+        #endif
+
         guard let urlForBundle = connectButtonBundle.url(forResource: LocalizedStringResourceName, withExtension: BundleExtensionName),
             let bundle = Bundle(url: urlForBundle) else {
                 // If we're unable to generate the bundle indicated by `ResourceName`, fall back to returning the bundle for the `ConnectButton` instead.

@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// A model holding links to portions of the connection handoff flow which happens on web or in the IFTTT app
 struct ConnectionHandoffFlow {
