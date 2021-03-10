@@ -19,6 +19,8 @@
 		DE01068022D54D5E00B2CB47 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */; };
 		DE3BF62E2576E1B300F12D24 /* UIView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */; };
 		DE3BF6312576E1DA00F12D24 /* UIImageView+NetworkLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */; };
+		DE717A5A25F7C5C4002A00C6 /* AddressUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE717A5925F7C5C4002A00C6 /* AddressUpdateViewController.swift */; };
+		DE717A5D25F7C9B7002A00C6 /* AddressSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE717A5C25F7C9B7002A00C6 /* AddressSelectionViewController.swift */; };
 		DE8839DD25769AB000D76161 /* DisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8839D925769A7B00D76161 /* DisplayViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +40,8 @@
 		DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Helpers.swift"; sourceTree = "<group>"; };
 		DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+NetworkLoading.swift"; sourceTree = "<group>"; };
+		DE717A5925F7C5C4002A00C6 /* AddressUpdateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressUpdateViewController.swift; sourceTree = "<group>"; };
+		DE717A5C25F7C9B7002A00C6 /* AddressSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressSelectionViewController.swift; sourceTree = "<group>"; };
 		DE7B730B22CAACD8000F4023 /* Grocery Express.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Grocery Express.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8839D925769A7B00D76161 /* DisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +83,8 @@
 				DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */,
 				DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */,
 				DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */,
+				DE717A5925F7C5C4002A00C6 /* AddressUpdateViewController.swift */,
+				DE717A5C25F7C9B7002A00C6 /* AddressSelectionViewController.swift */,
 			);
 			path = GroceryExpress;
 			sourceTree = "<group>";
@@ -224,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE717A5A25F7C5C4002A00C6 /* AddressUpdateViewController.swift in Sources */,
 				DE01067822D54D5E00B2CB47 /* ConnectionCredentials.swift in Sources */,
 				DE8839DD25769AB000D76161 /* DisplayViewController.swift in Sources */,
 				DE3BF6312576E1DA00F12D24 /* UIImageView+NetworkLoading.swift in Sources */,
@@ -231,6 +238,7 @@
 				DE01067D22D54D5E00B2CB47 /* Settings.swift in Sources */,
 				DE01067E22D54D5E00B2CB47 /* AppDelegate.swift in Sources */,
 				DE01067C22D54D5E00B2CB47 /* ConnectionViewController.swift in Sources */,
+				DE717A5D25F7C9B7002A00C6 /* AddressSelectionViewController.swift in Sources */,
 				DE3BF62E2576E1B300F12D24 /* UIView+Helpers.swift in Sources */,
 				DE01068022D54D5E00B2CB47 /* SettingsViewController.swift in Sources */,
 			);
@@ -384,7 +392,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ifttt.sdk.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "SDK Example Dev";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

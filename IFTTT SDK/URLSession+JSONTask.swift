@@ -8,7 +8,6 @@
 import Foundation
 
 extension URLSession {
-    
     static let connectionURLSession: URLSession =  {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpAdditionalHeaders = ["Accept" : "application/json"]

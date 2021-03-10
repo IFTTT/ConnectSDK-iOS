@@ -13,16 +13,19 @@ struct DisplayInformation {
     let hideOpaqueOverlay: Bool
     let headerImage: UIImage
     let subtitleText: String
+    let showLocationUpdateWithSkipConfig: Bool
     
     static let calendarConnection = DisplayInformation(connectionId: "fWj4fxYg",
                                                        hideOpaqueOverlay: true,
                                                        headerImage: #imageLiteral(resourceName: "calendar_connection_image"),
-                                                       subtitleText: "Delivered when you're at home")
+                                                       subtitleText: "Delivered when you're at home",
+                                                       showLocationUpdateWithSkipConfig: false)
     
     static let locationConnection = DisplayInformation(connectionId: "pWisyzm7",
                                                        hideOpaqueOverlay: false,
                                                        headerImage: #imageLiteral(resourceName: "location_connection_image"),
-                                                       subtitleText: "Delivered when you're at a location")
+                                                       subtitleText: "Delivered when you're at a location",
+                                                       showLocationUpdateWithSkipConfig: true)
 }
 
 class DisplayViewController: UIViewController {
