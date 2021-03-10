@@ -238,6 +238,12 @@ extension SynchronizationScheduler {
             guard let appProcessTask = task as? BGProcessingTask else { return }
 
             self?.scheduleBackgroundProcess()
+            
+            appProcessTask.expirationHandler = {
+               ConnectButtonController.synchronizationLog("Synchronization took too long, expiration handler invoked")
+               self?.manager.currentTask?.cancel()
+            }
+            
             self?.manager.sync(source: .internalBackgroundProcess) { (result, authenticationFailure) in
                 let success = result != .failed
                 if !success {
@@ -247,11 +253,6 @@ extension SynchronizationScheduler {
                     self?.onAuthenticationFailure?()
                 }
                 appProcessTask.setTaskCompleted(success: success)
-            }
-
-             appProcessTask.expirationHandler = {
-                ConnectButtonController.synchronizationLog("Synchronization took too long, expiration handler invoked")
-                self?.manager.currentTask?.cancel()
             }
         }
     }

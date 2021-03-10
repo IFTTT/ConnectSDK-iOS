@@ -136,10 +136,20 @@ extension ConnectButtonController {
         ConnectionsSynchronizer.shared.stopCurrentSynchronization()
     }
     
+    /// Call this method to toggle geofences on and off for the parameter connection id.
+    ///
+    /// - Parameters:
+    ///     - enabled: A boolean as to whether or not the geofences should be enabled or disabled.
+    ///     - connectionId: The id of the connection that the geofences should be enabled or disabled for.
     public static func setGeofencesEnabled(_ enabled: Bool, for connectionId: String) {
         ConnectionsSynchronizer.shared.setGeofencesEnabled(enabled, for: connectionId)
     }
     
+    /// Returns the enabled state for geofences for the parameter connection.
+    ///
+    /// - Parameters:
+    ///     - connectionId: The connection id to get the enabled status for.
+    /// - Returns: The enabled state for geofences for the given connection.
     public static func geofencesEnabled(for connectionId: String) -> Bool {
         return ConnectionsSynchronizer.shared.geofencesEnabled(for: connectionId)
     }
