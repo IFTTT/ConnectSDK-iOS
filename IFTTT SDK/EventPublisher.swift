@@ -10,8 +10,10 @@ import Foundation
 /// Defines an generic threadsafe publisher-subscriber construct allowing multiple subscribers to be
 /// notified of events from the publisher.
 final class EventPublisher<Type> {
+    /// A typealias to refer to the closure that's executed on each subscriber.
     typealias SubscriberClosure = (Type) -> Void
     
+    /// A typealias to refer to a subscriber.
     private typealias Subscriber = (TimeInterval, SubscriberClosure)
     
     /// The `DispatchQueue` used to publish events on.
@@ -20,14 +22,11 @@ final class EventPublisher<Type> {
     // Don't access this Dictionary directly outside of `addSubscriber(...)` or `removeSubscriber(...)`. Maps aren't threadsafe and therefore we can't use the subscripting directly.
     private var subscriberMap = [UUID: Subscriber]()
     
-    /// Used for ensuring that operations on the `subscriberMap` are threadsafe.
-    private let lock = NSLock()
-
     /// Creates an instance of `EventPublisher`.
     ///
     /// - Parameters:
     ///     - queue: The queue to use in notifying subscribers of any published events.
-    init(queue: DispatchQueue) {
+    init(queue: DispatchQueue = DispatchQueue(label: "com.ifttt.eventpublisher.lock", attributes: .concurrent)) {
         self.dispatchQueue = queue
     }
     
@@ -36,14 +35,11 @@ final class EventPublisher<Type> {
     /// - Parameter:
     ///     - object: The event that is to be delivered to subscribers.
     func onNext(_ object: Type) {
-        lock.lock(); defer { lock.unlock() }
-        /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
-        let sortedSubscriberMap = subscriberMap.values.sorted { $0.0 < $1.0 }.map { $1 }
-        
-        sortedSubscriberMap.forEach { closure in
-            dispatchQueue.async {
-                closure(object)
-            }
+        dispatchQueue.sync { [weak self] in
+            /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
+            self?.subscriberMap.values.sorted { $0.0 < $1.0 }
+                .map { $1 }
+                .forEach { $0(object) }
         }
     }
     
@@ -52,11 +48,13 @@ final class EventPublisher<Type> {
     /// - Parameters:
     ///     - subscriber: A closure that gets called when there's a new published event.
     /// - Returns: A `UUID` token that can be used to remove a subscriber using `removeSubscriber`.
+    @discardableResult
     func addSubscriber(_ subscriber: @escaping SubscriberClosure) -> UUID {
-        lock.lock(); defer { lock.unlock() }
-        let id = UUID()
-        subscriberMap[id] = (Date().timeIntervalSince1970, subscriber)
-        return id
+        return dispatchQueue.sync { [weak self] in
+            let id = UUID()
+            self?.subscriberMap[id] = (Date().timeIntervalSince1970, subscriber)
+            return id
+        }
     }
     
     /// Removes a subscriber from the subscriber map.
@@ -64,7 +62,8 @@ final class EventPublisher<Type> {
     /// - Parameters:
     ///     - identifier: The token corresponding to the subscriber that is to be removed.
     func removeSubscriber(_ identifier: UUID) {
-        lock.lock(); defer { lock.unlock() }
-        subscriberMap[identifier] = nil
+        dispatchQueue.sync { [weak self] in
+            self?.subscriberMap[identifier] = nil
+        }
     }
 }

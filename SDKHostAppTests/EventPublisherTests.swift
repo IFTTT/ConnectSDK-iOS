@@ -13,48 +13,32 @@ class EventPublisherTests: XCTestCase {
     var publisher: EventPublisher<Int>!
     
     override func setUp() {
-         publisher = EventPublisher<Int>(queue: .global())
-    }
-    
-    func testPublish() {
-        let expectations = (0..<10).map { return XCTestExpectation(description: "\($0)") }
-        
-        let _ = publisher.addSubscriber { value in
-            expectations[value].fulfill()
-        }
-        
-        (0..<10).forEach { publisher.onNext($0) }
-        wait(for: expectations, timeout: 20.0)
+         publisher = EventPublisher<Int>()
     }
 
     func testAddSubscriber() {
-        let firstExpectation = XCTestExpectation(description: "First")
-        let secondExpectation = XCTestExpectation(description: "Second")
-        let thirdExpectation = XCTestExpectation(description: "Third")
+        let expectationCount = 100
+        let expectations = (0..<expectationCount).map { return XCTestExpectation(description: "\($0)") }
         
-        // This is necessary so that each expectation can get fulfilled one at a time instead of multiple expectations getting fulfilled at the same time.
-        let fulfillDispatchQueue = DispatchQueue(label: "com.ifttt.ifttt_tests.fullfillQueue")
-        
-        let _ = publisher.addSubscriber { value in
-            fulfillDispatchQueue.sync {
-                firstExpectation.fulfill()
+        (0..<expectationCount).forEach { count in
+            publisher.addSubscriber { value in
+                expectations[count].fulfill()
             }
         }
-
-        let _ = publisher.addSubscriber { value in
-            fulfillDispatchQueue.sync {
-                secondExpectation.fulfill()
-            }
-        }
-        
-        let _ = publisher.addSubscriber { value in
-            fulfillDispatchQueue.sync {
-                thirdExpectation.fulfill()
-            }
-        }
-        
         publisher.onNext(1)
-        wait(for: [firstExpectation, secondExpectation, thirdExpectation], timeout: 20.0, enforceOrder: true)
+        wait(for: expectations, timeout: 20.0, enforceOrder: true)
+    }
+    
+    func testPublish() {
+        let expectationCount = 100
+        let expectations = (0..<expectationCount).map { return XCTestExpectation(description: "\($0)") }
+        
+        publisher.addSubscriber { value in
+            expectations[value].fulfill()
+        }
+        
+        (0..<expectationCount).forEach { publisher.onNext($0) }
+        wait(for: expectations, timeout: 20.0, enforceOrder: true)
     }
 
     func testRemoveSubscriber() {
