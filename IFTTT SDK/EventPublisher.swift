@@ -39,7 +39,11 @@ final class EventPublisher<Type> {
             /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
             self?.subscriberMap.values.sorted { $0.0 < $1.0 }
                 .map { $1 }
-                .forEach { $0(object) }
+                .forEach { closure in
+                    self?.dispatchQueue.async {
+                        closure(object)
+                    }
+                }
         }
     }
     
