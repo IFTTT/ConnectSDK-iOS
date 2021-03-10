@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias VoidClosure = () -> Void
+public typealias VoidClosure = () -> Void
 
 extension ConnectButton {
     

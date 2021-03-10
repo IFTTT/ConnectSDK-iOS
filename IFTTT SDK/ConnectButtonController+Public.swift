@@ -135,4 +135,16 @@ extension ConnectButtonController {
     public static func stopCurrentSynchronization() {
         ConnectionsSynchronizer.shared().stopCurrentSynchronization()
     }
+    
+    /// Allows for a closure to be executed when the OS starts a background process set up by the SDK.
+    ///
+    /// The `launchHandler` parameter will get run on a background thread. `expirationHandler` gets called by the system right before the amount of allotted time for the background process is zero. Use the `expirationHandler` to perform any cleanup of resources used or allocated in `launchHandler`. `expirationHandler` will be executed on the same background thread as `launchHandler`.
+    ///
+    /// - Parameters:
+    ///     - launchHandler: A closure to execute when the OS starts a background process set up by the SDK.
+    ///     - expirationHandler: A closure to execute when the allotted time for the background process is zero.
+    public static func setBackgroundProcessClosures(launchHandler: VoidClosure?, expirationHandler: VoidClosure?) {
+        ConnectionsSynchronizer.shared().setDeveloperBackgroundProcessClosures(launchHandler: launchHandler,
+                                                                               expirationHandler: expirationHandler)
+    }
 }

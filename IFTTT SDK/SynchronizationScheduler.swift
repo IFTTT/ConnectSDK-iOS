@@ -35,6 +35,15 @@ final class SynchronizationScheduler {
     /// A closure that gets invoked after an authentication failure in a sync task
     var onAuthenticationFailure: VoidClosure?
 
+    /// A `DispatchQueue` to use in executing `developerBackgroundProcessClosure`.
+    private let developerBackgroundProcessDispatchQueue = DispatchQueue(label: "com.ifttt.backgroundprocess.developer_closure")
+    
+    /// A closure that's passed in by the developer to execute when a background process handler gets called.
+    var developerBackgroundProcessLaunchClosure: VoidClosure?
+    
+    /// A closure that's called when expiration of the background process occurs. This is supplied by the developer.
+    var developerBackgroundProcessExpirationClosure: VoidClosure?
+
     /// Creates a `SyncScheduler`
     ///
     /// - Parameters:
@@ -236,8 +245,22 @@ extension SynchronizationScheduler {
     private func registerBackgroundProcess() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: SynchronizationScheduler.BackgroundProcessIdentifier, using: nil) { [weak self] (task) in
             guard let appProcessTask = task as? BGProcessingTask else { return }
-
+            
             self?.scheduleBackgroundProcess()
+            appProcessTask.expirationHandler = {
+                self?.developerBackgroundProcessDispatchQueue.async {
+                    self?.developerBackgroundProcessExpirationClosure?()
+                }
+                
+                ConnectButtonController.synchronizationLog("Synchronization took too long, expiration handler invoked")
+                self?.manager.currentTask?.cancel()
+                appProcessTask.setTaskCompleted(success: true)
+            }
+            
+            self?.developerBackgroundProcessDispatchQueue.async {
+                self?.developerBackgroundProcessLaunchClosure?()
+            }
+            
             self?.manager.sync(source: .internalBackgroundProcess) { (result, authenticationFailure) in
                 let success = result != .failed
                 if !success {
@@ -247,11 +270,6 @@ extension SynchronizationScheduler {
                     self?.onAuthenticationFailure?()
                 }
                 appProcessTask.setTaskCompleted(success: success)
-            }
-
-             appProcessTask.expirationHandler = {
-                ConnectButtonController.synchronizationLog("Synchronization took too long, expiration handler invoked")
-                self?.manager.currentTask?.cancel()
             }
         }
     }

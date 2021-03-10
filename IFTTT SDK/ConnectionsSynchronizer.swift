@@ -270,6 +270,11 @@ final class ConnectionsSynchronizer {
     func stopCurrentSynchronization() {
         scheduler.stopCurrentSynchronization()
     }
+    
+    func setDeveloperBackgroundProcessClosures(launchHandler: VoidClosure?, expirationHandler: VoidClosure?) {
+        scheduler.developerBackgroundProcessLaunchClosure = launchHandler
+        scheduler.developerBackgroundProcessExpirationClosure = expirationHandler
+    }
 }
 
 /// Handles coordination of native services with a set of connections
