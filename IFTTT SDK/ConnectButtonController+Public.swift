@@ -13,6 +13,9 @@ public struct InitializerOptions {
     /// Enables the SDK to handle registering and running a background process to periodically run synchronizations.
     public let enableSDKBackgroundProcess: Bool
     
+    /// Flag that determines whether or not permissions prompts should be shown in the flow.
+    public let showPermissionsPrompts: Bool
+    
     /// The standard initializer options.
     ///
     /// This does the following:
@@ -23,8 +26,10 @@ public struct InitializerOptions {
     ///
     /// - Parameters:
     ///     - enableSDKBackgroundProcess: A `Bool` that allows the SDK to enable background processes. Defaults to `false`. If you'd like the SDK to manage a background process for you, set this to `true`.
-    public init(enableSDKBackgroundProcess: Bool = false) {
+    ///     - showPermissionsPrompts: A `Bool` that determines whether or not the SDK should show permissions prompts. Defaults to `false`. If you'd like the SDK to show permissions prompts for you, set this to `true`.
+    public init(enableSDKBackgroundProcess: Bool = false, showPermissionsPrompts: Bool = false) {
         self.enableSDKBackgroundProcess = enableSDKBackgroundProcess
+        self.showPermissionsPrompts = showPermissionsPrompts
     }
 }
 
@@ -56,8 +61,12 @@ extension ConnectButtonController {
     public static func initialize(options: InitializerOptions = .standard) {
         let sharedSynchronizer = ConnectionsSynchronizer.shared()
         
+        sharedSynchronizer.setShowPermissionsPrompts(options.showPermissionsPrompts)
+        
         if options.enableSDKBackgroundProcess {
             sharedSynchronizer.setupBackgroundProcess()
+        } else {
+            sharedSynchronizer.teardownBackgroundProcess()
         }
     }
     

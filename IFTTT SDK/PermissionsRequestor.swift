@@ -9,7 +9,9 @@ import Foundation
 import CoreLocation
 
 /// Handles requesting device permissions
-final class PermissionsRequestor: SynchronizationSubscriber {
+final class PermissionsRequestor {
+    var showPermissionsPrompts = true
+    
     private let locationManager = CLLocationManager()
     
     private let queue: OperationQueue = {
@@ -25,6 +27,8 @@ final class PermissionsRequestor: SynchronizationSubscriber {
     }
 
     func processUpdate(with connections: Set<Connection.ConnectionStorage>) {
+        if !canUpdate() { return }
+        
         let operations = connections.reduce(.init()) { (currSet, connections) -> Set<Trigger> in
             return currSet.union(connections.allTriggers)
         }
@@ -38,22 +42,12 @@ final class PermissionsRequestor: SynchronizationSubscriber {
         queue.addOperations(operations, waitUntilFinished: false)
     }
     
-    var name: String = "PermissionsRequestor"
-    
-    func shouldParticipateInSynchronization(source: SynchronizationSource) -> Bool {
+    private func canUpdate() -> Bool {
         return !registry.getConnections().isEmpty
             && UserAuthenticatedRequestCredentialProvider.standard.userToken != nil
             && UIApplication.shared.applicationState == .active
+            && showPermissionsPrompts
     }
-    
-    func performSynchronization(completion: @escaping (Bool, Error?) -> Void) {
-        processUpdate(with: registry.getConnections())
-        completion(true, nil)
-    }
-    
-    func start() { }
-    
-    func reset() { }
 }
 
 private extension BlockOperation {
