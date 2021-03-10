@@ -8,11 +8,29 @@
 import Foundation
 
 extension Connection {
+    enum NativeServiceDescription: String, CaseIterable {
+        case location
+    }
+    
     struct ConnectionStorage: Hashable {
         let id: String
         var status: Status
         let activeUserTriggers: Set<Trigger>
         let allTriggers: Set<Trigger>
+        
+        var enabledNativeServiceMap: [NativeServiceDescription: Bool]
+        
+        init(id: String,
+             status: Status,
+             activeUserTriggers: Set<Trigger>,
+             allTriggers: Set<Trigger>,
+             enabledNativeServiceMap: [NativeServiceDescription: Bool]) {
+            self.id = id
+            self.status = status
+            self.activeUserTriggers = activeUserTriggers
+            self.allTriggers = allTriggers
+            self.enabledNativeServiceMap = enabledNativeServiceMap
+        }
         
         init(id: String,
              status: Status,
@@ -22,6 +40,9 @@ extension Connection {
             self.status = status
             self.activeUserTriggers = activeUserTriggers
             self.allTriggers = allTriggers
+            self.enabledNativeServiceMap = NativeServiceDescription.allCases.reduce(into: [:], { (dict, description) in
+                dict[description] = true
+            })
         }
         
         func hash(into hasher: inout Hasher) {

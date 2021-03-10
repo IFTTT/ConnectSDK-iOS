@@ -26,6 +26,7 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var skipConfigSwitch: UISwitch!
     @IBOutlet weak var newUserSwitch: UISwitch!
+    @IBOutlet weak var geofenceEnabledSwitch: UISwitch!
     @IBOutlet weak var fetchConnectionSwitch: UISwitch!
     @IBOutlet weak var loginView: UIStackView!
     @IBOutlet weak var logoutView: UIStackView!
@@ -47,6 +48,10 @@ class SettingsViewController: UIViewController {
     }
     @IBAction func newUserChanged(_ sender: Any) {
         settings.forcesNewUserFlow = newUserSwitch.isOn
+    }
+    @IBAction func geoFencesEnabledChanged(_ sender: Any) {
+        settings.geofenceEnabled = fetchConnectionSwitch.isOn
+        ConnectButtonController.setGeofencesEnabled(geofenceEnabledSwitch.isOn, for: DisplayInformation.locationConnection.connectionId)
     }
     @IBAction func fetchConnectionChanged(_ sender: Any) {
         settings.fetchConnectionFlow = fetchConnectionSwitch.isOn
@@ -82,6 +87,9 @@ class SettingsViewController: UIViewController {
             newUserSwitch.isOn = false
             newUserSwitch.isEnabled = false
             
+            geofenceEnabledSwitch.isOn = false
+            geofenceEnabledSwitch.isEnabled = false
+            
             fetchConnectionSwitch.isOn = settings.fetchConnectionFlow
             fetchConnectionSwitch.isEnabled = true
             
@@ -97,6 +105,9 @@ class SettingsViewController: UIViewController {
             
             fetchConnectionSwitch.isOn = settings.fetchConnectionFlow
             fetchConnectionSwitch.isEnabled = true
+            
+            geofenceEnabledSwitch.isOn = settings.geofenceEnabled
+            geofenceEnabledSwitch.isEnabled = true
             
             loginView.isHidden = false
             logoutView.isHidden = true
