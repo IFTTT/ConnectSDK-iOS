@@ -274,6 +274,10 @@ final class ConnectionsSynchronizer {
     func setGeofencesEnabled(_ enabled: Bool, for connectionId: String) {
         registry.updateConnectionGeofencesEnabled(enabled, connectionId: connectionId)
     }
+    
+    func geofencesEnabled(for connectionId: String) -> Bool {
+        return registry.geofencesEnabled(connectionId: connectionId)
+    }
 }
 
 /// Handles coordination of native services with a set of connections

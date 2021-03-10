@@ -264,7 +264,7 @@ final class ConnectionsRegistry {
         func updateConnectionNativeServiceMap(_ connection: Connection.ConnectionStorage) {
             var _connection = connection
             _connection.enabledNativeServiceMap[.location] = enabled
-            update(_connection, shouldReplace: true, shouldNotify: true)
+            update(_connection, shouldReplace: true, shouldNotify: false)
         }
         
         // Try to get the connection and update the enabledNativeServiceMap
@@ -280,5 +280,10 @@ final class ConnectionsRegistry {
                 updateConnectionNativeServiceMap(connection)
             }
         }
+    }
+    
+    func geofencesEnabled(connectionId: String) -> Bool {
+        guard let connection = getConnection(with: connectionId) else { return false }
+        return connection.enabledNativeServiceMap[.location] ?? false
     }
 }

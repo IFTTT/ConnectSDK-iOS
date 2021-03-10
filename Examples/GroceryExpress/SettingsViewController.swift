@@ -50,7 +50,6 @@ class SettingsViewController: UIViewController {
         settings.forcesNewUserFlow = newUserSwitch.isOn
     }
     @IBAction func geoFencesEnabledChanged(_ sender: Any) {
-        settings.geofenceEnabled = fetchConnectionSwitch.isOn
         ConnectButtonController.setGeofencesEnabled(geofenceEnabledSwitch.isOn, for: DisplayInformation.locationConnection.connectionId)
     }
     @IBAction func fetchConnectionChanged(_ sender: Any) {
@@ -87,11 +86,11 @@ class SettingsViewController: UIViewController {
             newUserSwitch.isOn = false
             newUserSwitch.isEnabled = false
             
-            geofenceEnabledSwitch.isOn = false
-            geofenceEnabledSwitch.isEnabled = false
-            
             fetchConnectionSwitch.isOn = settings.fetchConnectionFlow
             fetchConnectionSwitch.isEnabled = true
+            
+            geofenceEnabledSwitch.isOn = ConnectButtonController.geofencesEnabled(for: DisplayInformation.locationConnection.connectionId)
+            geofenceEnabledSwitch.isEnabled = true
             
             loginView.isHidden = true
             logoutView.isHidden = false
@@ -106,8 +105,8 @@ class SettingsViewController: UIViewController {
             fetchConnectionSwitch.isOn = settings.fetchConnectionFlow
             fetchConnectionSwitch.isEnabled = true
             
-            geofenceEnabledSwitch.isOn = settings.geofenceEnabled
-            geofenceEnabledSwitch.isEnabled = true
+            geofenceEnabledSwitch.isOn = false
+            geofenceEnabledSwitch.isEnabled = false
             
             loginView.isHidden = false
             logoutView.isHidden = true

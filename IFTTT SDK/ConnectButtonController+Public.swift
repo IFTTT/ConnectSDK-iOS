@@ -139,4 +139,8 @@ extension ConnectButtonController {
     public static func setGeofencesEnabled(_ enabled: Bool, for connectionId: String) {
         ConnectionsSynchronizer.shared.setGeofencesEnabled(enabled, for: connectionId)
     }
+    
+    public static func geofencesEnabled(for connectionId: String) -> Bool {
+        return ConnectionsSynchronizer.shared.geofencesEnabled(for: connectionId)
+    }
 }
