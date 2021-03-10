@@ -100,9 +100,7 @@ final class SynchronizationScheduler {
         sdkGeneratedNotificationCenterTokens = []
         
         // Cancel background tasks associated with the SDK
-        if #available(iOS 13.0, *) {
-            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: SynchronizationScheduler.BackgroundProcessIdentifier)
-        }
+        cancelBackgroundProcess()
         
         if let subscriberToken = subscriberToken {
             triggers.removeSubscriber(subscriberToken)
@@ -158,13 +156,36 @@ final class SynchronizationScheduler {
         manager.currentTask?.cancel()
     }
     
+    private func canUseBackgroundProcesses() -> Bool {
+        guard Bundle.main.backgroundProcessingEnabled else { return false }
+        guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return false }
+        
+        return true
+    }
+    
+    private func cancelBackgroundProcess() {
+        // Cancel background tasks associated with the SDK
+        if #available(iOS 13.0, *) {
+            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: SynchronizationScheduler.BackgroundProcessIdentifier)
+        }
+    }
+    
     func setupBackgroundProcess() {
+        if #available(iOS 13.0, *) {
+            guard canUseBackgroundProcesses() else { return }
+            
+            registerBackgroundProcess()
+            optedInToUsingSDKBackgroundProcess = true
+        }
+    }
+    
+    func tearDownBackgroundProcess() {
         if #available(iOS 13.0, *) {
             guard Bundle.main.backgroundProcessingEnabled else { return }
             guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
             
-            registerBackgroundProcess()
-            optedInToUsingSDKBackgroundProcess = true
+            cancelBackgroundProcess()
+            optedInToUsingSDKBackgroundProcess = false
         }
     }
     

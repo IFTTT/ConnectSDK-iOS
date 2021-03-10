@@ -75,6 +75,7 @@ final class ConnectionsSynchronizer {
     private let nativeServicesCoordinator: NativeServicesCoordinator
     private let subscribers: [SynchronizationSubscriber]
     private var scheduler: SynchronizationScheduler
+    private let permissionsRequestor: PermissionsRequestor
     
     private var state: RunState = .unknown
     
@@ -106,11 +107,11 @@ final class ConnectionsSynchronizer {
                                        eventPublisher: eventPublisher)
         
         let connectionsMonitor = ConnectionsMonitor(connectionsRegistry: connectionsRegistry)
-        let nativeServicesCoordinator = NativeServicesCoordinator(locationService: location, permissionsRequestor: permissionsRequestor)
+        let nativeServicesCoordinator = NativeServicesCoordinator(locationService: location,
+                                                                  permissionsRequestor: permissionsRequestor)
 
         self.subscribers = [
             connectionsMonitor,
-            permissionsRequestor,
             location
         ]
         
@@ -119,6 +120,7 @@ final class ConnectionsSynchronizer {
         self.eventPublisher = eventPublisher
         self.location = location
         self.connectionsMonitor = connectionsMonitor
+        self.permissionsRequestor = permissionsRequestor
         
         let manager = SynchronizationManager(subscribers: subscribers)
         self.scheduler = SynchronizationScheduler(manager: manager,
@@ -232,6 +234,16 @@ final class ConnectionsSynchronizer {
     /// Call this to setup background processes. Must be called before the application finishes launching.
     func setupBackgroundProcess() {
         scheduler.setupBackgroundProcess()
+    }
+    
+    /// Call this to tear down background processes.
+    func teardownBackgroundProcess() {
+        scheduler.tearDownBackgroundProcess()
+    }
+    
+    /// Call this to control whether or not the SDK should show permissions prompts.
+    func setShowPermissionsPrompts(_ showPermissionsPrompts: Bool) {
+        permissionsRequestor.showPermissionsPrompts = showPermissionsPrompts
     }
     
     func performFetchWithCompletionHandler(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
