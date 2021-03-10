@@ -8,6 +8,18 @@
 import Foundation
 import CoreLocation
 
+/// Wrapper around `CLCircularRegion` to provide easy overriding of `Hashable`.
+fileprivate struct IFTTTCircularRegion: Hashable {
+    let region: CLCircularRegion
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(region.identifier)
+        hasher.combine(region.center.latitude)
+        hasher.combine(region.center.longitude)
+        hasher.combine(region.radius)
+    }
+}
+
 /**
  Monitors a set of regions associated with the user's applets.
  Caps the number of regions monitored by the system to `Constants.MaxCoreLocationManagerMonitoredRegionsCount`.
@@ -75,7 +87,7 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
         } else if type(of: locationManager).authorizationStatus() == .authorizedAlways {
             startMonitor()
         } else {
-            locationManager.stopMonitoringVisits()
+            stopMonitor()
         }
     }
     
@@ -85,10 +97,13 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     ///
     /// - returns: A boolean value that determines whether or not we need to start significant location monitoring.
     private func shouldStartVisitsMonitor() -> Bool {
-        let monitoredRegionsSet = Set(allMonitoredRegions)
+        let monitoredRegionsMapped = allMonitoredRegions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
+        let currentlyMonitoredRegionsMapped = currentlyMonitoredRegions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
         
-        let intersection = currentlyMonitoredRegions.intersection(monitoredRegionsSet)
-        return (currentlyMonitoredRegions.count + (monitoredRegionsSet.count - intersection.count)) > Constants.MaxCoreLocationManagerMonitoredRegionsCount
+        let monitoredRegionsMappedSet = Set(monitoredRegionsMapped)
+        
+        let intersection = currentlyMonitoredRegionsMapped.intersection(monitoredRegionsMappedSet)
+        return (currentlyMonitoredRegionsMapped.count + (monitoredRegionsMappedSet.count - intersection.count)) > Constants.MaxCoreLocationManagerMonitoredRegionsCount
     }
     
     /// Registers the parameter regions with the CLLocationManager. Ensures that we don't monitor a region that's already monitored.
@@ -96,18 +111,21 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     /// - Parameters:
     ///     - regions: The list of regions to monitor with the CLLocationManager.
     private func register(regions: [CLRegion]) {
-        let regionsToStopMonitoring = currentlyMonitoredRegions.subtracting(regions)
+        let regionsToRegisterMapped = regions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
+        let currentlyMonitoredRegionsMapped = currentlyMonitoredRegions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
+        let regionsToStopMonitoringMapped = currentlyMonitoredRegionsMapped.subtracting(regionsToRegisterMapped)
+        let regionsToStopMonitoring = regionsToStopMonitoringMapped.map { $0.region }
         
         regionsToStopMonitoring.forEach { (region) in
             locationManager.stopMonitoring(for: region)
             ConnectButtonController.synchronizationLog("Did end monitoring for region: \(region)")
         }
         
-        regions.forEach { (region) in
-            if CLLocationManager.isMonitoringAvailable(for: type(of: region))
-                && region.isIFTTTRegion
-                && !currentlyMonitoredRegions.contains(region) {
-                locationManager.startMonitoring(for: region)
+        regionsToRegisterMapped.forEach { (iftttRegion) in
+            if CLLocationManager.isMonitoringAvailable(for: type(of: iftttRegion.region))
+                && iftttRegion.region.isIFTTTRegion
+                && !currentlyMonitoredRegionsMapped.contains(iftttRegion) {
+                locationManager.startMonitoring(for: iftttRegion.region)
             }
         }
         

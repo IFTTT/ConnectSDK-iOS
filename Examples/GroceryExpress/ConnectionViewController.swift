@@ -57,7 +57,7 @@ class ConnectionViewController: UIViewController {
     
     // MARK: - Fetch the connection
     
-    private let connectionNetworkController = ConnectionNetworkController()
+    private let connectionNetworkController =   ConnectionNetworkController()
  
     private func fetchConnection(with id: String) {
         if settings.fetchConnectionFlow {
@@ -225,6 +225,9 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
             // Let's update our credential for this user
             if let token = activation.userToken {
                 connectionCredentials.loginUser(with: token)
+                if settings.skipConnectionConfiguration && displayInformation.showLocationUpdateWithSkipConfig {
+                    showLocationUpdateView(token: token)
+                }
             }
             
         case .failure(let error):
@@ -234,6 +237,11 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
                 present(alert, animated: true, completion: nil)
             }
         }
+    }
+    
+    private func showLocationUpdateView(token: String) {
+        let locationUpdateViewController = AddressUpdateViewController.instantiate(token: token, connectionId: displayInformation.connectionId)
+        navigationController?.pushViewController(locationUpdateViewController, animated: true)
     }
     
     func connectButtonController(_ connectButtonController: ConnectButtonController,
