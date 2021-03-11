@@ -50,7 +50,7 @@ class SettingsViewController: UIViewController {
         settings.forcesNewUserFlow = newUserSwitch.isOn
     }
     @IBAction func geoFencesEnabledChanged(_ sender: Any) {
-        ConnectButtonController.setGeofencesEnabled(geofenceEnabledSwitch.isOn, for: DisplayInformation.locationConnection.connectionId)
+        ConnectButtonController.setGeofencesEnabled(enabled: geofenceEnabledSwitch.isOn, for: DisplayInformation.locationConnection.connectionId)
     }
     @IBAction func fetchConnectionChanged(_ sender: Any) {
         settings.fetchConnectionFlow = fetchConnectionSwitch.isOn

@@ -141,7 +141,7 @@ extension ConnectButtonController {
     /// - Parameters:
     ///     - enabled: A boolean as to whether or not the geofences should be enabled or disabled.
     ///     - connectionId: The id of the connection that the geofences should be enabled or disabled for.
-    public static func setGeofencesEnabled(_ enabled: Bool, for connectionId: String) {
+    public static func setGeofencesEnabled(enabled: Bool, for connectionId: String) {
         ConnectionsSynchronizer.shared.setGeofencesEnabled(enabled, for: connectionId)
     }
     

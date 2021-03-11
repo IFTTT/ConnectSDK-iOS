@@ -79,6 +79,9 @@ While the SDK doesn't support receiving silent push notifications directly, if y
 ### Background Fetch support
 The SDK doesn't directly invoke any background fetch methods. To use background fetch to run a synchronization while the app is in the background, you can call `ConnectButtonController.performFetchWithCompletionHandler(backgroundFetchCompletion:)` in the `performFetchWithCompletionHandler(completionHandler:)` `UIApplicationDelegate` method. The `backgroundFetchCompletion` closure will be invoked once the synchronization is complete with an appropriate `UIBackgroundFetchResult` enum value.
 
+### Geofence Toggling
+The SDK supports toggling geofences on and off for a given connection. To toggle geofences for a connection, call `ConnectButtonController.setGeofencesEnabled(enabled:for:)`.
+
 ### Notes
 - Automatic synchronization for a given connection will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
 - The SDK runs a synchronization by default for the following events:
