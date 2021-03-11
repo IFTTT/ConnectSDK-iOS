@@ -23,6 +23,9 @@ struct Settings {
     /// Signals that we want to skip the connection configuration in the IFTTT app or the web flow.
     var skipConnectionConfiguration: Bool
     
+    /// Determines whether or not geofences are enabled for the location connection
+    var geofenceEnabled: Bool
+    
     /// The overriding locale to use in updating the Connect Button flow with
     var locale: Locale
     
@@ -38,12 +41,14 @@ struct Settings {
             forcesNewUserFlow = settings[Keys.forcesNewUserFlow] as? Bool ?? false
             fetchConnectionFlow = settings[Keys.fetchConnectionFlow] as? Bool ?? false
             skipConnectionConfiguration = settings[Keys.skipConnectionConfiguration] as? Bool ?? false
+            geofenceEnabled = settings[Keys.geofencesEnabled] as? Bool ?? false
             localeId = settings[Keys.localeIdentifier] as? String ?? defaultLocaleId
         } else {
             email = ""
             forcesNewUserFlow = false
             fetchConnectionFlow = false
             skipConnectionConfiguration = false
+            geofenceEnabled = false
             localeId = defaultLocaleId
         }
         locale = Locale(identifier: localeId)
@@ -56,6 +61,7 @@ struct Settings {
             Keys.forcesNewUserFlow : forcesNewUserFlow,
             Keys.fetchConnectionFlow : fetchConnectionFlow,
             Keys.skipConnectionConfiguration: skipConnectionConfiguration,
+            Keys.geofencesEnabled: geofenceEnabled,
             Keys.localeIdentifier: locale.identifier
         ]
         UserDefaults.standard.set(settings, forKey: Keys.settings)
@@ -67,6 +73,7 @@ struct Settings {
         static let forcesNewUserFlow = "forces_new_user_flow"
         static let fetchConnectionFlow = "fetch_connection_flow"
         static let skipConnectionConfiguration = "skip_connection_configuration"
+        static let geofencesEnabled = "geofences_enabled"
         static let localeIdentifier = "locale_identifier"
         static let isDarkStyle = "is_dark_style"
     }

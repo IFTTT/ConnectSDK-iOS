@@ -141,13 +141,15 @@ extension Connection.ConnectionStorage {
         static let Status = "status"
         static let ActiveTriggers = "activeTriggers"
         static let AllTriggers = "allTriggers"
+        static let EnabledNativeServiceMap = "enabledNativeServiceMap"
     }
     
     init(connection: Connection) {
         self.init(id: connection.id,
                   status: connection.status,
                   activeUserTriggers: connection.activeUserTriggers,
-                  allTriggers: connection.allNativeTriggers)
+                  allTriggers: connection.allNativeTriggers,
+                  enabledNativeServiceMap: [.location: true])
     }
     
     init?(json: JSON) {
@@ -157,20 +159,39 @@ extension Connection.ConnectionStorage {
         
         let activeUserTriggers = parser[Keys.ActiveTriggers].compactMap { Trigger(parser: $0) }
         let allTriggers = parser[Keys.AllTriggers].compactMap { Trigger(parser: $0) }
+        
+        var map = [Connection.NativeServiceDescription: Bool]()
+        switch parser[Keys.EnabledNativeServiceMap] {
+        case .dictionary(let json):
+            Connection.NativeServiceDescription.allCases.forEach { (description) in
+                if let boolValue = json[description.rawValue] as? Bool {
+                    map[description] = boolValue
+                }
+            }
+        default:
+            break
+        }
+        
         self.init(id: id,
                   status: status,
                   activeUserTriggers: Set(activeUserTriggers),
-                  allTriggers: Set(allTriggers))
+                  allTriggers: Set(allTriggers),
+                  enabledNativeServiceMap: map)
     }
     
     func toJSON() -> JSON {
         let mappedAllTriggers = allTriggers.map { $0.toJSON() }
         let mappedActiveUserTriggers = activeUserTriggers.map { $0.toJSON() }
+        let mappedEnabledNativeServiceMap: [String: Bool] = enabledNativeServiceMap.reduce(into: [:]) { result, x in
+            result[x.key.rawValue] = x.value
+        }
+
         return [
             Keys.Id: id,
             Keys.Status: status.rawValue,
             Keys.ActiveTriggers: mappedActiveUserTriggers,
-            Keys.AllTriggers: mappedAllTriggers
+            Keys.AllTriggers: mappedAllTriggers,
+            Keys.EnabledNativeServiceMap: mappedEnabledNativeServiceMap
         ]
     }
 }

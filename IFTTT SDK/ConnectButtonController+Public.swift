@@ -59,7 +59,7 @@ extension ConnectButtonController {
     /// - Parameters:
     ///     - options: An instance of `InitializerOptions` to initialize the SDK with.
     public static func initialize(options: InitializerOptions = .standard) {
-        let sharedSynchronizer = ConnectionsSynchronizer.shared()
+        let sharedSynchronizer = ConnectionsSynchronizer.shared
         
         sharedSynchronizer.setShowPermissionsPrompts(options.showPermissionsPrompts)
         
@@ -80,7 +80,7 @@ extension ConnectButtonController {
         if let credentials = credentials {
             Keychain.update(with: credentials)
         }
-        ConnectionsSynchronizer.shared().setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
+        ConnectionsSynchronizer.shared.setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
     }
     
     /// Call this method to activate the synchronization. This starts synchronization for the parameter connections.
@@ -88,12 +88,12 @@ extension ConnectButtonController {
     /// - Parameters:
     ///     - connections: An optional list of `Connection` to activate synchronization with.
     public static func activate(connections ids: [String]? = nil) {
-        ConnectionsSynchronizer.shared().activate(connections: ids)
+        ConnectionsSynchronizer.shared.activate(connections: ids)
     }
     
     /// Call this method to deactivate the synchronization of connection and native service data. This stops synchronization and performs cleanup of any stored data. This will also remove any registered geofences.
     public static func deactivate() {
-        ConnectionsSynchronizer.shared().deactivate()
+        ConnectionsSynchronizer.shared.deactivate()
     }
     
     /// Call this method to run a manual synchronization.
@@ -104,7 +104,7 @@ extension ConnectButtonController {
         if let credentials = credentials {
             Keychain.update(with: credentials)
         }
-        ConnectionsSynchronizer.shared().update()
+        ConnectionsSynchronizer.shared.update()
     }
     
     /// Hook to be called when the `UIApplicationDelegate` recieves the `application:performFetchWithCompletionHandler:` method call. This method should only be called when your app recieves a background fetch request from the system.
@@ -112,7 +112,7 @@ extension ConnectButtonController {
     /// - Parameters:
     ///     - backgroundFetchCompletion: The block that's executed when the synchronization is complete. When this closure is called, the fetch result value that best describes the results of the synchronization is provided.
     public static func performFetchWithCompletionHandler(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
-        ConnectionsSynchronizer.shared().performFetchWithCompletionHandler(backgroundFetchCompletion: backgroundFetchCompletion)
+        ConnectionsSynchronizer.shared.performFetchWithCompletionHandler(backgroundFetchCompletion: backgroundFetchCompletion)
     }
     
     /// Hook to be called when the `UIApplicationDelegate` recieves the `application:didReceiveRemoteNotification:` method call. This method should only be called when your app recieves a silent push notification.
@@ -120,7 +120,7 @@ extension ConnectButtonController {
     /// - Parameters:
     ///     - backgroundFetchCompletion: The block that's executed when the synchronization is complete. When this closure is called, the fetch result value that best describes the results of the synchronization is provided.
     public static func didReceiveSilentRemoteNotification(backgroundFetchCompletion: ((UIBackgroundFetchResult) -> Void)?) {
-        ConnectionsSynchronizer.shared().didReceiveSilentRemoteNotification(backgroundFetchCompletion: backgroundFetchCompletion)
+        ConnectionsSynchronizer.shared.didReceiveSilentRemoteNotification(backgroundFetchCompletion: backgroundFetchCompletion)
     }
     
     /// Hook to be called if you'd like to start a synchronization with a background process. It is the responsibility of the caller to manage the appropriate background process with the system and to handle the expiration of the task. For your convenience, `stopCurrentSynchronization` is provided to be called in the expiration handler of the background process.
@@ -128,11 +128,29 @@ extension ConnectButtonController {
     /// - Parameters:
     ///     - success: A closure with a boolean argument that will return true/false as to whether or not the synchronization failed or succeeded.
     public static func startBackgroundProcess(success: @escaping BoolClosure) {
-        ConnectionsSynchronizer.shared().startBackgroundProcess(success: success)
+        ConnectionsSynchronizer.shared.startBackgroundProcess(success: success)
     }
     
     /// Hook to be called if you'd like to stop the current synchronization task. This will cancel all internal in-flight network requests that the SDK makes as a part of its synchronization process.
     public static func stopCurrentSynchronization() {
-        ConnectionsSynchronizer.shared().stopCurrentSynchronization()
+        ConnectionsSynchronizer.shared.stopCurrentSynchronization()
+    }
+    
+    /// Call this method to toggle geofences on and off for the parameter connection id.
+    ///
+    /// - Parameters:
+    ///     - enabled: A boolean as to whether or not the geofences should be enabled or disabled.
+    ///     - connectionId: The id of the connection that the geofences should be enabled or disabled for.
+    public static func setGeofencesEnabled(enabled: Bool, for connectionId: String) {
+        ConnectionsSynchronizer.shared.setGeofencesEnabled(enabled, for: connectionId)
+    }
+    
+    /// Returns the enabled state for geofences for the parameter connection.
+    ///
+    /// - Parameters:
+    ///     - connectionId: The connection id to get the enabled status for.
+    /// - Returns: The enabled state for geofences for the given connection.
+    public static func geofencesEnabled(for connectionId: String) -> Bool {
+        return ConnectionsSynchronizer.shared.geofencesEnabled(for: connectionId)
     }
 }

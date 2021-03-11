@@ -83,12 +83,12 @@ final class ConnectionsSynchronizer {
     private static var _shared: ConnectionsSynchronizer!
     
     /// Internal method to use in grabbing synchronizer instance.
-    static func shared() -> ConnectionsSynchronizer {
+    static var shared: ConnectionsSynchronizer = {
         if _shared == nil {
             _shared = ConnectionsSynchronizer()
         }
         return _shared
-    }
+    }()
     
     /// Creates an instance of the `ConnectionsSynchronizer`.
     private init() {
@@ -269,6 +269,14 @@ final class ConnectionsSynchronizer {
     
     func stopCurrentSynchronization() {
         scheduler.stopCurrentSynchronization()
+    }
+    
+    func setGeofencesEnabled(_ enabled: Bool, for connectionId: String) {
+        registry.updateConnectionGeofencesEnabled(enabled, connectionId: connectionId)
+    }
+    
+    func geofencesEnabled(for connectionId: String) -> Bool {
+        return registry.geofencesEnabled(connectionId: connectionId)
     }
 }
 
