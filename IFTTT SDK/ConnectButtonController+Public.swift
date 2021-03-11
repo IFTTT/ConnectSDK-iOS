@@ -162,7 +162,7 @@ extension ConnectButtonController {
     ///     - launchHandler: A closure to execute when the OS starts a background process set up by the SDK.
     ///     - expirationHandler: A closure to execute when the allotted time for the background process is zero.
     public static func setBackgroundProcessClosures(launchHandler: VoidClosure?, expirationHandler: VoidClosure?) {
-        ConnectionsSynchronizer.shared().setDeveloperBackgroundProcessClosures(launchHandler: launchHandler,
+        ConnectionsSynchronizer.shared.setDeveloperBackgroundProcessClosures(launchHandler: launchHandler,
                                                                                expirationHandler: expirationHandler)
     }
 }
