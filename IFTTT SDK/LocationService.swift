@@ -225,7 +225,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     
     func updateRegions(from connections: Set<Connection.ConnectionStorage>) {
         let regions: Set<CLCircularRegion> = connections.reduce(.init()) { (currSet, store) -> Set<CLCircularRegion> in
-            guard store.status == .enabled else { return currSet }
+            guard store.status == .enabled && store.enabledNativeServiceMap[.location] == true else { return currSet }
             var set = currSet
             store.locationRegions.forEach {
                 set.insert($0)

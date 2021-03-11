@@ -211,14 +211,16 @@ final class ConnectionsRegistry {
         if let _foundConnectionJSON = foundConnection as? JSON,
            let _foundConnection = Connection.ConnectionStorage(json: _foundConnectionJSON) {
             
-            let activeUserTriggers: Set<Trigger> = shouldReplace ? connection.activeUserTriggers: _foundConnection.activeUserTriggers
-            let allTriggers: Set<Trigger> = shouldReplace ? connection.allTriggers: _foundConnection.allTriggers
-            let status: Connection.Status = shouldReplace ? connection.status: _foundConnection.status
+            let activeUserTriggers = shouldReplace ? connection.activeUserTriggers: _foundConnection.activeUserTriggers
+            let allTriggers = shouldReplace ? connection.allTriggers: _foundConnection.allTriggers
+            let status = shouldReplace ? connection.status: _foundConnection.status
+            let enabledNativeServiceMap = shouldReplace ? connection.enabledNativeServiceMap: _foundConnection.enabledNativeServiceMap
             
             modifiedConnection = .init(id: connection.id,
                                        status: status,
                                        activeUserTriggers: activeUserTriggers,
-                                       allTriggers: allTriggers)
+                                       allTriggers: allTriggers,
+                                       enabledNativeServiceMap: enabledNativeServiceMap)
         }
         
         let notificationName: Notification.Name = foundConnection != nil ? .ConnectionUpdatedNotification: .ConnectionAddedNotification
@@ -241,6 +243,10 @@ final class ConnectionsRegistry {
         }
     }
     
+    func getConnection(with identifier: String) -> Connection.ConnectionStorage? {
+        return getConnections().first(where: { $0.id == identifier })
+    }
+    
     /// Removes all connections from the registry
     ///
     /// - Parameters:
@@ -252,5 +258,32 @@ final class ConnectionsRegistry {
         if shouldNotify {
             NotificationCenter.default.post(name: .AllConnectionRemovedNotification, object: nil)
         }
+    }
+    
+    func updateConnectionGeofencesEnabled(_ enabled: Bool, connectionId: String) {
+        func updateConnectionNativeServiceMap(_ connection: Connection.ConnectionStorage) {
+            var _connection = connection
+            _connection.enabledNativeServiceMap[.location] = enabled
+            update(_connection, shouldReplace: true, shouldNotify: false)
+        }
+        
+        // Try to get the connection and update the enabledNativeServiceMap
+        if let connection = getConnection(with: connectionId) {
+            updateConnectionNativeServiceMap(connection)
+        }
+        else {
+            // If it doesn't exist, create it.
+            addConnections(with: [connectionId], shouldNotify: false)
+            
+            // Update the connection here.
+            if let connection = getConnection(with: connectionId) {
+                updateConnectionNativeServiceMap(connection)
+            }
+        }
+    }
+    
+    func geofencesEnabled(connectionId: String) -> Bool {
+        guard let connection = getConnection(with: connectionId) else { return false }
+        return connection.enabledNativeServiceMap[.location] ?? false
     }
 }

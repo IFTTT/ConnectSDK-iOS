@@ -64,6 +64,30 @@ class ConnectionsRegistryTests: XCTestCase {
         XCTAssertTrue(connectionsRegistry.getConnections().count == 1)
     }
     
+    func testGetConnectionById() {
+        // Since we reset the user defaults before every test, the registry should be empty.
+        XCTAssertTrue(connectionsRegistry.getConnections().isEmpty)
+        
+        let disabledConnection = Connection(id: "12345",
+                                            name: "Test connection",
+                                            description: "Test connection description",
+                                            status: .disabled,
+                                            url: URL(string: "https://www.google.com")!,
+                                            coverImages: [:],
+                                            valuePropositionsParser: Parser(content: nil),
+                                            features: [],
+                                            services: [],
+                                            primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
+                                            activeUserTriggers: .init())
+        
+        connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
+        let connection = connectionsRegistry.getConnection(with: disabledConnection.id)
+        XCTAssertNotNil(connection)
+        
+        let nilConnection = connectionsRegistry.getConnection(with: "unknown_connection_id")
+        XCTAssertNil(nilConnection)
+    }
+    
     func testUpdateWithConnectionIds() {
         let connectionIds = (0..<5).map { _ in return UUID().uuidString }
         let expectation = self.expectation(forNotification: .ConnectionAddedNotification, object: nil, handler: nil)
@@ -145,6 +169,38 @@ class ConnectionsRegistryTests: XCTestCase {
         let expectation = self.expectation(forNotification: .ConnectionAddedNotification, object: nil, handler: nil)
         connectionsRegistry.update(with: enabledConnection, shouldNotify: true)
         wait(for: [expectation], timeout: 30.0)
+    }
+    
+    func testUpdateNativeServiceEnabled() {
+        let connectionId = "12345"
+        let disabledConnection = Connection(id: "12345",
+                                            name: "Test connection",
+                                            description: "Test connection description",
+                                            status: .disabled,
+                                            url: URL(string: "https://www.google.com")!,
+                                            coverImages: [:],
+                                            valuePropositionsParser: Parser(content: nil),
+                                            features: [],
+                                            services: [],
+                                            primaryService: .init(id: "123456", name: "Test service", shortName: "TS", isPrimary: true, templateIconURL: URL(string: "https://www.google.com")!, brandColor: .white, url: URL(string: "https://www.google.com")!),
+                                            activeUserTriggers: .init())
+        connectionsRegistry.update(with: disabledConnection, shouldNotify: false)
+        connectionsRegistry.updateConnectionGeofencesEnabled(false, connectionId: connectionId)
+        
+        var connectionStorage = connectionsRegistry.getConnection(with: connectionId)!
+        var enabled = connectionStorage.enabledNativeServiceMap[.location]!
+        XCTAssertFalse(enabled, "Expecting enabled native service map to be false for location but got true")
+        
+        connectionsRegistry.updateConnectionGeofencesEnabled(true, connectionId: connectionId)
+        connectionStorage = connectionsRegistry.getConnection(with: connectionId)!
+        enabled = connectionStorage.enabledNativeServiceMap[.location]!
+        XCTAssertTrue(enabled, "Expecting enabled native service map to be true for location but got false")
+        
+        
+        connectionsRegistry.updateConnectionGeofencesEnabled(true, connectionId: "09876")
+        connectionStorage = connectionsRegistry.getConnection(with: connectionId)!
+        enabled = connectionStorage.enabledNativeServiceMap[.location]!
+        XCTAssertTrue(enabled, "Expecting enabled native service map to be true for location but got false")
     }
     
     func testRemoveAll() {
