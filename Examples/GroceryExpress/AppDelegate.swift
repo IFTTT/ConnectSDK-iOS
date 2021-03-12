@@ -24,6 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ConnectButtonController.analyticsEnabled = true
         ConnectButtonController.initialize(options: .init(enableSDKBackgroundProcess: true, showPermissionsPrompts: true))
         ConnectButtonController.activate(connections: [DisplayInformation.locationConnection.connectionId])
+        ConnectButtonController.setBackgroundProcessClosures {
+            print("Background process started!")
+        } expirationHandler: {
+            print("Background process expired!")
+        }
+
         return true
     }
     

@@ -82,6 +82,9 @@ The SDK doesn't directly invoke any background fetch methods. To use background 
 ### Geofence Toggling
 The SDK supports toggling geofences on and off for a given connection. To toggle geofences for a connection, call `ConnectButtonController.setGeofencesEnabled(enabled:for:)`.
 
+### Background process execution
+To set closures to run when a SDK-defined background process runs, call `ConnectButtonController.setBackgroundProcessClosures(launchHandler:expirationHandler)`. The `launchHandler` parameter is the closure that's executed when a background process starts. The `expirationHandler` parameter is the closure that's executed when the background process is about to be ended by the system.
+
 ### Notes
 - Automatic synchronization for a given connection will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
 - The SDK runs a synchronization by default for the following events:

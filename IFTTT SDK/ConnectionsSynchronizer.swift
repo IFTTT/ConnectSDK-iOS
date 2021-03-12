@@ -278,6 +278,11 @@ final class ConnectionsSynchronizer {
     func geofencesEnabled(for connectionId: String) -> Bool {
         return registry.geofencesEnabled(connectionId: connectionId)
     }
+    
+    func setDeveloperBackgroundProcessClosures(launchHandler: VoidClosure?, expirationHandler: VoidClosure?) {
+        scheduler.developerBackgroundProcessLaunchClosure = launchHandler
+        scheduler.developerBackgroundProcessExpirationClosure = expirationHandler
+    }
 }
 
 /// Handles coordination of native services with a set of connections
