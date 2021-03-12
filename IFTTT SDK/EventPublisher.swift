@@ -16,8 +16,11 @@ final class EventPublisher<Type> {
     /// A typealias to refer to a subscriber.
     private typealias Subscriber = (TimeInterval, SubscriberClosure)
     
-    /// The `DispatchQueue` used to publish events on.
-    private let dispatchQueue: DispatchQueue
+    /// The `DispatchQueue` used to access the subscriberMap on.
+    private let subscriberMapDispatchQueue: DispatchQueue
+    
+    /// The `DispatchQueue` used to publish events on
+    private let publisherDispatchQueue: DispatchQueue
     
     // Don't access this Dictionary directly outside of `addSubscriber(...)` or `removeSubscriber(...)`. Maps aren't threadsafe and therefore we can't use the subscripting directly.
     private var subscriberMap = [UUID: Subscriber]()
@@ -26,8 +29,10 @@ final class EventPublisher<Type> {
     ///
     /// - Parameters:
     ///     - queue: The queue to use in notifying subscribers of any published events.
-    init(queue: DispatchQueue = DispatchQueue(label: "com.ifttt.eventpublisher.lock", attributes: .concurrent)) {
-        self.dispatchQueue = queue
+    init(subscriberMapDispatchQueue: DispatchQueue = DispatchQueue(label: "com.ifttt.subscriber_map.lock"),
+         publisherDispatchQueue: DispatchQueue = DispatchQueue(label: "com.ifttt.publisher", attributes: .concurrent)) {
+        self.subscriberMapDispatchQueue = subscriberMapDispatchQueue
+        self.publisherDispatchQueue = publisherDispatchQueue
     }
     
     /// Publishes an event to subscribers. Subscribers get notified of events in descending order of time they were added.
@@ -35,12 +40,12 @@ final class EventPublisher<Type> {
     /// - Parameter:
     ///     - object: The event that is to be delivered to subscribers.
     func onNext(_ object: Type) {
-        dispatchQueue.sync { [weak self] in
+        subscriberMapDispatchQueue.sync { [weak self] in
             /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
             self?.subscriberMap.values.sorted { $0.0 < $1.0 }
                 .map { $1 }
                 .forEach { closure in
-                    self?.dispatchQueue.async {
+                    self?.publisherDispatchQueue.async {
                         closure(object)
                     }
                 }
@@ -54,7 +59,7 @@ final class EventPublisher<Type> {
     /// - Returns: A `UUID` token that can be used to remove a subscriber using `removeSubscriber`.
     @discardableResult
     func addSubscriber(_ subscriber: @escaping SubscriberClosure) -> UUID {
-        return dispatchQueue.sync { [weak self] in
+        return subscriberMapDispatchQueue.sync { [weak self] in
             let id = UUID()
             self?.subscriberMap[id] = (Date().timeIntervalSince1970, subscriber)
             return id
@@ -66,7 +71,7 @@ final class EventPublisher<Type> {
     /// - Parameters:
     ///     - identifier: The token corresponding to the subscriber that is to be removed.
     func removeSubscriber(_ identifier: UUID) {
-        dispatchQueue.sync { [weak self] in
+        subscriberMapDispatchQueue.sync { [weak self] in
             self?.subscriberMap[identifier] = nil
         }
     }
