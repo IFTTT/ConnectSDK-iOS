@@ -35,7 +35,7 @@ class LocationServiceTests: XCTestCase {
         regionEventsController = MockRegionEventsController(urlSession: .regionEventsURLSession)
         regionsMonitor = RegionsMonitor(locationManager: locationManager, allowsBackgroundLocationUpdates: true)
         regionEventsRegistry = RegionEventsRegistry()
-        eventPublisher = EventPublisher<SynchronizationTriggerEvent>(queue: .init(label: "event_publisher_region_events"))
+        eventPublisher = EventPublisher<SynchronizationTriggerEvent>(publisherDispatchQueue: .init(label: "com.ifttt.location_service.event_publisher"))
         connectionsRegistry = ConnectionsRegistry()
         locationService = LocationService(regionsMonitor: regionsMonitor,
                                           regionEventsRegistry: regionEventsRegistry,

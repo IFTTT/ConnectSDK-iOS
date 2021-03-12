@@ -17,28 +17,27 @@ class EventPublisherTests: XCTestCase {
     }
 
     func testAddSubscriber() {
-        let expectationCount = 100
-        let expectations = (0..<expectationCount).map { return XCTestExpectation(description: "\($0)") }
-        
-        (0..<expectationCount).forEach { count in
-            publisher.addSubscriber { value in
-                expectations[count].fulfill()
-            }
+        let addSubscriberExpectation = expectation(description: "verify_added_subscriber_gets_invoked_with_value")
+        addSubscriberExpectation.assertForOverFulfill = true
+        publisher.addSubscriber { value in
+            addSubscriberExpectation.fulfill()
         }
         publisher.onNext(1)
-        wait(for: expectations, timeout: 20.0, enforceOrder: true)
+        wait(for: [addSubscriberExpectation], timeout: 1.0)
     }
     
     func testPublish() {
         let expectationCount = 100
-        let expectations = (0..<expectationCount).map { return XCTestExpectation(description: "\($0)") }
+        let expectations = (0..<expectationCount).map { return expectation(description: "\($0)") }
         
         publisher.addSubscriber { value in
             expectations[value].fulfill()
         }
         
-        (0..<expectationCount).forEach { publisher.onNext($0) }
-        wait(for: expectations, timeout: 20.0, enforceOrder: true)
+        (0..<expectationCount).forEach {
+            publisher.onNext($0)
+        }
+        wait(for: expectations, timeout: 20.0)
     }
 
     func testRemoveSubscriber() {
