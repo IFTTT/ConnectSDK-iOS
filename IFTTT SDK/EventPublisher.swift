@@ -36,14 +36,18 @@ final class EventPublisher<Type> {
     /// - Parameter:
     ///     - object: The event that is to be delivered to subscribers.
     func onNext(_ object: Type) {
-        lock.lock(); defer { lock.unlock() }
-        /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
-        let sortedSubscriberMap = subscriberMap.values.sorted { $0.0 < $1.0 }.map { $1 }
-        
-        sortedSubscriberMap.forEach { closure in
-            dispatchQueue.async {
-                closure(object)
-            }
+        subscriberMapDispatchQueue.sync { [weak self] in
+            /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
+            var count = 0
+            self?.subscriberMap.values.sorted { $0.0 < $1.0 }
+                .map { $1 }
+                .forEach { closure in
+                    print("\(count)")
+                    self?.publisherDispatchQueue.async {
+                        closure(object)
+                    }
+                    count += 1
+                }
         }
     }
     

@@ -46,6 +46,8 @@ final class SynchronizationScheduler {
     }
     
     func setup(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
+        removeLifecycleNotificationObservers()
+        
         // Start synchronization on system events
         var appLifecycleEventTuples = [(NSNotification.Name, SynchronizationSource, Bool)]()
         
@@ -66,6 +68,9 @@ final class SynchronizationScheduler {
     /// Performs registration for system and SDK generated events for kicking off synchronizations
     /// Should get called when the scheduler is to start.
     func start() {
+        // Remove any previous tokens that might still be aroind
+        removeSDKGeneratedNotificationObservers()
+        
         // Start the manager
         manager.start()
         
@@ -91,9 +96,8 @@ final class SynchronizationScheduler {
         
         // Unregister from background process
         // Remove observers from notification center
-        [applicationLifecycleNotificationCenterTokens + sdkGeneratedNotificationCenterTokens].forEach {
-            NotificationCenter.default.removeObserver($0)
-        }
+        removeLifecycleNotificationObservers()
+        removeSDKGeneratedNotificationObservers()
         
         applicationLifecycleNotificationCenterTokens = []
         sdkGeneratedNotificationCenterTokens = []
@@ -109,6 +113,18 @@ final class SynchronizationScheduler {
         
         // Nil out the subscriber token
         subscriberToken = nil
+    }
+    
+    private func removeLifecycleNotificationObservers() {
+        applicationLifecycleNotificationCenterTokens.forEach {
+            NotificationCenter.default.removeObserver($0)
+        }
+    }
+    
+    private func removeSDKGeneratedNotificationObservers() {
+        sdkGeneratedNotificationCenterTokens.forEach {
+            NotificationCenter.default.removeObserver($0)
+        }
     }
     
     /// Sets up subscriber with app generated triggers.
