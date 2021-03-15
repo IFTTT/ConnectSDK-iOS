@@ -38,15 +38,12 @@ final class EventPublisher<Type> {
     func onNext(_ object: Type) {
         subscriberMapDispatchQueue.sync { [weak self] in
             /// Sort the subscribers by time they were added. This means that the oldest subscriber gets notified of an event first.
-            var count = 0
             self?.subscriberMap.values.sorted { $0.0 < $1.0 }
                 .map { $1 }
                 .forEach { closure in
-                    print("\(count)")
                     self?.publisherDispatchQueue.async {
                         closure(object)
                     }
-                    count += 1
                 }
         }
     }
