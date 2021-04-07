@@ -423,6 +423,18 @@ public class ConnectButtonController {
             return NSAttributedString(string: "IFTTT",
                                       attributes: [.font : Constants.iftttWordmarkFont])
         }
+        
+        private func substituteIftttWordmark(with string: String) -> NSMutableAttributedString {
+            let iftttRange = (string as NSString).range(of: "IFTTT")
+            let text = NSMutableAttributedString(string: string,
+                                                 attributes: [.font : Constants.footnoteFont])
+            if iftttRange.location == NSNotFound {
+                return text
+            }
+
+            text.replaceCharacters(in: iftttRange, with: iftttWordmark)
+            return text
+        }
 
         var value: ConnectButton.LabelValue {
             return .attributed(attributedString)
@@ -440,10 +452,7 @@ public class ConnectButtonController {
                 
             case .enterEmail:
                 let string = "button.footer.email.prefix".localized + " "
-                let text = NSMutableAttributedString(string: string,
-                                                     attributes: [.font : Constants.footnoteFont])
-                let iftttRange = (string as NSString).range(of: "IFTTT")
-                text.replaceCharacters(in: iftttRange, with: iftttWordmark)
+                let text = substituteIftttWordmark(with: string)
                 
                 text.append(NSAttributedString(string: " ")) // Adds a space before the underline starts
                 text.append(NSAttributedString(string: "button.footer.email.postfix".localized,
@@ -459,10 +468,7 @@ public class ConnectButtonController {
                 
             case let .creatingAccount(email):
                 let string = "button.footer.accountCreation".localized(with: email)
-                let text = NSMutableAttributedString(string: string,
-                                                     attributes: [.font : Constants.footnoteFont])
-                let iftttRange = (string as NSString).range(of: "IFTTT")
-                text.replaceCharacters(in: iftttRange, with: iftttWordmark)
+                let text = substituteIftttWordmark(with: string)
                 return text
                 
             case .loadingFailed:
