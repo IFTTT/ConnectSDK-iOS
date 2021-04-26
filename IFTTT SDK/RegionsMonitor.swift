@@ -113,7 +113,8 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     private func register(regions: [CLRegion]) {
         let regionsToRegisterMapped = regions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
         let currentlyMonitoredRegionsMapped = currentlyMonitoredRegions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
-        let regionsToStopMonitoringMapped = currentlyMonitoredRegionsMapped.subtracting(regionsToRegisterMapped)
+        
+        let regionsToStopMonitoringMapped = Set(currentlyMonitoredRegionsMapped).subtracting(regionsToRegisterMapped)
         let regionsToStopMonitoring = regionsToStopMonitoringMapped.map { $0.region }
         
         regionsToStopMonitoring.forEach { (region) in
