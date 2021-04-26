@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD4BF0577F834DA46CC0229C /* libPods-Grocery Express.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C7E9B7B81023E8803E71CFBC /* libPods-Grocery Express.a */; };
 		DE01067722D54D5E00B2CB47 /* TokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01066C22D54D5E00B2CB47 /* TokenRequest.swift */; };
 		DE01067822D54D5E00B2CB47 /* ConnectionCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE01066D22D54D5E00B2CB47 /* ConnectionCredentials.swift */; };
 		DE01067922D54D5E00B2CB47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE01066E22D54D5E00B2CB47 /* Assets.xcassets */; };
@@ -22,12 +21,10 @@
 		DE717A5A25F7C5C4002A00C6 /* AddressUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE717A5925F7C5C4002A00C6 /* AddressUpdateViewController.swift */; };
 		DE717A5D25F7C9B7002A00C6 /* AddressSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE717A5C25F7C9B7002A00C6 /* AddressSelectionViewController.swift */; };
 		DE8839DD25769AB000D76161 /* DisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8839D925769A7B00D76161 /* DisplayViewController.swift */; };
+		DEC59E032637136B00C47A37 /* IFTTTConnectSDK in Frameworks */ = {isa = PBXBuildFile; productRef = DEC59E022637136B00C47A37 /* IFTTTConnectSDK */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1E50F2200F82A42DEACE84AD /* Pods-Grocery Express.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Grocery Express.debug.xcconfig"; path = "Target Support Files/Pods-Grocery Express/Pods-Grocery Express.debug.xcconfig"; sourceTree = "<group>"; };
-		C7E9B7B81023E8803E71CFBC /* libPods-Grocery Express.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Grocery Express.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8E3AD91754C0A77D3B12E00 /* Pods-Grocery Express.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Grocery Express.release.xcconfig"; path = "Target Support Files/Pods-Grocery Express/Pods-Grocery Express.release.xcconfig"; sourceTree = "<group>"; };
 		DE01066C22D54D5E00B2CB47 /* TokenRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenRequest.swift; sourceTree = "<group>"; };
 		DE01066D22D54D5E00B2CB47 /* ConnectionCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCredentials.swift; sourceTree = "<group>"; };
 		DE01066E22D54D5E00B2CB47 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -40,6 +37,7 @@
 		DE01067622D54D5E00B2CB47 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		DE3BF62D2576E1B300F12D24 /* UIView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Helpers.swift"; sourceTree = "<group>"; };
 		DE3BF6302576E1DA00F12D24 /* UIImageView+NetworkLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+NetworkLoading.swift"; sourceTree = "<group>"; };
+		DE4B46CE26370FAD00F05FEE /* ConnectSDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ConnectSDK-iOS"; path = ..; sourceTree = "<group>"; };
 		DE717A5925F7C5C4002A00C6 /* AddressUpdateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressUpdateViewController.swift; sourceTree = "<group>"; };
 		DE717A5C25F7C9B7002A00C6 /* AddressSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressSelectionViewController.swift; sourceTree = "<group>"; };
 		DE7B730B22CAACD8000F4023 /* Grocery Express.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Grocery Express.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,22 +49,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD4BF0577F834DA46CC0229C /* libPods-Grocery Express.a in Frameworks */,
+				DEC59E032637136B00C47A37 /* IFTTTConnectSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8A0A6B951EFB7199233A94C9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				1E50F2200F82A42DEACE84AD /* Pods-Grocery Express.debug.xcconfig */,
-				D8E3AD91754C0A77D3B12E00 /* Pods-Grocery Express.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		DE01066B22D54D5E00B2CB47 /* GroceryExpress */ = {
 			isa = PBXGroup;
 			children = (
@@ -89,13 +78,20 @@
 			path = GroceryExpress;
 			sourceTree = "<group>";
 		};
+		DE4B46CF26370FE900F05FEE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DE7B730222CAACD8000F4023 = {
 			isa = PBXGroup;
 			children = (
+				DE4B46CE26370FAD00F05FEE /* ConnectSDK-iOS */,
 				DE01066B22D54D5E00B2CB47 /* GroceryExpress */,
 				DE7B730C22CAACD8000F4023 /* Products */,
-				8A0A6B951EFB7199233A94C9 /* Pods */,
-				F270D57FE297F3F681F1F732 /* Frameworks */,
+				DE4B46CF26370FE900F05FEE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -107,14 +103,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F270D57FE297F3F681F1F732 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C7E9B7B81023E8803E71CFBC /* libPods-Grocery Express.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -122,17 +110,18 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DE7B731D22CAACD9000F4023 /* Build configuration list for PBXNativeTarget "Grocery Express" */;
 			buildPhases = (
-				D2E96E69A3C65458DE0E05B6 /* [CP] Check Pods Manifest.lock */,
 				DE7B730722CAACD8000F4023 /* Sources */,
 				DE7B730822CAACD8000F4023 /* Frameworks */,
 				DE7B730922CAACD8000F4023 /* Resources */,
-				38BE562E990664C6ECDCD2BF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Grocery Express";
+			packageProductDependencies = (
+				DEC59E022637136B00C47A37 /* IFTTTConnectSDK */,
+			);
 			productName = Examples;
 			productReference = DE7B730B22CAACD8000F4023 /* Grocery Express.app */;
 			productType = "com.apple.product-type.application";
@@ -182,48 +171,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		38BE562E990664C6ECDCD2BF /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Grocery Express/Pods-Grocery Express-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Grocery Express/Pods-Grocery Express-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Grocery Express/Pods-Grocery Express-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D2E96E69A3C65458DE0E05B6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Grocery Express-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DE7B730722CAACD8000F4023 /* Sources */ = {
@@ -380,7 +327,6 @@
 		};
 		DE7B731E22CAACD9000F4023 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E50F2200F82A42DEACE84AD /* Pods-Grocery Express.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 35;
@@ -399,7 +345,6 @@
 		};
 		DE7B731F22CAACD9000F4023 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D8E3AD91754C0A77D3B12E00 /* Pods-Grocery Express.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
@@ -441,6 +386,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DEC59E022637136B00C47A37 /* IFTTTConnectSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = IFTTTConnectSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DE7B730322CAACD8000F4023 /* Project object */;
 }
