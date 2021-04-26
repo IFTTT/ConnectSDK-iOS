@@ -47,6 +47,10 @@ pod 'IFTTTConnectSDK'
 github "IFTTT/ConnectSDK-iOS"
 ```
 
+### Swift Package Manager
+
+In Xcode select File > Swift Packages > Add Package Dependency and enter the repository URL `https://github.com/IFTTT/ConnectSDK-iOS`.
+
 ### Manually
 
 #### Embedded Framework

@@ -5,7 +5,7 @@
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// Represents an object that can be tracked.
 protocol AnalyticsTrackable {

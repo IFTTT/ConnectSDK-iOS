@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// A structure representing a Connection created using the IFTTT Platform.
 public struct Connection: Equatable, Hashable {

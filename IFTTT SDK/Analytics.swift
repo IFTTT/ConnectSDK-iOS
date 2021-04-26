@@ -5,7 +5,7 @@
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 private extension Date {
     /// Returns the number of milliseconds between `self` and 00:00:00 UTC on 1 January 1970. Rounded to remove any trailing decimals.

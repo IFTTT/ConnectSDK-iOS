@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// Factory for building `NSAttributedString` with links for Terms of Use and our Privacy Policy
 struct LegalTermsText {

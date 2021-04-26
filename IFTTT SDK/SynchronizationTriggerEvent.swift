@@ -5,7 +5,7 @@
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// Describes a closure that's invoked after a sync subscriber finishes its task
 ///

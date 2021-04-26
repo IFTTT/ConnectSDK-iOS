@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol ImageViewNetworkController {
     func setImage(with url: URL?, for imageView: UIImageView)

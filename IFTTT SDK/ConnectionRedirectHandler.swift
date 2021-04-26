@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// A class to handle redirections of `URL`s recieved as a part of the `Connection` activation process.
 public final class ConnectionRedirectHandler {

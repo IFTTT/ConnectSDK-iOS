@@ -5,7 +5,7 @@
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// Describes options to initialize the SDK with
 public struct InitializerOptions {
