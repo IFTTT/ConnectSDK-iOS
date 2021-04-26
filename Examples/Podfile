@@ -1,8 +1,0 @@
-source 'https://github.com/CocoaPods/Specs.git'
-
-ios_deployment_target = '10.0'
-target 'Grocery Express' do
-  platform :ios, ios_deployment_target
-  
-  pod 'IFTTTConnectSDK', :path => './../'
-end

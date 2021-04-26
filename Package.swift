@@ -7,18 +7,18 @@ let package = Package(
         .iOS(.v10)
     ],
     products: [
-        .library(name: "IFTTT SDK", targets: ["IFTTT SDK"])
+        .library(name: "IFTTTConnectSDK", targets: ["IFTTTConnectSDK"])
     ],
     targets: [
         .target(
-            name: "IFTTT SDK",
+            name: "IFTTTConnectSDK",
             path: "IFTTT SDK",
             exclude: ["Info.plist"],
             resources: [.process("Resources")]
         ),
         .testTarget(
             name: "SDKHostAppTests",
-            dependencies: ["IFTTT SDK"],
+            dependencies: ["IFTTTConnectSDK"],
             path: "SDKHostAppTests",
             exclude: ["Info.plist"],
             resources: [.process("fetch_connection_response.json")]
