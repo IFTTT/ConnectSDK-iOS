@@ -16,8 +16,10 @@ private struct AddressUpdateRequestFactory {
     let userId: String
     let entryPlacemark: MKPlacemark
     let entryAddress: String
+    let entryRadius: Int
     let exitPlacemark: MKPlacemark
     let exitAddress: String
+    let exitRadius: Int
     let connectionId: String
     
     func generate() -> URLRequest {
@@ -39,7 +41,7 @@ private struct AddressUpdateRequestFactory {
                             "address": "\(exitAddress)",
                             "lat": "\(exitPlacemark.coordinate.latitude)",
                             "lng": "\(exitPlacemark.coordinate.longitude)",
-                            "radius": 200
+                            "radius": "\(exitRadius)"
                           }
                         }
                       ]
@@ -57,7 +59,7 @@ private struct AddressUpdateRequestFactory {
                             "address": "\(entryAddress)",
                             "lat": "\(entryPlacemark.coordinate.latitude)",
                             "lng": "\(entryPlacemark.coordinate.longitude)",
-                            "radius": 200
+                            "radius": "\(entryRadius)"
                           }
                         }
                       ]
@@ -238,14 +240,18 @@ final class AddressUpdateViewController: UIViewController {
         guard let userId = addressUpdate.userId,
               let entryPlacemark = addressUpdate.entryPlacemark,
               let entryAddress = addressUpdate.entryAddress?.replacingOccurrences(of: "\n", with: " "),
+              let entryRadius = addressUpdate.geofenceEntryRadius,
               let exitPlacemark = addressUpdate.exitPlacemark,
-              let exitAddress = addressUpdate.exitAddress?.replacingOccurrences(of: "\n", with: " ") else { return }
+              let exitAddress = addressUpdate.exitAddress?.replacingOccurrences(of: "\n", with: " "),
+              let exitRadius = addressUpdate.geofenceExitRadius else { return }
         let requestFactory = AddressUpdateRequestFactory(token: token,
                                                          userId: userId,
                                                          entryPlacemark: entryPlacemark,
                                                          entryAddress: entryAddress,
+                                                         entryRadius: entryRadius,
                                                          exitPlacemark: exitPlacemark,
                                                          exitAddress: exitAddress,
+                                                         exitRadius: exitRadius,
                                                          connectionId: connectionId)
         let task = urlSession.dataTask(with: requestFactory.generate()) { (data, response, error) in
             DispatchQueue.main.async {

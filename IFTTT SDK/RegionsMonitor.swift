@@ -111,12 +111,14 @@ class RegionsMonitor: NSObject, CLLocationManagerDelegate, LocationMonitor {
     /// - Parameters:
     ///     - regions: The list of regions to monitor with the CLLocationManager.
     private func register(regions: [CLRegion]) {
-        let regionsToRegisterMapped = regions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
+        let regionsMapped = Set(regions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) })
         let currentlyMonitoredRegionsMapped = currentlyMonitoredRegions.compactMap { $0 as? CLCircularRegion }.map { IFTTTCircularRegion(region: $0) }
-        let regionsToStopMonitoringMapped = currentlyMonitoredRegionsMapped.subtracting(regionsToRegisterMapped)
-        let regionsToStopMonitoring = regionsToStopMonitoringMapped.map { $0.region }
         
-        regionsToStopMonitoring.forEach { (region) in
+        let regionsToRegisterMapped = regionsMapped.subtracting(currentlyMonitoredRegionsMapped)
+        let regionsToStopMonitoringMapped = currentlyMonitoredRegionsMapped.subtracting(regionsMapped)
+
+        regionsToStopMonitoringMapped.forEach { (iftttCircularRegion) in
+            let region = iftttCircularRegion.region
             locationManager.stopMonitoring(for: region)
             ConnectButtonController.synchronizationLog("Did end monitoring for region: \(region)")
         }
