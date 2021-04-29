@@ -52,6 +52,12 @@ pod 'IFTTTConnectSDK'
 github "IFTTT/ConnectSDK-iOS"
 ```
 
+After generating the framework using Carthage, drag and drop the library or framework to the "Frameworks, Libraries, and Embedded Content" section of the target within the XCode project settings.
+
+#### Upgrading to 2.6.0
+
+When using Carthage with SDK versions prior to 2.6.0, the outputted build artifiact had the name `IFTTT_SDK.*`. However, starting with 2.6.0, the outputted Carthage build artifact will have the name `IFTTTConnectSDK.*`. You will need to remove the existing `IFTTT_SDK.*` file and replace it with the newly generated `IFTTTConnectSDK.*` file.
+
 ### Manually
 
 #### Embedded Framework
