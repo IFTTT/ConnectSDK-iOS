@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import IFTTT_SDK
+@testable import IFTTTConnectSDK
 
 class Connection_ParsingTests: XCTestCase {
     

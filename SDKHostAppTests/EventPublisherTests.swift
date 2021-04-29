@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import IFTTT_SDK
+@testable import IFTTTConnectSDK
 
 class EventPublisherTests: XCTestCase {
     var publisher: EventPublisher<Int>!

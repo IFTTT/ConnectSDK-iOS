@@ -9,7 +9,7 @@
 import XCTest
 import CoreLocation
 
-@testable import IFTTT_SDK
+@testable import IFTTTConnectSDK
 
 class ArrayHelpersTests: XCTestCase {
     func testClosestRegionsToLocation() throws {
