@@ -33,7 +33,8 @@ IFTTT SDK is a iOS library in Swift that allows your users to activate programma
 
 
 ### Swift Package Manager
-In Xcode select File > Swift Packages > Add Package Dependency and enter the repository URL `https://github.com/IFTTT/ConnectSDK-iOS`.
+
+In Xcode, select File > Swift Packages > Add Package Dependency and enter the repository URL `https://github.com/IFTTT/ConnectSDK-iOS`.
 
 ### CocoaPods
 
@@ -63,10 +64,10 @@ github "IFTTT/ConnectSDK-iOS"
 - Next, select your application project in the Project Navigator (blue project icon) to navigate to the target configuration window and select the application target under the “Targets” heading in the sidebar.
 - In the tab bar at the top of that window, open the “General” panel.
 - Click on the `+` button under the “Embedded Binaries” section.    
-- Select the top `IFTTT SDK.framework` for iOS.
+- Select the top `IFTTTConnectSDK.framework` for iOS.
 - And that’s it!
 
-The `IFTTT SDK.framework` is automatically added as a target dependency, linked framework and embedded framework in a “Copy Files” build phase which is all you need to build on the simulator and a device.
+The `IFTTTConnectSDK.framework` is automatically added as a target dependency, linked framework and embedded framework in a “Copy Files” build phase which is all you need to build on the simulator and a device.
 
 ## Setup 
 ### Configure redirect
