@@ -8,7 +8,7 @@
 import XCTest
 import CoreLocation
 
-@testable import IFTTT_SDK
+@testable import IFTTTConnectSDK
 
 class CLRegion_Parsing_spec: XCTestCase {
 

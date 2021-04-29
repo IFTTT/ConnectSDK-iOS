@@ -8,7 +8,7 @@
 import XCTest
 import CoreLocation
 
-@testable import IFTTT_SDK
+@testable import IFTTTConnectSDK
 
 class MockVisit: CLVisit {
     private var backingCoordinate: CLLocationCoordinate2D
