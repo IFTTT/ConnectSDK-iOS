@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FCBA15E921389F7500EB1BC8"
-               BuildableName = "IFTTT_SDK.framework"
-               BlueprintName = "IFTTT SDK"
+               BuildableName = "IFTTTConnectSDK.framework"
+               BlueprintName = "IFTTTConnectSDK"
                ReferencedContainer = "container:IFTTT SDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCBA15E921389F7500EB1BC8"
-            BuildableName = "IFTTT_SDK.framework"
-            BlueprintName = "IFTTT SDK"
+            BuildableName = "IFTTTConnectSDK.framework"
+            BlueprintName = "IFTTTConnectSDK"
             ReferencedContainer = "container:IFTTT SDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -60,8 +60,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCBA15E921389F7500EB1BC8"
-            BuildableName = "IFTTT_SDK.framework"
-            BlueprintName = "IFTTT SDK"
+            BuildableName = "IFTTTConnectSDK.framework"
+            BlueprintName = "IFTTTConnectSDK"
             ReferencedContainer = "container:IFTTT SDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
