@@ -92,6 +92,7 @@ extension URLSession {
 
 /// A helper view to update the entry/exit geofences of a connection. This should only be used with connections that have entry and exit location triggers.
 final class AddressUpdateViewController: UIViewController {
+    @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var enterAddressLabel: UILabel!
     @IBOutlet private weak var enterRadiusTextField: UITextField!
@@ -233,7 +234,35 @@ final class AddressUpdateViewController: UIViewController {
         
         stackView.layoutMargins = .init(top: 20, left: 20, bottom: 0, right: 20)
         stackView.isLayoutMarginsRelativeArrangement = true
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+        
         update()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func keyboardWillShow(notification: Notification) {
+        guard let userInfo = notification.userInfo else { return }
+        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+
+        var contentInset:UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height + 20
+        scrollView.contentInset = contentInset
+    }
+    
+    @objc private func keyboardWillHide(notification: Notification) {
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        scrollView.contentInset = contentInset
     }
     
     private func makeRequest(completion: @escaping (Data?, Error?) -> Void) {
