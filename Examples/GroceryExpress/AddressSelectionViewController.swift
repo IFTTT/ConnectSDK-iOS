@@ -57,7 +57,7 @@ final class AddressSelectionViewController: UIViewController {
         }
         
         resultSearchController?.hidesNavigationBarDuringPresentation = false
-        resultSearchController?.dimsBackgroundDuringPresentation = true
+        resultSearchController?.obscuresBackgroundDuringPresentation = true
         definesPresentationContext = true
         
         let continueButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
@@ -94,7 +94,7 @@ extension AddressSelectionViewController: LocationSearchSelectable {
     }
 }
  
-protocol LocationSearchSelectable: class {
+protocol LocationSearchSelectable: AnyObject {
     func didSelect(_ placemark: MKPlacemark, formattedAddress: String)
 }
 

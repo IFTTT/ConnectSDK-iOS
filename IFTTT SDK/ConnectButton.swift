@@ -8,7 +8,7 @@
 import UIKit
 
 /// Delegate methods for performing any tracking of events from the ConnectButton.
-protocol ConnectButtonAnalyticsDelegate: class {
+protocol ConnectButtonAnalyticsDelegate: AnyObject {
     /// Called when the user is shown the suggested email address.
     func trackSuggestedEmailImpression()
 }
