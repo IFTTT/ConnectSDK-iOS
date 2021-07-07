@@ -186,8 +186,6 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     private let sessionManager: RegionEventsSessionManager
     /// The `EventPublisher<SynchronizationTriggerEvent>` that handles publishing synchronization events to listeners
     private let regionEventTriggerPublisher: EventPublisher<SynchronizationTriggerEvent>
-    /// Determines whether or not a 0.1 second delay should be applied before publishing synchronization events
-    private let applyDelayOnSyncTrigger: Bool
         
     struct Constants {
         static let SanityThreshold = 20
@@ -201,21 +199,18 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     ///     - connectionsRegistry: An instance of `ConnectionsRegistry` that determines which connections are currently being monitored by the SDK.
     ///     - sessionManager: An instance of `RegionEventsSessionManager` that uploads region events to the backend.
     ///     - eventPublisher: An instance of `EventPublisher<SynchronizationTriggerEvent>` that handles publishing sync events to listeners.
-    ///     - applyDelayOnSyncTrigger: Determines whether or not a 0.1 second delay should be applied to trigger syncs. Defaults to `true`.
     /// - Returns: An initialized instance of `LocationService`.
     init(regionsMonitor: RegionsMonitor,
          regionEventsRegistry: RegionEventsRegistry,
          connectionsRegistry: ConnectionsRegistry,
          sessionManager: RegionEventsSessionManager,
-         eventPublisher: EventPublisher<SynchronizationTriggerEvent>,
-         applyDelayOnSyncTrigger: Bool = true) {
+         eventPublisher: EventPublisher<SynchronizationTriggerEvent>) {
         self.regionsMonitor = regionsMonitor
         self.regionEventsRegistry = regionEventsRegistry
         self.connectionsRegistry = connectionsRegistry
         self.sessionManager = sessionManager
         self.regionEventTriggerPublisher = eventPublisher
         
-        self.applyDelayOnSyncTrigger = applyDelayOnSyncTrigger
         super.init()
     }
     
@@ -275,21 +270,14 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         let event = RegionEvent(kind: kind, triggerSubscriptionId: region.identifier)
         regionEventsRegistry.add(event)
         
-        let closure = {
-            let event = SynchronizationTriggerEvent(source: .regionsUpdate,
-                                                    completionHandler: nil)
-            
-            self.regionEventTriggerPublisher.onNext(event)
-            
-            if let backgroundTaskIdentifier = backgroundTaskIdentifier, backgroundTaskIdentifier != UIBackgroundTaskIdentifier.invalid {
-                UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
-            }
-        }
-
-        if applyDelayOnSyncTrigger {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: closure)
-        } else {
-            closure()
+        let triggerEvent = SynchronizationTriggerEvent(source: .regionsUpdate,
+                                                       completionHandler: nil)
+        
+        self.regionEventTriggerPublisher.onNext(triggerEvent)
+        
+        if let backgroundTaskIdentifier = backgroundTaskIdentifier,
+           backgroundTaskIdentifier != UIBackgroundTaskIdentifier.invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
         }
     }
     
