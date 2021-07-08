@@ -64,9 +64,7 @@ class ConnectionsMonitor: SynchronizationSubscriber {
         let startingCount = connections.count
         
         let completionOperation = BlockOperation {
-            DispatchQueue.main.async {
-                completion(self.connectionsRegistry.getConnectionsCount() == startingCount, error)
-            }
+            completion(self.connectionsRegistry.getConnectionsCount() == startingCount, error)
         }
         
         let credentialProvider = UserAuthenticatedRequestCredentialProvider()
