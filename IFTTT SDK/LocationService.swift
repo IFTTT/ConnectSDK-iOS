@@ -118,6 +118,7 @@ class RegionEventsSessionManager {
             if retryCount < numberOfRetries {
                 let count = retryCount + 1
                 ConnectButtonController.synchronizationLog("Failed to upload region events: \(events). Will retry \(numberOfRetries - retryCount) more times.")
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + self.exponentialBackoffTiming(for: count)) {
                     self.upload(events: events,
                                 credentialProvider: credentialProvider,

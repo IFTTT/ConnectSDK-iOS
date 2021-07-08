@@ -2,7 +2,6 @@
 //  ArrayHelpersTests.swift
 //  SDKHostAppTests
 //
-//  Created by Siddharth Sathyam on 12/14/20.
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
