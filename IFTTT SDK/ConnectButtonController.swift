@@ -47,7 +47,7 @@ public enum ConnectButtonControllerError: Error {
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
-public protocol ConnectButtonControllerDelegate: class {
+public protocol ConnectButtonControllerDelegate: AnyObject {
 
     /// The `ConnectButtonController` needs to present a view controller. This includes the About IFTTT page and Safari VC during Connection activation.
     ///
@@ -612,9 +612,10 @@ public class ConnectButtonController {
     ///   - redirectImmediately: When true, do redirect immediately. Or delay to show progress bar.
     private func transitionToAppHandoff(url: URL, redirectImmediately: Bool) {
         let redirect = {
-            let success = UIApplication.shared.openURL(url)
-            if !success {
-                self.transition(to: .failed(.iftttAppRedirectFailed))
+            UIApplication.shared.open(url, options: [:]) { success in
+                if !success {
+                    self.transition(to: .failed(.iftttAppRedirectFailed))
+                }
             }
         }
         
