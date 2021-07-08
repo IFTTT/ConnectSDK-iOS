@@ -296,9 +296,7 @@ private class NativeServicesCoordinator {
     }
     
     func processConnectionUpdate(_ updates: Set<Connection.ConnectionStorage>) {
-        DispatchQueue.main.async {
-            self.permissionsRequestor.processUpdate(with: updates)
-            self.locationService.updateRegions(from: updates)
-        }
+        permissionsRequestor.processUpdate(with: updates)
+        locationService.updateRegions(from: updates)
     }
 }

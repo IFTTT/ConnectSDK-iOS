@@ -2,7 +2,6 @@
 //  SceneDelegate.swift
 //  SDKHostApp
 //
-//  Created by Siddharth Sathyam on 12/11/20.
 //  Copyright © 2020 IFTTT. All rights reserved.
 //
 
