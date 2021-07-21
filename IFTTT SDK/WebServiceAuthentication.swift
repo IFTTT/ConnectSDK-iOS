@@ -16,7 +16,6 @@ enum AuthenticationError: Error {
     case failed
     case invalidResponse
     case notHandled
-    case notInteractive
     case presentationContextInvalid
     case unknown
 }

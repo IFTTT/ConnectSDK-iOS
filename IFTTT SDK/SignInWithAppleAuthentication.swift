@@ -54,8 +54,6 @@ final class AppleSignInWebService: ServiceAuthentication {
                 completion(.failure(.notHandled))
             case .unknown:
                 completion(.failure(.unknown))
-            case .notInteractive:
-                completion(.failure(.notInteractive))
             @unknown default:
                 completion(.failure(.unknown))
             }
