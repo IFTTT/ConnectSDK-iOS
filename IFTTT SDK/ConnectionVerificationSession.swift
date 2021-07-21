@@ -48,7 +48,7 @@ final class ConnectionVerificationSession {
     ///     - presentationContext: The `UIWindow` instance to use in presenting the web auth flow. The system may present an alert.
     @available(iOS 13.0, *)
     func start(with url: URL, in presentationContext: UIWindow) {
-        let service = ASWebServiceAuthentication(authenticationSessionPresentationContextProvider: .init(presentationContext: presentationContext))
+        let service = ASWebServiceAuthentication(authenticationSessionContextPresentationProvider: .init(presentationContext: presentationContext))
         service.start(with: .init(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)) { [weak self] result in
             switch result {
             case .success(let result):
@@ -74,7 +74,7 @@ final class ConnectionVerificationSession {
     @available(iOS, obsoleted: 13, message: "API is obsoleted in iOS 13. Please use `start(with url: URL, in presentationContext: UIWindow)` instead.")
     func start(from viewController: UIViewController, with url: URL) {
         if #available(iOS 12, *) {
-            let service = ASWebServiceAuthentication(authenticationSessionContextProvider: nil)
+            let service = ASWebServiceAuthentication(authenticationSessionContextPresentationProvider: nil)
             service.start(with: .init(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)) { [weak self] result in
                 switch result {
                 case .success(let url):

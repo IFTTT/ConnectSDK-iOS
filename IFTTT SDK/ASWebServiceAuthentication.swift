@@ -16,13 +16,13 @@ final class ASWebServiceAuthentication: WebServiceAuthentication {
     
     /// We must hold a reference to the session context provider so it's not deallocated.
     /// Only used with `ASWebAuthenticationSession` in iOS 13 and up.
-    private var authenticationSessionContextProvider: AuthenticationSessionContextPresentationProvider?
+    private var authenticationSessionContextPresentationProvider: AuthenticationSessionContextPresentationProvider?
     
     /// Creates an instance of ASWebServiceAuthentication.
     /// - Parameters
     ///     - authenticationSessionContextProvider: An optional instance of `AuthenticationSessionContextPresentationProvider` used in configuring the web service authentication object. Optional for iOS 12 but required for iOS 13 and up.
-    init(authenticationSessionContextProvider: AuthenticationSessionContextPresentationProvider?) {
-        self.authenticationSessionContextProvider = authenticationSessionContextProvider
+    init(authenticationSessionContextPresentationProvider: AuthenticationSessionContextPresentationProvider?) {
+        self.authenticationSessionContextPresentationProvider = authenticationSessionContextPresentationProvider
     }
     
     @discardableResult
@@ -46,7 +46,7 @@ final class ASWebServiceAuthentication: WebServiceAuthentication {
         }
         
         if #available(iOS 13.0, *) {
-            asWebAuthenticationSession.presentationContextProvider = authenticationSessionContextProvider
+            asWebAuthenticationSession.presentationContextProvider = authenticationSessionContextPresentationProvider
             asWebAuthenticationSession.prefersEphemeralWebBrowserSession = parameters.prefersEphemeralWebBrowserSession
         }
         self.session = asWebAuthenticationSession
