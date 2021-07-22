@@ -27,17 +27,15 @@ final class AppleSignInWebService: ServiceAuthentication {
         
         @available(iOS 13.0, *)
         func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-            switch authorization.credential {
-            case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                guard let identityTokenData = appleIDCredential.identityToken,
-                    let identitityCodeString = String(data: identityTokenData, encoding: .utf8) else {
+            guard
+                let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                let identityTokenData = appleIDCredential.identityToken,
+                let identitityCodeString = String(data: identityTokenData, encoding: .utf8) else {
                     completion(.failure(.invalidResponse))
                     return
-                }
-                completion(.success(identitityCodeString))
-            default:
-                completion(.failure(.invalidResponse))
             }
+
+            completion(.success(identitityCodeString))
         }
 
         @available(iOS 13.0, *)
