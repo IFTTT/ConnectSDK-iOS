@@ -53,6 +53,10 @@
 		B556033B25A851EE00A29A01 /* Localizable_zh-Hant.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556032325A851ED00A29A01 /* Localizable_zh-Hant.strings */; };
 		B556033C25A851EE00A29A01 /* Localizable_cs.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556032425A851EE00A29A01 /* Localizable_cs.strings */; };
 		B556033D25A851EE00A29A01 /* Localizable_nl.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556032525A851EE00A29A01 /* Localizable_nl.strings */; };
+		DE1F036926A8A20A00B6CF1A /* ASWebServiceAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1F036826A8A20A00B6CF1A /* ASWebServiceAuthentication.swift */; };
+		DE1F036B26A8A24500B6CF1A /* SFWebServiceAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1F036A26A8A24500B6CF1A /* SFWebServiceAuthentication.swift */; };
+		DE1F036D26A8A29800B6CF1A /* SignInWithAppleAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1F036C26A8A29800B6CF1A /* SignInWithAppleAuthentication.swift */; };
+		DE1F037226A8AD2600B6CF1A /* AuthenticationSessionPresentationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1F037126A8AD2600B6CF1A /* AuthenticationSessionPresentationContextProvider.swift */; };
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
 		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
 		DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F52492429404200EF986A /* Connection+Location.swift */; };
@@ -73,7 +77,7 @@
 		DE4C5FFA22CFE570009C7AF9 /* EmailValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */; };
 		DE641D88252B7BC900C56FF9 /* ConnectButtonController+Public.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */; };
 		DE7666E723997568005D6DE3 /* ConnectionVerificationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */; };
-		DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */; };
+		DE7666E9239990C5005D6DE3 /* WebServiceAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7666E8239990C5005D6DE3 /* WebServiceAuthentication.swift */; };
 		DEBC3C8225421D600052A8CB /* ConnectButtonController+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */; };
 		DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FEF2429469C007D7039 /* NativeServices.swift */; };
 		DEC08FF2242948C3007D7039 /* Set+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC08FF1242948C3007D7039 /* Set+Helpers.swift */; };
@@ -225,6 +229,10 @@
 		B556032425A851EE00A29A01 /* Localizable_cs.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable_cs.strings; path = Resources/Localizable_cs.strings; sourceTree = "<group>"; };
 		B556032525A851EE00A29A01 /* Localizable_nl.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable_nl.strings; path = Resources/Localizable_nl.strings; sourceTree = "<group>"; };
 		DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionEventsRegistryTests.swift; sourceTree = "<group>"; };
+		DE1F036826A8A20A00B6CF1A /* ASWebServiceAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASWebServiceAuthentication.swift; sourceTree = "<group>"; };
+		DE1F036A26A8A24500B6CF1A /* SFWebServiceAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFWebServiceAuthentication.swift; sourceTree = "<group>"; };
+		DE1F036C26A8A29800B6CF1A /* SignInWithAppleAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithAppleAuthentication.swift; sourceTree = "<group>"; };
+		DE1F037126A8AD2600B6CF1A /* AuthenticationSessionPresentationContextProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationSessionPresentationContextProvider.swift; sourceTree = "<group>"; };
 		DE25265523D8C49D0019C9CB /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Connection+Parsing.swift"; sourceTree = "<group>"; };
 		DE2F52492429404200EF986A /* Connection+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Location.swift"; sourceTree = "<group>"; };
@@ -248,7 +256,7 @@
 		DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailValidator.swift; sourceTree = "<group>"; };
 		DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButtonController+Public.swift"; sourceTree = "<group>"; };
 		DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionVerificationSession.swift; sourceTree = "<group>"; };
-		DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationSession.swift; sourceTree = "<group>"; };
+		DE7666E8239990C5005D6DE3 /* WebServiceAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServiceAuthentication.swift; sourceTree = "<group>"; };
 		DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButtonController+Logging.swift"; sourceTree = "<group>"; };
 		DEC08FEF2429469C007D7039 /* NativeServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeServices.swift; sourceTree = "<group>"; };
 		DEC08FF1242948C3007D7039 /* Set+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+Helpers.swift"; sourceTree = "<group>"; };
@@ -372,6 +380,19 @@
 				1DFE020A2190E39B00856ABC /* Connection+Request.swift */,
 			);
 			name = Connection;
+			sourceTree = "<group>";
+		};
+		DE1F036E26A8A33F00B6CF1A /* Web Service Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */,
+				DE7666E8239990C5005D6DE3 /* WebServiceAuthentication.swift */,
+				DE1F036826A8A20A00B6CF1A /* ASWebServiceAuthentication.swift */,
+				DE1F036A26A8A24500B6CF1A /* SFWebServiceAuthentication.swift */,
+				DE1F036C26A8A29800B6CF1A /* SignInWithAppleAuthentication.swift */,
+				DE1F037126A8AD2600B6CF1A /* AuthenticationSessionPresentationContextProvider.swift */,
+			);
+			name = "Web Service Authentication";
 			sourceTree = "<group>";
 		};
 		DE3074A523DB505400A3C71F /* Analytics */ = {
@@ -573,6 +594,7 @@
 		FCF29FC32187B903004B1100 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				DE1F036E26A8A33F00B6CF1A /* Web Service Authentication */,
 				DEC75CB525092B6100F40296 /* Native Services */,
 				1DFE020C2190E3DB00856ABC /* API.swift */,
 				DE3074A523DB505400A3C71F /* Analytics */,
@@ -591,8 +613,6 @@
 				1D7918402227202700429936 /* Reachability.swift */,
 				FC361B60224D872D0078B153 /* ProgressBarController.swift */,
 				DE4C5FF922CFE570009C7AF9 /* EmailValidator.swift */,
-				DE7666E623997568005D6DE3 /* ConnectionVerificationSession.swift */,
-				DE7666E8239990C5005D6DE3 /* AuthenticationSession.swift */,
 				DE328DBD243E18BB00603EAC /* Keychain.swift */,
 				DEBC3C8125421D600052A8CB /* ConnectButtonController+Logging.swift */,
 			);
@@ -902,7 +922,7 @@
 				DE4A4C5E243632A7004082BF /* SynchronizationSubscriber.swift in Sources */,
 				DE328DB4243CBC9700603EAC /* ConnectionsSynchronizer.swift in Sources */,
 				DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */,
-				DE7666E9239990C5005D6DE3 /* AuthenticationSession.swift in Sources */,
+				DE7666E9239990C5005D6DE3 /* WebServiceAuthentication.swift in Sources */,
 				1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */,
 				FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,
@@ -917,6 +937,7 @@
 				1D453EE22297222D001994FF /* ConnectButton+Interaction.swift in Sources */,
 				1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */,
 				FC22B19A21ACCD9C00738023 /* ConstraintsMaker.swift in Sources */,
+				DE1F036926A8A20A00B6CF1A /* ASWebServiceAuthentication.swift in Sources */,
 				DE328DBC243E185800603EAC /* ConnectionsRegistry.swift in Sources */,
 				1DFE02092190E35300856ABC /* ConnectionRedirectHandler.swift in Sources */,
 				FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */,
@@ -925,12 +946,14 @@
 				DE328DC2243E1DED00603EAC /* LocationMonitor.swift in Sources */,
 				DEC75CBD250A73E000F40296 /* RegionEventsRegistry.swift in Sources */,
 				1D453EE8229723CA001994FF /* ConnectButton+ProgressBar.swift in Sources */,
+				DE1F036B26A8A24500B6CF1A /* SFWebServiceAuthentication.swift in Sources */,
 				DE328DC0243E1DC000603EAC /* RegionsMonitor.swift in Sources */,
 				1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */,
 				1D7918412227202700429936 /* Reachability.swift in Sources */,
 				FC22B19421ACA54000738023 /* ImageCache.swift in Sources */,
 				1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */,
 				FCF0C4E421B0A97000DEB117 /* ConnectionNetworkError.swift in Sources */,
+				DE1F037226A8AD2600B6CF1A /* AuthenticationSessionPresentationContextProvider.swift in Sources */,
 				1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */,
 				DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
@@ -959,6 +982,7 @@
 				FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
+				DE1F036D26A8A29800B6CF1A /* SignInWithAppleAuthentication.swift in Sources */,
 				DEC08FFA242A5DD4007D7039 /* ConnectionsMonitor.swift in Sources */,
 				DE3074A923DB50A800A3C71F /* Analytics+DataStructures.swift in Sources */,
 				DEF4A4922587B9EB00735E98 /* Array+Helpers.swift in Sources */,
@@ -1189,7 +1213,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MARKETING_VERSION = 2.3.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1247,7 +1270,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MARKETING_VERSION = 2.3.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1276,7 +1298,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDK";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1303,7 +1324,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "ifttt.IFTTT-SDK";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

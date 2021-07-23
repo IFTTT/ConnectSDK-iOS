@@ -48,8 +48,8 @@ final class ConnectionVerificationSession {
     ///     - presentationContext: The `UIWindow` instance to use in presenting the web auth flow. The system may present an alert.
     @available(iOS 13.0, *)
     func start(with url: URL, in presentationContext: UIWindow) {
-        let authenticationMethod = AuthenticationSession.AuthenticationMethod.oauth(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)
-        let authenticationSession = AuthenticationSession(method: authenticationMethod, presentationContext: presentationContext) { [weak self] (result) in
+        let service = ASWebServiceAuthentication(authenticationSessionContextPresentationProvider: .init(presentationContext: presentationContext))
+        service.start(with: .init(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)) { [weak self] result in
             switch result {
             case .success(let result):
                 self?.handleAuthenticationResult(result)
@@ -62,8 +62,7 @@ final class ConnectionVerificationSession {
                 }
             }
         }
-        authenticationSession.start()
-        authProvider = .authSession(authenticationSession)
+        authProvider = .authSession(service)
     }
     
     /// Begins the connection verification session
@@ -74,17 +73,28 @@ final class ConnectionVerificationSession {
     ///     - url: The url to kick off the connection verification with.
     @available(iOS, obsoleted: 13, message: "API is obsoleted in iOS 13. Please use `start(with url: URL, in presentationContext: UIWindow)` instead.")
     func start(from viewController: UIViewController, with url: URL) {
-        if #available(iOS 11, *) {
-            let authenticationSession = AuthenticationSession(url: url, callbackURLScheme: nil) { [weak self] (result) in
+        if #available(iOS 12, *) {
+            let service = ASWebServiceAuthentication(authenticationSessionContextPresentationProvider: nil)
+            service.start(with: .init(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)) { [weak self] result in
                 switch result {
                 case .success(let url):
-                    self?.redirectHandler.handleRedirect(url: url)
+                    self?.handleAuthenticationResult(url)
                 case .failure(let error):
                     self?.handleAuthenticationError(error)
                 }
             }
-            authenticationSession.start()
-            authProvider = .authSession(authenticationSession)
+            authProvider = .authSession(service)
+        } else if #available(iOS 11, *) {
+            let service = SFWebService()
+            service.start(with: .init(url: url, callbackURLScheme: nil, prefersEphemeralWebBrowserSession: false)) { [weak self] result in
+                switch result {
+                case .success(let url):
+                    self?.handleAuthenticationResult(url)
+                case .failure(let error):
+                    self?.handleAuthenticationError(error)
+                }
+            }
+            authProvider = .authSession(service)
         } else {
             let safari = SFSafariViewController(url: url)
             safari.delegate = cancellationObserver
@@ -99,23 +109,18 @@ final class ConnectionVerificationSession {
     /// Handles authentication success.
     ///
     /// - Parameters:
-    ///     - result: An instance of `AuthenticationSession.AuthenticationResult` that gets returned from a successful authentication.
+    ///     - result: An `URL` that gets returned from a successful authentication.
     @available(iOS 11.0, *)
-    private func handleAuthenticationResult(_ result: AuthenticationSession.AuthenticationResult) {
-        switch result {
-        case .redirectURL(let url):
-            redirectHandler.handleRedirect(url: url)
-        default:
-            redirectHandler.handleUnknown()
-        }
+    private func handleAuthenticationResult(_ result: URL) {
+        redirectHandler.handleRedirect(url: result)
     }
     
     /// Handles authentication error.
     ///
     /// - Parameters:
-    ///     - result: An instance of `AuthenticationSession.AuthenticationError` that gets returned from an authentication error.
+    ///     - result: An instance of `AuthenticationError` that gets returned from an authentication error.
     @available(iOS 11.0, *)
-    private func handleAuthenticationError(_ error: AuthenticationSession.AuthenticationError) {
+    private func handleAuthenticationError(_ error: AuthenticationError) {
         switch error {
         case .userCanceled:
             redirectHandler.handleUserCancelled()
@@ -128,9 +133,7 @@ final class ConnectionVerificationSession {
     
     /// We have to use a different method on iOS 10 and 11 for an authentication session due to iOS changes
     private enum AuthenticationProvider {
-        @available(iOS 11.0, *)
-        case authSession(AuthenticationSession)
-        
+        case authSession(WebServiceAuthentication)
         case safari(SFSafariViewController)
         
         func cancel() {
@@ -172,7 +175,7 @@ final class ConnectionVerificationSession {
     
     /// An object to handle the case in which the user cancels during the web flow
     private var cancellationObserver: CancellationObserver?
-    
+        
     deinit {
         authProvider?.cancel()
         authProvider = nil
@@ -213,12 +216,10 @@ private extension ConnectionVerificationSession {
         /// - Parameters:
         ///     - url: The url that prompted returning back to the app and sdk.
         func handleRedirect(url: URL?) {
-            guard
-                let url = url,
+            guard let url = url,
                 let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                 let queryItems = components.queryItems,
-                let nextStep = queryItems.first(where: { $0.name == QueryItems.nextStep })?.value
-                else {
+                let nextStep = queryItems.first(where: { $0.name == QueryItems.nextStep })?.value else {
                     completionHandler?(.error(.unknownRedirect))
                     return
             }
@@ -283,7 +284,6 @@ private extension ConnectionVerificationSession {
         }
     }
 }
-
 
 extension ConnectionVerificationSession {
     /// Starts the observing for redirects back to the app from outside the app completely.
