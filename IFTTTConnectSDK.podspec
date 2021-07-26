@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   spec.source           = { :git => "https://github.com/IFTTT/ConnectSDK-iOS.git",  :tag => "#{spec.version}" }
   spec.source_files     = "IFTTT SDK/**/*.swift"
   spec.resource_bundles = {
-    'IFTTTConnectSDK' => ['IFTTT SDK/Assets.xcassets'],
-    'IFTTTConnectSDK-Localizations' => ['IFTTT SDK/*.strings']
+    'IFTTTConnectSDK' => ['IFTTT SDK/Resources/Assets.xcassets'],
+    'IFTTTConnectSDK-Localizations' => ['IFTTT SDK/Resources/*.strings']
   }
 end
