@@ -124,7 +124,11 @@ public class ConnectButtonController {
         }
         
         connection?.status = .enabled
-        ConnectButtonController.update()
+        
+        // If this connection has native triggers, update native trigger data
+        if connection?.hasNativeTriggers ?? false {
+            ConnectButtonController.update()
+        }
         
         if let connection = connection {
             Analytics.shared.track(.StateChange,
