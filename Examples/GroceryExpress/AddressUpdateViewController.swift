@@ -13,7 +13,6 @@ import IFTTTConnectSDK
 /// Generates a address update request based on the fields contained in the struct.
 private struct AddressUpdateRequestFactory {
     let token: String
-    let userId: String
     let entryPlacemark: MKPlacemark
     let entryAddress: String
     let entryRadius: Int
@@ -25,7 +24,7 @@ private struct AddressUpdateRequestFactory {
     func generate() -> URLRequest {
         let body = """
         {
-          "user_id": \(userId),
+          "user_id": 1,
           "services": [
             {
               "service_id": "location",
@@ -99,7 +98,6 @@ final class AddressUpdateViewController: UIViewController {
     @IBOutlet private weak var exitAddressLabel: UILabel!
     @IBOutlet private weak var exitRadiusTextField: UITextField!
     @IBOutlet private weak var updateButton: UIButton!
-    @IBOutlet private weak var userIdTextField: UITextField!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     /// The user token that comes back from the `ConnectButtonControllerDelegate` method `didFinishActivationWithResult`
@@ -131,9 +129,6 @@ final class AddressUpdateViewController: UIViewController {
         
         /// The geofence exit formatted address
         var exitAddress: String?
-        
-        /// The IFTTT user id for the user to update
-        var userId: String?
     }
 
     private var addressUpdate: AddressUpdate = .init()
@@ -176,16 +171,25 @@ final class AddressUpdateViewController: UIViewController {
         configureUpdateButton()
     }
     
+    private func generateText(placemark: MKPlacemark, formattedAddress: String?) -> String {
+        var str = ""
+        if let formattedAddress = formattedAddress {
+            str += formattedAddress
+        }
+        str += ("\n" + "Lat: \(placemark.coordinate.latitude), Lon: \(placemark.coordinate.longitude)")
+        return str
+    }
+    
     private func configureLabels() {
-        if let entry = addressUpdate.entryAddress {
-            enterAddressLabel.text = entry
+        if let entryPlacemark = addressUpdate.entryPlacemark {
+            enterAddressLabel.text = generateText(placemark: entryPlacemark, formattedAddress: addressUpdate.entryAddress)
             enterAddressLabel.isHidden = false
         } else {
             enterAddressLabel.isHidden = true
         }
         
-        if let exit = addressUpdate.exitAddress {
-            exitAddressLabel.text = exit
+        if let exitPlacemark = addressUpdate.exitPlacemark {
+            exitAddressLabel.text = generateText(placemark: exitPlacemark, formattedAddress: addressUpdate.exitAddress)
             exitAddressLabel.isHidden = false
         } else {
             exitAddressLabel.isHidden = true
@@ -195,7 +199,6 @@ final class AddressUpdateViewController: UIViewController {
     private func configureUpdateButton() {
         updateButton.isEnabled = addressUpdate.entryPlacemark != nil
             && addressUpdate.exitPlacemark != nil
-            && !(addressUpdate.userId?.isEmpty ?? true)
     }
     
     @IBAction private func updateButtonTapped(_ sender: Any) {
@@ -218,7 +221,6 @@ final class AddressUpdateViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        userIdTextField.delegate = self
         enterRadiusTextField.delegate = self
         exitRadiusTextField.delegate = self
         
@@ -266,15 +268,17 @@ final class AddressUpdateViewController: UIViewController {
     }
     
     private func makeRequest(completion: @escaping (Data?, Error?) -> Void) {
-        guard let userId = addressUpdate.userId,
-              let entryPlacemark = addressUpdate.entryPlacemark,
-              let entryAddress = addressUpdate.entryAddress?.replacingOccurrences(of: "\n", with: " "),
+        guard let entryPlacemark = addressUpdate.entryPlacemark,
               let entryRadius = addressUpdate.geofenceEntryRadius,
               let exitPlacemark = addressUpdate.exitPlacemark,
-              let exitAddress = addressUpdate.exitAddress?.replacingOccurrences(of: "\n", with: " "),
-              let exitRadius = addressUpdate.geofenceExitRadius else { return }
+              let exitRadius = addressUpdate.geofenceExitRadius else {
+            completion(nil, nil)
+            return
+        }
+        
+        let entryAddress = addressUpdate.entryAddress?.replacingOccurrences(of: "\n", with: " ") ?? ""
+        let exitAddress = addressUpdate.exitAddress?.replacingOccurrences(of: "\n", with: " ") ?? ""
         let requestFactory = AddressUpdateRequestFactory(token: token,
-                                                         userId: userId,
                                                          entryPlacemark: entryPlacemark,
                                                          entryAddress: entryAddress,
                                                          entryRadius: entryRadius,
@@ -300,9 +304,7 @@ extension AddressUpdateViewController: UITextFieldDelegate {
         guard let text = textField.text else { return true }
         let updatedText = (text as NSString).replacingCharacters(in: range, with: string)
         
-        if textField == userIdTextField {
-            addressUpdate.userId = updatedText
-        } else if textField == enterRadiusTextField {
+        if textField == enterRadiusTextField {
             addressUpdate.geofenceEntryRadius = Int(updatedText)
         } else if textField == exitRadiusTextField {
             addressUpdate.geofenceExitRadius = Int(updatedText)
