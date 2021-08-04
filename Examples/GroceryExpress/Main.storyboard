@@ -553,25 +553,25 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="pOl-86-ZcO">
                                         <rect key="frame" x="0.0" y="40" width="414" height="240"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="dSf-dN-UsU">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="29"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dSf-dN-UsU">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Enter Address:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7h9-u5-I3m">
-                                                        <rect key="frame" x="0.0" y="0.0" width="95" height="29"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Enter Geofence Center:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7h9-u5-I3m">
+                                                        <rect key="frame" x="0.0" y="0.0" width="151.66666666666666" height="17"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;Enter Address&gt;" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bhR-5V-qba">
-                                                        <rect key="frame" x="105" y="0.0" width="0.0" height="29"/>
+                                                        <rect key="frame" x="0.0" y="22" width="108.33333333333333" height="0.0"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yeq-sB-G2F">
-                                                        <rect key="frame" x="115" y="0.0" width="299" height="29"/>
+                                                        <rect key="frame" x="0.0" y="27" width="88" height="29"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <state key="normal" title="Select Address"/>
+                                                        <state key="normal" title="Select Center"/>
                                                         <connections>
                                                             <action selector="enterAddressTapped:" destination="4l4-mG-TU8" eventType="touchUpInside" id="6fs-NA-3I8"/>
                                                         </connections>
@@ -579,7 +579,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mO5-Ku-D8S">
-                                                <rect key="frame" x="0.0" y="49" width="414" height="34"/>
+                                                <rect key="frame" x="0.0" y="76" width="414" height="34"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Enter radius:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lod-4P-OLU">
                                                         <rect key="frame" x="0.0" y="0.0" width="81.666666666666671" height="34"/>
@@ -594,25 +594,25 @@
                                                     </textField>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="MNq-RF-STZ">
-                                                <rect key="frame" x="0.0" y="103" width="414" height="29"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="MNq-RF-STZ">
+                                                <rect key="frame" x="0.0" y="130" width="414" height="56"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Exit Address:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hxc-9V-MPq">
-                                                        <rect key="frame" x="0.0" y="0.0" width="84.333333333333329" height="29"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Exit Geofence Center:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hxc-9V-MPq">
+                                                        <rect key="frame" x="0.0" y="0.0" width="141.33333333333334" height="17"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;Exit Address&gt;" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vM6-Dq-a8U">
-                                                        <rect key="frame" x="94.333333333333329" y="0.0" width="0.0" height="29"/>
+                                                        <rect key="frame" x="0.0" y="22" width="97.666666666666671" height="0.0"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Usf-E5-Bv9">
-                                                        <rect key="frame" x="104.33333333333334" y="0.0" width="309.66666666666663" height="29"/>
+                                                        <rect key="frame" x="0.0" y="27" width="88" height="29"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <state key="normal" title="Select Address"/>
+                                                        <state key="normal" title="Select Center"/>
                                                         <connections>
                                                             <action selector="exitAddressTapped:" destination="4l4-mG-TU8" eventType="touchUpInside" id="jsP-05-g4X"/>
                                                         </connections>
@@ -620,7 +620,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="MEU-19-hoN">
-                                                <rect key="frame" x="0.0" y="152" width="414" height="34"/>
+                                                <rect key="frame" x="0.0" y="206" width="414" height="34"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Exit radius:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hgW-ic-mBs">
                                                         <rect key="frame" x="0.0" y="0.0" width="71.333333333333329" height="34"/>
@@ -630,22 +630,6 @@
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="200" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fha-Xx-HkC">
                                                         <rect key="frame" x="91.333333333333343" y="0.0" width="322.66666666666663" height="34"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits" keyboardType="numberPad" textContentType="one-time-code"/>
-                                                    </textField>
-                                                </subviews>
-                                            </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="FE9-75-DOe">
-                                                <rect key="frame" x="0.0" y="206" width="414" height="34"/>
-                                                <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="IFTTT User ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T50-Jo-wpB">
-                                                        <rect key="frame" x="0.0" y="0.0" width="89.333333333333329" height="34"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CU6-PC-3vU">
-                                                        <rect key="frame" x="109.33333333333334" y="0.0" width="304.66666666666663" height="34"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits" keyboardType="numberPad" textContentType="one-time-code"/>
                                                     </textField>
@@ -696,7 +680,6 @@
                         <outlet property="scrollView" destination="5KI-iK-ELn" id="fkC-bK-IaH"/>
                         <outlet property="stackView" destination="pOl-86-ZcO" id="Ltb-1B-5RZ"/>
                         <outlet property="updateButton" destination="3s8-ce-p2R" id="JA2-ok-LTj"/>
-                        <outlet property="userIdTextField" destination="CU6-PC-3vU" id="JG5-f5-GTH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tVx-5G-HeK" userLabel="First Responder" sceneMemberID="firstResponder"/>

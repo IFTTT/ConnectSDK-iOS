@@ -16,7 +16,7 @@ final class AddressSelectionViewController: UIViewController {
     /// The result of the search
     struct Result {
         let placemark: MKPlacemark
-        let formattedAddress: String
+        let formattedAddress: String?
     }
     
     // MARK: - Public
@@ -29,6 +29,7 @@ final class AddressSelectionViewController: UIViewController {
     private var resultSearchController: UISearchController? = nil
     private let locationManager = CLLocationManager()
     private var selectedItem: Result? = nil
+    private var doneButton: UIBarButtonItem?
     
     static func instantiate() -> AddressSelectionViewController {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AddressSelectionViewController") as? AddressSelectionViewController else {
@@ -60,14 +61,64 @@ final class AddressSelectionViewController: UIViewController {
         resultSearchController?.obscuresBackgroundDuringPresentation = true
         definesPresentationContext = true
         
-        let continueButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
-        navigationItem.rightBarButtonItem = continueButton
-        continueButton.isEnabled = false
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
+        let latLongButton = UIBarButtonItem(title: "Lat/Long", style: .plain, target: self, action: #selector(latLongTapped))
+        navigationItem.rightBarButtonItems = [latLongButton, doneButton]
+        doneButton.isEnabled = false
+        self.doneButton = doneButton
     }
     
     @objc func doneTapped() {
         guard let selectedItem = selectedItem else { return }
         onAddressSelect?(selectedItem)
+    }
+    
+    private func showErrorAlert(title: String, message: String?) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(.init(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true)
+    }
+    
+    @objc func latLongTapped() {
+        let alertController = UIAlertController(
+            title: "Enter Latitude/Longitude",
+            message: "",
+            preferredStyle: .alert
+        )
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "Latitude"
+        }
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "Longitude"
+        }
+        
+        let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            alertController.message = nil
+            
+            guard let latitudeTextFieldText = alertController.textFields?.first?.text,
+                  let longitudeTextFieldText = alertController.textFields?[1].text else { return }
+            
+            guard let latitude = CLLocationDegrees(latitudeTextFieldText) else {
+                self?.showErrorAlert(title: "Invalid Entry", message: "Please try again and enter a valid latitude.")
+                return
+            }
+            
+            guard let longitude = CLLocationDegrees(longitudeTextFieldText) else {
+                self?.showErrorAlert(title: "Invalid Entry", message: "Please try again and enter a valid longitude.")
+                return
+            }
+            
+            let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let placemark = MKPlacemark(coordinate: coordinate)
+            self?.onAddressSelect?(.init(placemark: placemark, formattedAddress: nil))
+        }
+        
+        alertController.addAction(confirmAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -76,7 +127,7 @@ extension AddressSelectionViewController: LocationSearchSelectable {
         dismiss(animated: true, completion: { [weak self] in
             guard let self = self else { return }
             
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
+            self.doneButton?.isEnabled = true
             self.selectedItem = .init(placemark: placemark, formattedAddress: formattedAddress)
             self.mapView.removeAnnotations(self.mapView.annotations)
             let annotation = MKPointAnnotation()
