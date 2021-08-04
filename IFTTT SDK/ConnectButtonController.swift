@@ -124,6 +124,7 @@ public class ConnectButtonController {
         }
         
         connection?.status = .enabled
+        ConnectButtonController.update()
         
         if let connection = connection {
             Analytics.shared.track(.StateChange,
