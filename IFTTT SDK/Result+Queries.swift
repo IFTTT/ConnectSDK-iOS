@@ -5,7 +5,7 @@
 //  Copyright © 2019 IFTTT. All rights reserved.
 //
 
-#if swift(<5.4)
+#if swift(<5.0)
 /// An object to model success and failure states from an API.
 public enum Result<ValueType, ErrorType: Error> {
     /// The operation was successful. The passed associated value is the result that was returned from the API.
