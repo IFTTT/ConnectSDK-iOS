@@ -21,7 +21,7 @@
 		1D4B50AA2194857A004D1559 /* ConnectionNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50A92194857A004D1559 /* ConnectionNetworkController.swift */; };
 		1D4B50AC21949223004D1559 /* ConnectionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */; };
 		1D7918412227202700429936 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7918402227202700429936 /* Reachability.swift */; };
-		1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */; };
+		1D981C33219210D7001784C4 /* Result+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D981C32219210D7001784C4 /* Result+Queries.swift */; };
 		1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */; };
 		1DFE02072190E2E600856ABC /* Notification+Redirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02062190E2E600856ABC /* Notification+Redirect.swift */; };
 		1DFE02092190E35300856ABC /* ConnectionRedirectHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */; };
@@ -195,7 +195,7 @@
 		1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IFTTT SDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6E554621CBF4F200FE66F0 /* String_EmailDataDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String_EmailDataDetectorTests.swift; sourceTree = "<group>"; };
 		1D7918402227202700429936 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
-		1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result<ValueType,ErrorType>.swift"; sourceTree = "<group>"; };
+		1D981C32219210D7001784C4 /* Result+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Queries.swift"; sourceTree = "<group>"; };
 		1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionCredentialProvider.swift; sourceTree = "<group>"; };
 		1DFE02062190E2E600856ABC /* Notification+Redirect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Redirect.swift"; sourceTree = "<group>"; };
 		1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionRedirectHandler.swift; sourceTree = "<group>"; };
@@ -660,10 +660,10 @@
 				1D4B50AB21949223004D1559 /* ConnectionConfiguration.swift */,
 				1DFE02082190E35300856ABC /* ConnectionRedirectHandler.swift */,
 				1DFE02042190E25500856ABC /* ConnectionCredentialProvider.swift */,
-				1D981C32219210D7001784C4 /* Result<ValueType,ErrorType>.swift */,
 				FCF0C4E321B0A97000DEB117 /* ConnectionNetworkError.swift */,
 				DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */,
 				DEC30C01258BECEB00A77A57 /* JSONNetworkController.swift */,
+				1D981C32219210D7001784C4 /* Result+Queries.swift */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -966,7 +966,7 @@
 				DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */,
 				FC22B1A221ACCDC000738023 /* SelectGestureRecognizer.swift in Sources */,
 				1DFE020B2190E39B00856ABC /* Connection+Request.swift in Sources */,
-				1D981C33219210D7001784C4 /* Result<ValueType,ErrorType>.swift in Sources */,
+				1D981C33219210D7001784C4 /* Result+Queries.swift in Sources */,
 				FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */,
 				DE4A4C622436409C004082BF /* SynchronizationScheduler.swift in Sources */,
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
