@@ -78,16 +78,18 @@ final class AppleSignInWebService: ServiceAuthentication {
         self.authenticationSessionContextProvider = authenticationSessionContextProvider
     }
     
-    func start(with parameters: [ASAuthorization.Scope]?, completionHandler: (Result<String, AuthenticationError>) -> Void) -> Bool {
+    func start(with parameters: [ASAuthorization.Scope]?, completionHandler: @escaping (Result<String, AuthenticationError>) -> Void) -> Bool {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = parameters
         
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-        authorizationController.presentationContextProvider = authenticationSessionContextProvider
-        authorizationController.delegate = authenticationSessionAuthorizationHandler
 
         self.session = authorizationController
+        self.authenticationSessionAuthorizationHandler = AuthenticationSessionAuthorizationHandler(completion: completionHandler)
+
+        authorizationController.presentationContextProvider = authenticationSessionContextProvider
+        authorizationController.delegate = authenticationSessionAuthorizationHandler
         authorizationController.performRequests()
         return true
     }
