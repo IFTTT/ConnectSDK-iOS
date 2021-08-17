@@ -36,7 +36,7 @@ final class SynchronizationManager {
     /// Creates a `SyncManager`
     ///
     /// - Parameter subscribers: The `SyncSubscribers to perform during syncs
-    init(subscribers: Array<SynchronizationSubscriber>) {
+    init(subscribers: [SynchronizationSubscriber]) {
         self.subscribers = subscribers
     }
     
@@ -126,7 +126,7 @@ extension SynchronizationManager {
             finish()
         }
         
-        private(set) var subscribers: Array<SynchronizationSubscriber> = []
+        private(set) var subscribers = [SynchronizationSubscriber]()
         
         private var resultsBySubscriber: [String : UIBackgroundFetchResult] = [:]
         
