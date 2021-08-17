@@ -57,6 +57,10 @@ class SettingsViewController: UIViewController {
     }
     @IBAction func loginTapped(_ sender: Any) {
         attemptLogin()
+        ConnectButtonController.activate(
+            connections: [DisplayInformation.locationConnection.connectionId],
+            lifecycleSynchronizationOptions: .all
+        )
     }
     @IBAction func logoutTapped(_ sender: Any) {
         ConnectionCredentials(settings: settings).logout()

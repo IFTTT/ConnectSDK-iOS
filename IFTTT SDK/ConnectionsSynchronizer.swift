@@ -133,14 +133,6 @@ final class ConnectionsSynchronizer {
         location.start()
     }
     
-    /// Performs basic setup of the SDK with Application lifecycle synchronization options.
-    ///
-    /// - Parameters:
-    ///     - lifecycleSynchronizationOptions: The synchronization options to use in setting up App Lifecycle notification observers.
-    func setup(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
-        scheduler.setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
-    }
-    
     /// Can be used to force a synchronization.
     ///
     /// - Parameters:
@@ -151,18 +143,19 @@ final class ConnectionsSynchronizer {
         eventPublisher.onNext(event)
     }
     
-    /// Used to start the synchronization with an optional list of connection ids to monitor.
+    /// Used to start the synchronization.
     ///
     /// - Parameters:
     ///     - connections: An optional list of connections to start monitoring.
-    func activate(connections ids: [String]? = nil) {
+    ///     - lifecycleSynchronizationOptions: The app lifecycle synchronization options to use with the scheduler
+    func activate(connections ids: [String]? = nil, lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
         if let ids = ids {
             registry.addConnections(with: ids, shouldNotify: false)
             ConnectButtonController.synchronizationLog("Activated synchronization with connection ids: \(ids)")
         } else {
             ConnectButtonController.synchronizationLog("Activated synchronization")
         }
-        start()
+        start(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
         update(isActivation: true)
     }
     
@@ -174,19 +167,17 @@ final class ConnectionsSynchronizer {
     }
     
     /// Call this to start the synchronization. Safe to be called multiple times.
-    private func start() {
+    private func start(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
         if state == .running { return }
         
-        setupNotifications()
         performPreflightChecks()
         Keychain.resetIfNecessary(force: false)
-        scheduler.start()
+        scheduler.start(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
         state = .running
     }
     
     /// Call this to stop the synchronization completely. Safe to be called multiple times.
     private func stop() {
-        stopNotifications()
         Keychain.resetIfNecessary(force: true)
         scheduler.stop()
         state = .stopped
@@ -198,22 +189,7 @@ final class ConnectionsSynchronizer {
             ConnectButtonController.synchronizationLog("Background location not enabled for this target! Enable background location to allow location updates to be delivered to the app in the background.")
         }
     }
-    
-    /// Peforms internal setup to allow the SDK to perform work in response to notification center notifications.
-    private func setupNotifications() {
-        if #available(iOS 13.0, *) {
-            NotificationCenter.default.addObserver(self,
-                                                   selector: #selector(applicationDidEnterBackground),
-                                                   name: UIApplication.didEnterBackgroundNotification,
-                                                   object: nil)
-        }
-    }
-    
-    /// Stops notification observation
-    private func stopNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
+        
     private func setupRegistryNotifications() {
         NotificationCenter.default.addObserver(forName: .UpdateConnectionsName,
                                                object: nil,

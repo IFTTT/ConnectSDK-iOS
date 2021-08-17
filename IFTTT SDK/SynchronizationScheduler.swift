@@ -18,16 +18,16 @@ final class SynchronizationScheduler {
     private let manager: SynchronizationManager
     
     /// The token corresponding to the subscriber.
-    private var subscriberToken: UUID?
+    private(set) var subscriberToken: UUID?
     
     /// The tokens that get generated when the SDK sets up application lifecycle NotificationCenter observers
-    private var applicationLifecycleNotificationCenterTokens: [Any] = []
+    private(set) var applicationLifecycleNotificationCenterTokens: [Any] = []
     
     /// The tokens that get generated when the SDK sets up other NotificationCenter observers
-    private var sdkGeneratedNotificationCenterTokens: [Any] = []
+    private(set) var sdkGeneratedNotificationCenterTokens: [Any] = []
     
     /// Has the app opted into using background process?
-    private var optedInToUsingSDKBackgroundProcess: Bool = false
+    private(set) var optedInToUsingSDKBackgroundProcess: Bool = false
     
     /// The triggers to kick off synchronizations
     private let triggers: EventPublisher<SynchronizationTriggerEvent>
@@ -49,16 +49,71 @@ final class SynchronizationScheduler {
     /// - Parameters:
     ///   - syncManager: The `SyncManager` to use when scheduling a sync
     ///   - triggers: The publisher to use in publishing any possible events we might need to.
-    init(manager: SynchronizationManager,
-         triggers: EventPublisher<SynchronizationTriggerEvent>) {
+    init(manager: SynchronizationManager, triggers: EventPublisher<SynchronizationTriggerEvent>) {
         self.manager = manager
         self.triggers = triggers
-        setupSubscribers()
+        startAppSubscribers()
     }
     
-    func setup(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
+    /// Performs registration for system and SDK generated events for kicking off synchronizations
+    /// Should get called when the scheduler is to start.
+    func start(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
+        // Remove any previous tokens that might still be around
+        removeSDKGeneratedNotificationObservers()
         removeLifecycleNotificationObservers()
+        removeAppSubscribers()
         
+        // Start the manager
+        manager.start()
+        
+        // Start SDK generated subscribers
+        startSDKGeneratedSubscribers()
+        // Start app lifecycle subscribers
+        startApplicationLifecycleSubscribers(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
+        // Start app generated subscribers()
+        startAppSubscribers()
+    }
+    
+    /// Unregisters from system and SDK generated events for synchronizations.
+    /// Should get called when the scheduler is to stop. On iOS 13 and up, un-registers from background processes with the system.
+    func stop() {
+        // Reset the manager
+        manager.reset()
+        
+        // Remove observers from notification center
+        removeLifecycleNotificationObservers()
+        removeSDKGeneratedNotificationObservers()
+        removeAppSubscribers()
+        
+        // Cancel background tasks associated with the SDK
+        cancelBackgroundProcess()
+    }
+    
+    private func removeLifecycleNotificationObservers() {
+        applicationLifecycleNotificationCenterTokens.forEach {
+            NotificationCenter.default.removeObserver($0)
+        }
+        applicationLifecycleNotificationCenterTokens = []
+    }
+    
+    private func removeSDKGeneratedNotificationObservers() {
+        sdkGeneratedNotificationCenterTokens.forEach {
+            NotificationCenter.default.removeObserver($0)
+        }
+        sdkGeneratedNotificationCenterTokens = []
+    }
+    
+    private func removeAppSubscribers() {
+        if let subscriberToken = subscriberToken {
+            triggers.removeSubscriber(subscriberToken)
+        }
+        
+        // Nil out the subscriber token
+        subscriberToken = nil
+    }
+    
+    /// Sets up subscribers with app lifecycle events
+    private func startApplicationLifecycleSubscribers(lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
         // Start synchronization on system events
         var appLifecycleEventTuples = [(NSNotification.Name, SynchronizationSource, Bool)]()
         
@@ -69,74 +124,28 @@ final class SynchronizationScheduler {
             appLifecycleEventTuples.append((UIApplication.didEnterBackgroundNotification, .appBackgrounded, true))
         }
         
-        self.applicationLifecycleNotificationCenterTokens = appLifecycleEventTuples.map {
-            return scheduleSynchronization(on: $0.0,
-                                          source: $0.1,
-                                          shouldRunInBackground: $0.2)
-        }
-    }
-    
-    /// Performs registration for system and SDK generated events for kicking off synchronizations
-    /// Should get called when the scheduler is to start.
-    func start() {
-        // Remove any previous tokens that might still be aroind
-        removeSDKGeneratedNotificationObservers()
-        
-        // Start the manager
-        manager.start()
-        
-        // Start monitoring the notifications related to Connection CRUD operations
-        let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = [
-            (.ConnectionUpdatedNotification, .connectionsUpdate, true),
-            (.ConnectionAddedNotification, .connectionAddition, true)
-        ]
-        
-        self.sdkGeneratedNotificationCenterTokens = eventTuples.map {
+        var tokens = appLifecycleEventTuples.map {
             return scheduleSynchronization(on: $0.0,
                                            source: $0.1,
                                            shouldRunInBackground: $0.2)
         }
-    }
-    
-    /// Unregisters from system and SDK generated events for synchronizations.
-    /// Should get called when the scheduler is to stop. On iOS 13 and up, un-registers from background processes with the system.
-    func stop() {
-        // Reset the manager
-        manager.reset()
         
-        // Unregister from background process
-        // Remove observers from notification center
-        removeLifecycleNotificationObservers()
-        removeSDKGeneratedNotificationObservers()
-        
-        applicationLifecycleNotificationCenterTokens = []
-        sdkGeneratedNotificationCenterTokens = []
-        
-        // Cancel background tasks associated with the SDK
-        cancelBackgroundProcess()
-        
-        if let subscriberToken = subscriberToken {
-            triggers.removeSubscriber(subscriberToken)
+        if #available(iOS 13.0, *) {
+            let token = NotificationCenter.default.addObserver(
+                forName: UIApplication.didEnterBackgroundNotification,
+                object: nil,
+                queue: nil)
+            { [weak self] _ in
+                self?.applicationDidEnterBackground()
+            }
+            tokens.append(token)
         }
         
-        // Nil out the subscriber token
-        subscriberToken = nil
+        self.applicationLifecycleNotificationCenterTokens = tokens
     }
     
-    private func removeLifecycleNotificationObservers() {
-        applicationLifecycleNotificationCenterTokens.forEach {
-            NotificationCenter.default.removeObserver($0)
-        }
-    }
-    
-    private func removeSDKGeneratedNotificationObservers() {
-        sdkGeneratedNotificationCenterTokens.forEach {
-            NotificationCenter.default.removeObserver($0)
-        }
-    }
-    
-    /// Sets up subscriber with app generated triggers.
-    private func setupSubscribers() {
+    /// Starts subscribers with app generated triggers.
+    private func startAppSubscribers() {
         guard subscriberToken == nil else { return }
         
         self.subscriberToken = triggers.addSubscriber { [weak self] (triggerEvent) in
@@ -147,6 +156,21 @@ final class SynchronizationScheduler {
                 }
                 triggerEvent.completionHandler?(result, authenticationFailure)
             }
+        }
+    }
+    
+    /// Starts subscribers with SDK generated triggers.
+    private func startSDKGeneratedSubscribers() {
+        // Start monitoring the notifications related to Connection CRUD operations
+        let eventTuples: [(NSNotification.Name, SynchronizationSource, Bool)] = [
+            (.ConnectionUpdatedNotification, .connectionsUpdate, true),
+            (.ConnectionAddedNotification, .connectionAddition, true)
+        ]
+        
+        self.sdkGeneratedNotificationCenterTokens = eventTuples.map {
+            return scheduleSynchronization(on: $0.0,
+                                           source: $0.1,
+                                           shouldRunInBackground: $0.2)
         }
     }
     
@@ -215,7 +239,7 @@ final class SynchronizationScheduler {
     }
     
     /// Hook that should get called when the app enters the background. Schedules background process with the system.
-    func applicationDidEnterBackground() {            
+    @objc func applicationDidEnterBackground() {
         if #available(iOS 13.0, *) {
             guard Bundle.main.backgroundProcessingEnabled else { return }
             guard Bundle.main.containsIFTTTBackgroundProcessingIdentifier else { return }
