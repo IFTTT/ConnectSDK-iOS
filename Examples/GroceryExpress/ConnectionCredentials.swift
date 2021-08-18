@@ -58,12 +58,17 @@ class ConnectionCredentials: ConnectionCredentialProvider, CustomStringConvertib
             Keys.token : token
         ]
         UserDefaults.standard.set(user, forKey: Keys.user)
+        ConnectButtonController.activate(
+            connections: [DisplayInformation.locationConnection.connectionId],
+            lifecycleSynchronizationOptions: .all
+        )
     }
     
     /// Clears the active IFTTT session
     func logout() {
         userToken = nil
         UserDefaults.standard.set(nil, forKey: Keys.user)
+        ConnectButtonController.deactivate()
     }
     
     /// Creates an instance of ConnectionCredentials
