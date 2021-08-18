@@ -54,6 +54,7 @@
 		B556033C25A851EE00A29A01 /* Localizable_cs.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556032425A851EE00A29A01 /* Localizable_cs.strings */; };
 		B556033D25A851EE00A29A01 /* Localizable_nl.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556032525A851EE00A29A01 /* Localizable_nl.strings */; };
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
+		DE260F6B26CAFC20004191D1 /* SynchronizationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE260F6A26CAFC20004191D1 /* SynchronizationSchedulerTests.swift */; };
 		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
 		DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F52492429404200EF986A /* Connection+Location.swift */; };
 		DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */; };
@@ -226,6 +227,7 @@
 		B556032525A851EE00A29A01 /* Localizable_nl.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable_nl.strings; path = Resources/Localizable_nl.strings; sourceTree = "<group>"; };
 		DE1712BC2565B295000B13E6 /* RegionEventsRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionEventsRegistryTests.swift; sourceTree = "<group>"; };
 		DE25265523D8C49D0019C9CB /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		DE260F6A26CAFC20004191D1 /* SynchronizationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationSchedulerTests.swift; sourceTree = "<group>"; };
 		DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Connection+Parsing.swift"; sourceTree = "<group>"; };
 		DE2F52492429404200EF986A /* Connection+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Location.swift"; sourceTree = "<group>"; };
 		DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLCircularRegion+Parsing.swift"; sourceTree = "<group>"; };
@@ -439,6 +441,7 @@
 				DEC29DE525840DE300BF56EE /* LocationServiceTests.swift */,
 				DEC29EE7258419FC00BF56EE /* Info.plist */,
 				DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */,
+				DE260F6A26CAFC20004191D1 /* SynchronizationSchedulerTests.swift */,
 			);
 			path = SDKHostAppTests;
 			sourceTree = "<group>";
@@ -864,6 +867,7 @@
 				DEC29F0125841A0800BF56EE /* String_EmailDataDetectorTests.swift in Sources */,
 				DEC29F0525841A0800BF56EE /* RegionsMonitorTests.swift in Sources */,
 				DEC29F0625841A0800BF56EE /* Connection_ParsingTests.swift in Sources */,
+				DE260F6B26CAFC20004191D1 /* SynchronizationSchedulerTests.swift in Sources */,
 				DEF4A4972587BA1A00735E98 /* ArrayHelpersTests.swift in Sources */,
 				DEC29F0225841A0800BF56EE /* EventPublisherTests.swift in Sources */,
 			);
