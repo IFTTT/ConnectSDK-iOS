@@ -19,10 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let connectionRedirectHandler = ConnectionRedirectHandler(redirectURL: AppDelegate.connectionRedirectURL)
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
         ConnectButtonController.synchronizationLoggingEnabled = true
         ConnectButtonController.analyticsEnabled = true
         ConnectButtonController.initialize(options: .init(enableSDKBackgroundProcess: true, showPermissionsPrompts: true))
+        if ConnectionCredentials(settings: .init()).isLoggedIn {
+            ConnectButtonController.activate(connections: [DisplayInformation.locationConnection.connectionId])
+        } else {
+            ConnectButtonController.deactivate()
+        }
         ConnectButtonController.setBackgroundProcessClosures {
             print("Background process started!")
         } expirationHandler: {
