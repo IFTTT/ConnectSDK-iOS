@@ -60,7 +60,6 @@ class SettingsViewController: UIViewController {
     }
     @IBAction func logoutTapped(_ sender: Any) {
         ConnectionCredentials(settings: settings).logout()
-        ConnectButtonController.deactivate()
         update()
     }
     

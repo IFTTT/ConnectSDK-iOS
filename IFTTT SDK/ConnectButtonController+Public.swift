@@ -70,25 +70,24 @@ extension ConnectButtonController {
         }
     }
     
-    /// Performs setup of the SDK. Starts the synchronization of in the SDK. Registers background process with the system if desired.
+    /// Performs setup of the SDK.Activated synchronization 
     ///
     /// - Parameters:
     ///     - credentials: An optional object conforming to `ConnectionCredentialProvider` which is used to setup the SDK. If this is nil, the SDK will attempt to use cached values.
-    ///     - lifecycleSynchronizationOptions: An instance of `ApplicationLifecycleSynchronizationOptions` that defines which app lifecycle events the synchronization should occur on. If this parameter is not set, a default value of `ApplicationLifecycleSynchronizationOptions.all` will be used.
-    public static func setup(with credentials: ConnectionCredentialProvider?,
-                             lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions = .all) {
+    public static func setup(with credentials: ConnectionCredentialProvider?) {
         if let credentials = credentials {
             Keychain.update(with: credentials)
         }
-        ConnectionsSynchronizer.shared.setup(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
     }
     
     /// Call this method to activate the synchronization. This starts synchronization for the parameter connections.
     ///
     /// - Parameters:
     ///     - connections: An optional list of `Connection` to activate synchronization with.
-    public static func activate(connections ids: [String]? = nil) {
-        ConnectionsSynchronizer.shared.activate(connections: ids)
+    ///     - lifecycleSynchronizationOptions: An instance of `ApplicationLifecycleSynchronizationOptions` that defines which app lifecycle events the synchronization should occur on. If this parameter is not set, a default value of `ApplicationLifecycleSynchronizationOptions.all` will be used.
+    public static func activate(connections ids: [String]? = nil,
+                                lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions = .all) {
+        ConnectionsSynchronizer.shared.activate(connections: ids, lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
     }
     
     /// Call this method to deactivate the synchronization of connection and native service data. This stops synchronization and performs cleanup of any stored data. This will also remove any registered geofences.
