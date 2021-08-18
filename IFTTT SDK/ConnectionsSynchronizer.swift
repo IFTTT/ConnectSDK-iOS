@@ -149,14 +149,14 @@ final class ConnectionsSynchronizer {
     ///     - connections: An optional list of connections to start monitoring.
     ///     - lifecycleSynchronizationOptions: The app lifecycle synchronization options to use with the scheduler
     func activate(connections ids: [String]? = nil, lifecycleSynchronizationOptions: ApplicationLifecycleSynchronizationOptions) {
+        start(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
+        update(isActivation: true)
         if let ids = ids {
             registry.addConnections(with: ids, shouldNotify: false)
             ConnectButtonController.synchronizationLog("Activated synchronization with connection ids: \(ids)")
         } else {
             ConnectButtonController.synchronizationLog("Activated synchronization")
         }
-        start(lifecycleSynchronizationOptions: lifecycleSynchronizationOptions)
-        update(isActivation: true)
     }
     
     /// Used to deactivate and stop synchronization.
