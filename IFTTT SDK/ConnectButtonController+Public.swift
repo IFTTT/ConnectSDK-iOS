@@ -7,6 +7,222 @@
 
 import UIKit
 
+struct LocationEventStore {
+    enum EventState: String {
+        case recorded, uploadStart, uploadSuccess, uploadError
+    }
+    
+    struct RecordedEvent {
+        let state: EventState
+        let date: Date
+        
+        init(
+            state: EventState,
+            date: Date
+        ) {
+            self.state = state
+            self.date = date
+        }
+        
+        init?(dictionary: [String: Any]) {
+            guard let stateRawValue = dictionary["state"] as? String,
+                  let dateRawValue = dictionary["date"] as? TimeInterval,
+                  let state = EventState(rawValue: stateRawValue) else {
+                      return nil
+                  }
+            self.state = state
+            self.date = Date(timeIntervalSinceReferenceDate: dateRawValue)
+        }
+        
+        var dictionary: [String: Any] {
+            return [
+                "state": state.rawValue,
+                "date": date.timeIntervalSinceReferenceDate
+            ]
+        }
+    }
+
+    private var eventMap: [String: RecordedEvent]? {
+        get {
+            guard let dictionary = UserDefaults.standard.dictionary(forKey: "com.ifttt.locationEventReporter.map") else { return nil }
+            return dictionary.compactMapValues { value -> RecordedEvent? in
+                guard let dictionary = value as? [String: Any] else { return nil }
+                return .init(dictionary: dictionary)
+            }
+        }
+        set {
+            let mappedDictionary = newValue?.compactMapValues { $0.dictionary }
+            UserDefaults.standard.set(mappedDictionary, forKey: "com.ifttt.locationEventReporter.map")
+        }
+    }
+    
+    init() {
+        initializeEventMapIfNecessary()
+    }
+    
+    private mutating func initializeEventMapIfNecessary() {
+        if eventMap == nil {
+            eventMap = .init()
+        }
+    }
+    
+    subscript(key: String) -> RecordedEvent? {
+        return eventMap?[key]
+    }
+    
+    private mutating func updateRecordedEvent(
+        _ event: RegionEvent,
+        state: EventState,
+        date: Date
+    ) {
+        initializeEventMapIfNecessary()
+        var _eventMap = eventMap
+        _eventMap?[event.recordId.uuidString] = .init(state: state, date: date)
+        self.eventMap = _eventMap
+    }
+    
+    mutating func trackRecordedEvent(_ event: RegionEvent, at date: Date) {
+        updateRecordedEvent(
+            event,
+            state: .recorded,
+            date: date
+        )
+    }
+    
+    mutating func trackEventUploadStart(_ event: RegionEvent, at date: Date) {
+        updateRecordedEvent(
+            event,
+            state: .uploadStart,
+            date: date
+        )
+    }
+    
+    mutating func trackEventSuccessfulUpload(_ event: RegionEvent, at date: Date) {
+        initializeEventMapIfNecessary()
+        if eventMap?[event.recordId.uuidString] != nil {
+            var _eventMap = eventMap
+            _eventMap?[event.recordId.uuidString] = nil
+            self.eventMap = _eventMap
+        }
+    }
+    
+    mutating func trackEventFailedUpload(_ event: RegionEvent, error: EventUploadError, at date: Date) {
+        initializeEventMapIfNecessary()
+        var _eventMap = eventMap
+        switch error {
+        case .crossedSanityThreshold:
+            _eventMap?[event.recordId.uuidString] = nil
+        case .networkError:
+            _eventMap?[event.recordId.uuidString] = .init(state: .uploadError, date: date)
+        }
+        self.eventMap = _eventMap
+    }
+    
+    func delay(for event: RegionEvent, against date: Date) -> TimeInterval {
+        var delay: TimeInterval = -1
+        if let record = eventMap?[event.recordId.uuidString] {
+            delay = date.timeIntervalSince(record.date)
+        }
+        return delay
+    }
+    
+    mutating func reset() {
+        eventMap = nil
+    }
+}
+
+final class LocationEventReporter {
+    private var eventStore: LocationEventStore
+    
+    var closure: LocationEventsClosure?
+
+    init(eventStore: LocationEventStore) {
+        self.eventStore = eventStore
+    }
+    
+    func recordRegionEvent(_ event: RegionEvent, at date: Date = .init()) {
+        eventStore.trackRecordedEvent(event, at: date)
+        closure?([.reported(event: event)])
+    }
+    
+    func regionEventsStartUpload(_ events: [RegionEvent]) {
+        process(
+            events,
+            state: .uploadStart,
+            error: nil
+        )
+    }
+    
+    func regionEventsSuccessfulUpload(_ events: [RegionEvent]) {
+        process(
+            events,
+            state: .uploadSuccess,
+            error: nil
+        )
+    }
+    
+    func regionEventsErrorUpload(_ events: [RegionEvent], error: EventUploadError) {
+        process(
+            events,
+            state: .uploadError,
+            error: error
+        )
+    }
+    
+    private func process(_ events: [RegionEvent], state: LocationEventStore.EventState, error: EventUploadError?) {
+        let date = Date()
+        var locationEvents: [LocationEvent]
+        switch state {
+        case .recorded:
+            locationEvents = events.map { event -> LocationEvent in
+                eventStore.trackRecordedEvent(event, at: date)
+                return .reported(event: event)
+            }
+        case .uploadStart:
+            locationEvents = events.map { event -> LocationEvent in
+                let delay = eventStore.delay(for: event, against: date)
+                eventStore.trackRecordedEvent(event, at: date)
+                return LocationEvent.uploadAttempted(event: event, delay: delay)
+            }
+        case .uploadSuccess:
+            locationEvents = events.map { event -> LocationEvent in
+                let delay = eventStore.delay(for: event, against: date)
+                eventStore.trackRecordedEvent(event, at: date)
+                return LocationEvent.uploadSuccessful(event: event, delay: delay)
+            }
+        case .uploadError:
+            guard let error = error else {
+                fatalError("Expecting error to not be nil for this case here")
+            }
+            locationEvents = events.map { event -> LocationEvent in
+                let delay = eventStore.delay(for: event, against: date)
+                eventStore.trackEventSuccessfulUpload(event, at: date)
+                return LocationEvent.uploadFailed(event: event, error: error, delay: delay)
+            }
+        }
+        closure?(locationEvents)
+    }
+}
+
+public enum LocationEventKind: String {
+    case entry = "entry"
+    case exit = "exit"
+}
+
+public enum LocationEvent {
+    case reported(event: RegionEvent)
+    case uploadAttempted(event: RegionEvent, delay: TimeInterval) // The delay between reporting the event and an attempted upload. This is in seconds.
+    case uploadSuccessful(event: RegionEvent, delay: TimeInterval) // The delay between attempting the event upload and successfully completing the upload. This is in seconds.
+    case uploadFailed(event: RegionEvent, error: EventUploadError, delay: TimeInterval)  // The delay between attempting the event upload and error completing the upload. This is in seconds.
+}
+
+public enum EventUploadError: Error {
+    case crossedSanityThreshold
+    case networkError
+}
+
+public typealias LocationEventsClosure = ([LocationEvent]) -> Void
+
 /// Describes options to initialize the SDK with
 public struct InitializerOptions {
     
@@ -163,5 +379,9 @@ extension ConnectButtonController {
     public static func setBackgroundProcessClosures(launchHandler: VoidClosure?, expirationHandler: VoidClosure?) {
         ConnectionsSynchronizer.shared.setDeveloperBackgroundProcessClosures(launchHandler: launchHandler,
                                                                                expirationHandler: expirationHandler)
+    }
+    
+    public static func setLocationEventReportedClosure(_ closure: LocationEventsClosure?) {
+        ConnectionsSynchronizer.shared.setLocationEventReportedClosure(closure: closure)
     }
 }

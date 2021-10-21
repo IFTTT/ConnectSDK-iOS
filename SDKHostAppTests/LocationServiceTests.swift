@@ -42,7 +42,8 @@ class LocationServiceTests: XCTestCase {
                                           connectionsRegistry: connectionsRegistry,
                                           sessionManager: .init(networkController: regionEventsController,
                                                                 regionEventsRegistry: regionEventsRegistry),
-                                          eventPublisher: eventPublisher)
+                                          eventPublisher: eventPublisher,
+                                          eventReporter: .init(eventStore: .init()))
     }
     
     override func tearDown() {

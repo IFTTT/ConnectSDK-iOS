@@ -17,7 +17,7 @@ struct APIDateFormatter {
     }()
 }
 
-struct RegionEvent: Hashable {
+public struct RegionEvent: Hashable {
     private struct Key {
         static let RecordId = "record_id"
         static let RegionType = "region_type"
@@ -33,18 +33,13 @@ struct RegionEvent: Hashable {
         static let LocationServiceId = 941030000.description
     }
     
-    enum Kind: String {
-        case entry = "entry"
-        case exit = "exit"
-    }
-    
     let recordId: UUID
-    let kind: Kind
+    let kind: LocationEventKind
     let occurredAt: Date
     let triggerSubscriptionId: String
     
     init(recordId: UUID = UUID(),
-         kind: Kind,
+         kind: LocationEventKind,
          occurredAt: Date = Date(),
          triggerSubscriptionId: String) {
         self.recordId = recordId
@@ -70,7 +65,7 @@ struct RegionEvent: Hashable {
         guard let recordId = parser[Key.RecordId].uuid,
             let ocurredAtString = parser[Key.OccurredAt].string,
             let ocurredAtDate = APIDateFormatter.satellite.date(from: ocurredAtString),
-            let eventType = parser[Key.EventType].representation(of: Kind.self),
+            let eventType = parser[Key.EventType].representation(of: LocationEventKind.self),
             let triggerSubscriptionId = parser[Key.TriggerSubscriptionId].string else {
                 return nil
         }
