@@ -76,25 +76,49 @@ class LocationEventStoreTests: XCTestCase {
         
         [event1, event2].forEach {
             let record = eventStore[$0.recordId.uuidString]
-            XCTAssertNotNil(record)
-            XCTAssertEqual(record?.date, date)
-            XCTAssertEqual(record?.state, .recorded)
+            runAsserts(record: record, uploadDate: date, correctState: .recorded)
         }
     }
     
-    func testTrackEventUploadEvent() {
-        let date = Date()
+    private func runAsserts(
+        record: LocationEventStore.RecordedEvent?,
+        uploadDate: Date,
+        correctState: LocationEventStore.EventState
+    ) {
+        XCTAssertNotNil(record)
+        XCTAssertEqual(record?.date, uploadDate)
+        XCTAssertEqual(record?.state, correctState)
+    }
+    
+    func testTrackEventUploadStartEvent() {
         let event1 = RegionEvent(kind: .entry, triggerSubscriptionId: "1234")
         let event2 = RegionEvent(kind: .exit, triggerSubscriptionId: "1234")
+        let event1UploadStartDate = Date()
+        let event2UploadStartDate = Date(timeIntervalSinceNow: 2.0)
         
-        eventStore.trackRecordedEvent(event1, at: date)
-        eventStore.trackRecordedEvent(event2, at: date)
+        eventStore.trackEventUploadStart(event1, at: event1UploadStartDate)
+        eventStore.trackEventUploadStart(event2, at: event2UploadStartDate)
         
-        [event1, event2].forEach {
-            let record = eventStore[$0.recordId.uuidString]
-            XCTAssertNotNil(record)
-            XCTAssertEqual(record?.date, date)
-            XCTAssertEqual(record?.state, .recorded)
-        }
+        let event1Record = eventStore[event1.recordId.uuidString]
+        let event2Record = eventStore[event2.recordId.uuidString]
+        
+        runAsserts(record: event1Record, uploadDate: event1UploadStartDate, correctState: .uploadStart)
+        runAsserts(record: event2Record, uploadDate: event2UploadStartDate, correctState: .uploadStart)
+    }
+    
+    func testTrackEventUploadNetworkErrorEvent() {
+        let event1 = RegionEvent(kind: .entry, triggerSubscriptionId: "1234")
+        let event2 = RegionEvent(kind: .exit, triggerSubscriptionId: "1234")
+        let event1ErrorDate = Date()
+        let event2ErrorDate = Date(timeIntervalSinceNow: 2.0)
+        
+        eventStore.trackEventFailedUpload(event1, error: .networkError, at: event1ErrorDate)
+        eventStore.trackEventFailedUpload(event2, error: .networkError, at: event2ErrorDate)
+        
+        let event1Record = eventStore[event1.recordId.uuidString]
+        let event2Record = eventStore[event2.recordId.uuidString]
+        
+        runAsserts(record: event1Record, uploadDate: event1ErrorDate, correctState: .uploadError)
+        runAsserts(record: event2Record, uploadDate: event2ErrorDate, correctState: .uploadError)
     }
 }

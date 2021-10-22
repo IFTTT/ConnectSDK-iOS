@@ -169,6 +169,10 @@ final class LocationEventReporter {
         )
     }
     
+    func reset() {
+        eventStore.reset()
+    }
+    
     private func process(_ events: [RegionEvent], state: LocationEventStore.EventState, error: EventUploadError?) {
         let date = Date()
         var locationEvents: [LocationEvent]
@@ -209,7 +213,7 @@ public enum LocationEventKind: String {
     case exit = "exit"
 }
 
-public enum LocationEvent {
+public enum LocationEvent: Equatable {
     case reported(event: RegionEvent)
     case uploadAttempted(event: RegionEvent, delay: TimeInterval) // The delay between reporting the event and an attempted upload. This is in seconds.
     case uploadSuccessful(event: RegionEvent, delay: TimeInterval) // The delay between attempting the event upload and successfully completing the upload. This is in seconds.
