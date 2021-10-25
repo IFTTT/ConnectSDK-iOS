@@ -2,7 +2,6 @@
 //  LocationEventStoreTests.swift
 //  SDKHostAppTests
 //
-//  Created by Siddharth Sathyam on 10/21/21.
 //  Copyright © 2021 IFTTT. All rights reserved.
 //
 

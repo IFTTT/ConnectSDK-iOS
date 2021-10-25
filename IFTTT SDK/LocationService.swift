@@ -265,7 +265,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         state = .running
     }
     
-    private func recordRegionEvent(with region: CLRegion, kind: LocationEventKind) {
+    private func recordRegionEvent(with region: CLRegion, kind: RegionEventKind) {
         var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
         backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(expirationHandler: {
             guard let identifier = backgroundTaskIdentifier else { return }
