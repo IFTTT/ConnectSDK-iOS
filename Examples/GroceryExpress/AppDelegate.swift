@@ -27,10 +27,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             ConnectButtonController.deactivate()
         }
+        
         ConnectButtonController.setBackgroundProcessClosures {
             print("Background process started!")
         } expirationHandler: {
             print("Background process expired!")
+        }
+        
+        ConnectButtonController.setLocationEventReportedClosure { events in
+            print(events)
         }
 
         return true
