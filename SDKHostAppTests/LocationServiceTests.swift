@@ -19,15 +19,6 @@ class LocationServiceTests: XCTestCase {
     var regionsMonitor: RegionsMonitor!
     var eventPublisher: EventPublisher<SynchronizationTriggerEvent>!
     
-    override class func setUp() {
-        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
-    }
-    
-    override class func tearDown() {
-        XCUIDevice.shared.press(.home)
-        XCUIDevice.shared.press(.home)
-    }
-    
     override func setUp() {
         super.setUp()
         

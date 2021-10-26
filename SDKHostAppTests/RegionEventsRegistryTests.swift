@@ -14,17 +14,10 @@ class RegionEventsRegistryTests: XCTestCase {
     private var regionEventsRegistry = RegionEventsRegistry()
 
     override func setUp() {
-        super.setUp()
-        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
-        
+        super.setUp()        
         regionEventsRegistry.removeAll()
     }
-    
-    class override func tearDown() {
-        XCUIDevice.shared.press(.home)
-        XCUIDevice.shared.press(.home)
-    }
-    
+
     func testGet() {
         // Since we reset registry before every test, the registry should be empty.
         assert(regionEventsRegistry.getRegionEvents().isEmpty)
