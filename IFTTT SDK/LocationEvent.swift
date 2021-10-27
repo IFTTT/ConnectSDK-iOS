@@ -48,10 +48,10 @@ public enum LocationEvent: Equatable {
     ///
     /// - Parameters:
     ///     - `region`: The details of the region that was successfully uploaded.
-    ///     - `delay`:
+    ///     - `delay`: The time in seconds between reporting the event and a successful upload.
     case uploadSuccessful(region: RegionEvent, delay: TimeInterval)
     
-    /// The SDK failed in uploaded the region event.
+    /// The SDK failed to upload the region event.
     ///
     /// - Parameters:
     ///     - `region`: The details of the region that was successfully uploaded.

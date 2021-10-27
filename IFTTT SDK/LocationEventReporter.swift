@@ -110,13 +110,13 @@ final class LocationEventReporter {
         case .uploadStart:
             locationEvents = regions.map { region -> LocationEvent in
                 let delay = eventStore.delay(for: region, against: date)
-                eventStore.trackRecordedEvent(region, at: date)
+                eventStore.trackEventUploadStart(region, at: date)
                 return LocationEvent.uploadAttempted(region: region, delay: delay)
             }
         case .uploadSuccess:
             locationEvents = regions.map { region -> LocationEvent in
                 let delay = eventStore.delay(for: region, against: date)
-                eventStore.trackRecordedEvent(region, at: date)
+                eventStore.trackEventSuccessfulUpload(region, at: date)
                 return LocationEvent.uploadSuccessful(region: region, delay: delay)
             }
         case .uploadError:

@@ -161,7 +161,8 @@ struct LocationEventStore {
     ///
     /// - Parameters:
     ///     - event: The event to compute the delay for.
-    ///     - delay: The timestamp to compute the delay against.
+    ///     - date: The timestamp to compute the delay against.
+    /// - Returns: The delay between the parameter date and the last recorded event date for the parameter event. Returns -1 if there is no last recorded event date for the parameter event.
     func delay(for event: RegionEvent, against date: Date) -> TimeInterval {
         var delay: TimeInterval = -1
         if let record = eventMap?[event.recordId.uuidString] {
