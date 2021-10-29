@@ -85,6 +85,16 @@ The SDK supports toggling geofences on and off for a given connection. To toggle
 ### Background process execution
 To set closures to run when a SDK-defined background process runs, call `ConnectButtonController.setBackgroundProcessClosures(launchHandler:expirationHandler)`. The `launchHandler` parameter is the closure that's executed when a background process starts. The `expirationHandler` parameter is the closure that's executed when the background process is about to be ended by the system.
 
+### Event Reporting
+The SDK broadcasts location events via the `ConnectButtonController.setLocationEventReportedClosure`. This closure gets invoked for the following events:
+
+- Region event(s) (exit and enter) gets recorded by the SDK.
+- Region event(s) started uploaded by the SDK. 
+- Region event(s) successfully uploaded by the SDK.
+- Region event(s) failed in uploading by the SDK.
+
+See `LocationEvent.swift` for detailed information on the events that are reported as well as the data associated with those events.
+
 ### Notes
 - Automatic synchronization for a given connection will only be run if the connection has location triggers. Similarly, location region monitoring will only be started if the connection has location triggers setup.
 - The SDK runs a synchronization by default for the following events:

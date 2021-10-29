@@ -12,16 +12,6 @@ import XCTest
 class ConnectionsRegistryTests: XCTestCase {
     private var connectionsRegistry = ConnectionsRegistry()
     
-    override class func setUp() {
-        XCUIDevice.shared.press(.home)
-        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
-    }
-    
-    override class func tearDown() {
-        XCUIDevice.shared.press(.home)
-        XCUIDevice.shared.press(.home)
-    }
-    
     override func setUp() {
         super.setUp()
         connectionsRegistry.removeAll()

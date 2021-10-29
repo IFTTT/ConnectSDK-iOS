@@ -60,6 +60,12 @@
 		DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25265523D8C49D0019C9CB /* Analytics.swift */; };
 		DE260F6B26CAFC20004191D1 /* SynchronizationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE260F6A26CAFC20004191D1 /* SynchronizationSchedulerTests.swift */; };
 		DE2906D3242BF66E00CC2825 /* Connection+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */; };
+		DE2AE45C2721DD9E00C4794A /* LocationEventReporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2AE45B2721DD9E00C4794A /* LocationEventReporterTests.swift */; };
+		DE2AE45E2721EBFE00C4794A /* LocationEventStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2AE45D2721EBFD00C4794A /* LocationEventStoreTests.swift */; };
+		DE2AE48027270FED00C4794A /* LocationEventReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2AE47F27270FED00C4794A /* LocationEventReporter.swift */; };
+		DE2AE4822727103F00C4794A /* LocationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2AE4812727103F00C4794A /* LocationEvent.swift */; };
+		DE2AE4842727106800C4794A /* LocationEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2AE4832727106800C4794A /* LocationEventStore.swift */; };
+		DE2AE4862727132E00C4794A /* RegionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2AE4852727132E00C4794A /* RegionEvent.swift */; };
 		DE2F524A2429404200EF986A /* Connection+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F52492429404200EF986A /* Connection+Location.swift */; };
 		DE2F524C242940AD00EF986A /* CLCircularRegion+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */; };
 		DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */; };
@@ -237,6 +243,12 @@
 		DE25265523D8C49D0019C9CB /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		DE260F6A26CAFC20004191D1 /* SynchronizationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationSchedulerTests.swift; sourceTree = "<group>"; };
 		DE2906D2242BF66E00CC2825 /* Connection+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Connection+Parsing.swift"; sourceTree = "<group>"; };
+		DE2AE45B2721DD9E00C4794A /* LocationEventReporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEventReporterTests.swift; sourceTree = "<group>"; };
+		DE2AE45D2721EBFD00C4794A /* LocationEventStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEventStoreTests.swift; sourceTree = "<group>"; };
+		DE2AE47F27270FED00C4794A /* LocationEventReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEventReporter.swift; sourceTree = "<group>"; };
+		DE2AE4812727103F00C4794A /* LocationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEvent.swift; sourceTree = "<group>"; };
+		DE2AE4832727106800C4794A /* LocationEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEventStore.swift; sourceTree = "<group>"; };
+		DE2AE4852727132E00C4794A /* RegionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionEvent.swift; sourceTree = "<group>"; };
 		DE2F52492429404200EF986A /* Connection+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Location.swift"; sourceTree = "<group>"; };
 		DE2F524B242940AD00EF986A /* CLCircularRegion+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLCircularRegion+Parsing.swift"; sourceTree = "<group>"; };
 		DE3074A623DB506D00A3C71F /* AnalyticsNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsNetworkController.swift; sourceTree = "<group>"; };
@@ -397,6 +409,15 @@
 			name = "Web Service Authentication";
 			sourceTree = "<group>";
 		};
+		DE2AE47E27270FD800C4794A /* Reporting */ = {
+			isa = PBXGroup;
+			children = (
+				DE2AE47F27270FED00C4794A /* LocationEventReporter.swift */,
+				DE2AE4832727106800C4794A /* LocationEventStore.swift */,
+			);
+			name = Reporting;
+			sourceTree = "<group>";
+		};
 		DE3074A523DB505400A3C71F /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -463,6 +484,8 @@
 				DEC29EE7258419FC00BF56EE /* Info.plist */,
 				DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */,
 				DE260F6A26CAFC20004191D1 /* SynchronizationSchedulerTests.swift */,
+				DE2AE45B2721DD9E00C4794A /* LocationEventReporterTests.swift */,
+				DE2AE45D2721EBFD00C4794A /* LocationEventStoreTests.swift */,
 			);
 			path = SDKHostAppTests;
 			sourceTree = "<group>";
@@ -597,6 +620,7 @@
 		FCF29FC32187B903004B1100 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				DE2AE47E27270FD800C4794A /* Reporting */,
 				DE1F036E26A8A33F00B6CF1A /* Web Service Authentication */,
 				DEC75CB525092B6100F40296 /* Native Services */,
 				1DFE020C2190E3DB00856ABC /* API.swift */,
@@ -667,6 +691,8 @@
 				DE641D87252B7BC900C56FF9 /* ConnectButtonController+Public.swift */,
 				DEC30C01258BECEB00A77A57 /* JSONNetworkController.swift */,
 				1D981C32219210D7001784C4 /* Result+Queries.swift */,
+				DE2AE4812727103F00C4794A /* LocationEvent.swift */,
+				DE2AE4852727132E00C4794A /* RegionEvent.swift */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -881,11 +907,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEC29F0425841A0800BF56EE /* CLRegion+Parsing_spec.swift in Sources */,
+				DE2AE45C2721DD9E00C4794A /* LocationEventReporterTests.swift in Sources */,
 				DEC29F0325841A0800BF56EE /* RegionEventsRegistryTests.swift in Sources */,
 				DEC29F0825841A0800BF56EE /* LocationServiceTests.swift in Sources */,
 				DEC29F0725841A0800BF56EE /* ConnectionsRegistryTests.swift in Sources */,
 				DEC29F0125841A0800BF56EE /* String_EmailDataDetectorTests.swift in Sources */,
 				DEC29F0525841A0800BF56EE /* RegionsMonitorTests.swift in Sources */,
+				DE2AE45E2721EBFE00C4794A /* LocationEventStoreTests.swift in Sources */,
 				DEC29F0625841A0800BF56EE /* Connection_ParsingTests.swift in Sources */,
 				DE260F6B26CAFC20004191D1 /* SynchronizationSchedulerTests.swift in Sources */,
 				DEF4A4972587BA1A00735E98 /* ArrayHelpersTests.swift in Sources */,
@@ -912,6 +940,7 @@
 				DEC08FF02429469C007D7039 /* NativeServices.swift in Sources */,
 				FC22B1A421ACCDF800738023 /* PassthroughView.swift in Sources */,
 				DE328DBE243E18BB00603EAC /* Keychain.swift in Sources */,
+				DE2AE4842727106800C4794A /* LocationEventStore.swift in Sources */,
 				DEC30C02258BECEB00A77A57 /* JSONNetworkController.swift in Sources */,
 				FC84B85321C43A3000BAF7ED /* LegalTermsText.swift in Sources */,
 				DEC75CB42508312F00F40296 /* Connection+Storage.swift in Sources */,
@@ -927,6 +956,7 @@
 				DE328DB4243CBC9700603EAC /* ConnectionsSynchronizer.swift in Sources */,
 				DE3074A723DB506D00A3C71F /* AnalyticsNetworkController.swift in Sources */,
 				DE7666E9239990C5005D6DE3 /* WebServiceAuthentication.swift in Sources */,
+				DE2AE4862727132E00C4794A /* RegionEvent.swift in Sources */,
 				1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */,
 				FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */,
 				FCF29FC52187C7E0004B1100 /* JSON.swift in Sources */,
@@ -973,8 +1003,10 @@
 				1D981C33219210D7001784C4 /* Result+Queries.swift in Sources */,
 				FC84B84C21C4321F00BAF7ED /* Links.swift in Sources */,
 				DE4A4C622436409C004082BF /* SynchronizationScheduler.swift in Sources */,
+				DE2AE48027270FED00C4794A /* LocationEventReporter.swift in Sources */,
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
+				DE2AE4822727103F00C4794A /* LocationEvent.swift in Sources */,
 				1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */,
 				DEC75CBB2509741F00F40296 /* LocationLibrary.swift in Sources */,
 				DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */,

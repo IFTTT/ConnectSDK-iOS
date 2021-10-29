@@ -187,6 +187,8 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     private let sessionManager: RegionEventsSessionManager
     /// The `EventPublisher<SynchronizationTriggerEvent>` that handles publishing synchronization events to listeners
     private let regionEventTriggerPublisher: EventPublisher<SynchronizationTriggerEvent>
+    
+    private let eventReporter: LocationEventReporter
         
     struct Constants {
         static let SanityThreshold = 20
@@ -201,16 +203,20 @@ final class LocationService: NSObject, SynchronizationSubscriber {
     ///     - sessionManager: An instance of `RegionEventsSessionManager` that uploads region events to the backend.
     ///     - eventPublisher: An instance of `EventPublisher<SynchronizationTriggerEvent>` that handles publishing sync events to listeners.
     /// - Returns: An initialized instance of `LocationService`.
-    init(regionsMonitor: RegionsMonitor,
-         regionEventsRegistry: RegionEventsRegistry,
-         connectionsRegistry: ConnectionsRegistry,
-         sessionManager: RegionEventsSessionManager,
-         eventPublisher: EventPublisher<SynchronizationTriggerEvent>) {
+    init(
+        regionsMonitor: RegionsMonitor,
+        regionEventsRegistry: RegionEventsRegistry,
+        connectionsRegistry: ConnectionsRegistry,
+        sessionManager: RegionEventsSessionManager,
+        eventPublisher: EventPublisher<SynchronizationTriggerEvent>,
+        eventReporter: LocationEventReporter
+    ) {
         self.regionsMonitor = regionsMonitor
         self.regionEventsRegistry = regionEventsRegistry
         self.connectionsRegistry = connectionsRegistry
         self.sessionManager = sessionManager
         self.regionEventTriggerPublisher = eventPublisher
+        self.eventReporter = eventReporter
         
         super.init()
     }
@@ -259,7 +265,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         state = .running
     }
     
-    private func recordRegionEvent(with region: CLRegion, kind: RegionEvent.Kind) {
+    private func recordRegionEvent(with region: CLRegion, kind: RegionEventKind) {
         var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
         backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(expirationHandler: {
             guard let identifier = backgroundTaskIdentifier else { return }
@@ -269,6 +275,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
         })
         
         let event = RegionEvent(kind: kind, triggerSubscriptionId: region.identifier)
+        eventReporter.recordRegionEvent(event)
         regionEventsRegistry.add(event)
         
         let triggerEvent = SynchronizationTriggerEvent(source: .regionsUpdate,
@@ -313,12 +320,24 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             
         let existingRegionEvents = regionEventsRegistry.getRegionEvents()
         if existingRegionEvents.count > Constants.SanityThreshold {
+            eventReporter.regionEventsErrorUpload(existingRegionEvents, error: .crossedSanityThreshold)
             regionEventsRegistry.remove(existingRegionEvents)
             completion(false, nil)
         } else if existingRegionEvents.count > 0 {
-            sessionManager.upload(events: existingRegionEvents,
-                                  credentialProvider: credentialProvider,
-                                  completion: completion)
+            sessionManager.upload(
+                events: existingRegionEvents,
+                credentialProvider: credentialProvider,
+                completion: { [weak self] (success, error) in
+                    if error != nil || !success {
+                        self?.eventReporter.regionEventsErrorUpload(
+                            existingRegionEvents,
+                            error: .networkError
+                        )
+                    } else {
+                        self?.eventReporter.regionEventsSuccessfulUpload(existingRegionEvents)
+                    }
+                    completion(success, error)
+                })
         } else {
             completion(false, nil)
         }

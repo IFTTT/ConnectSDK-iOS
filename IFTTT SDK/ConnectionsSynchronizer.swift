@@ -76,6 +76,7 @@ final class ConnectionsSynchronizer {
     private let subscribers: [SynchronizationSubscriber]
     private var scheduler: SynchronizationScheduler
     private let permissionsRequestor: PermissionsRequestor
+    private let locationEventReporter: LocationEventReporter
     
     private var state: RunState = .unknown
     
@@ -99,12 +100,16 @@ final class ConnectionsSynchronizer {
         let regionsMonitor = RegionsMonitor(allowsBackgroundLocationUpdates: Bundle.main.backgroundLocationEnabled)
         let locationSessionManager = RegionEventsSessionManager(networkController: .init(urlSession: .regionEventsURLSession),
                                                                 regionEventsRegistry: regionEventsRegistry)
+        let locationEventReporter = LocationEventReporter(eventStore: .init())
         
-        let location = LocationService(regionsMonitor: regionsMonitor,
-                                       regionEventsRegistry: regionEventsRegistry,
-                                       connectionsRegistry: connectionsRegistry,
-                                       sessionManager: locationSessionManager,
-                                       eventPublisher: eventPublisher)
+        let location = LocationService(
+            regionsMonitor: regionsMonitor,
+            regionEventsRegistry: regionEventsRegistry,
+            connectionsRegistry: connectionsRegistry,
+            sessionManager: locationSessionManager,
+            eventPublisher: eventPublisher,
+            eventReporter: locationEventReporter
+        )
         
         let connectionsMonitor = ConnectionsMonitor(connectionsRegistry: connectionsRegistry)
         let nativeServicesCoordinator = NativeServicesCoordinator(locationService: location,
@@ -121,6 +126,7 @@ final class ConnectionsSynchronizer {
         self.location = location
         self.connectionsMonitor = connectionsMonitor
         self.permissionsRequestor = permissionsRequestor
+        self.locationEventReporter = locationEventReporter
         
         let manager = SynchronizationManager(subscribers: subscribers)
         self.scheduler = SynchronizationScheduler(manager: manager,
@@ -258,6 +264,10 @@ final class ConnectionsSynchronizer {
     func setDeveloperBackgroundProcessClosures(launchHandler: VoidClosure?, expirationHandler: VoidClosure?) {
         scheduler.developerBackgroundProcessLaunchClosure = launchHandler
         scheduler.developerBackgroundProcessExpirationClosure = expirationHandler
+    }
+    
+    func setLocationEventReportedClosure(closure: LocationEventsClosure?) {
+        locationEventReporter.closure = closure
     }
 }
 

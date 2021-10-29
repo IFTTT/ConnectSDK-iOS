@@ -164,4 +164,12 @@ extension ConnectButtonController {
         ConnectionsSynchronizer.shared.setDeveloperBackgroundProcessClosures(launchHandler: launchHandler,
                                                                                expirationHandler: expirationHandler)
     }
+    
+    /// Sets a closure to be invoked whenever a `LocationEvent` occurs. For more information on the events, see `LocationEvent`.
+    ///
+    /// - Parameters:
+    ///     - closure: The closure to invoke whenever a `LocationEvent` occurs.
+    public static func setLocationEventReportedClosure(_ closure: LocationEventsClosure?) {
+        ConnectionsSynchronizer.shared.setLocationEventReportedClosure(closure: closure)
+    }
 }
