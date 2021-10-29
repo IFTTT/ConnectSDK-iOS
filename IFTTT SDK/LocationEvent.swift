@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Descibes a closure that is invoked whenever the SDK generates a `[LocationEvent]`
 public typealias LocationEventsClosure = ([LocationEvent]) -> Void
 
 /// Describes the kinds of region events that can be reported.
