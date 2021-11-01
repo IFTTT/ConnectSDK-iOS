@@ -324,6 +324,7 @@ final class LocationService: NSObject, SynchronizationSubscriber {
             regionEventsRegistry.remove(existingRegionEvents)
             completion(false, nil)
         } else if existingRegionEvents.count > 0 {
+            eventReporter.regionEventsStartUpload(existingRegionEvents)
             sessionManager.upload(
                 events: existingRegionEvents,
                 credentialProvider: credentialProvider,
