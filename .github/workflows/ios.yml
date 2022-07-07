@@ -18,7 +18,7 @@ jobs:
         env:
           scheme: ${{ 'SDKHostApp' }}
           platform: ${{ 'iOS Simulator' }}
-          os: ${{ '15.0' }}
+          os: ${{ '15.2' }}
           device: ${{ 'iPhone 13' }}
         run: |
           # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
@@ -30,8 +30,8 @@ jobs:
         env:
           scheme: ${{ 'SDKHostApp' }}
           platform: ${{ 'iOS Simulator' }}
-          os: ${{ '15.0' }}
-          device: ${{ 'iPhone 13' }}        
+          os: ${{ '15.2' }}
+          device: ${{ 'iPhone 13' }}
         run: |
           # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
           if [ $scheme = default ]; then scheme=$(cat default); fi
