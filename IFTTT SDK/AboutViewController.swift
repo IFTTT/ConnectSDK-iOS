@@ -86,9 +86,9 @@ class AboutViewController: UIViewController {
                 let iftttRemoved = rawText.replacingOccurrences(of: "IFTTT", with: "")
                 
                 let text = NSMutableAttributedString(string: iftttRemoved,
-                                                     attributes: [.font : Font.h3(weight: .demiBold)])
+                                                     attributes: [.font : StyleGuide.Font.h3(weight: .demiBold)])
                 let ifttt = NSAttributedString(string: "IFTTT",
-                                               attributes: [.font : Font.h3(weight: .heavy)])
+                                               attributes: [.font : StyleGuide.Font.h3(weight: .heavy)])
                 text.insert(ifttt, at: 0)
                 return text
             }
@@ -97,7 +97,7 @@ class AboutViewController: UIViewController {
             static var legalTermsText: NSAttributedString {
                 return LegalTermsText.string(withPrefix: "about.legal.full".localized,
                                              attributes: [.foregroundColor : Color.mediumGrey,
-                                                          .font : Font.body(weight: .demiBold)])
+                                                          .font : StyleGuide.Font.body(weight: .demiBold)])
             }
         }
     }
@@ -191,7 +191,7 @@ class AboutViewController: UIViewController {
     private lazy var deepLinkConnectionButton = PillButton("about.connection-deep-link".localized) {
         $0.backgroundColor = Constants.Color.transparentWhite
         $0.label.textColor = .white
-        $0.label.font = Font.h5()
+        $0.label.font = StyleGuide.Font.h5()
     }
     
     private lazy var downloadOnAppStoreButton: UIButton = {
@@ -369,7 +369,7 @@ private extension AboutViewController {
             iconView.constrain.square(length: Constants.Layout.valuePropIconSise)
             
             let label = UILabel(text) {
-                $0.font = Font.body(weight: .demiBold)
+                $0.font = StyleGuide.Font.body(weight: .demiBold)
                 $0.textColor = .white
                 $0.textAlignment = .left
                 $0.numberOfLines = 0
