@@ -29,6 +29,7 @@
 		1DFE020D2190E3DB00856ABC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE020C2190E3DB00856ABC /* API.swift */; };
 		1DFE02132190E4D300856ABC /* URLRequest+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */; };
 		1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */; };
+		6FD1A492287763AD0075626D /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD1A491287763AD0075626D /* Font.swift */; };
 		B556032625A851EE00A29A01 /* Localizable_fr.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556030E25A851ED00A29A01 /* Localizable_fr.strings */; };
 		B556032725A851EE00A29A01 /* Localizable_en-GB.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556030F25A851ED00A29A01 /* Localizable_en-GB.strings */; };
 		B556032825A851EE00A29A01 /* Localizable_pt-BR.strings in Resources */ = {isa = PBXBuildFile; fileRef = B556031025A851ED00A29A01 /* Localizable_pt-BR.strings */; };
@@ -118,7 +119,6 @@
 		DEF4A4922587B9EB00735E98 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF4A4912587B9EB00735E98 /* Array+Helpers.swift */; };
 		DEF4A4972587BA1A00735E98 /* ArrayHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */; };
 		FC04FE1B21501A8F008AC8A5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */; };
-		FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */; };
 		FC094BA7215ED72F008B35F6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC094BA6215ED72F008B35F6 /* Color.swift */; };
 		FC22B19421ACA54000738023 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19321ACA54000738023 /* ImageCache.swift */; };
 		FC22B19621ACA54A00738023 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC22B19521ACA54A00738023 /* ImageDownloader.swift */; };
@@ -210,6 +210,7 @@
 		1DFE020C2190E3DB00856ABC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		1DFE02122190E4D300856ABC /* URLRequest+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+CommonValues.swift"; sourceTree = "<group>"; };
 		1DFE02162190E58700856ABC /* URLSession+JSONTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+JSONTask.swift"; sourceTree = "<group>"; };
+		6FD1A491287763AD0075626D /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		B545250525A84C20004E2BA8 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		B556030E25A851ED00A29A01 /* Localizable_fr.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable_fr.strings; path = Resources/Localizable_fr.strings; sourceTree = "<group>"; };
 		B556030F25A851ED00A29A01 /* Localizable_en-GB.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "Localizable_en-GB.strings"; path = "Resources/Localizable_en-GB.strings"; sourceTree = "<group>"; };
@@ -302,7 +303,6 @@
 		DEF4A4912587B9EB00735E98 /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
 		DEF4A4962587BA1A00735E98 /* ArrayHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayHelpersTests.swift; sourceTree = "<group>"; };
 		FC04FE1A21501A8F008AC8A5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
-		FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+CommonValues.swift"; sourceTree = "<group>"; };
 		FC094BA6215ED72F008B35F6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection_ParsingTests.swift; sourceTree = "<group>"; };
 		FC1F491522710BE4008A1B21 /* fetch_connection_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = fetch_connection_response.json; sourceTree = "<group>"; };
@@ -631,7 +631,7 @@
 				FC84B84E21C437D500BAF7ED /* Models */,
 				DE4A4C5C24363284004082BF /* Monitoring */,
 				FC84B84D21C437B400BAF7ED /* Views */,
-				FC094BA4215ED6F5008B35F6 /* UIFont+CommonValues.swift */,
+				6FD1A491287763AD0075626D /* Font.swift */,
 				FC094BA6215ED72F008B35F6 /* Color.swift */,
 				FCC6DEB1215D90DD008C8405 /* Assets.swift */,
 				FC44F54321B75BF3005DA954 /* LocalizedStrings.swift */,
@@ -989,6 +989,7 @@
 				FCF0C4E421B0A97000DEB117 /* ConnectionNetworkError.swift in Sources */,
 				DE1F037226A8AD2600B6CF1A /* AuthenticationSessionPresentationContextProvider.swift in Sources */,
 				1DFE02052190E25500856ABC /* ConnectionCredentialProvider.swift in Sources */,
+				6FD1A492287763AD0075626D /* Font.swift in Sources */,
 				DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */,
 				FC094BA7215ED72F008B35F6 /* Color.swift in Sources */,
 				DEC08FFC242BAB25007D7039 /* Bundle+Helpers.swift in Sources */,
@@ -1015,7 +1016,6 @@
 				FC28D7E52225B1E900D84A1B /* ServiceIconsNetworkController.swift in Sources */,
 				DE25265623D8C49D0019C9CB /* Analytics.swift in Sources */,
 				FC44F54421B75BF3005DA954 /* LocalizedStrings.swift in Sources */,
-				FC094BA5215ED6F5008B35F6 /* UIFont+CommonValues.swift in Sources */,
 				1DFE020D2190E3DB00856ABC /* API.swift in Sources */,
 				FCBA16052138A4EE00EB1BC8 /* Connection.swift in Sources */,
 				DE1F036D26A8A29800B6CF1A /* SignInWithAppleAuthentication.swift in Sources */,

@@ -265,7 +265,7 @@ public class ConnectButton: UIView {
         switchControl.isOn = false
         switchControl.knob.backgroundColor = Color.blue
         primaryLabelAnimator.configure(.text("Connect"), insets: .avoidLeftKnob)
-        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : UIFont.footnote(weight: .bold)])
+        let initialFooterText = NSMutableAttributedString(string: "Powered by IFTTT", attributes: [.font : StyleGuide.Font.footnote(weight: .bold)])
         footerLabelAnimator.configure(.attributed(initialFooterText))
     }
     
