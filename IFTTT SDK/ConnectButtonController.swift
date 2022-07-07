@@ -407,11 +407,11 @@ public class ConnectButtonController {
             static let errorTextColor = UIColor.red
             
             static var footnoteFont: UIFont {
-                return .footnote(weight: .demiBold)
+                return Font.footnote(weight: .demiBold)
             }
             
             static var iftttWordmarkFont: UIFont {
-                return .footnote(weight: .heavy)
+                return Font.footnote(weight: .heavy)
             }
         }
 
