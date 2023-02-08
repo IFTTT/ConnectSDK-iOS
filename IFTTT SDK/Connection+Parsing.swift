@@ -8,6 +8,7 @@
 import Foundation
 
 extension Connection {
+    
     init?(parser: Parser) {
         guard
             let id = parser["id"].string,
@@ -112,10 +113,14 @@ private extension Connection.Feature {
 
         self.triggers = Set(parser["feature_triggers"].compactMap { innerParser -> Trigger? in
             let fieldsParser = innerParser["fields"]
+            let foundParser = fieldsParser.first(where: { parser -> Bool in
+                guard let id = parser["id"].string else { return false }
+                return Trigger.supportedTriggerId(id)
+            })
             guard let id = innerParser["id"].string,
-                  let firstField = fieldsParser.first else { return nil }
+                  let foundParser = foundParser else { return nil }
             
-            return Trigger(defaultFieldParser: firstField, triggerId: id)
+            return Trigger(defaultFieldParser: foundParser, triggerId: id)
         })
     }
 }
