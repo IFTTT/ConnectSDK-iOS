@@ -1,0 +1,157 @@
+{
+    "type": "connection",
+    "id": "aMozvjdb",
+    "name": "Deliver grocery when any member enters an area",
+    "description": "Set a location and good stuff will be delivered there",
+    "url": "https://ifttt.com/applets/aMozvjdb",
+    "enabled_count": 2,
+    "user_status": "enabled",
+    "services": [{
+        "service_id": "grocery_express",
+        "service_name": "Grocery Express",
+        "service_short_name": "Grocery Expr",
+        "is_primary": true,
+        "monochrome_icon_url": "https://assets.ifttt.com/images/channels/1059449428/icons/monochrome_regular.png",
+        "color_icon_url": "https://assets.ifttt.com/images/channels/1059449428/icons/on_color_regular.png",
+        "brand_color": "#c8c8c8",
+        "url": "https://ifttt.com/grocery_express",
+        "triggers": [],
+        "queries": [],
+        "actions": []
+    }, {
+        "service_id": "g_location",
+        "service_name": "G Location",
+        "service_short_name": "G Loc.",
+        "is_primary": false,
+        "monochrome_icon_url": "https://assets.ifttt.com/images/channels/default/icons/monochrome_regular.png",
+        "color_icon_url": "https://assets.ifttt.com/images/channels/default/icons/on_color_regular.png",
+        "brand_color": "#ff9f1c",
+        "url": "https://ifttt.com/g_location",
+        "triggers": [{
+            "id": "any_member_enters_an_area",
+            "label": "Any member enters an area",
+            "field_options_url": "https://connect.ifttt.com/v2/connections/aMozvjdb/triggers/g_location.any_member_enters_an_area/field_options",
+            "run_url": null,
+            "fields": [{
+                "id": "group_guid",
+                "label": "Which Group?",
+                "type": "COLLECTION_SELECT",
+                "required": true,
+                "hidden": false,
+                "default_value": null
+            }, {
+                "id": "location",
+                "label": "Locate an area",
+                "type": "LOCATION_ENTER",
+                "required": true,
+                "hidden": false,
+                "default_value": {
+                    "latitude": "37.78338859999999",
+                    "longitude": "-122.408433",
+                    "radius": "366.4021942042208",
+                    "address": "923 Market St, San Francisco, CA 94103, USA",
+                    "description": "923 Market St, San Francisco, CA 94103, USA",
+                    "zoom": "16"
+                }
+            }],
+            "user_triggers": [{
+                "run_url": null,
+                "fields": [{
+                    "id": "group_guid",
+                    "label": "My_first_group",
+                    "group": null,
+                    "value": "gAiXzykdSNyPEAAOAAAAwmRhYTYxMmEzMjUwZjkzZGJNeV9maXJzdF9ncm91cA"
+                }, {
+                    "id": "location",
+                    "value": {
+                        "lat": 37.78338859999999,
+                        "lng": -122.408433,
+                        "radius": 349.2418372528667,
+                        "address": "923 Market St, San Francisco, CA 94103, USA",
+                        "description": "923 Market St, San Francisco, CA 94103, USA",
+                        "zoom": 16
+                    }
+                }]
+            }]
+        }],
+        "queries": [],
+        "actions": []
+    }],
+    "cover_image": null,
+    "value_propositions": [],
+    "features": [{
+        "id": "a9wzuevc23",
+        "title": "Start when any member enters an area",
+        "description": "Set an area and the grocery will be delivered when any member enters that area.",
+        "icon_url": "https://ifttt.com/value-prop-icons/gps.png",
+        "field_options_url": "https://connect.ifttt.com/v2/connections/aMozvjdb/features/a9wzuevc23/field_options",
+        "fields": [],
+        "feature_triggers": [{
+            "id": "pc7a2p4lbn",
+            "trigger_id": "any_member_enters_an_area",
+            "service_id": "g_location",
+            "label": "Any member enters an area",
+            "field_options_url": "https://connect.ifttt.com/v2/connections/aMozvjdb/features/a9wzuevc23/triggers/g_location.any_member_enters_an_area/field_options",
+            "run_url": null,
+            "fields": [{
+                "id": "group_guid",
+                "label": "Which Group?",
+                "type": "COLLECTION_SELECT",
+                "required": true,
+                "hidden": false,
+                "default_value": null
+            }, {
+                "id": "location",
+                "label": "Locate an area",
+                "type": "LOCATION_ENTER",
+                "required": true,
+                "hidden": false,
+                "default_value": {
+                    "lat": 37.78338859999999,
+                    "lng": -122.408433,
+                    "radius": 366.4021942042208,
+                    "address": "923 Market St, San Francisco, CA 94103, USA",
+                    "description": "923 Market St, San Francisco, CA 94103, USA",
+                    "zoom": 16
+                }
+            }]
+        }],
+        "feature_queries": [],
+        "feature_actions": []
+    }],
+    "user_connection": {
+        "user_features": [{
+            "id": "b3a585f5-1427-40f5-9295-957cde1856dd",
+            "feature_id": "a9wzuevc23",
+            "enabled": true,
+            "user_fields": [],
+            "user_feature_triggers": [{
+                "id": "b0fe2ba5-ff2e-4c4b-b63a-8f65c7f90c48",
+                "feature_trigger_id": "pc7a2p4lbn",
+                "user_fields": [{
+                    "field_id": "group_guid",
+                    "field_type": "COLLECTION_SELECT",
+                    "value": {
+                        "label": "My_first_group",
+                        "group": null,
+                        "value": "gAiXzykdSNyPEAAOAAAAwmRhYTYxMmEzMjUwZjkzZGJNeV9maXJzdF9ncm91cA"
+                    }
+                }, {
+                    "field_id": "location",
+                    "field_type": "LOCATION_ENTER",
+                    "value": {
+                        "lat": 37.78338859999999,
+                        "lng": -122.408433,
+                        "radius": 349.2418372528667,
+                        "address": "923 Market St, San Francisco, CA 94103, USA",
+                        "description": "923 Market St, San Francisco, CA 94103, USA",
+                        "zoom": 16
+                    }
+                }]
+            }],
+            "user_feature_queries": [],
+            "user_feature_actions": []
+        }]
+    },
+    "embedded_url": "https://ifttt.com/access/api/aMozvjdb"
+}

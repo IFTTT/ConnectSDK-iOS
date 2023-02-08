@@ -79,6 +79,7 @@
 		DE328DC2243E1DED00603EAC /* LocationMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC1243E1DED00603EAC /* LocationMonitor.swift */; };
 		DE328DC8243E2FC300603EAC /* SynchronizationTriggerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE328DC7243E2FC300603EAC /* SynchronizationTriggerEvent.swift */; };
 		DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */; };
+		DE3D325929944120001FF335 /* fetch_multiple_feature_fields_connection_response.json in Resources */ = {isa = PBXBuildFile; fileRef = DE3D325829943CA4001FF335 /* fetch_multiple_feature_fields_connection_response.json */; };
 		DE4A4C5E243632A7004082BF /* SynchronizationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C5D243632A7004082BF /* SynchronizationSubscriber.swift */; };
 		DE4A4C602436340C004082BF /* SynchronizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C5F2436340C004082BF /* SynchronizationManager.swift */; };
 		DE4A4C622436409C004082BF /* SynchronizationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A4C612436409C004082BF /* SynchronizationScheduler.swift */; };
@@ -265,6 +266,7 @@
 		DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPublisherTests.swift; sourceTree = "<group>"; };
 		DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsRegistryTests.swift; sourceTree = "<group>"; };
 		DE3761FF22DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDeeplinkAction.swift; sourceTree = "<group>"; };
+		DE3D325829943CA4001FF335 /* fetch_multiple_feature_fields_connection_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = fetch_multiple_feature_fields_connection_response.json; sourceTree = "<group>"; };
 		DE4A4C5D243632A7004082BF /* SynchronizationSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationSubscriber.swift; sourceTree = "<group>"; };
 		DE4A4C5F2436340C004082BF /* SynchronizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationManager.swift; sourceTree = "<group>"; };
 		DE4A4C612436409C004082BF /* SynchronizationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationScheduler.swift; sourceTree = "<group>"; };
@@ -475,6 +477,7 @@
 				FC1F491322710B62008A1B21 /* Connection_ParsingTests.swift */,
 				1D6E554521CBF4F200FE66F0 /* IFTTT SDKTests-Bridging-Header.h */,
 				FC1F491522710BE4008A1B21 /* fetch_connection_response.json */,
+				DE3D325829943CA4001FF335 /* fetch_multiple_feature_fields_connection_response.json */,
 				DE328DC92440CD7900603EAC /* CLRegion+Parsing_spec.swift */,
 				DE328DCB2440CEA500603EAC /* EventPublisherTests.swift */,
 				DE328DCD2440E89600603EAC /* ConnectionsRegistryTests.swift */,
@@ -848,6 +851,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEC29F1525841A5200BF56EE /* fetch_connection_response.json in Resources */,
+				DE3D325929944120001FF335 /* fetch_multiple_feature_fields_connection_response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

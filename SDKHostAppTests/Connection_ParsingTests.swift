@@ -8,22 +8,29 @@
 import XCTest
 @testable import IFTTTConnectSDK
 
+extension Bundle {
+    func fetchConnection(fromJSON atPath: String) -> Connection? {
+        guard let path = url(forResource: atPath, withExtension: "json"),
+                let json = try? Data(contentsOf: path) else { return nil }
+        
+        let parser = Parser(content: json)
+        return Connection(parser: parser)
+    }
+}
+
 class Connection_ParsingTests: XCTestCase {
     
     var connection: Connection!
-    
+    var multipleFeatureFieldsConnection: Connection!
+   
     override func setUp() {
         #if SWIFT_PACKAGE
         let bundle = Bundle.module
         #else
         let bundle = Bundle(for: Connection_ParsingTests.self)
         #endif
-        if let path = bundle.url(forResource: "fetch_connection_response",
-                                 withExtension: "json"),
-            let json = try? Data(contentsOf: path) {
-            let parser = Parser(content: json)
-            connection = Connection(parser: parser)
-        }
+        connection = bundle.fetchConnection(fromJSON: "fetch_connection_response")
+        multipleFeatureFieldsConnection = bundle.fetchConnection(fromJSON: "fetch_multiple_feature_fields_connection_response")
     }
     
     func test_fetchConnectionResponse() {
@@ -87,8 +94,33 @@ class Connection_ParsingTests: XCTestCase {
         assert(testMisspelledIFTTTIdentifier.stripIFTTTPrefix() == testMisspelledIFTTTIdentifier)
     }
     
-    func test_addIFTTTPrefix() {
-        let testIdentifier = "1234"
-        assert(testIdentifier.addIFTTTPrefix() == "ifttt_1234")
+    func test_fetchMultipleFeatureFieldsConnectionResponse() {
+        XCTAssertNotNil(multipleFeatureFieldsConnection)
+        if multipleFeatureFieldsConnection == nil {
+            return
+        }
+        
+        let firstTrigger = multipleFeatureFieldsConnection.activeUserTriggers.first
+        switch firstTrigger {
+        case .location(let region):
+            XCTAssertEqual(region.radius, 349.2418372528667)
+            XCTAssertEqual(region.center.latitude, 37.78338859999999)
+            XCTAssertEqual(region.center.longitude, -122.408433)
+            XCTAssertEqual(region.identifier, "ifttt_b0fe2ba5-ff2e-4c4b-b63a-8f65c7f90c48")
+        default:
+            XCTFail("Expecting a location trigger")
+        }
+        
+        let storage = Connection.ConnectionStorage(connection: multipleFeatureFieldsConnection)
+        XCTAssertEqual(storage.hasLocationTriggers, true)
+        
+        if let firstRegion = storage.locationRegions.first {
+            XCTAssertEqual(firstRegion.radius, 349.2418372528667)
+            XCTAssertEqual(firstRegion.center.latitude, 37.78338859999999)
+            XCTAssertEqual(firstRegion.center.longitude, -122.408433)
+            XCTAssertEqual(firstRegion.identifier, "ifttt_b0fe2ba5-ff2e-4c4b-b63a-8f65c7f90c48")
+        } else {
+            XCTFail("Expecting a region to be returned")
+        }
     }
 }

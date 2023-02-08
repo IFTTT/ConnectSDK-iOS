@@ -91,6 +91,13 @@ public enum Trigger: Hashable {
             ]
         }
     }
+    
+    static func supportedTriggerId(_ triggerId: String) -> Bool {
+        switch triggerId {
+        case Constants.LocationIdentifer: return true
+        default: return false
+        }
+    }
  
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
