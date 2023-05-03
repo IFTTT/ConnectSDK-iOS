@@ -20,6 +20,9 @@ extension ConnectButton {
         
         /// The attributed text of the label.
         case attributed(NSAttributedString)
+
+        /// The text color of the label.
+        case textColor(UIColor)
         
         /// Updates the label with the value of the enum.
         ///
@@ -33,6 +36,8 @@ extension ConnectButton {
                 label.text = text
             case .attributed(let text):
                 label.attributedText = text
+            case .textColor(let color):
+                label.textColor = color
             }
         }
         
@@ -51,6 +56,8 @@ extension ConnectButton {
             case (.text(let lhs), .text(let rhs)):
                 return lhs == rhs
             case (.attributed(let lhs), .attributed(let rhs)):
+                return lhs == rhs
+            case (.textColor(let lhs), .textColor(let rhs)):
                 return lhs == rhs
             default:
                 return false

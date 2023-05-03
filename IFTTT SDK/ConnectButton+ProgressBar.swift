@@ -21,12 +21,19 @@ extension ConnectButton {
         
         private let track = UIView()
         private let bar = PassthroughView()
+
+        private var defaultColor: UIColor {
+            return Color.dynamicColor(
+                light: Color.grey,
+                dark: Color.lightGrey
+            )
+        }
         
         /// Configures the progress bar background with the optionally provided `Service`.
         ///
         /// - Parameter service: An optional `Service` to set the backgrund color to.
         func configure(with service: Service?) {
-            bar.backgroundColor = service?.brandColor.contrasting() ?? Color.grey
+            bar.backgroundColor = service?.brandColor.contrasting() ?? defaultColor
         }
         
         private func update() {

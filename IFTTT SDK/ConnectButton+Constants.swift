@@ -35,5 +35,20 @@ extension ConnectButton {
         static let mediumGrey = UIColor(hex: 0x666666)
         static let grey = UIColor(hex: 0x414141)
         static let border = UIColor(white: 1, alpha: 0.32)
+        static let almostBlack = UIColor(hex: 0x222222)
+
+        static func dynamicColor(light: UIColor, dark: UIColor) -> UIColor {
+            if #available(iOS 13, *) {
+                return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
+                    if UITraitCollection.userInterfaceStyle == .dark {
+                        return dark
+                    } else {
+                        return light
+                    }
+                }
+            } else {
+                return light
+            }
+        }
     }
 }
