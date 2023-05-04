@@ -34,13 +34,15 @@ extension ConnectButton {
         
         /// The color to use for the footer based on the style.
         var footerColor: UIColor {
-            return colors(light: lightColorFooter(), dark: Color.lightGrey)
+            return UIColor(hex: 0x999999)
         }
 
+        /// The color to use for the button background based on the style
         var buttonBackgroundColor: UIColor {
             return colors(light: Color.almostBlack, dark: .white)
         }
 
+        /// The color to use for the button text based on the style
         var textColor: UIColor {
             return colors(light: .white, dark: .black)
         }
@@ -54,14 +56,6 @@ extension ConnectButton {
             case .dynamic:
                 return Color.dynamicColor(light: light, dark: dark)
             }
-        }
-        
-        private func lightColorFooter() -> UIColor {
-            return UIColor(white: 0, alpha: 0.32)
-        }
-        
-        private func darkColorFooter() -> UIColor {
-            return UIColor(white: 1, alpha: 0.32)
         }
     }
 }
