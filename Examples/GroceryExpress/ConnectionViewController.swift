@@ -35,6 +35,20 @@ class ConnectionViewController: UIViewController {
     
     @IBOutlet weak var opaqueOverlay: UIView!
     
+    @IBOutlet weak var styleChangeButton: UIButton!
+
+    @IBAction func styleChangeButtonTapped(_ sender: Any) {
+        switch connectButton.style {
+        case .light:
+            connectButton.style = .dark
+        case .dark:
+            connectButton.style = .dynamic
+        case .dynamic:
+            connectButton.style = .light
+        }
+
+        updateStyleChangeButtonTitle()
+    }
     // MARK: - Connect flow
     
     private let settings = Settings()
@@ -117,10 +131,20 @@ class ConnectionViewController: UIViewController {
         
         featuresStackView.isLayoutMarginsRelativeArrangement = true
         featuresStackView.layoutMargins = .init(top: 0, left: 20, bottom: 0, right: 20)
-        view.backgroundColor = .white
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = .tertiarySystemBackground
+        } else {
+            view.backgroundColor = .white
+        }
         activityIndicator.color = .black
         
         update(with: displayInformation)
+        updateStyleChangeButtonTitle()
+    }
+
+    private func updateStyleChangeButtonTitle() {
+        styleChangeButton.setTitle("Change style (\(connectButton.style))", for: .normal)
+        styleChangeButton.setTitle("Change style (\(connectButton.style))", for: .selected)
     }
     
     private func update(with display: DisplayInformation) {

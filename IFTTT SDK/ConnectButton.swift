@@ -19,9 +19,9 @@ protocol ConnectButtonAnalyticsDelegate: AnyObject {
 public class ConnectButton: UIView {
     
     /// Adjust the button's style
-    private var style: Style {
+    public var style: Style {
         didSet {
-            updateStyle()
+            applyStyle()
         }
     }
     
@@ -49,21 +49,21 @@ public class ConnectButton: UIView {
         style = .light
         super.init(frame: .zero)
         createLayout()
-        updateStyle()
+        applyStyle()
     }
     
     public override init(frame: CGRect) {
         style = .light
         super.init(frame: frame)
         createLayout()
-        updateStyle()
+        applyStyle()
     }
     
     required init?(coder aDecoder: NSCoder) {
         style = .light
         super.init(coder: aDecoder)
         createLayout()
-        updateStyle()
+        applyStyle()
     }
     
     /// Creates a `UIViewPropertyAnimator` for the provided transition.
@@ -248,19 +248,10 @@ public class ConnectButton: UIView {
     
     
     // MARK: - UI
-    
-    private func updateStyle() {
-        backgroundColor = .clear
-        
-        switch style {
-        case .light:
-            applyLightStyle()
-        }
-    }
-    
+
     /// When this button is configured in a Storyboard / NIB, this defines the preview state
     public override func prepareForInterfaceBuilder() {
-        backgroundView.backgroundColor = .black
+        backgroundView.backgroundColor = style.buttonBackgroundColor
         switchControl.alpha = 1
         switchControl.isOn = false
         switchControl.knob.backgroundColor = Color.blue
@@ -279,7 +270,10 @@ public class ConnectButton: UIView {
     ///   - placeholderText: The placeholder text for the email field when it is empty
     ///   - confirmButtonImage: The image asset to use for the email confirm button
     func configureEmailField(placeholderText: String, confirmButtonAsset: UIImage?) {
-        emailEntryField.placeholder = placeholderText
+        emailEntryField.attributedPlaceholder = NSAttributedString(
+            string: placeholderText,
+            attributes: [NSAttributedString.Key.foregroundColor: Color.mediumGrey])
+
         emailConfirmButton.imageView.image = confirmButtonAsset
     }
     
@@ -302,14 +296,14 @@ public class ConnectButton: UIView {
     
     // MARK: Text
     
-    private let primaryLabelAnimator = LabelAnimator {
+    private lazy var primaryLabelAnimator = LabelAnimator {
         $0.textAlignment = .center
-        $0.textColor = .white
+        $0.textColor = self.style.textColor
         $0.font = Style.Font.connect
         $0.adjustsFontSizeToFitWidth = true
         $0.baselineAdjustment = .alignCenters
     }
-    
+
     private let footerLabelAnimator = LabelAnimator {
         $0.numberOfLines = 0
         $0.textAlignment = .center
@@ -553,9 +547,10 @@ private extension ConnectButton {
         stopPulseAnimation()
         
         primaryLabelAnimator.configure(.text(message), insets: .standard)
+        primaryLabelAnimator.configure(.textColor(style.textColor), insets: .standard)
         
         animator.addAnimations {
-            self.backgroundView.backgroundColor = .black
+            self.backgroundView.backgroundColor = self.style.buttonBackgroundColor
         }
         
         pulseAnimateLabel(toAlpha: .partial)
@@ -576,8 +571,10 @@ private extension ConnectButton {
     
     private func transitionToConnect(service: Service, message: String, animator: UIViewPropertyAnimator) {
         stopPulseAnimation()
-        let trackColor: UIColor = .black
+        let trackColor: UIColor = style.buttonBackgroundColor
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidLeftKnob, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .textColor(style.textColor), insets: .avoidLeftKnob, addingTo: animator)
+
         switchControl.configure(with: service, networkController: self.imageViewNetworkController, trackColor: trackColor)
         emailConfirmButton.backgroundColor = service.brandColor
         
@@ -603,11 +600,19 @@ private extension ConnectButton {
                                             service: Service?,
                                             labelValue: LabelValue,
                                             animator: UIViewPropertyAnimator) {
-        
+
         primaryLabelAnimator.transition(updatedValue: labelValue,
                                         insets: .standard,
                                         addingTo: animator)
-        
+
+        let textColor: UIColor = service?.brandColor != nil
+        ? .white
+        : style.textColor
+
+        primaryLabelAnimator.transition(updatedValue: .textColor(textColor),
+                                        insets: .standard,
+                                        addingTo: animator)
+
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
         progressBar.alpha = 1
@@ -615,10 +620,10 @@ private extension ConnectButton {
         animator.addAnimations {
             self.switchControl.isOn = isOn
             self.switchControl.knob.iconView.alpha = 0
-            self.switchControl.knob.backgroundColor = service?.brandColor ?? .black
+            self.switchControl.knob.backgroundColor = service?.brandColor ?? self.style.buttonBackgroundColor
             self.switchControl.knob.layer.shadowOpacity = 0
             
-            self.backgroundView.backgroundColor = service?.brandColor ?? .black
+            self.backgroundView.backgroundColor = service?.brandColor ?? self.style.buttonBackgroundColor
         }
         
         animator.addCompletion { position in
@@ -726,6 +731,8 @@ private extension ConnectButton {
     
     private func transitionToVerifying(message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
+
+        primaryLabelAnimator.transition(updatedValue: .textColor(style.textColor), insets: .standard, addingTo: animator)
         
         progressBar.configure(with: nil)
         progressBar.alpha = 1
@@ -733,7 +740,7 @@ private extension ConnectButton {
         animator.addAnimations {
             self.emailEntryField.alpha = 0
             self.emailConfirmButton.alpha = 0
-            self.backgroundView.backgroundColor = .black
+            self.backgroundView.backgroundColor = self.style.buttonBackgroundColor
             
             // This is only relevent for dark mode when we draw a border around the switch
             self.backgroundView.border.opacity = 1
@@ -746,6 +753,7 @@ private extension ConnectButton {
     
     private func transitionToContinueToService(service: Service, message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .textColor(.white), addingTo: animator)
         
         progressBar.configure(with: service)
         
@@ -777,6 +785,7 @@ private extension ConnectButton {
     
     private func transitionToConnecting(service: Service, message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
+        primaryLabelAnimator.transition(updatedValue: .textColor(.white), insets: .standard, addingTo: animator)
     
         backgroundView.backgroundColor = service.brandColor
         switchControl.knob.iconView.alpha = 1
@@ -794,6 +803,8 @@ private extension ConnectButton {
         stopPulseAnimation() // If we Cancelled disconnect
         
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .avoidRightKnob, addingTo: animator)
+
+        primaryLabelAnimator.transition(updatedValue: .textColor(style.textColor), insets: .avoidRightKnob, addingTo: animator)
         
         progressBar.configure(with: service)
         progressBar.fractionComplete = 0
@@ -808,7 +819,7 @@ private extension ConnectButton {
         }
         
         animator.addAnimations {
-            let trackColor: UIColor = .black
+            let trackColor: UIColor = self.style.buttonBackgroundColor
             self.backgroundView.backgroundColor = trackColor
             
             self.switchControl.configure(with: service, networkController: self.imageViewNetworkController, trackColor: trackColor)
@@ -843,7 +854,7 @@ private extension ConnectButton {
         animator.addAnimations {
             self.switchControl.isOn = false
             self.switchControl.knob.iconView.alpha = 0
-            self.switchControl.knob.backgroundColor = .black
+            self.switchControl.knob.backgroundColor = self.style.buttonBackgroundColor
             self.switchControl.knob.layer.shadowOpacity = 0
         }
         
@@ -872,39 +883,18 @@ private extension ConnectButton {
                                         insets: .standard,
                                         addingTo: animator)
     }
-    
-    private func applyLightStyle() {
-        emailConfirmButton.backgroundColor = .black
-        emailConfirmButton.imageView.tintColor = .white
+
+    private func applyStyle() {
+        backgroundColor = .clear
         emailConfirmButton.layer.shadowColor = UIColor.clear.cgColor
-        
+        emailEntryField.textColor = .darkGray
+
+        backgroundView.backgroundColor = style.buttonBackgroundColor
+        primaryLabelAnimator.primary.label.textColor = style.textColor
+
         footerLabelAnimator.primary.label.textColor = style.footerColor
         footerLabelAnimator.transition.label.textColor = style.footerColor
-        
+
         backgroundView.border = .init(color: .clear, width: Layout.borderWidth)
-    }
-    
-    private func applyDarkStyle() {
-        emailConfirmButton.backgroundColor = .white
-        emailConfirmButton.imageView.tintColor = .black
-        // Add a shadow to the left side of the button to delineate it from the email field background
-        let layer = emailConfirmButton.layer
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.2
-        layer.shadowRadius = 5
-        layer.shadowOffset = CGSize(width: -2, height: 0)
-        
-        footerLabelAnimator.primary.label.textColor = style.footerColor
-        footerLabelAnimator.transition.label.textColor = style.footerColor
-        
-        backgroundView.border = .init(color: Color.border, width: Layout.borderWidth)
-    }
-    
-    private func updateKnobForLightStyle() {
-        switchControl.knob.backgroundColor = .black
-    }
-    
-    private func updateKnobForDarkStyle() {
-        switchControl.knob.backgroundColor = .white
     }
 }

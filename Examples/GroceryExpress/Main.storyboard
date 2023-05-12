@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QrA-rv-z6d">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QrA-rv-z6d">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -192,7 +192,7 @@
                                         <rect key="frame" x="0.0" y="308.66666666666669" width="354" height="151.66666666666669"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User is not logged into IFTTT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wtn-AT-fpa">
-                                                <rect key="frame" x="60.333333333333329" y="0.0" width="233.66666666666669" height="20.333333333333332"/>
+                                                <rect key="frame" x="60.333333333333329" y="0.0" width="233.33333333333337" height="20.333333333333332"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -456,8 +456,17 @@
                                         </constraints>
                                         <edgeInsets key="layoutMargins" top="0.0" left="20" bottom="0.0" right="20"/>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZMe-Cy-eJC">
+                                        <rect key="frame" x="169.66666666666666" y="670" width="75" height="35"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="tinted" title="Button"/>
+                                        <connections>
+                                            <action selector="styleChangeButtonTapped:" destination="Qpl-UT-38S" eventType="touchUpInside" id="Ijp-eQ-aBF"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="ZMe-Cy-eJC" firstAttribute="centerX" secondItem="CS4-C0-5nt" secondAttribute="centerX" id="0wm-EN-Kf3"/>
                                     <constraint firstItem="K6a-ig-8eM" firstAttribute="leading" secondItem="CS4-C0-5nt" secondAttribute="leading" constant="16" id="2hy-qG-IaQ"/>
                                     <constraint firstItem="olx-BK-h7F" firstAttribute="leading" secondItem="CS4-C0-5nt" secondAttribute="leading" id="2oY-Ud-PTM"/>
                                     <constraint firstItem="olx-BK-h7F" firstAttribute="top" secondItem="8Tc-IV-1W8" secondAttribute="bottom" constant="30" id="37u-Rs-36t"/>
@@ -473,6 +482,7 @@
                                     <constraint firstAttribute="trailing" secondItem="8Tc-IV-1W8" secondAttribute="trailing" id="Zpv-Z1-XBj"/>
                                     <constraint firstItem="XJV-id-Dha" firstAttribute="leading" secondItem="8Tc-IV-1W8" secondAttribute="leading" id="bKC-Mz-ntd"/>
                                     <constraint firstAttribute="trailing" secondItem="K6a-ig-8eM" secondAttribute="trailing" constant="16" id="ghb-EQ-8Ob"/>
+                                    <constraint firstAttribute="bottom" secondItem="ZMe-Cy-eJC" secondAttribute="bottom" constant="40" id="h0z-zk-lzc"/>
                                     <constraint firstAttribute="trailing" secondItem="bag-Y6-owB" secondAttribute="trailing" id="h4L-el-I1e"/>
                                     <constraint firstItem="8Tc-IV-1W8" firstAttribute="width" secondItem="CS4-C0-5nt" secondAttribute="width" id="hxt-t2-hCd"/>
                                     <constraint firstItem="XJV-id-Dha" firstAttribute="bottom" secondItem="8Tc-IV-1W8" secondAttribute="bottom" id="vRH-Mg-9yC"/>
@@ -496,6 +506,7 @@
                         <outlet property="connectButton" destination="olx-BK-h7F" id="ktb-dg-ZIw"/>
                         <outlet property="featuresStackView" destination="bag-Y6-owB" id="sqF-6k-JSJ"/>
                         <outlet property="opaqueOverlay" destination="XJV-id-Dha" id="nZb-gG-Ypt"/>
+                        <outlet property="styleChangeButton" destination="ZMe-Cy-eJC" id="DDb-BE-cJA"/>
                         <outlet property="subtitle" destination="K6a-ig-8eM" id="3CG-ct-550"/>
                     </connections>
                 </viewController>

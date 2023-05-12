@@ -16,6 +16,16 @@ extension ConnectButton {
         
         /// Style the button for a white background
         case light
+
+        /// Style the button for a dark background
+        case dark
+
+        /// Style the button for with dynamic colors:
+        /// When the user device is on light mode, the style used is equivalent to `light`.
+        /// When on dark mode, the style is equivalent to `dark`.
+        ///
+        ///  On iOS versions before 13.0, this style is the same as `light`.
+        case dynamic
         
         struct Font {
             static let connect = UIFont(name: "AvenirNext-Bold", size: 22)!
@@ -24,18 +34,28 @@ extension ConnectButton {
         
         /// The color to use for the footer based on the style.
         var footerColor: UIColor {
+            return UIColor(hex: 0x999999)
+        }
+
+        /// The color to use for the button background based on the style
+        var buttonBackgroundColor: UIColor {
+            return colors(light: Color.almostBlack, dark: .white)
+        }
+
+        /// The color to use for the button text based on the style
+        var textColor: UIColor {
+            return colors(light: .white, dark: .black)
+        }
+
+        private func colors(light: UIColor, dark: UIColor) -> UIColor {
             switch self {
             case .light:
-                return lightColorFooter()
+                return light
+            case .dark:
+                return dark
+            case .dynamic:
+                return Color.dynamicColor(light: light, dark: dark)
             }
-        }
-        
-        private func lightColorFooter() -> UIColor {
-            return UIColor(white: 0, alpha: 0.32)
-        }
-        
-        private func darkColorFooter() -> UIColor {
-            return UIColor(white: 1, alpha: 0.32)
         }
     }
 }
