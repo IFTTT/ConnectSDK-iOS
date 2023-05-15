@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and Test SDKHostApp scheme using any available iPhone simulator
-    runs-on: macos-11
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
@@ -18,7 +18,7 @@ jobs:
         env:
           scheme: ${{ 'SDKHostApp' }}
           platform: ${{ 'iOS Simulator' }}
-          os: ${{ '15.2' }}
+          os: ${{ '16.2' }}
           device: ${{ 'iPhone 13' }}
         run: |
           # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)

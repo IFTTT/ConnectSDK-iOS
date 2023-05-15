@@ -22,9 +22,9 @@ extension ConnectButton {
                 super.init()
                 
                 layer.shadowColor = UIColor.black.cgColor
-                layer.shadowOpacity = 0.25
-                layer.shadowRadius = 2
-                layer.shadowOffset = CGSize(width: 2, height: 8)
+                layer.shadowOpacity = 0.16
+                layer.shadowRadius = 6
+                layer.shadowOffset = CGSize(width: 0, height: 3)
                 
                 addSubview(iconView)
                 iconView.constrain.center(in: self)
