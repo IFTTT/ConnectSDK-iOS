@@ -8,6 +8,7 @@
 import Foundation
 
 /// A protocol that defines APIs for providing credentials used during the service authentication process for an `Connection`.
+@objc
 public protocol ConnectionCredentialProvider {
     
     /// The OAuth code for your user on your service. This is used to skip a step for connecting to your own service during the Connect Button activation flow. We require this value to provide the best possible user experience.

@@ -8,8 +8,7 @@
 import Foundation
 
 extension Connection {
-    
-    init?(parser: Parser) {
+    convenience init?(parser: Parser) {
         guard
             let id = parser["id"].string,
             let name = parser["name"].string,
@@ -18,26 +17,36 @@ extension Connection {
             else {
                 return nil
         }
-        self.id = id
-        self.name = name
-        self.description = description
-        self.status = Status(rawValue: parser["user_status"].string ?? "") ?? .unknown
-        self.services = parser["services"].compactMap { Service(parser: $0) }
-        self.url = url
+
+        let services = parser["services"].compactMap { Service(parser: $0) }
         guard let primaryService = services.first(where: { $0.isPrimary }) else {
             return nil
         }
-        self.primaryService = primaryService
         
-        self.coverImages = CoverImage.images(with: parser["cover_image"])
+        let status = Status(rawValue: parser["user_status"].string ?? "") ?? .unknown
+        let coverImages = CoverImage.images(with: parser["cover_image"])
         
-        self.valuePropositionsParser = parser["value_propositions"]
+        let valuePropositionsParser = parser["value_propositions"]
 
-        self.features = parser["features"].compactMap {
+        let features = parser["features"].compactMap {
             Connection.Feature(parser: $0)
         }
         
-        self.activeUserTriggers = Connection.parseTriggers(parser)
+        let activeUserTriggers = Connection.parseTriggers(parser)
+        
+        self.init(
+            id: id, 
+            name: name, 
+            details: description,
+            status: status, 
+            url: url,
+            coverImages: coverImages,
+            valuePropositionsParser: valuePropositionsParser,
+            features: features,
+            services: services,
+            primaryService: primaryService, 
+            activeUserTriggers: activeUserTriggers
+        )
     }
     
     static func parseAppletsResponse(_ parser: Parser) -> [Connection]? {

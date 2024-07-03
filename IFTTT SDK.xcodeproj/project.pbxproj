@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453ED722971C5C001994FF /* ConnectButton+Style.swift */; };
+		1D453ED822971C5C001994FF /* ConnectButton+ButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453ED722971C5C001994FF /* ConnectButton+ButtonStyle.swift */; };
 		1D453EDA229720AB001994FF /* ConnectButton+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */; };
 		1D453EDC2297213E001994FF /* ConnectButton+Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EDB2297213E001994FF /* ConnectButton+Service.swift */; };
 		1D453EDE2297216A001994FF /* ConnectButton+AnimationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */; };
@@ -187,7 +187,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1D453ED722971C5C001994FF /* ConnectButton+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Style.swift"; sourceTree = "<group>"; };
+		1D453ED722971C5C001994FF /* ConnectButton+ButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+ButtonStyle.swift"; sourceTree = "<group>"; };
 		1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Constants.swift"; sourceTree = "<group>"; };
 		1D453EDB2297213E001994FF /* ConnectButton+Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+Service.swift"; sourceTree = "<group>"; };
 		1D453EDD2297216A001994FF /* ConnectButton+AnimationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectButton+AnimationState.swift"; sourceTree = "<group>"; };
@@ -383,7 +383,7 @@
 				1D453EE32297230C001994FF /* ConnectButton+LabelValue.swift */,
 				1D453EE52297236C001994FF /* ConnectButton+LabelAnimator.swift */,
 				1D453EE7229723CA001994FF /* ConnectButton+ProgressBar.swift */,
-				1D453ED722971C5C001994FF /* ConnectButton+Style.swift */,
+				1D453ED722971C5C001994FF /* ConnectButton+ButtonStyle.swift */,
 				1D453ED9229720AB001994FF /* ConnectButton+Constants.swift */,
 			);
 			name = ConnectButton;
@@ -1012,7 +1012,7 @@
 				1DFE02172190E58700856ABC /* URLSession+JSONTask.swift in Sources */,
 				FC7F13A221B06E34002AD8FB /* ImageViewNetworkController.swift in Sources */,
 				DE2AE4822727103F00C4794A /* LocationEvent.swift in Sources */,
-				1D453ED822971C5C001994FF /* ConnectButton+Style.swift in Sources */,
+				1D453ED822971C5C001994FF /* ConnectButton+ButtonStyle.swift in Sources */,
 				DEC75CBB2509741F00F40296 /* LocationLibrary.swift in Sources */,
 				DE37620022DF75CB00F8BD38 /* ConnectionDeeplinkAction.swift in Sources */,
 				FCC6DEB2215D90DD008C8405 /* Assets.swift in Sources */,

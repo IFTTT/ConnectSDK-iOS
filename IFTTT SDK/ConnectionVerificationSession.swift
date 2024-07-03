@@ -67,11 +67,11 @@ final class ConnectionVerificationSession {
     
     /// Begins the connection verification session
     /// This will prompt the user's permission if necessary.
+    /// API is obsoleted in iOS 13. Please use `start(with url: URL, in presentationContext: UIWindow)` instead.
     ///
     /// - Parameters:
     ///     - viewController: The view controller initiating this session. We may present an alert or a Safari VC.
     ///     - url: The url to kick off the connection verification with.
-    @available(iOS, obsoleted: 13, message: "API is obsoleted in iOS 13. Please use `start(with url: URL, in presentationContext: UIWindow)` instead.")
     func start(from viewController: UIViewController, with url: URL) {
         if #available(iOS 12, *) {
             let service = ASWebServiceAuthentication(authenticationSessionContextPresentationProvider: nil)

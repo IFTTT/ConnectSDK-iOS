@@ -9,17 +9,23 @@ import UIKit
 import SafariServices
 
 /// Bundles values when a Connection is activated
-public struct ConnectionActivation {
+@objc
+public class ConnectionActivation: NSObject {
     
     /// The IFTTT service-level user token for your service.
     public let userToken: String?
     
     /// The Connection that was activated
     public let connection: Connection
+    
+    init(userToken: String?, connection: Connection) {
+        self.userToken = userToken
+        self.connection = connection
+    }
 }
 
 /// An error occurred, preventing a connect button from completing a service authentication with the `Connection`.
-public enum ConnectButtonControllerError: Error {
+public enum ConnectButtonControllerError {
 
     /// For some reason we could not create an IFTTT account for a new user.
     case iftttAccountCreationFailed
@@ -44,9 +50,32 @@ public enum ConnectButtonControllerError: Error {
     
     /// For some reason we could not redirect to the IFTTT app. This should never happen since we check if the app is installed first.
     case iftttAppRedirectFailed
+    
+    var nsError: NSError {
+        switch self {
+        case .iftttAccountCreationFailed:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 0)
+        case .networkError(let networkError):
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 1, userInfo: ["networkError": networkError.localizedDescription])
+        case .canceled:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 2)
+        case .userCancelledConfiguration:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 3)
+        case .unknownRedirect:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 4)
+        case .unknownResponse:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 5)
+        case .unableToGetConnection:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 6)
+        case .iftttAppRedirectFailed:
+            return .init(domain: "com.ifttt.IFTTTConnectSDK.ConnectButtonControllerError", code: 7)
+        }
+    }
+    
 }
 
 /// Defines the communication between ConnectButtonController and your app. It is required to implement this protocol.
+@objc
 public protocol ConnectButtonControllerDelegate: AnyObject {
 
     /// The `ConnectButtonController` needs to present a view controller. This includes the About IFTTT page and Safari VC during Connection activation.
@@ -55,7 +84,7 @@ public protocol ConnectButtonControllerDelegate: AnyObject {
     /// - Returns: A `UIViewController` to present other view controllers on.
     func presentingViewController(for connectButtonController: ConnectButtonController) -> UIViewController
 
-    /// Connection activation is finished.
+    /// Connection activation succeeded.
     ///
     /// On success, the controller transitions the button to its connected state. It is recommended that you fetch or refresh the user's IFTTT token after successfully authenticating a connection.
     ///
@@ -69,9 +98,25 @@ public protocol ConnectButtonControllerDelegate: AnyObject {
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection activation request.
     func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishActivationWithResult result: Result<ConnectionActivation, ConnectButtonControllerError>)
-
-    /// Connection deactivation is finished.
+                                 didFinishActivationWithSuccess activation: ConnectionActivation)
+    
+    /// Connection activation failed
+    ///
+    /// On success, the controller transitions the button to its connected state. It is recommended that you fetch or refresh the user's IFTTT token after successfully authenticating a connection.
+    ///
+    /// On failure, the controller resets the button to its initial state but does not present any error message.
+    /// It is up to you to decided how to present an error message to your user. You may use our message or one you provide.
+    ///
+    /// For these two scenarios it's not neccessary for you to show additional confirmation, however, you may
+    /// want to update your app's UI in some way or ask they user why they canceled if you recieve a canceled error.
+    ///
+    /// - Parameters:
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
+    ///   - result: A result of the connection activation request.
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishActivationWithFailure error: NSError)
+    
+    /// Connection deactivation succeeeded.
     ///
     /// On success, the controller transitions the button to its deactivated initial state.
     ///
@@ -81,7 +126,19 @@ public protocol ConnectButtonControllerDelegate: AnyObject {
     ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
     ///   - result: A result of the connection deactivation request.
     func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>)
+                                 didFinishDeactivationWithSuccess connection: Connection)
+
+    /// Connection deactivation failed.
+    ///
+    /// On success, the controller transitions the button to its deactivated initial state.
+    ///
+    /// On failure, the controller will reset the Connection to the connected state but will not show any messaging. The user attempted to deactivate the Connection but something unexpected went wrong, likely a network failure. It is up to you to do this. This should be rare but should be handled.
+    ///
+    /// - Parameters:
+    ///   - connectButtonController: The `ConnectButtonController` controller that is sending the message.
+    ///   - result: A result of the connection deactivation request.
+    func connectButtonController(_ connectButtonController: ConnectButtonController,
+                                 didFinishDeactivationWithFailure error: NSError)
     
     /// This is required as of iOS 13 to go through an authentication flow as a part of connection activation. This flow is shown if the user does not have the IFTTT app installed.
     ///
@@ -91,7 +148,8 @@ public protocol ConnectButtonControllerDelegate: AnyObject {
 }
 
 /// A controller that handles the `ConnectButton` when authenticating a `Connection`. It is mandatory that you interact with the ConnectButton only through this controller.
-public class ConnectButtonController {
+@objc
+public class ConnectButtonController: NSObject {
 
     /// The connect button in this interaction
     public let button: ConnectButton
@@ -136,12 +194,12 @@ public class ConnectButtonController {
                                    state: state)
             let activation = ConnectionActivation(userToken: userToken,
                                                   connection: connection)
-            delegate?.connectButtonController(self, didFinishActivationWithResult: .success(activation))
+            delegate?.connectButtonController(self, didFinishActivationWithSuccess: activation)
         }
     }
     
     private func handleActivationFailed(error: ConnectButtonControllerError) {
-        delegate?.connectButtonController(self, didFinishActivationWithResult: .failure(error))
+        delegate?.connectButtonController(self, didFinishActivationWithFailure: error.nsError)
     }
     
     private func handleDeactivationFinished() {
@@ -151,12 +209,12 @@ public class ConnectButtonController {
             if connection.hasNativeTriggers {
                 connectionsRegistry.update(with: connection)
             }
-            delegate?.connectButtonController(self, didFinishDeactivationWithResult: .success(connection))
+            delegate?.connectButtonController(self, didFinishDeactivationWithSuccess: connection)
         }
     }
     
     private func handleDeactivationFailed(error: ConnectButtonControllerError) {
-        delegate?.connectButtonController(self, didFinishDeactivationWithResult: .failure(error))
+        delegate?.connectButtonController(self, didFinishDeactivationWithFailure: error.nsError)
     }
 
     private var credentialProvider: ConnectionCredentialProvider {
@@ -194,6 +252,7 @@ public class ConnectButtonController {
     ///   - connectionConfiguration: The `ConnectionConfiguration` with information for authenticating a `Connection`.
     ///   - locale: An overridable `Locale` that will get used to display strings in the SDK. The default is `nil`. If this parameter is set to `nil`, the user's current will be used.
     ///   - delegate: A `ConnectInteractionDelegate` to respond to various events that happen on the controller.
+    @objc
     public init(connectButton: ConnectButton,
                 connectionConfiguration: ConnectionConfiguration,
                 locale: Locale = determineLocale(),
@@ -209,9 +268,10 @@ public class ConnectButtonController {
         self.connection = connectionConfiguration.connection
         self.delegate = delegate
         self.connectionVerificationSession = ConnectionVerificationSession()
+
+        super.init()
         
         self.button.analyticsDelegate = self
-        
         setupKeychain(for: connectionConfiguration.credentialProvider)
         setupConnection(for: connection, animated: false)
         setupVerification()

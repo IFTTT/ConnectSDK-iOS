@@ -15,11 +15,12 @@ protocol ConnectButtonAnalyticsDelegate: AnyObject {
 
 // MARK: - Connect Button
 
+@objc
 @IBDesignable
 public class ConnectButton: UIView {
     
     /// Adjust the button's style
-    public var style: Style {
+    public var style: ButtonStyle {
         didSet {
             applyStyle()
         }
@@ -289,7 +290,7 @@ public class ConnectButton: UIView {
         field.keyboardType = .emailAddress
         field.autocapitalizationType = .none
         field.returnKeyType = .done
-        field.font = Style.Font.email
+        field.font = ButtonStyle.Font.email
         field.textColor = Color.mediumGrey
         return field
     }()
@@ -299,7 +300,7 @@ public class ConnectButton: UIView {
     private lazy var primaryLabelAnimator = LabelAnimator {
         $0.textAlignment = .center
         $0.textColor = self.style.textColor
-        $0.font = Style.Font.connect
+        $0.font = ButtonStyle.Font.connect
         $0.adjustsFontSizeToFitWidth = true
         $0.baselineAdjustment = .alignCenters
     }
@@ -785,7 +786,6 @@ private extension ConnectButton {
     
     private func transitionToConnecting(service: Service, message: String, animator: UIViewPropertyAnimator) {
         primaryLabelAnimator.transition(updatedValue: .text(message), insets: .standard, addingTo: animator)
-        primaryLabelAnimator.transition(updatedValue: .textColor(.white), insets: .standard, addingTo: animator)
     
         backgroundView.backgroundColor = service.brandColor
         switchControl.knob.iconView.alpha = 1

@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-struct UserAuthenticatedRequestCredentialProvider: ConnectionCredentialProvider {
+class UserAuthenticatedRequestCredentialProvider: ConnectionCredentialProvider {
     var inviteCode: String? { return Keychain.inviteCode }
     var userToken: String? { return Keychain.userToken }
     

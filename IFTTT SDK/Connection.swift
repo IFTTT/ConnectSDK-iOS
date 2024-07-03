@@ -8,7 +8,8 @@
 import UIKit
 
 /// A structure representing a Connection created using the IFTTT Platform.
-public struct Connection: Equatable, Hashable {
+@objc
+public class Connection: NSObject {
     
     /// Represents the various states a `Connection` can be in based on interaction.
     public enum Status: String {
@@ -135,7 +136,7 @@ public struct Connection: Equatable, Hashable {
     public let name: String
     
     /// Information about the `Connection`.
-    public let description: String
+    public let details: String
     
     /// The `Status` of the `Connection`.
     public internal(set) var status: Status
@@ -224,8 +225,22 @@ public struct Connection: Equatable, Hashable {
         return lhs.id == rhs.id
     }
     
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+    public override var hash: Int {
+        return id.hashValue
+    }
+    
+    init(id: String, name: String, details: String, status: Status, url: URL, coverImages: [CoverImage.Size : CoverImage], valuePropositionsParser: Parser, features: [Feature], services: [Service], primaryService: Service, activeUserTriggers: Set<Trigger>) {
+        self.id = id
+        self.name = name
+        self.details = details
+        self.status = status
+        self.url = url
+        self.coverImages = coverImages
+        self.valuePropositionsParser = valuePropositionsParser
+        self.features = features
+        self.services = services
+        self.primaryService = primaryService
+        self.activeUserTriggers = activeUserTriggers
     }
 }
 

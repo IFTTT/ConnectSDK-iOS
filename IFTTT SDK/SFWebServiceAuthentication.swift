@@ -9,7 +9,6 @@ import SafariServices
 
 /// Wraps an `SFAuthenticationSession`. Used to authenticate web services up to (not including) iOS 12.
 @available(iOS 11.0, *)
-@available(iOS, deprecated: 12, obsoleted: 13, message: "API is deprecated in iOS 12 and obsoleted in iOS 13")
 final class SFWebService: WebServiceAuthentication {
 
     /// The backing `SFAuthenticationSession` object.

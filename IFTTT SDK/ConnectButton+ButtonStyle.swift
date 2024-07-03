@@ -1,5 +1,5 @@
 //
-//  ConnectButton+Style.swift
+//  ConnectButton+ButtonStyle.swift
 //  IFTTT SDK
 //
 //  Copyright © 2019 IFTTT. All rights reserved.
@@ -12,7 +12,8 @@ extension ConnectButton {
     /// Adjusts the button for a white or black background
     ///
     /// - light: Style the button for a white background
-    public enum Style {
+    @objc
+    public enum ButtonStyle: Int {
         
         /// Style the button for a white background
         case light

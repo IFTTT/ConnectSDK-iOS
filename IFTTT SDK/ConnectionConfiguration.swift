@@ -8,7 +8,8 @@
 import Foundation
 
 /// Encapsulates the information needed to authenticate a `Connection`'s services.
-public struct ConnectionConfiguration {
+@objc
+public class ConnectionConfiguration: NSObject {
     
     /// The identifier for the `Connection`.
     public let connectionId: String
@@ -36,6 +37,7 @@ public struct ConnectionConfiguration {
     ///   - credentialProvider: A `CredentialProvider` conforming object for providing credentials.
     ///   - redirectURL: The `URL` that is used for connection activation redirects.
     ///   - skipConnectionConfiguration: A `Bool` that is used to skip the configuration of the Connection when it's activated in either the IFTTT app or the web flow. Defaults to `false`.
+    @objc
     public init(connectionId: String,
                 suggestedUserEmail: String,
                 credentialProvider: ConnectionCredentialProvider,
