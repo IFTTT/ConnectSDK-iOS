@@ -241,35 +241,33 @@ extension ConnectionViewController: ConnectButtonControllerDelegate {
         return self
     }
     
-    func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishActivationWithResult result: Result<ConnectionActivation, ConnectButtonControllerError>) {
-        switch result {
-        case .success(let activation):
-            // A Connection was activated and we received the user's service-level IFTTT token
-            // Let's update our credential for this user
-            if let token = activation.userToken {
-                connectionCredentials.loginUser(with: token)
-                if settings.skipConnectionConfiguration && displayInformation.showLocationUpdateWithSkipConfig {
-                    showLocationUpdateView(token: token)
-                }
-            }
-            
-        case .failure(let error):
-            if let reason = error.reason {
-                let alert = UIAlertController(title: "Connection failed", message: reason, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
-                present(alert, animated: true, completion: nil)
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithSuccess activation: ConnectionActivation) {
+        // A Connection was activated and we received the user's service-level IFTTT token
+        // Let's update our credential for this user
+        if let token = activation.userToken {
+            connectionCredentials.loginUser(with: token)
+            if settings.skipConnectionConfiguration && displayInformation.showLocationUpdateWithSkipConfig {
+                showLocationUpdateView(token: token)
             }
         }
+    }
+    
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishActivationWithFailure error: NSError) {
+        let alert = UIAlertController(title: "Connection failed", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithSuccess connection: Connection) {
+        // Received when the Connection is successfully deactivated.
+    }
+    
+    func connectButtonController(_ connectButtonController: ConnectButtonController, didFinishDeactivationWithFailure error: NSError) {
+        // Received when the Connection fails deactivating.
     }
     
     private func showLocationUpdateView(token: String) {
         let locationUpdateViewController = AddressUpdateViewController.instantiate(token: token, connectionId: displayInformation.connectionId)
         navigationController?.pushViewController(locationUpdateViewController, animated: true)
-    }
-    
-    func connectButtonController(_ connectButtonController: ConnectButtonController,
-                                 didFinishDeactivationWithResult result: Result<Connection, ConnectButtonControllerError>) {
-        // Received when the Connection is deactivated.
     }
 }

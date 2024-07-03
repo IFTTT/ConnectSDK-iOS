@@ -10,7 +10,7 @@ import SafariServices
 
 /// Bundles values when a Connection is activated
 @objc
-public class ConnectionActivation: NSObject {
+public class ConnectionActivation: NSObject, JSONConvertible {
     
     /// The IFTTT service-level user token for your service.
     public let userToken: String?

@@ -176,3 +176,31 @@ extension Parser: Collection {
         }
     }
 }
+
+// TODO: Move the code below somewhere else
+public protocol JSONConvertible {
+    func toJSON() -> [AnyHashable: Any]
+}
+
+extension NSError: JSONConvertible {
+    public func toJSON() -> [AnyHashable : Any] {
+        return [
+            "domain": domain,
+            "code": code,
+            "user_info": userInfo
+        ]
+    }
+}
+
+extension JSONConvertible {
+    public func toJSON() -> [AnyHashable: Any] {
+        var dict = [String: Any]()
+        let otherSelf = Mirror(reflecting: self)
+        for child in otherSelf.children {
+            if let key = child.label {
+                dict[key] = child.value
+            }
+        }
+        return dict
+    }
+}

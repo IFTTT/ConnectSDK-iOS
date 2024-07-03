@@ -9,7 +9,7 @@ import UIKit
 
 /// A structure representing a Connection created using the IFTTT Platform.
 @objc
-public class Connection: NSObject {
+public class Connection: NSObject, JSONConvertible {
     
     /// Represents the various states a `Connection` can be in based on interaction.
     public enum Status: String {

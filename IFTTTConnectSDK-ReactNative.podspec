@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-  spec.name             = "IFTTTConnectSDK"
+  spec.name             = "IFTTTConnectSDK-ReactNative"
   spec.version          = "2.8.0"
   spec.summary          = "Allows your users to activate programmable IFTTT Connections directly in your React Native iOS app."
   spec.description      = <<-DESC
