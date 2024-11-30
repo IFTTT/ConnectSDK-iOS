@@ -68,7 +68,7 @@ extension UIColor {
         return UIColor(hue: hsba[0], saturation: hsba[1], brightness: max(0, min(1, bright)), alpha: hsba[3])
     }
     
-    convenience init(hex: String) {
+    public convenience init(hex: String) {
         var charSet = CharacterSet.whitespacesAndNewlines
         charSet.insert("#")
         
@@ -84,7 +84,7 @@ extension UIColor {
         self.init(hex: value)
     }
     
-    convenience init(hex: UInt32) {
+    public convenience init(hex: UInt32) {
         let r = (hex & 0xff0000) >> 16
         let g = (hex & 0xff00) >> 8
         let b = hex & 0xff
@@ -96,7 +96,7 @@ extension UIColor {
         )
     }
     
-    var hex: UInt32 {
+    public var hex: UInt32 {
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0

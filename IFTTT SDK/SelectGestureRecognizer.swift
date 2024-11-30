@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SelectGestureRecognizer: UIGestureRecognizer {
+public class SelectGestureRecognizer: UIGestureRecognizer {
     
     typealias HighlightHandler = ((UIView?, Bool) -> Void)
     
@@ -35,7 +35,7 @@ class SelectGestureRecognizer: UIGestureRecognizer {
     
     private var currentEvent: UIEvent?
     
-    override var state: UIGestureRecognizer.State {
+    override public var state: UIGestureRecognizer.State {
         didSet {
             guard performHighlight != nil else { return }
             
@@ -64,14 +64,14 @@ class SelectGestureRecognizer: UIGestureRecognizer {
         }
     }
     
-    override func reset() {
+    override public func reset() {
         super.reset()
         
         gestureOrigin = nil
         currentEvent = nil
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         if touches.contains(where: { $0.force > 1 }) {
             return
         }
@@ -94,7 +94,7 @@ class SelectGestureRecognizer: UIGestureRecognizer {
             state = .began
         }
     }
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+    override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         if touches.contains(where: { $0.force > 1 && cancelsOnForceTouch }) {
             state = .cancelled
         }
@@ -108,10 +108,10 @@ class SelectGestureRecognizer: UIGestureRecognizer {
             }
         }
     }
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+    override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .ended
     }
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+    override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .cancelled
     }
 }
