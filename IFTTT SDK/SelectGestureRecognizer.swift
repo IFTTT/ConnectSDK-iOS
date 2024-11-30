@@ -9,7 +9,7 @@ import UIKit
 
 public class SelectGestureRecognizer: UIGestureRecognizer {
     
-    typealias HighlightHandler = ((UIView?, Bool) -> Void)
+    public typealias HighlightHandler = ((UIView?, Bool) -> Void)
     
     var cancelsOnForceTouch: Bool = false
     
@@ -22,7 +22,7 @@ public class SelectGestureRecognizer: UIGestureRecognizer {
     /// Transition the view to its highlighted state
     /// Default implementation reduces the view's alpha to 0.8
     /// Set to nil to disable highlighting
-    var performHighlight: HighlightHandler? = { (view: UIView?, isHighlighted: Bool) -> Void in
+    public var performHighlight: HighlightHandler? = { (view: UIView?, isHighlighted: Bool) -> Void in
         UIView.animate(withDuration: 0.1) {
             view?.alpha = isHighlighted ? 0.8 : 1
         }
