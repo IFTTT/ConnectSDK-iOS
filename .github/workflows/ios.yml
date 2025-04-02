@@ -40,6 +40,6 @@ jobs:
 
           # Build and run the tests
           xcodebuild test \
+            -sdk iphonesimulator 
             -scheme "$scheme" \
             -"$filetype_parameter" "$file_to_build" \
-            -destination "platform=iOS Simulator,name=$device_name"
