@@ -17,12 +17,33 @@ jobs:
       - name: Build and Test
         env:
           scheme: ${{ 'SDKHostApp' }}
-          platform: ${{ 'iOS Simulator' }}
-          os: ${{ latest }}
-          device: ${{ 'iPhone 16' }}
         run: |
           # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
+
           if [ $scheme = default ]; then scheme=$(cat default); fi
+          
+          # Determine file to build: .xcworkspace or .xcodeproj
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
+          
+          # Clean up whitespace
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild test -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,OS=$os,name=$device"
+          
+          # Find latest available iOS runtime identifier
+          latest_runtime_id=$(xcrun simctl list runtimes | grep -E "iOS [0-9]+\.[0-9]*" | grep -v unavailable | sort -Vr | head -n 1 | sed -E 's/.*- (.*)$/\1/')
+
+          # Find a compatible simulator device name for that runtime
+          device_name=$(xcrun simctl list devices available | grep "$latest_runtime_id" | head -n 1 | sed -E 's/^    (.+) \(.+\) \(.+\)$/\1/')
+
+          if [ -z "$latest_runtime_id" ] || [ -z "$device_name" ]; then
+            echo "❌ Failed to find a valid iOS runtime or device."
+            exit 1
+          fi
+
+          echo "🛠 Using runtime: $latest_runtime_id"
+          echo "📱 Using device: $device_name"
+
+          # Build and run the tests
+          xcodebuild test \
+            -scheme "$scheme" \
+            -"$filetype_parameter" "$file_to_build" \
+            -destination "platform=iOS Simulator,OS=$latest_runtime_id,name=$device_name"
