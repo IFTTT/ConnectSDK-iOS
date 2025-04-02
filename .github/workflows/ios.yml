@@ -42,4 +42,4 @@ jobs:
           xcodebuild test \
             -scheme "$scheme" \
             -"$filetype_parameter" "$file_to_build" \
-            -destination "platform=iOS Simulator,name=$device_name"
+            -destination "platform=iOS Simulator,name=iPhone 15 Pro"
