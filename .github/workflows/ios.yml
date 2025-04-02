@@ -28,22 +28,18 @@ jobs:
           # Clean up whitespace
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
           
-          # Find latest available iOS runtime identifier
-          latest_runtime_id=$(xcrun simctl list runtimes | grep -E "iOS [0-9]+\.[0-9]*" | grep -v unavailable | sort -Vr | head -n 1 | sed -E 's/.*- (.*)$/\1/')
+          # Find first available simulator
+          device_name=$(xcrun simctl list devices available | grep "iPhone" | head -n 1 | sed -E 's/^[[:space:]]*(.+) \(.+\) \(.+\)$/\1/')
 
-          # Find a compatible simulator device name for that runtime
-          device_name=$(xcrun simctl list devices available | grep "$latest_runtime_id" | head -n 1 | sed -E 's/^    (.+) \(.+\) \(.+\)$/\1/')
-
-          if [ -z "$latest_runtime_id" ] || [ -z "$device_name" ]; then
-            echo "❌ Failed to find a valid iOS runtime or device."
+          if [ -z "$device_name" ]; then
+            echo "❌ Failed to find a valid iOS device."
             exit 1
           fi
 
-          echo "🛠 Using runtime: $latest_runtime_id"
           echo "📱 Using device: $device_name"
 
           # Build and run the tests
           xcodebuild test \
             -scheme "$scheme" \
             -"$filetype_parameter" "$file_to_build" \
-            -destination "platform=iOS Simulator,OS=$latest_runtime_id,name=$device_name"
+            -destination "platform=iOS Simulator,name=$device_name"
