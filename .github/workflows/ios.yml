@@ -18,7 +18,7 @@ jobs:
         env:
           scheme: ${{ 'SDKHostApp' }}
           platform: ${{ 'iOS Simulator' }}
-          os: ${{ '18.1' }}
+          os: ${{ latest }}
           device: ${{ 'iPhone 16' }}
         run: |
           # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
