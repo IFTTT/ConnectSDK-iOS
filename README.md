@@ -1,6 +1,6 @@
 ## IFTTT SDK
 
-IFTTT SDK is a iOS library in Swift that allows your users to activate programmable Connections directly in your app. You can find the documentation of the API [here](https://platform.ifttt.com/docs/embedding_applets).
+IFTTT SDK is a iOS library in Swift that allows your users to activate programmable Connections directly in your app. You can find the documentation of the API [here](https://ifttt.com/docs/connect_api#ifttt-connect-api).
 
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
