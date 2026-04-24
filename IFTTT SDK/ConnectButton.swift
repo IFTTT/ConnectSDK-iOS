@@ -345,7 +345,7 @@ public class ConnectButton: UIView {
             footerLabel.constrain.edges(to: footerLabelContainer, edges: [.left, .top, .right])
             
             // But allow it to be shorter than its container
-            footerLabel.bottomAnchor.constraint(lessThanOrEqualTo: footerLabelContainer.bottomAnchor)
+            footerLabel.bottomAnchor.constraint(lessThanOrEqualTo: footerLabelContainer.bottomAnchor).isActive = true
             let breakableBottomConstraint = footerLabel.bottomAnchor.constraint(equalTo: footerLabelContainer.bottomAnchor)
             breakableBottomConstraint.priority = .defaultHigh
             

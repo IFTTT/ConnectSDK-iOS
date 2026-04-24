@@ -41,6 +41,27 @@ final class AppleSignInWebService: ServiceAuthentication {
         @available(iOS 13.0, *)
         func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
             let authorizationError = ASAuthorizationError(_nsError: error as NSError)
+            // Cases added after the SDK's iOS 14.2 deployment target.
+            // Each is referenced behind an availability check and mapped
+            // to the matching AuthenticationError case so callers can
+            // distinguish it from the generic .failed / .unknown bucket.
+            if #available(iOS 15.4, *), authorizationError.code == .notInteractive {
+                completion(.failure(.notInteractive))
+                return
+            }
+            if #available(iOS 18.0, *), authorizationError.code == .matchedExcludedCredential {
+                completion(.failure(.matchedExcludedCredential))
+                return
+            }
+            if #available(iOS 18.2, *), authorizationError.code == .credentialImport {
+                completion(.failure(.credentialImport))
+                return
+            }
+            if #available(iOS 18.2, *), authorizationError.code == .credentialExport {
+                completion(.failure(.credentialExport))
+                return
+            }
+
             switch authorizationError.code {
             case .canceled:
                 completion(.failure(.userCanceled))
