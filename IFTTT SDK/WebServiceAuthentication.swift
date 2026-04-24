@@ -14,6 +14,15 @@ import AuthenticationServices
 /// - invalidResponse: The response returned by the web service was invalid.
 /// - notHandled: The error wasn't handled by the web service.
 /// - presentationContextInvalid: The presentation content provided was invalid.
+/// - notInteractive: The authorization request was performed in a
+///   non-interactive context. Mirrors `ASAuthorizationError.Code.notInteractive`
+///   (iOS 15.4+).
+/// - matchedExcludedCredential: A matched credential was excluded from use.
+///   Mirrors `ASAuthorizationError.Code.matchedExcludedCredential` (iOS 18+).
+/// - credentialImport: An error occurred importing a credential. Mirrors
+///   `ASAuthorizationError.Code.credentialImport` (iOS 18.2+).
+/// - credentialExport: An error occurred exporting a credential. Mirrors
+///   `ASAuthorizationError.Code.credentialExport` (iOS 18.2+).
 /// - unknown: Some unknown error ocurred when authenticating with the web service.
 enum AuthenticationError: Error {
     case userCanceled
@@ -21,6 +30,10 @@ enum AuthenticationError: Error {
     case invalidResponse
     case notHandled
     case presentationContextInvalid
+    case notInteractive
+    case matchedExcludedCredential
+    case credentialImport
+    case credentialExport
     case unknown
 }
 
