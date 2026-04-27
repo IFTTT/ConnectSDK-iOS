@@ -57,5 +57,4 @@ jobs:
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -destination "${{ steps.sim.outputs.destination }}" \
-            CODE_SIGNING_ALLOWED=NO \
           | xcbeautify --renderer github-actions
