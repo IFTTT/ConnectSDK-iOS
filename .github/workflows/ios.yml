@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build & test SDKHostApp
+    name: Build and Test SDKHostApp scheme using any available iPhone simulator
     runs-on: macos-15
     env:
       SCHEME: SDKHostApp
