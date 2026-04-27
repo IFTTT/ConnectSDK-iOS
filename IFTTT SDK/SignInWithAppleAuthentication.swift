@@ -40,42 +40,33 @@ final class AppleSignInWebService: ServiceAuthentication {
 
         @available(iOS 13.0, *)
         func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-            let authorizationError = ASAuthorizationError(_nsError: error as NSError)
-            // Cases added after the SDK's iOS 14.2 deployment target.
-            // Each is referenced behind an availability check and mapped
-            // to the matching AuthenticationError case so callers can
-            // distinguish it from the generic .failed / .unknown bucket.
-            if #available(iOS 15.4, *), authorizationError.code == .notInteractive {
-                completion(.failure(.notInteractive))
-                return
+            let code = ASAuthorizationError(_nsError: error as NSError).code
+            // If/else cascade rather than a switch: ASAuthorizationError.Code is
+            // non-frozen and gains new cases (notInteractive in 15.4, ...) that
+            // can only be referenced behind #available — a switch over them
+            // either trips "switch must be exhaustive" warnings or requires
+            // raising the deployment target.
+            let mapped: AuthenticationError
+            if code == .canceled {
+                mapped = .userCanceled
+            } else if code == .failed {
+                mapped = .failed
+            } else if code == .invalidResponse {
+                mapped = .invalidResponse
+            } else if code == .notHandled {
+                mapped = .notHandled
+            } else if #available(iOS 15.4, *), code == .notInteractive {
+                mapped = .notInteractive
+            } else if #available(iOS 18.0, *), code == .matchedExcludedCredential {
+                mapped = .matchedExcludedCredential
+            } else if #available(iOS 18.2, *), code == .credentialImport {
+                mapped = .credentialImport
+            } else if #available(iOS 18.2, *), code == .credentialExport {
+                mapped = .credentialExport
+            } else {
+                mapped = .unknown
             }
-            if #available(iOS 18.0, *), authorizationError.code == .matchedExcludedCredential {
-                completion(.failure(.matchedExcludedCredential))
-                return
-            }
-            if #available(iOS 18.2, *), authorizationError.code == .credentialImport {
-                completion(.failure(.credentialImport))
-                return
-            }
-            if #available(iOS 18.2, *), authorizationError.code == .credentialExport {
-                completion(.failure(.credentialExport))
-                return
-            }
-
-            switch authorizationError.code {
-            case .canceled:
-                completion(.failure(.userCanceled))
-            case .failed:
-                completion(.failure(.failed))
-            case .invalidResponse:
-                completion(.failure(.invalidResponse))
-            case .notHandled:
-                completion(.failure(.notHandled))
-            case .unknown:
-                completion(.failure(.unknown))
-            @unknown default:
-                completion(.failure(.unknown))
-            }
+            completion(.failure(mapped))
         }
     }
     
