@@ -55,8 +55,6 @@ final class AppleSignInWebService: ServiceAuthentication {
                 mapped = .invalidResponse
             } else if code == .notHandled {
                 mapped = .notHandled
-            } else if #available(iOS 14.0, *), code == .presentationContextInvalid {
-                mapped = .presentationContextInvalid
             } else if #available(iOS 15.4, *), code == .notInteractive {
                 mapped = .notInteractive
             } else if #available(iOS 18.0, *), code == .matchedExcludedCredential {
