@@ -13,15 +13,15 @@ concurrency:
 jobs:
   build:
     name: Build and Test SDKHostApp scheme using any available iPhone simulator
+    # macos-26 is required: only this image's installed Xcodes include
+    # 26.4.1+, where the stricter protocol-witness availability check
+    # this PR exists to fix (issue #310) lives. macos-15 tops out at
+    # Xcode 26.3, which does not exercise the check and would let
+    # regressions of the @available annotations slip through.
     runs-on: macos-26
     env:
       SCHEME: SDKHostApp
       PROJECT: IFTTT SDK.xcodeproj
-      # Pinned to the Xcode version that introduced the stricter
-      # protocol-witness availability check this PR exists to fix
-      # (see issue #310). Bumping this on purpose is fine; drifting via
-      # latest-stable would hide regressions of the original fix.
-      XCODE_VERSION: 26.4.1
 
     steps:
       - name: Checkout
@@ -30,7 +30,7 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: ${{ env.XCODE_VERSION }}
+          xcode-version: latest-stable
 
       - name: Toolchain versions
         run: |
