@@ -21,14 +21,12 @@ class AuthenticationSessionContextPresentationProvider: NSObject {
     }
 }
 
-@available(iOS 12.0, *)
 extension AuthenticationSessionContextPresentationProvider: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return presentationContext
     }
 }
 
-@available(iOS 13.0, *)
 extension AuthenticationSessionContextPresentationProvider: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return presentationContext

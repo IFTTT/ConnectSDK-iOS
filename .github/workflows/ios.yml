@@ -32,21 +32,29 @@ jobs:
           xcodebuild -version
           swift --version
 
+      - name: Install xcbeautify
+        run: |
+          if ! command -v xcbeautify >/dev/null 2>&1; then
+            brew install xcbeautify
+          fi
+
       - name: Pick iPhone simulator
         id: sim
         run: |
-          udid=$(xcrun simctl list devices available --json | python3 -c '
-          import json, sys
-          data = json.load(sys.stdin)
-          for runtime, devices in data["devices"].items():
-              if "iOS" not in runtime:
-                  continue
-              for dev in devices:
-                  if dev["name"].startswith("iPhone") and dev.get("isAvailable", False):
-                      print(dev["udid"])
-                      sys.exit(0)
-          sys.exit("No available iPhone simulator found")
-          ')
+          udid=$(xcrun simctl list devices available --json \
+            | jq -r '
+                [ .devices
+                  | to_entries[]
+                  | select(.key | contains("iOS"))
+                  | .value[]
+                  | select((.name | startswith("iPhone")) and .isAvailable == true)
+                ]
+                | (.[0].udid // empty)
+              ')
+          if [ -z "$udid" ]; then
+            echo "No available iPhone simulator found" >&2
+            exit 1
+          fi
           echo "destination=platform=iOS Simulator,id=$udid" >> "$GITHUB_OUTPUT"
           echo "Using simulator $udid"
 

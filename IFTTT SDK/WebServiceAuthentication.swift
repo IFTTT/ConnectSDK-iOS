@@ -23,7 +23,7 @@ import AuthenticationServices
 ///   `ASAuthorizationError.Code.credentialImport` (iOS 18.2+).
 /// - credentialExport: An error occurred exporting a credential. Mirrors
 ///   `ASAuthorizationError.Code.credentialExport` (iOS 18.2+).
-/// - unknown: Some unknown error ocurred when authenticating with the web service.
+/// - unknown: Some unknown error occurred when authenticating with the web service.
 enum AuthenticationError: Error {
     case userCanceled
     case failed
